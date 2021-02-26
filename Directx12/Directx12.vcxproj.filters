@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="01.Engine">
+      <UniqueIdentifier>{498923e1-1630-4497-8c4d-293c3862b973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game">
+      <UniqueIdentifier>{944f3dda-6446-46a0-b094-7c710f31f07c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Default">
+      <UniqueIdentifier>{48b467b2-ccef-46a8-a1a6-f7727bcaf783}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Default\00.Header">
+      <UniqueIdentifier>{37e33b3d-ed51-4124-ad44-b0000e3e8fea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\01.Renderer">
+      <UniqueIdentifier>{0d96a1c2-4163-44d2-986a-21e18f7ae6ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object">
+      <UniqueIdentifier>{b6fd3151-2051-4ca1-876c-0bd1d222a70c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object\00.Triangle">
+      <UniqueIdentifier>{dc81a5bb-4af8-4602-9d7a-859e71690ff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\03.Shader">
+      <UniqueIdentifier>{2ac3916f-4eb4-4e5e-81fa-ff25de10c97c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\05.Scene">
+      <UniqueIdentifier>{7b940268-9939-4c64-9e2e-b424d1c9e342}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\00.MainApp">
+      <UniqueIdentifier>{9b465b88-62eb-4594-84dc-6ded252efb70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\01.Scene">
+      <UniqueIdentifier>{2ec4ca20-f989-4505-b7b0-fffa9937ee97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\01.Scene\99.TestScene">
+      <UniqueIdentifier>{688f64ee-9b8c-48b4-95b8-fa6d520cfe20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\00.Core">
+      <UniqueIdentifier>{37d882e7-331e-46b9-9192-3142bc04bebc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\04.Texture">
+      <UniqueIdentifier>{67ae1fd1-33da-4463-9e8b-478de458ce60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\04.Texture\00.DDSTexture">
+      <UniqueIdentifier>{670d3544-97fe-45c5-b566-d5b5f16b777e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\04.Texture\00.DDSTexture\00.DDSLoader">
+      <UniqueIdentifier>{fc433d4d-6dfb-46d2-827c-923ea39c46bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object\01.Plane">
+      <UniqueIdentifier>{935bf96a-cf04-4f64-8188-a2e879343711}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>99.Default\00.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>99.Default\00.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>99.Default\00.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="UploadBuffer.h">
+      <Filter>99.Default\00.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dUtil.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Directx12.h">
+      <Filter>00.Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>01.Engine\01.Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>01.Engine\02.Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>01.Engine\02.Object\00.Triangle</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>01.Engine\03.Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>01.Engine\00.Core</Filter>
+    </ClInclude>
+    <ClInclude Include="MainApp.h">
+      <Filter>00.Game\00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>01.Engine\05.Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>00.Game\01.Scene\99.TestScene</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTexture.h">
+      <Filter>01.Engine\04.Texture\00.DDSTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>01.Engine\04.Texture\00.DDSTexture\00.DDSLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>01.Engine\02.Object\01.Plane</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dUtil.cpp">
+      <Filter>99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Directx12.cpp">
+      <Filter>00.Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>01.Engine\01.Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>01.Engine\02.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>01.Engine\02.Object\00.Triangle</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>01.Engine\03.Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Core.cpp">
+      <Filter>01.Engine\00.Core</Filter>
+    </ClCompile>
+    <ClCompile Include="MainApp.cpp">
+      <Filter>00.Game\00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>01.Engine\05.Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>00.Game\01.Scene\99.TestScene</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTexture.cpp">
+      <Filter>01.Engine\04.Texture\00.DDSTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>01.Engine\04.Texture\00.DDSTexture\00.DDSLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>01.Engine\02.Object\01.Plane</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Directx12.ico">
+      <Filter>99.Default</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>99.Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Directx12.rc">
+      <Filter>99.Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
