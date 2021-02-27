@@ -4,11 +4,21 @@
 // Transforms and colors geometry.
 //***************************************************************************************
 
-cbuffer cbPerObject : register(b0)
+cbuffer cbPerObjectWorld : register(b0)
 {
-	float4x4 gWorldViewProj; 
+	float4x4 gWorld; 
 };
 
+
+cbuffer cbPerObjectView : register(b1)
+{
+	float4x4 gView;
+};
+
+cbuffer cbPerObjectProj : register(b2)
+{
+	float4x4 gProj;
+};
 
 Texture2D Texture : register(t0);
 SamplerState gsamLinear  : register(s0);
@@ -30,7 +40,7 @@ VertexOut VS(VertexIn vin)
 	VertexOut vout;
 	
 	// Transform to homogeneous clip space.
-	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorld);
 	
 	// Just pass vertex color into the pixel shader.
     vout.Color = vin.Color;
@@ -61,7 +71,7 @@ Out VS_Main(In vin)
 	Out vout;
 
 	// Transform to homogeneous clip space.
-	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorld), gView), gProj);
 
 	// Just pass vertex color into the pixel shader.
 	vout.UV = vin.UV;
@@ -71,5 +81,6 @@ Out VS_Main(In vin)
 
 float4 PS_Main(Out pin) : SV_Target
 {
+	//return float4(1.f, 1.f, 1.f, 1.f);
 	return Texture.Sample(gsamLinear, pin.UV);
 }

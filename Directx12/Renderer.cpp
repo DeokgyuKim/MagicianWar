@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "Shader.h"
 #include "DDSTexture.h"
+#include "Camera.h"
 
 Renderer* Renderer::m_pInstance = NULL;
 Renderer* Renderer::GetInstance()
@@ -26,6 +27,7 @@ void Renderer::InitRenderer(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCo
 	m_pCmdLst = pCmdLst;
 
 	BuildRootSignature();
+	BuildDescrpitorHeap();
 	BuildShader();
 	BuildTextures();
 }
@@ -36,6 +38,12 @@ void Renderer::Render(const float& fTimeDelta)
 
     ////////////////////////////Render////////////////////////////
 	m_pCmdLst->SetGraphicsRootSignature(m_ptrRootSignature.Get());
+
+
+	ID3D12DescriptorHeap* descriptorHeaps[] = { m_ptrDescriptorHeap.Get() };
+	m_pCmdLst->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+	m_pCamera->Render(0.f);
+
 	m_mapShaders[RENDER_TYPE::RENDER_COLOR]->PreRender(m_pCmdLst);
 
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_COLOR])
@@ -44,7 +52,7 @@ void Renderer::Render(const float& fTimeDelta)
 	}
 
 	m_mapShaders[RENDER_TYPE::RENDER_NOBLEND]->PreRender(m_pCmdLst);
-	m_pTexture->PreRender(m_pCmdLst);
+	m_pTexture->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
 	 
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_NOBLEND])
 	{
@@ -62,22 +70,32 @@ void Renderer::PushObject(RENDER_TYPE eType, Object* pObject)
 	m_lstObjects[eType].push_back(pObject);
 }
 
+void Renderer::CreateConstantBufferView(D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE handle = m_ptrDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	handle.ptr += ++m_iCountView * gnCbvSrvUavDescriptorIncrementSize;
+
+	m_pDevice->CreateConstantBufferView(&cbvDesc, handle);
+}
+
 void Renderer::BuildRootSignature()
 {
 	CD3DX12_DESCRIPTOR_RANGE srvTable;
 	srvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
+	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
 
 
 	slotRootParameter[0].InitAsConstantBufferView(0);
-	slotRootParameter[1].InitAsDescriptorTable(1, &srvTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[1].InitAsConstantBufferView(1);
+	slotRootParameter[2].InitAsConstantBufferView(2);
+	slotRootParameter[3].InitAsDescriptorTable(1, &srvTable, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	auto staticSamplers = GetStaticSamplers();
 
 	// A root signature is an array of root parameters.
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(2, slotRootParameter,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(4, slotRootParameter,
 		(UINT)staticSamplers.size(), staticSamplers.data(),
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -100,6 +118,16 @@ void Renderer::BuildRootSignature()
 		IID_PPV_ARGS(&m_ptrRootSignature)));
 
 	return;
+}
+
+void Renderer::BuildDescrpitorHeap()
+{
+	//Create SRV Heap
+	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+	srvHeapDesc.NumDescriptors = 4;///////////////////////
+	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	m_pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_ptrDescriptorHeap));
 }
 
 void Renderer::BuildShader()
@@ -127,7 +155,7 @@ void Renderer::BuildShader()
 
 void Renderer::BuildTextures()
 {
-	m_pTexture = new DDSTexture(m_pDevice, m_pCmdLst, "Stone01", L"../Resources/Stone01.dds");
+	m_pTexture = new DDSTexture(m_pDevice, m_pCmdLst, m_ptrDescriptorHeap.Get(), "Stone01", L"../Resources/Stone01.dds");
 }
 
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()

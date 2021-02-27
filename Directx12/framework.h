@@ -64,5 +64,12 @@ extern HWND        g_hWnd;
 #define WINCX 800
 #define WINCY 600
 
-enum OBJ_TYPE		{ OBJ_PLAYER, OBJ_END };
+enum OBJ_TYPE		{ OBJ_PLAYER, OBJ_CAMERA, OBJ_END };
 enum RENDER_TYPE	{ RENDER_COLOR, RENDER_NOBLEND, RENDER_END };
+
+
+#ifdef UNICODE
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#else
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif

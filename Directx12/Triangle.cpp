@@ -30,39 +30,6 @@ void Triangle::Initialize(ID3D12Device* device)
 
 int Triangle::Update(const float& fTimeDelta)
 {
-	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
-	{
-		m_xmfRotate.y -= 1.f;
-	}
-	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-	{
-		m_xmfRotate.y += 1.f;
-	}
-
-	if (GetAsyncKeyState('W') & 0x8000)
-	{
-		m_xmfCamPos.z += 1.f;
-	}
-	if (GetAsyncKeyState('S') & 0x8000)
-	{
-		m_xmfCamPos.z -= 1.f;
-	}
-	if (GetAsyncKeyState('A') & 0x8000)
-	{
-		m_xmfCamPos.x -= 1.f;
-	}
-	if (GetAsyncKeyState('D') & 0x8000)
-	{
-		m_xmfCamPos.x += 1.f;
-	}
-	if (GetAsyncKeyState('Z') & 0x8000)
-	{
-		m_xmfCamPos.y -= 1.f;
-	}
-	if (GetAsyncKeyState('X') & 0x8000)
-	{
-		m_xmfCamPos.y += 1.f;
-	}
 	return 0;
 }
 
