@@ -1,19 +1,15 @@
 #pragma once
-#include "framework.h"
 #include "Object.h"
 
-#define TerrainX 10
-#define TerrainZ 10
-
-class Renderer;
 class Buffer;
+class Camera;
 
-class Terrain :
+class Player :
     public Object
 {
 public:
-    Terrain(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer);
-    ~Terrain();
+    Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer);
+    ~Player();
 private:
     void    Initialize();
     void    Release();
@@ -24,15 +20,22 @@ public:
     virtual void LateUpdate(const float& fTimeDelta) override;
     virtual void Render(const float& fTimeDelta) override;
 
+public:
+    XMFLOAT3    GetPosition() { return m_xmfPosition; }
+    void        SetCamera(Camera* pCamera) { m_pCamera = pCamera; }
+
 protected:
     ID3D12Device*                       m_pDevice;
     ID3D12GraphicsCommandList*          m_pCmdLst;
     unique_ptr<UploadBuffer<ObjectCB>>	m_ObjectCB;
 
-    string                              m_strTextureName;
-    Buffer*                             m_pBuffer[TerrainZ][TerrainX];
+    Buffer*                             m_pBuffer;
 
+    XMFLOAT3                            m_xmfScale;
     XMFLOAT3							m_xmfRotate;
+    XMFLOAT3                            m_xmfPosition;
     XMFLOAT4X4							m_xmmWorld;
+
+    Camera*                             m_pCamera;
 };
 

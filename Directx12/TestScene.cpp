@@ -1,10 +1,9 @@
 #include "TestScene.h"
-#include "Triangle.h"
-#include "Plane.h"
 #include "Core.h"
 #include "Renderer.h"
 #include "Terrain.h"
 #include "Camera.h"
+#include "Player.h"
 
 TestScene::TestScene()
 {
@@ -14,6 +13,8 @@ TestScene::TestScene()
 void TestScene::Initialize()
 {
 	Object* pObj = NULL;
+	Player* pPlayer = NULL;
+	Camera* pCamera = NULL;
 
 	//Core::GetInstance()->CmdLstReset();
 	//pObj = new Triangle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst());
@@ -22,7 +23,19 @@ void TestScene::Initialize()
 	//
 	//m_pObjects[OBJ_PLAYER].push_back(pObj);
 	Core::GetInstance()->CmdLstReset();
+	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	pPlayer = dynamic_cast<Player*>(pObj);
+	//(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance()->GetHeap());
+	Core::GetInstance()->CmdLstExecute();
+	Core::GetInstance()->WaitForGpuComplete();
+	
+	m_pObjects[OBJ_PLAYER].push_back(pObj);
+
+	Core::GetInstance()->CmdLstReset();
 	pObj = new Camera(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	pCamera = dynamic_cast<Camera*>(pObj);
+	pPlayer->SetCamera(pCamera);
+	dynamic_cast<Camera*>(pObj)->SetPlayer(pPlayer);
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 	Renderer::GetInstance()->SetCamera(dynamic_cast<Camera*>(pObj));
@@ -36,4 +49,5 @@ void TestScene::Initialize()
 	Core::GetInstance()->WaitForGpuComplete();
 
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
+
 }

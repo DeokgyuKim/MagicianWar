@@ -49,9 +49,6 @@
     <Filter Include="01.Engine\06.Buffer">
       <UniqueIdentifier>{d9ed463c-0c01-4e19-b489-d1a63547aa70}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Engine\06.Buffer\00.Triangle">
-      <UniqueIdentifier>{dc81a5bb-4af8-4602-9d7a-859e71690ff7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Engine\06.Buffer\01.Plane">
       <UniqueIdentifier>{935bf96a-cf04-4f64-8188-a2e879343711}</UniqueIdentifier>
     </Filter>
@@ -60,6 +57,12 @@
     </Filter>
     <Filter Include="01.Engine\02.Object\01.Camera">
       <UniqueIdentifier>{64c3dd43-5d0f-4a48-b376-dd3b32eebd63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object\02.Player">
+      <UniqueIdentifier>{bd562d59-0208-4ef9-9a76-2d727fbd97ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\06.Buffer\00.Cube">
+      <UniqueIdentifier>{dc81a5bb-4af8-4602-9d7a-859e71690ff7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,9 +99,6 @@
     <ClInclude Include="Object.h">
       <Filter>01.Engine\02.Object</Filter>
     </ClInclude>
-    <ClInclude Include="Triangle.h">
-      <Filter>01.Engine\06.Buffer\00.Triangle</Filter>
-    </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>01.Engine\03.Shader</Filter>
     </ClInclude>
@@ -120,9 +120,6 @@
     <ClInclude Include="DDSTextureLoader.h">
       <Filter>01.Engine\04.Texture\00.DDSTexture\00.DDSLoader</Filter>
     </ClInclude>
-    <ClInclude Include="Plane.h">
-      <Filter>01.Engine\06.Buffer\01.Plane</Filter>
-    </ClInclude>
     <ClInclude Include="Buffer.h">
       <Filter>01.Engine\06.Buffer</Filter>
     </ClInclude>
@@ -131,6 +128,15 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>01.Engine\02.Object\01.Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>01.Engine\06.Buffer\01.Plane</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>01.Engine\02.Object\02.Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>01.Engine\06.Buffer\00.Cube</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -148,9 +154,6 @@
     </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>01.Engine\02.Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Triangle.cpp">
-      <Filter>01.Engine\06.Buffer\00.Triangle</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>01.Engine\03.Shader</Filter>
@@ -184,6 +187,12 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>01.Engine\02.Object\01.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>01.Engine\02.Object\02.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>01.Engine\06.Buffer\00.Cube</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

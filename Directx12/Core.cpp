@@ -305,8 +305,8 @@ HRESULT Core::SetViewportAndScissorrect()
     m_Viewport.TopLeftY = 0.f;
     m_Viewport.Width = WINCX;
     m_Viewport.Height = WINCY;
-    m_Viewport.MaxDepth = 0.f;
-    m_Viewport.MinDepth = 1.f;
+    m_Viewport.MaxDepth = 1.f;
+    m_Viewport.MinDepth = 0.f;
 
     m_ScissorRect.left = 0;
     m_ScissorRect.top = 0;

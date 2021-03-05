@@ -46,6 +46,6 @@ private:
 	int									m_iCountView = 0;
 
 	Camera*								m_pCamera;
-	DDSTexture* m_pTexture;
+	DDSTexture*							m_pTexture;
 };
 

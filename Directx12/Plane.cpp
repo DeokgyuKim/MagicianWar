@@ -17,10 +17,10 @@ HRESULT Plane::BuildGeometry(ID3D12Device* device)
 {
 	std::array<UvVertex, 4> vertices =
 	{
-		UvVertex({ XMFLOAT3(m_fX - 0.5f,	0.0f,	m_fZ + 0.5f), XMFLOAT2(0.f, 0.f) }),
-		UvVertex({ XMFLOAT3(m_fX + 0.5f,	0.0f,	m_fZ + 0.5f), XMFLOAT2(1.f, 0.f) }),
-		UvVertex({ XMFLOAT3(m_fX + 0.5f,	0.0f,	m_fZ - 0.5f), XMFLOAT2(1.f, 1.f) }),
-		UvVertex({ XMFLOAT3(m_fX - 0.5f,	0.0f,	m_fZ - 0.5f), XMFLOAT2(0.f, 1.f) }),
+		UvVertex({ XMFLOAT3(m_fX - 0.5f,	0.0f,	m_fZ + 0.5f), XMFLOAT2(0.f, 0.f), XMFLOAT3(0.f, 1.f, 0.f) }),
+		UvVertex({ XMFLOAT3(m_fX + 0.5f,	0.0f,	m_fZ + 0.5f), XMFLOAT2(1.f, 0.f), XMFLOAT3(0.f, 1.f, 0.f) }),
+		UvVertex({ XMFLOAT3(m_fX + 0.5f,	0.0f,	m_fZ - 0.5f), XMFLOAT2(1.f, 1.f), XMFLOAT3(0.f, 1.f, 0.f) }),
+		UvVertex({ XMFLOAT3(m_fX - 0.5f,	0.0f,	m_fZ - 0.5f), XMFLOAT2(0.f, 1.f), XMFLOAT3(0.f, 1.f, 0.f) }),
 	};
 
 	std::array<std::uint16_t, 6> indices =
@@ -33,7 +33,7 @@ HRESULT Plane::BuildGeometry(ID3D12Device* device)
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
 	m_BoxGeo = make_unique<MeshGeometry>();
-	m_BoxGeo->Name = "PlaneGeo";
+	m_BoxGeo->Name = "BufferGeo";
 
 	ThrowIfFailed(D3DCreateBlob(vbByteSize, &m_BoxGeo->VertexBufferCPU));
 	CopyMemory(m_BoxGeo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);

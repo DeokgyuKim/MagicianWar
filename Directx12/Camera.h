@@ -2,6 +2,8 @@
 #include "framework.h"
 #include "Object.h"
 
+class Player;
+
 class Camera :
     public Object
 {
@@ -13,6 +15,10 @@ public:
     virtual int Update(const float& fTimeDelta) override;
     virtual void LateUpdate(const float& fTimeDelta) override;
     virtual void Render(const float& fTimeDelta) override;
+
+    void        SetPlayer(Player* pPlayer) { m_pPlayer = pPlayer; }
+    CAMERA_MODE GetMode() { return m_eCamMode; }
+    float       GetRotY() { return m_fRotX; }
 
 private:
     void    Initialize();
@@ -36,9 +42,13 @@ private:
     XMFLOAT3                    m_xmfUpVec;
     XMFLOAT3                    m_xmfLookVec;
 
+    float                       m_fOffset;
+
     float                       m_fRotX, m_fRotY;
     POINT                       m_ptCur, m_ptOld;
     
-    bool                        m_bFree;
+    CAMERA_MODE                 m_eCamMode = CAMERA_MODE::CAMERA_NONE;
+
+    Player*                     m_pPlayer;
 };
 

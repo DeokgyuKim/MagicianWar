@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "Renderer.h"
+#include "Player.h"
 
 Camera::Camera(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer)
 {
@@ -8,6 +9,8 @@ Camera::Camera(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
 	m_pRenderer = pRenderer;
+
+	m_fOffset = 3.f;
 	Initialize();
 }
 
@@ -18,49 +21,67 @@ Camera::~Camera()
 int Camera::Update(const float& fTimeDelta)
 {
 	if (GetAsyncKeyState(VK_F1) & 0x0001)
-		m_bFree = !m_bFree;
+		m_eCamMode = CAMERA_MODE::CAMERA_NONE;
+	if (GetAsyncKeyState(VK_F2) & 0x0001)
+		m_eCamMode = CAMERA_MODE::CAMERA_FREE;
+	if (GetAsyncKeyState(VK_F3) & 0x0001)
+		m_eCamMode = CAMERA_MODE::CAMERA_THIRD;
 
-	if (!m_bFree)
-		return 0;
-	///Rotate
-	GetCursorPos(&m_ptCur);
-	//if ((m_ptCur.x - m_ptOld.x) == 0.f && (m_ptCur.y - m_ptOld.y) == 0.f)
-	//	return 0;
+	if (m_eCamMode == CAMERA_MODE::CAMERA_FREE || m_eCamMode == CAMERA_MODE::CAMERA_THIRD)
+	{
+		///Rotate
+		GetCursorPos(&m_ptCur);
+		//if ((m_ptCur.x - m_ptOld.x) == 0.f && (m_ptCur.y - m_ptOld.y) == 0.f)
+		//	return 0;
 
-	m_fRotX += (m_ptCur.x - m_ptOld.x) * 0.2f;
-	m_fRotY += (m_ptCur.y - m_ptOld.y) * 0.2f;
+		m_fRotX += (m_ptCur.x - m_ptOld.x) * 0.2f;
+		m_fRotY += (m_ptCur.y - m_ptOld.y) * 0.2f;
 
-	if (m_fRotX >= 180.f)
-		m_fRotX -= 360.f;
-	if (m_fRotX <= -180.f)
-		m_fRotX += 360.f;
+		if (m_fRotX >= 180.f)
+			m_fRotX -= 360.f;
+		if (m_fRotX <= -180.f)
+			m_fRotX += 360.f;
 
-	m_fRotY = min(m_fRotY, 85.f);
-	m_fRotY = max(m_fRotY, -85.f);
+		m_fRotY = min(m_fRotY, 85.f);
+		m_fRotY = max(m_fRotY, -85.f);
 
 
-	XMMATRIX matRotX = XMMatrixRotationY(XMConvertToRadians(m_fRotX));
-	XMMATRIX matRotY = XMMatrixRotationX(XMConvertToRadians(m_fRotY));
-	XMMATRIX matRot = matRotY * matRotX;
+		XMMATRIX matRotX = XMMatrixRotationY(XMConvertToRadians(m_fRotX));
+		XMMATRIX matRotY = XMMatrixRotationX(XMConvertToRadians(m_fRotY));
+		XMMATRIX matRot = matRotY * matRotX;
 
-	XMFLOAT3 look = XMFLOAT3(0.f, 0.f, 1.f);
-	XMFLOAT3 right = XMFLOAT3(1.f, 0.f, 0.f);
-	XMFLOAT3 up = XMFLOAT3(0.f, 1.f, 0.f);
-	XMStoreFloat3(&m_xmfLookVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&look), matRot)));
-	XMStoreFloat3(&m_xmfRightVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&right), matRot)));
-	XMStoreFloat3(&m_xmfUpVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&up), matRot)));
-	
-	SetCursorPos(WINCX, WINCY);
+		XMFLOAT3 look = XMFLOAT3(0.f, 0.f, 1.f);
+		XMFLOAT3 right = XMFLOAT3(1.f, 0.f, 0.f);
+		XMFLOAT3 up = XMFLOAT3(0.f, 1.f, 0.f);
+		XMStoreFloat3(&m_xmfLookVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&look), matRot)));
+		XMStoreFloat3(&m_xmfRightVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&right), matRot)));
+		XMStoreFloat3(&m_xmfUpVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&up), matRot)));
 
-	///Movement
-	if (GetAsyncKeyState('W') & 0x8000)
-		XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&m_xmfLookVec) * 0.1f);
-	if (GetAsyncKeyState('S') & 0x8000)
-		XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&m_xmfLookVec) * 0.1f);
-	if (GetAsyncKeyState('A') & 0x8000)
-		XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&m_xmfRightVec) * 0.1f);
-	if (GetAsyncKeyState('D') & 0x8000)
-		XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&m_xmfRightVec) * 0.1f);
+		SetCursorPos(WINCX, WINCY);
+
+		if (m_eCamMode == CAMERA_MODE::CAMERA_THIRD)
+		{
+			XMFLOAT3 xmfPlayerPos = m_pPlayer->GetPosition();
+			XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfLookVec) * m_fOffset);
+		}
+		else
+		{
+			///Movement
+			if (GetAsyncKeyState('W') & 0x8000)
+				XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&m_xmfLookVec) * 0.1f);
+			if (GetAsyncKeyState('S') & 0x8000)
+				XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&m_xmfLookVec) * 0.1f);
+			if (GetAsyncKeyState('A') & 0x8000)
+				XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&m_xmfRightVec) * 0.1f);
+			if (GetAsyncKeyState('D') & 0x8000)
+				XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&m_xmfRightVec) * 0.1f);
+		}
+	}
+	else if (m_eCamMode == CAMERA_MODE::CAMERA_THIRD)
+	{
+		
+	}
+
     return 0;
 }
 
@@ -101,7 +122,6 @@ void Camera::Initialize()
 {
 	SetCursorPos(WINCX, WINCY);
 	m_ptOld.x = WINCX; m_ptOld.y = WINCY;
-	m_bFree = false;
 
 	m_xmfPosition = XMFLOAT3(0.f, 3.f, 0.f);
 

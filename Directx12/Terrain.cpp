@@ -62,14 +62,6 @@ int Terrain::Update(const float& fTimeDelta)
 
 void Terrain::LateUpdate(const float& fTimeDelta)
 {
-	XMMATRIX proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(90.f), 800.f / 600.f, 1.0f, 1000.0f);
-
-	XMVECTOR pos = XMVectorSet(0.f, 3.f, -3.f, 1.0f);
-	XMVECTOR target = XMVectorSet(m_xmfCamPos.x, m_xmfCamPos.y, m_xmfCamPos.z, 1.0f);//XMVectorZero(); 
-	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
-
 	XMMATRIX world = XMLoadFloat4x4(&m_xmmWorld);// *view* proj;
 	ObjectCB	ObjCB;
 	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(world));
