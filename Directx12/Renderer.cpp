@@ -52,10 +52,11 @@ void Renderer::Render(const float& fTimeDelta)
 	}
 
 	m_mapShaders[RENDER_TYPE::RENDER_NOBLEND]->PreRender(m_pCmdLst);
-	m_pTexture->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
 	 
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_NOBLEND])
 	{
+		if (pObject->GetTextureName() != "")
+			SetTexture(pObject->GetTextureName());
 		pObject->Render(fTimeDelta);
 	}
     //////////////////////////////////////////////////////////////
@@ -76,6 +77,20 @@ void Renderer::CreateConstantBufferView(D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc)
 	handle.ptr += ++m_iCountView * gnCbvSrvUavDescriptorIncrementSize;
 
 	m_pDevice->CreateConstantBufferView(&cbvDesc, handle);
+}
+
+HRESULT Renderer::PushTexture(string textureName, DDSTexture* pTexture)
+{
+	auto iter = m_mapTextures.find(textureName);
+	if (iter != m_mapTextures.end())
+	{
+		cout << "Error : Duplicate texture name." << endl;
+		return E_FAIL;
+	}
+
+	m_mapTextures[textureName] = pTexture;
+
+	return S_OK;
 }
 
 void Renderer::BuildRootSignature()
@@ -157,7 +172,10 @@ void Renderer::BuildShader()
 
 void Renderer::BuildTextures()
 {
-	m_pTexture = new DDSTexture(m_pDevice, m_pCmdLst, m_ptrDescriptorHeap.Get(), "Stone01", L"../Resources/Stone01.dds");
+	DDSTexture* pTexture = NULL;
+	pTexture = new DDSTexture(m_pDevice, m_pCmdLst, m_ptrDescriptorHeap.Get(), "Stone01", L"../Resources/Stone01.dds");
+
+	m_mapTextures["Stone01"] = pTexture;
 }
 
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
@@ -215,5 +233,14 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 		pointWrap, pointClamp,
 		linearWrap, linearClamp,
 		anisotropicWrap, anisotropicClamp };
+}
+
+HRESULT Renderer::SetTexture(string name)
+{
+	auto iter = m_mapTextures.find(name);
+	if (iter == m_mapTextures.end())
+		return E_FAIL;
+
+	(*iter).second->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
 }
 

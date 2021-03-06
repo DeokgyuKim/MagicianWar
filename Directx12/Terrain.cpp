@@ -10,7 +10,6 @@ Terrain::Terrain(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Render
     m_pRenderer = pRenderer;
 	Initialize();
 	
-	XMStoreFloat4x4(&m_xmmWorld, XMMatrixIdentity());
 }
 
 Terrain::~Terrain()
@@ -23,6 +22,9 @@ void Terrain::Initialize()
 		for (int j = 0; j < TerrainX; ++j)
 			m_pBuffer[i][j] = new Plane(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), j, i);
 	BuildConstantBuffer();
+
+	XMStoreFloat4x4(&m_xmmWorld, XMMatrixIdentity());
+	m_strTextureName = "Stone01";
 }
 
 void Terrain::Release()

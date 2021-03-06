@@ -64,6 +64,12 @@
     <Filter Include="01.Engine\06.Buffer\00.Cube">
       <UniqueIdentifier>{dc81a5bb-4af8-4602-9d7a-859e71690ff7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\07.Component">
+      <UniqueIdentifier>{40fdb1a1-aa4f-44fb-a3f2-8e679a2222bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\07.Component\00.Transform">
+      <UniqueIdentifier>{0b82e14e-a905-4cc9-8296-aca1a274a07d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -138,6 +144,12 @@
     <ClInclude Include="Cube.h">
       <Filter>01.Engine\06.Buffer\00.Cube</Filter>
     </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>01.Engine\07.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>01.Engine\07.Component\00.Transform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -193,6 +205,12 @@
     </ClCompile>
     <ClCompile Include="Cube.cpp">
       <Filter>01.Engine\06.Buffer\00.Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>01.Engine\07.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>01.Engine\07.Component\00.Transform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

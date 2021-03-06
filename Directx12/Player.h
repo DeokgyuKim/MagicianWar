@@ -21,7 +21,7 @@ public:
     virtual void Render(const float& fTimeDelta) override;
 
 public:
-    XMFLOAT3    GetPosition() { return m_xmfPosition; }
+    XMFLOAT3    GetPosition();
     void        SetCamera(Camera* pCamera) { m_pCamera = pCamera; }
 
 protected:
@@ -30,12 +30,6 @@ protected:
     unique_ptr<UploadBuffer<ObjectCB>>	m_ObjectCB;
 
     Buffer*                             m_pBuffer;
-
-    XMFLOAT3                            m_xmfScale;
-    XMFLOAT3							m_xmfRotate;
-    XMFLOAT3                            m_xmfPosition;
-    XMFLOAT4X4							m_xmmWorld;
-
     Camera*                             m_pCamera;
 };
 

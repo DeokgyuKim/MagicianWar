@@ -4,6 +4,7 @@
 #include "Buffer.h"
 #include "Cube.h"
 #include "Camera.h"
+#include "Transform.h"
 
 Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer)
 {
@@ -24,11 +25,8 @@ void Player::Initialize()
 	m_pBuffer = new Cube(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap());
 	BuildConstantBuffer();
 
-	m_xmfScale = XMFLOAT3(1.f, 1.f, 1.f);
-	m_xmfRotate = XMFLOAT3(0.f, 0.f, 0.f);
-	m_xmfPosition = XMFLOAT3(0.f, 0.f, 0.f);
-
-	XMStoreFloat4x4(&m_xmmWorld, XMMatrixIdentity());
+	Component* pComponent = new Transform(XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	m_mapComponent["Transform"] = pComponent;
 }
 
 void Player::Release()
@@ -59,22 +57,15 @@ HRESULT Player::BuildConstantBuffer()
 
 int Player::Update(const float& fTimeDelta)
 {
+	Object::Update(fTimeDelta);;
+
 	if (m_pCamera->GetMode() == CAMERA_MODE::CAMERA_THIRD)
 	{
-		XMFLOAT3 look, right;
-		memcpy(&look, &m_xmmWorld._31, sizeof(XMFLOAT3));
-		memcpy(&right, &m_xmmWorld._11, sizeof(XMFLOAT3));
+		XMFLOAT3 xmfRotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
+		xmfRotate.y = m_pCamera->GetRotY();
+		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotate);
 
-		m_xmfRotate.y = m_pCamera->GetRotY();
-
-		if (GetAsyncKeyState('W') & 0x8000)
-			XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&look) * 0.1f);
-		if (GetAsyncKeyState('S') & 0x8000)
-			XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&look) * 0.1f);
-		if (GetAsyncKeyState('A') & 0x8000)
-			XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&right) * 0.1f);
-		if (GetAsyncKeyState('D') & 0x8000)
-			XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&right) * 0.1f);
+		dynamic_cast<Transform*>(m_mapComponent["Transform"])->KeyInput();
 	}
 
 
@@ -83,32 +74,27 @@ int Player::Update(const float& fTimeDelta)
 
 void Player::LateUpdate(const float& fTimeDelta)
 {
-	XMMATRIX scale, rotateX, rotateY, rotateZ, transform;
-
-	scale = XMMatrixScalingFromVector(XMLoadFloat3(&m_xmfScale));
-	
-	rotateX = XMMatrixRotationX(XMConvertToRadians(m_xmfRotate.x));
-	rotateY = XMMatrixRotationY(XMConvertToRadians(m_xmfRotate.y));
-	rotateZ = XMMatrixRotationZ(XMConvertToRadians(m_xmfRotate.z));
-
-	transform = XMMatrixTranslationFromVector(XMLoadFloat3(&m_xmfPosition));
-
-	XMMATRIX world = scale * rotateX * rotateY * rotateZ * transform;// *view* proj;
-
-	XMStoreFloat4x4(&m_xmmWorld, world);
+	Object::LateUpdate(fTimeDelta);
 
 	ObjectCB	ObjCB;
-	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(world));
-
+	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
 
 	m_ObjectCB->CopyData(0, ObjCB);
 
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_COLOR, this);
+
 }
 
 void Player::Render(const float& fTimeDelta)
 {
+	Object::Render(fTimeDelta);;
+
 	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());
 
 	m_pBuffer->Render(fTimeDelta);
+}
+
+XMFLOAT3 Player::GetPosition()
+{
+	return dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
 }

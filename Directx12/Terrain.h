@@ -29,7 +29,6 @@ protected:
     ID3D12GraphicsCommandList*          m_pCmdLst;
     unique_ptr<UploadBuffer<ObjectCB>>	m_ObjectCB;
 
-    string                              m_strTextureName;
     Buffer*                             m_pBuffer[TerrainZ][TerrainX];
 
     XMFLOAT3							m_xmfRotate;
