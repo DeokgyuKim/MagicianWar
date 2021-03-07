@@ -4,6 +4,8 @@
 #include "Shader.h"
 #include "DDSTexture.h"
 #include "Camera.h"
+#include "TextureMgr.h"
+
 
 Renderer* Renderer::m_pInstance = NULL;
 Renderer* Renderer::GetInstance()
@@ -29,7 +31,9 @@ void Renderer::InitRenderer(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCo
 	BuildRootSignature();
 	BuildDescrpitorHeap();
 	BuildShader();
-	BuildTextures();
+	m_pTextureMgr = TextureMgr::GetInstance();
+	m_pTextureMgr->BuildTextures(m_pDevice, m_pCmdLst, m_ptrDescriptorHeap.Get());
+	//BuildTextures();
 }
 
 void Renderer::Render(const float& fTimeDelta)
@@ -57,7 +61,7 @@ void Renderer::Render(const float& fTimeDelta)
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_NOBLEND])
 	{
 		if (pObject->GetTextureName() != "")
-			SetTexture(pObject->GetTextureName());
+			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
 		pObject->Render(fTimeDelta);
 	}
     //////////////////////////////////////////////////////////////
@@ -78,20 +82,6 @@ void Renderer::CreateConstantBufferView(D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc)
 	handle.ptr += ++m_iCountView * gnCbvSrvUavDescriptorIncrementSize;
 
 	m_pDevice->CreateConstantBufferView(&cbvDesc, handle);
-}
-
-HRESULT Renderer::PushTexture(string textureName, DDSTexture* pTexture)
-{
-	auto iter = m_mapTextures.find(textureName);
-	if (iter != m_mapTextures.end())
-	{
-		cout << "Error : Duplicate texture name." << endl;
-		return E_FAIL;
-	}
-
-	m_mapTextures[textureName] = pTexture;
-
-	return S_OK;
 }
 
 void Renderer::BuildRootSignature()
@@ -170,15 +160,6 @@ void Renderer::BuildShader()
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get());
 	m_mapShaders[RENDER_TYPE::RENDER_NOBLEND] = pShader;
 }
-
-void Renderer::BuildTextures()
-{
-	DDSTexture* pTexture = NULL;
-	pTexture = new DDSTexture(m_pDevice, m_pCmdLst, m_ptrDescriptorHeap.Get(), "Stone01", L"../Resources/Stone01.dds");
-
-	m_mapTextures["Stone01"] = pTexture;
-}
-
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 {
 	// Applications usually only need a handful of samplers.  So just define them all up front
@@ -235,13 +216,3 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 		linearWrap, linearClamp,
 		anisotropicWrap, anisotropicClamp };
 }
-
-HRESULT Renderer::SetTexture(string name)
-{
-	auto iter = m_mapTextures.find(name);
-	if (iter == m_mapTextures.end())
-		return E_FAIL;
-
-	(*iter).second->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
-}
-

@@ -6,6 +6,7 @@ class Shader;
 class Object;
 class DDSTexture;
 class Camera;
+class TextureMgr;
 
 class Renderer
 {
@@ -27,15 +28,11 @@ public:
 	ID3D12DescriptorHeap*	GetHeap() { return m_ptrDescriptorHeap.Get(); }
 	void					SetCamera(Camera* camera) { m_pCamera = camera; }
 	void					CreateConstantBufferView(D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc);
-	HRESULT					PushTexture(string textureName, DDSTexture* pTexture);
 private:
 	void	BuildRootSignature();
 	void	BuildDescrpitorHeap();
 	void	BuildShader();
-	void	BuildTextures();
 	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
-
-	HRESULT	SetTexture(string name);
 private:
 	Core*								m_pCore = NULL;
 	ID3D12Device*						m_pDevice = NULL;
@@ -45,10 +42,11 @@ private:
 	ComPtr<ID3D12DescriptorHeap>		m_ptrDescriptorHeap;
 
 	list<Object*>						m_lstObjects[RENDER_TYPE::RENDER_END];
-	unordered_map<string, DDSTexture*>	m_mapTextures;
 
 	int									m_iCountView = 0;
 
 	Camera*								m_pCamera;
+
+	TextureMgr*							m_pTextureMgr;
 };
 
