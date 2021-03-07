@@ -1,6 +1,6 @@
 #include "Terrain.h"
 #include "Renderer.h"
-#include "Buffer.h"
+#include "Geometry.h"
 #include "Plane.h"
 
 Terrain::Terrain(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer)

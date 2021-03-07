@@ -6,7 +6,7 @@
 #define TerrainZ 10
 
 class Renderer;
-class Buffer;
+class Geometry;
 
 class Terrain :
     public Object
@@ -29,7 +29,7 @@ protected:
     ID3D12GraphicsCommandList*          m_pCmdLst;
     unique_ptr<UploadBuffer<ObjectCB>>	m_ObjectCB;
 
-    Buffer*                             m_pBuffer[TerrainZ][TerrainX];
+    Geometry*                             m_pBuffer[TerrainZ][TerrainX];
 
     XMFLOAT3							m_xmfRotate;
     XMFLOAT4X4							m_xmmWorld;

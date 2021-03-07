@@ -51,6 +51,7 @@ void Renderer::Render(const float& fTimeDelta)
 		pObject->Render(fTimeDelta);
 	}
 
+	//Set Pipeline
 	m_mapShaders[RENDER_TYPE::RENDER_NOBLEND]->PreRender(m_pCmdLst);
 	 
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_NOBLEND])

@@ -3,7 +3,7 @@
 #include "DDSTexture.h"
 
 Plane::Plane(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap, int x, int z)
-	:Buffer(device, cmdLst, heap)
+	:Geometry(device, cmdLst, heap)
 {
 	m_fX = (float)x; m_fZ = (float)z;
 	Initialize(device, heap);

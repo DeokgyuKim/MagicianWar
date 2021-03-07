@@ -1,7 +1,7 @@
 #include "Player.h"
 
 #include "Renderer.h"
-#include "Buffer.h"
+#include "Geometry.h"
 #include "Cube.h"
 #include "Camera.h"
 #include "Transform.h"
@@ -22,18 +22,16 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	m_pBuffer = new Cube(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap());
 	BuildConstantBuffer();
 
 	Component* pComponent = new Transform(XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
+	pComponent = new Cube(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap());
+	m_mapComponent["Mesh"] = pComponent;
 }
 
 void Player::Release()
 {
-	if (m_pBuffer != NULL)
-		delete m_pBuffer;
-	m_pBuffer = NULL;
 }
 
 HRESULT Player::BuildConstantBuffer()
@@ -87,11 +85,11 @@ void Player::LateUpdate(const float& fTimeDelta)
 
 void Player::Render(const float& fTimeDelta)
 {
-	Object::Render(fTimeDelta);;
 
 	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());
 
-	m_pBuffer->Render(fTimeDelta);
+	Object::Render(fTimeDelta);
+	//m_pBuffer->Render(fTimeDelta);
 }
 
 XMFLOAT3 Player::GetPosition()

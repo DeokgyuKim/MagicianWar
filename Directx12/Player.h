@@ -1,7 +1,7 @@
 #pragma once
 #include "Object.h"
 
-class Buffer;
+class Geometry;
 class Camera;
 
 class Player :
@@ -29,7 +29,6 @@ protected:
     ID3D12GraphicsCommandList*          m_pCmdLst;
     unique_ptr<UploadBuffer<ObjectCB>>	m_ObjectCB;
 
-    Buffer*                             m_pBuffer;
     Camera*                             m_pCamera;
 };
 

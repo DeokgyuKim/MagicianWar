@@ -18,3 +18,10 @@ struct ObjectCB
 {
 	XMFLOAT4X4 World = MathHelper::Identity4x4();
 };
+
+struct MeshInfo
+{
+	int VtxCnt;
+	int IdxCnt;
+	//버텍스 정보, 인덱스 정보
+};

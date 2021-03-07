@@ -8,7 +8,7 @@ class Object
 {
 public:
 	Object() {}
-	virtual ~Object() {}
+	virtual ~Object();
 public:
 	virtual int		Update(const float& fTimeDelta);
 	virtual void	LateUpdate(const float& fTimeDelta);

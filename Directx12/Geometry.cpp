@@ -1,22 +1,22 @@
-#include "Buffer.h"
+#include "Geometry.h"
 #include "Renderer.h"
 #include "DDSTexture.h"
 
-Buffer::Buffer(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap)
+Geometry::Geometry(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap)
 {
 	m_CmdLst = cmdLst;
 }
 
-Buffer::~Buffer()
+Geometry::~Geometry()
 {
 }
 
-void Buffer::Initialize(ID3D12Device* device, ID3D12DescriptorHeap* heap)
+void Geometry::Initialize(ID3D12Device* device, ID3D12DescriptorHeap* heap)
 {
 	BuildGeometry(device);
 }
 
-void Buffer::Render(const float& fTimeDelta)
+void Geometry::Render(const float& fTimeDelta)
 {
 	D3D12_VERTEX_BUFFER_VIEW vbv = m_BoxGeo->VertexBufferView();
 	m_CmdLst->IASetVertexBuffers(0, 1, &vbv);
