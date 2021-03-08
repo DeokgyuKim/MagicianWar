@@ -5,9 +5,12 @@ TextureMgr* TextureMgr::m_pInstance = NULL;
 void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap)
 {
 	DDSTexture* pTexture = NULL;
-	pTexture = new DDSTexture(device, cmdLst, heap, "Stone01", L"../Resources/Stone01.dds");
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "Stone01", L"../Resources/Stone01.dds");
 	m_mapTextures["Stone01"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Tree02", L"../Resources/Tree02.dds");
+	m_mapTextures["Tree02"] = pTexture;
 }
 
 DDSTexture* TextureMgr::GetTexture(string textureName)

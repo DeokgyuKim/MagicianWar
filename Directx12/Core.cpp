@@ -1,6 +1,8 @@
 #include "Core.h"
 #include "Renderer.h"
 
+#include "RenderTarget.h"
+
 Core* Core::m_pInstance = NULL;
 
 Core* Core::GetInstance()
@@ -70,6 +72,39 @@ void Core::Render_End()
     d3dResourceBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
     d3dResourceBarrier.Transition.pResource = m_ptrSwapChainBackBuffers[m_iSwapChainBufferIndex].Get();
     d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+    d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    m_ptrCmdLst->ResourceBarrier(1, &d3dResourceBarrier);
+    
+    m_ptrCmdLst->Close();
+    ID3D12CommandList* ppd3dCommandLists[] = { m_ptrCmdLst.Get() };
+    m_ptrCmdQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+    
+    m_ptrDxgiSwapChain->Present(0, 0);
+
+    WaitForGpuComplete();
+    MoveToNextFrame();
+}
+
+void Core::Render_EndTest(RenderTarget* pRt)
+{
+    D3D12_RESOURCE_BARRIER d3dResourceBarrier;
+    d3dResourceBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    d3dResourceBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+    d3dResourceBarrier.Transition.pResource = m_ptrSwapChainBackBuffers[m_iSwapChainBufferIndex].Get();
+    d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
+    d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    m_ptrCmdLst->ResourceBarrier(1, &d3dResourceBarrier);
+
+    pRt->ResourceBarrier(m_ptrCmdLst.Get(), D3D12_RESOURCE_STATE_COPY_SOURCE);
+
+    m_ptrCmdLst->CopyResource(m_ptrSwapChainBackBuffers[m_iSwapChainBufferIndex].Get(), pRt->GetResource());
+
+    d3dResourceBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    d3dResourceBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+    d3dResourceBarrier.Transition.pResource = m_ptrSwapChainBackBuffers[m_iSwapChainBufferIndex].Get();
+    d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
     d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
     d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
     m_ptrCmdLst->ResourceBarrier(1, &d3dResourceBarrier);
@@ -215,7 +250,7 @@ HRESULT Core::CreateSwapchain()
 HRESULT Core::CreateDescriptorHeap()
 {
     D3D12_DESCRIPTOR_HEAP_DESC rtvDesc = {};
-    rtvDesc.NumDescriptors = 2;
+    rtvDesc.NumDescriptors = 4;
     rtvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
     rtvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
     rtvDesc.NodeMask = 0;
@@ -352,4 +387,20 @@ void Core::WaitForGpuComplete()
         hResult = m_ptrFence->SetEventOnCompletion(nFenceValue, m_hFenceEvent);
         ::WaitForSingleObject(m_hFenceEvent, INFINITE);
     }
+}
+
+void Core::SetRenderTarget(const int& numRenderTarget, D3D12_CPU_DESCRIPTOR_HANDLE RtStartHandle)
+{
+    m_ptrCmdLst->OMSetRenderTargets(numRenderTarget, &RtStartHandle, TRUE, &m_DsvCPUHandles);
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE Core::CreateRenderTargetView(ID3D12Resource* resource, D3D12_RENDER_TARGET_VIEW_DESC rtvDesc)
+{
+    D3D12_CPU_DESCRIPTOR_HANDLE rtvCpuDescriptorHwnd = m_ptrRTVHeap->GetCPUDescriptorHandleForHeapStart();
+    D3D12_CPU_DESCRIPTOR_HANDLE returnhandle = m_ptrRTVHeap->GetCPUDescriptorHandleForHeapStart();
+    returnhandle.ptr += m_iRtvCnt * gnRtvDescriptorIncrementSize;
+    rtvCpuDescriptorHwnd.ptr += m_iRtvCnt++ * gnRtvDescriptorIncrementSize;
+
+    m_ptrDevice->CreateRenderTargetView(resource, &rtvDesc, rtvCpuDescriptorHwnd);
+    return returnhandle;
 }

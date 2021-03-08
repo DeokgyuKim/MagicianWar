@@ -5,7 +5,8 @@
 #include "DDSTexture.h"
 #include "Camera.h"
 #include "TextureMgr.h"
-
+#include "RenderTarget.h"
+#include "RenderTargetMgr.h"
 
 Renderer* Renderer::m_pInstance = NULL;
 Renderer* Renderer::GetInstance()
@@ -30,6 +31,8 @@ void Renderer::InitRenderer(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCo
 
 	BuildRootSignature();
 	BuildDescrpitorHeap();
+	m_pRTMgr = RenderTargetMgr::GetInstance();
+	m_pRTMgr->BuildRenderTarget(m_pDevice, this);
 	BuildShader();
 	m_pTextureMgr = TextureMgr::GetInstance();
 	m_pTextureMgr->BuildTextures(m_pDevice, m_pCmdLst, m_ptrDescriptorHeap.Get());
@@ -39,6 +42,9 @@ void Renderer::InitRenderer(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCo
 void Renderer::Render(const float& fTimeDelta)
 {
 	m_pCore->Render_Begin();
+
+	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Deffered");
+	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Deffered");
 
     ////////////////////////////Render////////////////////////////
 	m_pCmdLst->SetGraphicsRootSignature(m_ptrRootSignature.Get());
@@ -66,9 +72,12 @@ void Renderer::Render(const float& fTimeDelta)
 	}
     //////////////////////////////////////////////////////////////
 
-	m_pCore->Render_End();
+	m_pCore->Render_EndTest(m_pRTMgr->GetRenderTarget("Normal"));
+
+	//m_pCore->Render_End();
 	for(int i = 0; i < RENDER_TYPE::RENDER_END; ++i)
 		m_lstObjects[i].clear();
+
 }
 
 void Renderer::PushObject(RENDER_TYPE eType, Object* pObject)
@@ -79,9 +88,31 @@ void Renderer::PushObject(RENDER_TYPE eType, Object* pObject)
 void Renderer::CreateConstantBufferView(D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE handle = m_ptrDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-	handle.ptr += ++m_iCountView * gnCbvSrvUavDescriptorIncrementSize;
+	handle.ptr += m_iCountView++ * gnCbvSrvUavDescriptorIncrementSize;
 
 	m_pDevice->CreateConstantBufferView(&cbvDesc, handle);
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE Renderer::CreateShaderResourceView(ID3D12Resource* resource, D3D12_SHADER_RESOURCE_VIEW_DESC viewDesc)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE handle = m_ptrDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE returnhandle = m_ptrDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	returnhandle.ptr += m_iCountView * gnCbvSrvUavDescriptorIncrementSize;
+	handle.ptr += m_iCountView++ * gnCbvSrvUavDescriptorIncrementSize;
+
+	m_pDevice->CreateShaderResourceView(resource, &viewDesc, handle);
+	return returnhandle;
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE Renderer::CreateUnorderedAccessView(ID3D12Resource* resource, D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE handle = m_ptrDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE returnhandle = m_ptrDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	returnhandle.ptr += m_iCountView * gnCbvSrvUavDescriptorIncrementSize;
+	handle.ptr += m_iCountView++ * gnCbvSrvUavDescriptorIncrementSize;
+
+	m_pDevice->CreateUnorderedAccessView(resource, nullptr, &uavDesc, handle);
+	return returnhandle;
 }
 
 void Renderer::BuildRootSignature()
@@ -130,7 +161,7 @@ void Renderer::BuildDescrpitorHeap()
 {
 	//Create SRV Heap
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 5;///////////////////////
+	srvHeapDesc.NumDescriptors = 10;///////////////////////
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	m_pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_ptrDescriptorHeap));

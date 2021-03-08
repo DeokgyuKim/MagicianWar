@@ -7,6 +7,8 @@ class Object;
 class DDSTexture;
 class Camera;
 class TextureMgr;
+class RenderTarget;
+class RenderTargetMgr;
 
 class Renderer
 {
@@ -25,9 +27,11 @@ public:
 public:
 	void	PushObject(RENDER_TYPE eType, Object* pObject);
 public:
-	ID3D12DescriptorHeap*	GetHeap() { return m_ptrDescriptorHeap.Get(); }
-	void					SetCamera(Camera* camera) { m_pCamera = camera; }
-	void					CreateConstantBufferView(D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc);
+	ID3D12DescriptorHeap*		GetHeap() { return m_ptrDescriptorHeap.Get(); }
+	void						SetCamera(Camera* camera) { m_pCamera = camera; }
+	void						CreateConstantBufferView(D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc);
+	D3D12_CPU_DESCRIPTOR_HANDLE	CreateShaderResourceView(ID3D12Resource* resource, D3D12_SHADER_RESOURCE_VIEW_DESC viewDesc);
+	D3D12_CPU_DESCRIPTOR_HANDLE	CreateUnorderedAccessView(ID3D12Resource* resource, D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc);
 private:
 	void	BuildRootSignature();
 	void	BuildDescrpitorHeap();
@@ -48,5 +52,6 @@ private:
 	Camera*								m_pCamera;
 
 	TextureMgr*							m_pTextureMgr;
+	RenderTargetMgr*					m_pRTMgr;
 };
 

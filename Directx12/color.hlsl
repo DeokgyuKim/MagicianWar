@@ -42,6 +42,12 @@ struct VertexOut
 	float4 Normal : NORMAL;
 };
 
+struct PSOut
+{
+	float4 Albedo : SV_TARGET0;
+	float4 Normal : SV_TARGET1;
+};
+
 VertexOut VS(VertexIn vin)
 {
 	VertexOut vout;
@@ -56,11 +62,17 @@ VertexOut VS(VertexIn vin)
     return vout;
 }
 
-float4 PS(VertexOut pin) : SV_Target
+PSOut PS(VertexOut pin)
 {
+	PSOut vout;
+
 	float4 LightDir = float4(normalize(DirectionalLight), 0.f);
 	float value = dot(pin.Normal, -LightDir);
-	return pin.Color * value;
+
+	vout.Albedo = pin.Color * value;
+	vout.Normal = pin.Normal * 0.5f + 0.5f;
+
+	return vout;
 }
 
 
@@ -92,10 +104,15 @@ Out VS_Main(In vin)
 	return vout;
 }
 
-float4 PS_Main(Out pin) : SV_Target
+PSOut PS_Main(Out pin)
 {
-	//return float4(1.f, 1.f, 1.f, 1.f);
+	PSOut vout;
+
 	float4 LightDir = float4(normalize(DirectionalLight), 0.f);
 	float value = dot(pin.Normal, -LightDir);
-	return Texture.Sample(gsamLinear, pin.UV) * value;
+
+	vout.Albedo = Texture.Sample(gsamLinear, pin.UV) * value;
+	vout.Normal = pin.Normal * 0.5f + 0.5f;
+
+	return vout;
 }

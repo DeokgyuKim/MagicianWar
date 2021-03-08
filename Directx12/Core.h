@@ -1,6 +1,7 @@
 #pragma once
 #include "framework.h"
 
+class RenderTarget;
 class Core
 {
 private:
@@ -16,6 +17,7 @@ public:
 	HRESULT InitDevice();
 	void	Render_Begin();
 	void	Render_End();
+	void	Render_EndTest(RenderTarget* pRt);
 private:
 	HRESULT CreateDevice();
 	HRESULT CreateFence();
@@ -31,6 +33,8 @@ public:
 	void	CmdLstExecute();
 	void	MoveToNextFrame();
 	void	WaitForGpuComplete();
+	void	SetRenderTarget(const int& numRenderTarget, D3D12_CPU_DESCRIPTOR_HANDLE RtStartHandle);
+	D3D12_CPU_DESCRIPTOR_HANDLE CreateRenderTargetView(ID3D12Resource* resource, D3D12_RENDER_TARGET_VIEW_DESC rtvDesc);
 
 	ID3D12Device*				GetDevice() { return m_ptrDevice.Get(); }
 	ID3D12GraphicsCommandList*	GetCmdLst() { return m_ptrCmdLst.Get(); }
@@ -65,5 +69,7 @@ private:
 
 	bool					m_bMsaa4xEnable;
 	UINT					m_iMsaa4xQualityLevels;
+
+	int						m_iRtvCnt = 2;
 };
 

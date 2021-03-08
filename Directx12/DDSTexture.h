@@ -13,5 +13,6 @@ public:
 	wstring								m_wstrFilePath;
 	ComPtr<ID3D12Resource>				m_ptrResource;
 	ComPtr<ID3D12Resource>				m_ptrUploadHeap;
+	D3D12_CPU_DESCRIPTOR_HANDLE			m_hDescriptor;
 };
 
