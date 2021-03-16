@@ -1,6 +1,6 @@
 #pragma once
 #include "framework.h"
-
+#include "SkinnedModelInstance.h"
 class MeshMgr
 {
 private:
@@ -23,6 +23,9 @@ public:
 private:
 	static MeshMgr* m_pInstance;
 
+public:
+	bool LoadMeshFile(vector<SkinnedVertex>& outVertex, vector<UINT>& outIndex, vector<Material>* outMaterial,string path);
+	bool LoadSkeletonFile(SkinnedData& outSkinnedData, string path);
 public:
 	MeshInfo	GetMeshInfo(string meshName);
 	int			GetVertexCnt(string meshName);

@@ -5,8 +5,8 @@ HRESULT Shader::BuildShadersAndInputLayout(const TCHAR* vsName, const char* vsFu
 {
 	HRESULT hr = S_OK;
 
-	m_vsByteCode = d3dUtil::CompileShader(vsName, nullptr, vsFunc, "vs_5_0");
-	m_psByteCode = d3dUtil::CompileShader(psName, nullptr, psFunc, "ps_5_0");
+	m_vsByteCode = d3dUtil::CompileShader(vsName, nullptr, vsFunc, "vs_5_1");
+	m_psByteCode = d3dUtil::CompileShader(psName, nullptr, psFunc, "ps_5_1");
 
 	m_InputLayout = InputLayout;
 	return S_OK;
@@ -51,6 +51,8 @@ HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* Ro
 
 	return S_OK;
 }
+
+
 
 void Shader::PreRender(ID3D12GraphicsCommandList* cmdLst)
 {

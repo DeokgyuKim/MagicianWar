@@ -139,35 +139,35 @@ void Camera::BuildConstantBufferViewMatrix()
 {
 	m_ObjectCBView = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
 
-	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
+	//UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
 
-	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_ObjectCBView->Resource()->GetGPUVirtualAddress();
-	// Offset to the ith object constant buffer in the buffer.
-	int boxCBufIndex = 0;
-	cbAddress += boxCBufIndex * objCBByteSize;
+	//D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_ObjectCBView->Resource()->GetGPUVirtualAddress();
+	//// Offset to the ith object constant buffer in the buffer.
+	//int boxCBufIndex = 0;
+	//cbAddress += boxCBufIndex * objCBByteSize;
 
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
+	//D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
+	//cbvDesc.BufferLocation = cbAddress;
+	//cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
 
-	m_pRenderer->CreateConstantBufferView(cbvDesc);
+	//m_pRenderer->CreateConstantBufferView(cbvDesc);
 	return;
 }
 void Camera::BuildConstantBufferProjMatrix()
 {
 	m_ObjectCBProj = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
 
-	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
+	//UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
 
-	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_ObjectCBProj->Resource()->GetGPUVirtualAddress();
-	// Offset to the ith object constant buffer in the buffer.
-	int boxCBufIndex = 0;
-	cbAddress += boxCBufIndex * objCBByteSize;
+	//D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_ObjectCBProj->Resource()->GetGPUVirtualAddress();
+	//// Offset to the ith object constant buffer in the buffer.
+	//int boxCBufIndex = 0;
+	//cbAddress += boxCBufIndex * objCBByteSize;
 
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
+	//D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
+	//cbvDesc.BufferLocation = cbAddress;
+	//cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
 
-	m_pRenderer->CreateConstantBufferView(cbvDesc);
+	//m_pRenderer->CreateConstantBufferView(cbvDesc);
 	return;
 }

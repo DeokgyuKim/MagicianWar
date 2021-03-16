@@ -4,25 +4,8 @@
 // Transforms and colors geometry.
 //***************************************************************************************
 
+#include "Common.hlsl"
 
-cbuffer cbPerObjectWorld : register(b0)
-{
-	float4x4 gWorld; 
-};
-
-
-cbuffer cbPerObjectView : register(b1)
-{
-	float4x4 gView;
-};
-
-cbuffer cbPerObjectProj : register(b2)
-{
-	float4x4 gProj;
-};
-
-Texture2D Texture : register(t0);
-SamplerState gsamLinear  : register(s0);
 
 
 

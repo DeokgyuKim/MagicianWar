@@ -85,6 +85,18 @@
     <Filter Include="01.Engine\07.RenderTarget\00.RenderTargetMgr">
       <UniqueIdentifier>{ba9c3a38-6563-433b-ad94-2f4debe80a6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\01.Renderer\01.MeshMgr\00.Skinned">
+      <UniqueIdentifier>{991c3271-7587-42a6-bb55-cfbc41b4c7a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\01.Renderer\01.MeshMgr\00.Skinned\00.SkinnedData">
+      <UniqueIdentifier>{3794e79d-78aa-421a-9446-77af1e0e62ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\01.Renderer\01.MeshMgr\00.Skinned\01.SkinnedModelInstance">
+      <UniqueIdentifier>{82ea8753-af2d-4a51-b084-02b470ce59f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\03.Shader\hlsl">
+      <UniqueIdentifier>{8b0643f6-93cf-4ba3-abd6-527fc2e7321f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -180,6 +192,15 @@
     <ClInclude Include="RenderTargetMgr.h">
       <Filter>01.Engine\07.RenderTarget\00.RenderTargetMgr</Filter>
     </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>99.Default\00.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedData.h">
+      <Filter>01.Engine\01.Renderer\01.MeshMgr\00.Skinned\00.SkinnedData</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedModelInstance.h">
+      <Filter>01.Engine\01.Renderer\01.MeshMgr\00.Skinned\01.SkinnedModelInstance</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -257,6 +278,12 @@
     <ClCompile Include="RenderTargetMgr.cpp">
       <Filter>01.Engine\07.RenderTarget\00.RenderTargetMgr</Filter>
     </ClCompile>
+    <ClCompile Include="SkinnedData.cpp">
+      <Filter>01.Engine\01.Renderer\01.MeshMgr\00.Skinned\00.SkinnedData</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedModelInstance.cpp">
+      <Filter>01.Engine\01.Renderer\01.MeshMgr\00.Skinned\01.SkinnedModelInstance</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">
@@ -270,5 +297,16 @@
     <ResourceCompile Include="Directx12.rc">
       <Filter>99.Default</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="color.hlsl">
+      <Filter>01.Engine\03.Shader\hlsl</Filter>
+    </None>
+    <None Include="Default.hlsl">
+      <Filter>01.Engine\03.Shader\hlsl</Filter>
+    </None>
+    <None Include="Common.hlsl">
+      <Filter>01.Engine\03.Shader\hlsl</Filter>
+    </None>
   </ItemGroup>
 </Project>

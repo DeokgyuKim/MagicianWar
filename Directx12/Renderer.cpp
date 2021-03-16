@@ -54,12 +54,12 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pCmdLst->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 	m_pCamera->Render(0.f);
 
-	m_mapShaders[RENDER_TYPE::RENDER_COLOR]->PreRender(m_pCmdLst);
+	//m_mapShaders[RENDER_TYPE::RENDER_COLOR]->PreRender(m_pCmdLst);
 
-	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_COLOR])
-	{
-		pObject->Render(fTimeDelta);
-	}
+	//for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_COLOR])
+	//{
+	//	pObject->Render(fTimeDelta);
+	//}
 
 	//Set Pipeline
 	m_mapShaders[RENDER_TYPE::RENDER_NOBLEND]->PreRender(m_pCmdLst);
@@ -72,7 +72,13 @@ void Renderer::Render(const float& fTimeDelta)
 	}
     //////////////////////////////////////////////////////////////
 
-	m_pCore->Render_EndTest(m_pRTMgr->GetRenderTarget("Normal"));
+	m_mapShaders[RENDER_TYPE::RENDER_MOVABLE]->PreRender(m_pCmdLst);
+	for (auto pObject : m_lstObjects[RENDER_MOVABLE])
+	{ // ÀÌ°Å ÅÍÁü
+		pObject->Render(fTimeDelta);
+	}
+
+	m_pCore->Render_EndTest(m_pRTMgr->GetRenderTarget("Albedo"));
 
 	//m_pCore->Render_End();
 	for(int i = 0; i < RENDER_TYPE::RENDER_END; ++i)
@@ -117,22 +123,23 @@ D3D12_CPU_DESCRIPTOR_HANDLE Renderer::CreateUnorderedAccessView(ID3D12Resource* 
 
 void Renderer::BuildRootSignature()
 {
+	
 	CD3DX12_DESCRIPTOR_RANGE srvTable;
 	srvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
+	CD3DX12_ROOT_PARAMETER slotRootParameter[ParameterCount];
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
-
-
-	slotRootParameter[0].InitAsConstantBufferView(0);
-	slotRootParameter[1].InitAsConstantBufferView(1);
-	slotRootParameter[2].InitAsConstantBufferView(2);
+	slotRootParameter[0].InitAsConstantBufferView(0); // objWorld
+	slotRootParameter[1].InitAsConstantBufferView(1); // view
+	slotRootParameter[2].InitAsConstantBufferView(2); // proj
 	slotRootParameter[3].InitAsDescriptorTable(1, &srvTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[4].InitAsConstantBufferView(3); // Skinned
+	slotRootParameter[5].InitAsShaderResourceView(0, 1); // Material
 
 	auto staticSamplers = GetStaticSamplers();
 
 	// A root signature is an array of root parameters.
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(4, slotRootParameter,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(ParameterCount, slotRootParameter,
 		(UINT)staticSamplers.size(), staticSamplers.data(),
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -190,6 +197,36 @@ void Renderer::BuildShader()
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Main", L"color.hlsl", "PS_Main", layout);
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get());
 	m_mapShaders[RENDER_TYPE::RENDER_NOBLEND] = pShader;
+
+	// Static Model
+	pShader = new Shader;
+	layout = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pShader->BuildShadersAndInputLayout(L"Default.hlsl", "VS_Static", L"Default.hlsl", "PS_Static",layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get());
+	m_mapShaders[RENDER_TYPE::RENDER_STATIC] = pShader;
+
+	// Skinned Model
+	pShader = new Shader;
+	layout = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "WEIGHTS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 56, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "BONEINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, 68, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pShader->BuildShadersAndInputLayout(L"Default.hlsl", "VS_Movable", L"Default.hlsl", "PS_Movable", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get());
+	m_mapShaders[RENDER_TYPE::RENDER_MOVABLE] = pShader;
+
+
 }
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 {

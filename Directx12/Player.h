@@ -24,11 +24,17 @@ public:
     XMFLOAT3    GetPosition();
     void        SetCamera(Camera* pCamera) { m_pCamera = pCamera; }
 
-protected:
-    ID3D12Device*                       m_pDevice;
-    ID3D12GraphicsCommandList*          m_pCmdLst;
-    unique_ptr<UploadBuffer<ObjectCB>>	m_ObjectCB;
+private:
+    void UpdateSkinnedAnimation(const float fTimeDelta);
 
-    Camera*                             m_pCamera;
+protected:
+    ID3D12Device*                               m_pDevice;
+    ID3D12GraphicsCommandList*                  m_pCmdLst;
+
+    unique_ptr<UploadBuffer<ObjectCB>>	        m_ObjectCB;
+    unique_ptr<UploadBuffer<SkinnedCB>>         m_SkinnedCB;
+    unique_ptr<UploadBuffer<MaterialCB>>        m_MaterialCB;
+    
+    Camera*                                     m_pCamera;
 };
 
