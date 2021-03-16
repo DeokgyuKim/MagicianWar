@@ -12,7 +12,7 @@ public:
 	virtual void	Render(const float& fTimeDelta);
 private:
 	virtual HRESULT BuildGeometry(ID3D12Device* device) PURE;
-
+	
 protected:
 	ComPtr<ID3D12GraphicsCommandList>	m_CmdLst;
 	unique_ptr<MeshGeometry>			m_BoxGeo;

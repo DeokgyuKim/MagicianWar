@@ -13,6 +13,7 @@ Geometry::~Geometry()
 
 void Geometry::Initialize(ID3D12Device* device, ID3D12DescriptorHeap* heap)
 {
+	
 	BuildGeometry(device);
 }
 
