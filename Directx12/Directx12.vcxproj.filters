@@ -85,6 +85,15 @@
     <Filter Include="01.Engine\07.RenderTarget\00.RenderTargetMgr">
       <UniqueIdentifier>{ba9c3a38-6563-433b-ad94-2f4debe80a6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\06.Component\02.Material">
+      <UniqueIdentifier>{7f3e0564-cbd9-42ed-ae39-17d87bf0d395}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\08.Light">
+      <UniqueIdentifier>{754b90cd-ebd5-4c85-95c8-5de328306e96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\06.Component\01.Geometry\03. LightGeo">
+      <UniqueIdentifier>{1f1249c9-e178-4eac-b353-18d33787f8f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -180,6 +189,15 @@
     <ClInclude Include="RenderTargetMgr.h">
       <Filter>01.Engine\07.RenderTarget\00.RenderTargetMgr</Filter>
     </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>01.Engine\06.Component\02.Material</Filter>
+    </ClInclude>
+    <ClInclude Include="LightGeo.h">
+      <Filter>01.Engine\06.Component\01.Geometry\03. LightGeo</Filter>
+    </ClInclude>
+    <ClInclude Include="CLight.h">
+      <Filter>01.Engine\08.Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -256,6 +274,15 @@
     </ClCompile>
     <ClCompile Include="RenderTargetMgr.cpp">
       <Filter>01.Engine\07.RenderTarget\00.RenderTargetMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>01.Engine\06.Component\02.Material</Filter>
+    </ClCompile>
+    <ClCompile Include="LightGeo.cpp">
+      <Filter>01.Engine\06.Component\01.Geometry\03. LightGeo</Filter>
+    </ClCompile>
+    <ClCompile Include="CLight.cpp">
+      <Filter>01.Engine\08.Light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -33,6 +33,13 @@ void RenderTarget::ResourceBarrier(ID3D12GraphicsCommandList* cmdLst, D3D12_RESO
 	m_CurState = postState;
 }
 
+void RenderTarget::SetShaderVariable(ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap, int RootParameterIdx)
+{
+	D3D12_GPU_DESCRIPTOR_HANDLE handle = heap->GetGPUDescriptorHandleForHeapStart();
+	handle.ptr += (m_SrvHandle.ptr - heap->GetCPUDescriptorHandleForHeapStart().ptr);
+	cmdLst->SetGraphicsRootDescriptorTable(RootParameterIdx, handle);
+}
+
 HRESULT RenderTarget::Initialize()
 {
 	D3D12_HEAP_PROPERTIES properties;

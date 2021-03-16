@@ -5,7 +5,7 @@ class Plane : public Geometry
 {
 public:
 	Plane(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap, int x, int z);
-	~Plane();
+	virtual ~Plane();
 private:
 	virtual HRESULT BuildGeometry(ID3D12Device* device);
 	int m_fX, m_fZ;

@@ -4,30 +4,41 @@ HRESULT Shader::BuildShadersAndInputLayout(const TCHAR* vsName, const char* vsFu
 											const char* psFunc,	vector<D3D12_INPUT_ELEMENT_DESC> InputLayout)
 {
 	HRESULT hr = S_OK;
+	
+	m_vsFunc = vsFunc;
+	m_psFunc = psFunc;
 
-	m_vsByteCode = d3dUtil::CompileShader(vsName, nullptr, vsFunc, "vs_5_0");
-	m_psByteCode = d3dUtil::CompileShader(psName, nullptr, psFunc, "ps_5_0");
+	if (vsFunc != NULL)
+		m_vsByteCode = d3dUtil::CompileShader(vsName, nullptr, vsFunc, "vs_5_0");
+	if (psFunc != NULL)
+		m_psByteCode = d3dUtil::CompileShader(psName, nullptr, psFunc, "ps_5_0");
 
 	m_InputLayout = InputLayout;
 	return S_OK;
 }
 
-HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* RootSignature)
+HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* RootSignature, int numRt)
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	psoDesc.InputLayout = { m_InputLayout.data(), (UINT)m_InputLayout.size() };
 	psoDesc.pRootSignature = RootSignature;
-	psoDesc.VS =
+	if (m_vsFunc != NULL)
 	{
-		reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()),
-		m_vsByteCode->GetBufferSize()
-	};
-	psoDesc.PS =
+		psoDesc.VS =
+		{
+			reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()),
+			m_vsByteCode->GetBufferSize()
+		};
+	}
+	if (m_psFunc != NULL)
 	{
-		reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()),
-		m_psByteCode->GetBufferSize()
-	};
+		psoDesc.PS =
+		{
+			reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()),
+			m_psByteCode->GetBufferSize()
+		};
+	}
 
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	//psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
@@ -42,9 +53,9 @@ HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* Ro
 
 	psoDesc.SampleMask = UINT_MAX;
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	psoDesc.NumRenderTargets = 2;
-	psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-	psoDesc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	psoDesc.NumRenderTargets = numRt;
+	for(int i = 0; i < numRt; ++i)
+		psoDesc.RTVFormats[i] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	psoDesc.SampleDesc.Count = 1;
 
 	HRESULT a = (device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PipelineState)));

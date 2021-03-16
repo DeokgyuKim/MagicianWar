@@ -21,12 +21,69 @@ cbuffer cbPerObjectProj : register(b2)
 	float4x4 gProj;
 };
 
+cbuffer cbDiffuse : register(b3)
+{
+	float4 gDiffuse;
+};
+cbuffer cbAmbient : register(b4)
+{
+	float4 gAmbient;
+};
+cbuffer cbSpecular : register(b5)
+{
+	float4 gSpecular;
+};
+
+
+cbuffer cbLightDiffuse : register(b6)
+{
+	float4 gLightDiffuse;
+};
+cbuffer cbLightAmbient : register(b7)
+{
+	float4 gLightAmbient;
+};
+cbuffer cbLightSpecular : register(b8)
+{
+	float4 gLightSpecular;
+};
+
+cbuffer cbLightPosition : register(b9)
+{
+	float4 gLightPosition;
+};
+cbuffer cbLightDirection : register(b10)
+{
+	float4 gLightDirection;
+};
+//cbuffer cbCamDirection : register(b11)
+//{
+//	float4 gCamDirection;
+//};
+
+cbuffer cbPerObjectInvView : register(b11)
+{
+	float4x4 gInvView;
+};
+
+cbuffer cbPerObjectInvProj : register(b12)
+{
+	float4x4 gInvProj;
+};
+cbuffer cbCamPosition : register(b13)
+{
+	float4 gCamPosition;
+};
+
 Texture2D Texture : register(t0);
 SamplerState gsamLinear  : register(s0);
 
 
-
-static const float3 DirectionalLight = float3(1.f, -1.f, 1.f);
+Texture2D DiffTex : register(t1);
+Texture2D AmbiTex : register(t2);
+Texture2D SpecTex : register(t3);
+Texture2D NormalTex : register(t4);
+Texture2D DepthTex : register(t5);
 
 struct VertexIn
 {
@@ -44,8 +101,11 @@ struct VertexOut
 
 struct PSOut
 {
-	float4 Albedo : SV_TARGET0;
-	float4 Normal : SV_TARGET1;
+	float4 Diffuse : SV_TARGET0;
+	float4 Ambient : SV_TARGET1;
+	float4 Specular : SV_TARGET2;
+	float4 Normal : SV_TARGET3;
+	float4 Depth : SV_TARGET4;
 };
 
 VertexOut VS(VertexIn vin)
@@ -66,11 +126,11 @@ PSOut PS(VertexOut pin)
 {
 	PSOut vout;
 
-	float4 LightDir = float4(normalize(DirectionalLight), 0.f);
-	float value = dot(pin.Normal, -LightDir);
-
-	vout.Albedo = pin.Color * value;
+	vout.Diffuse = pin.Color * gDiffuse;
+	vout.Ambient = pin.Color * gAmbient;
+	vout.Specular = pin.Color * gSpecular;
 	vout.Normal = pin.Normal * 0.5f + 0.5f;
+	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
 	return vout;
 }
@@ -108,11 +168,82 @@ PSOut PS_Main(Out pin)
 {
 	PSOut vout;
 
-	float4 LightDir = float4(normalize(DirectionalLight), 0.f);
-	float value = dot(pin.Normal, -LightDir);
-
-	vout.Albedo = Texture.Sample(gsamLinear, pin.UV) * value;
+	vout.Diffuse = Texture.Sample(gsamLinear, pin.UV) * gDiffuse;
+	vout.Ambient = Texture.Sample(gsamLinear, pin.UV) * gAmbient;
+	vout.Specular = Texture.Sample(gsamLinear, pin.UV) * gSpecular;
 	vout.Normal = pin.Normal * 0.5f + 0.5f;
+	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
 	return vout;
+}
+
+struct Shade_In
+{
+	float3 PosL  : POSITION;
+	float2 UV : TEXCOORD;
+};
+
+struct Shade_Out
+{
+	float4 PosH  : SV_POSITION;
+	float2 UV : TEXCOORD;
+};
+
+Shade_Out VS_Shade(Shade_In pin)
+{
+	Shade_Out vOut;
+	//vOut.PosH = mul(mul(float4(pin.PosL, 1.0f), gView), gProj);
+	float4 depth = DepthTex.SampleLevel(gsamLinear, pin.UV, 0);
+	vOut.PosH = float4(pin.PosL.x, pin.PosL.y, depth.x, 1.f);
+	vOut.UV = pin.UV;
+
+	return vOut;
+}
+
+struct PS_SHADE_OUT
+{
+	float4 Shade : SV_TARGET0;
+};
+
+PS_SHADE_OUT PS_Shade(Shade_Out pin)
+{
+	PS_SHADE_OUT pOut;
+	//pOut.Shade = float4(1.f, 1.f, 1.f, 1.f);
+
+	float4 Normal = NormalTex.Sample(gsamLinear, pin.UV);
+	Normal = Normal * 2.f - 1.f;
+	Normal.w = 0.f;
+
+	float4 depth = DepthTex.Sample(gsamLinear, pin.UV);
+	float ViewZ = depth.y * 1000.f;
+
+	float4 position;
+	position.x = (pin.UV.x * 2.f - 1.f) * ViewZ;
+	position.y = (pin.UV.y * 2.f - 1.f) * ViewZ;
+	position.z = depth.x * ViewZ;
+	position.w = ViewZ;
+
+	position = mul(position, gInvProj);
+	position = mul(position, gInvView);
+
+	float3 camdir = normalize(position.xyz - gCamPosition.xyz);
+
+	float diffuseValue = saturate(dot(-normalize(gLightDirection.xyz), Normal.xyz));
+	float3 reflection = normalize(reflect(gLightDirection.xyz, Normal.xyz));
+	float3 specularValue = 0;
+
+	if (diffuseValue.x > 0)
+	{
+		specularValue = saturate(dot(reflection.xyz, -camdir));
+		specularValue = pow(specularValue, 20.f);
+	}
+
+	float4 diffuse = DiffTex.Sample(gsamLinear, pin.UV);
+	float4 ambient = AmbiTex.Sample(gsamLinear, pin.UV);
+	float4 specular = SpecTex.Sample(gsamLinear, pin.UV);
+
+	pOut.Shade = float4((diffuse.xyz * diffuseValue) + (ambient.xyz) + (specular.xyz * specularValue), 1.f);
+
+
+	return pOut;
 }

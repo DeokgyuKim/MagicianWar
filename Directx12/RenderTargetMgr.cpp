@@ -9,12 +9,28 @@ void RenderTargetMgr::BuildRenderTarget(ID3D12Device* device, Renderer* pRendere
 	RenderTarget* Rt = NULL;
 
 	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY);
-	m_mapRenderTarget["Albedo"] = Rt;
+	m_mapRenderTarget["Diffuse"] = Rt;
+	m_mapMRT["Deffered"].push_back(Rt);
+
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY);
+	m_mapRenderTarget["Ambient"] = Rt;
+	m_mapMRT["Deffered"].push_back(Rt);
+
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY);
+	m_mapRenderTarget["Specular"] = Rt;
 	m_mapMRT["Deffered"].push_back(Rt);
 
 	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY);
 	m_mapRenderTarget["Normal"] = Rt;
 	m_mapMRT["Deffered"].push_back(Rt);
+
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY);
+	m_mapRenderTarget["Depth"] = Rt;
+	m_mapMRT["Deffered"].push_back(Rt);
+
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY);
+	m_mapRenderTarget["Shade"] = Rt;
+	m_mapMRT["Shade"].push_back(Rt);
 }
 
 void RenderTargetMgr::SetMultiRenderTarget(ID3D12GraphicsCommandList* cmdLst, string tagMRT)

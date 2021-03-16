@@ -9,6 +9,7 @@ class Camera;
 class TextureMgr;
 class RenderTarget;
 class RenderTargetMgr;
+class CLight;
 
 class Renderer
 {
@@ -50,6 +51,7 @@ private:
 	int									m_iCountView = 0;
 
 	Camera*								m_pCamera;
+	CLight*								m_pLight;
 
 	TextureMgr*							m_pTextureMgr;
 	RenderTargetMgr*					m_pRTMgr;

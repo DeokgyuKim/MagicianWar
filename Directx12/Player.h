@@ -28,6 +28,9 @@ protected:
     ID3D12Device*                       m_pDevice;
     ID3D12GraphicsCommandList*          m_pCmdLst;
     unique_ptr<UploadBuffer<ObjectCB>>	m_ObjectCB;
+    unique_ptr<UploadBuffer<MatCB>>	    m_DiffuseCB;
+    unique_ptr<UploadBuffer<MatCB>>	    m_AmbientCB;
+    unique_ptr<UploadBuffer<MatCB>>	    m_SpecularCB;
 
     Camera*                             m_pCamera;
 };

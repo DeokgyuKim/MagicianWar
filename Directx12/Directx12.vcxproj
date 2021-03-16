@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CLight.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="d3dUtil.h" />
@@ -152,7 +153,9 @@
     <ClInclude Include="Directx12.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Geometry.h" />
+    <ClInclude Include="LightGeo.h" />
     <ClInclude Include="MainApp.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshMgr.h" />
@@ -175,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CLight.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="d3dUtil.cpp" />
@@ -183,7 +187,9 @@
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Directx12.cpp" />
     <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="LightGeo.cpp" />
     <ClCompile Include="MainApp.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshMgr.cpp" />

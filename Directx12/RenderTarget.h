@@ -10,6 +10,7 @@ public:
 	~RenderTarget();
 public:
 	void	ResourceBarrier(ID3D12GraphicsCommandList* cmdLst, D3D12_RESOURCE_STATES postState);
+	void	SetShaderVariable(ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap, int RootParameterIdx);
 public:
 	D3D12_CPU_DESCRIPTOR_HANDLE	GetSrvHandle() { return m_SrvHandle; }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRtvHandle() { return m_RtvHandle; }
