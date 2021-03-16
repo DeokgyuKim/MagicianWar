@@ -42,58 +42,9 @@ HRESULT Player::BuildConstantBuffer()
 	///World
 	m_ObjectCB = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
 
-	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
-
-	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_ObjectCB->Resource()->GetGPUVirtualAddress();
-	// Offset to the ith object constant buffer in the buffer.
-	int boxCBufIndex = 0;
-	cbAddress += boxCBufIndex * objCBByteSize;
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
-
-	m_pRenderer->CreateConstantBufferView(cbvDesc);
-
-
 	///Diffuse
-	m_DiffuseCB = make_unique<UploadBuffer<MatCB>>(m_pDevice, 1, true);
+	m_MatCB = make_unique<UploadBuffer<MaterialCB>>(m_pDevice, 1, true);
 
-	objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MatCB));
-
-	cbAddress = m_DiffuseCB->Resource()->GetGPUVirtualAddress();
-	cbAddress += boxCBufIndex * objCBByteSize;
-
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(MatCB));
-
-	m_pRenderer->CreateConstantBufferView(cbvDesc);
-
-	///Ambient
-	m_AmbientCB = make_unique<UploadBuffer<MatCB>>(m_pDevice, 1, true);
-
-	objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MatCB));
-
-	cbAddress = m_AmbientCB->Resource()->GetGPUVirtualAddress();
-	cbAddress += boxCBufIndex * objCBByteSize;
-
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(MatCB));
-
-	m_pRenderer->CreateConstantBufferView(cbvDesc);
-
-	///Specular
-	m_SpecularCB = make_unique<UploadBuffer<MatCB>>(m_pDevice, 1, true);
-
-	objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MatCB));
-
-	cbAddress = m_SpecularCB->Resource()->GetGPUVirtualAddress();
-	cbAddress += boxCBufIndex * objCBByteSize;
-
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(MatCB));
-
-	m_pRenderer->CreateConstantBufferView(cbvDesc);
 
 	return S_OK;
 }
@@ -123,29 +74,19 @@ void Player::LateUpdate(const float& fTimeDelta)
 	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
 	m_ObjectCB->CopyData(0, ObjCB);
 
-	MatCB		DiffCB;
-	XMStoreFloat4(&DiffCB.Material, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetDiffuse());
-	m_DiffuseCB->CopyData(0, DiffCB);
-
-	MatCB		AmbiCB;
-	XMStoreFloat4(&AmbiCB.Material, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetAmbient());
-	m_AmbientCB->CopyData(0, AmbiCB);
-
-	MatCB		SpecCB;
-	XMStoreFloat4(&SpecCB.Material, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetSpecular());
-	m_SpecularCB->CopyData(0, SpecCB);
-
+	MaterialCB	MatCB;
+	XMStoreFloat4(&MatCB.Diffuse, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetDiffuse());
+	XMStoreFloat4(&MatCB.Ambient, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetAmbient());
+	XMStoreFloat4(&MatCB.Specular, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetSpecular());
+	m_MatCB->CopyData(0, MatCB);
 
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_COLOR, this);
-
 }
 
 void Player::Render(const float& fTimeDelta)
 {
 	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootConstantBufferView(3, m_DiffuseCB->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootConstantBufferView(4, m_AmbientCB->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootConstantBufferView(5, m_SpecularCB->Resource()->GetGPUVirtualAddress());
+	m_pCmdLst->SetGraphicsRootConstantBufferView(2, m_MatCB->Resource()->GetGPUVirtualAddress());
 
 	Object::Render(fTimeDelta);
 	//m_pBuffer->Render(fTimeDelta);

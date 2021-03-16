@@ -80,11 +80,11 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Shade");
 	m_mapShaders[RENDER_TYPE::RENDER_SHADE]->PreRender(m_pCmdLst);
 
-	m_pRTMgr->GetRenderTarget("Diffuse")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 12);
-	m_pRTMgr->GetRenderTarget("Ambient")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 13);
-	m_pRTMgr->GetRenderTarget("Specular")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 14);
-	m_pRTMgr->GetRenderTarget("Normal")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 15);
-	m_pRTMgr->GetRenderTarget("Depth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 16);
+	m_pRTMgr->GetRenderTarget("Diffuse")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 5);
+	m_pRTMgr->GetRenderTarget("Ambient")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 6);
+	m_pRTMgr->GetRenderTarget("Specular")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 7);
+	m_pRTMgr->GetRenderTarget("Normal")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 8);
+	m_pRTMgr->GetRenderTarget("Depth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 9);
 
 	m_pLight->RenderLight();
 
@@ -143,35 +143,24 @@ void Renderer::BuildRootSignature()
 	srvTable[5].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 5);
 
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[20];
+	CD3DX12_ROOT_PARAMETER slotRootParameter[10];
 
 
 	slotRootParameter[0].InitAsConstantBufferView(0);	//world
-	slotRootParameter[1].InitAsConstantBufferView(1);	//view
-	slotRootParameter[2].InitAsConstantBufferView(2);	//proj
-	slotRootParameter[3].InitAsConstantBufferView(3);	//diffuse
-	slotRootParameter[4].InitAsConstantBufferView(4);	//ambient
-	slotRootParameter[5].InitAsConstantBufferView(5);	//specular
-	slotRootParameter[6].InitAsConstantBufferView(6);	//light diffuse
-	slotRootParameter[7].InitAsConstantBufferView(7);	//light ambient
-	slotRootParameter[8].InitAsConstantBufferView(8);	//light specular
-	slotRootParameter[9].InitAsConstantBufferView(9);	//light position
-	slotRootParameter[10].InitAsConstantBufferView(10);	//light direction
-	slotRootParameter[11].InitAsDescriptorTable(1, &srvTable[0], D3D12_SHADER_VISIBILITY_PIXEL);	//Object texture
-	slotRootParameter[12].InitAsDescriptorTable(1, &srvTable[1], D3D12_SHADER_VISIBILITY_PIXEL);	//diffuse render target
-	slotRootParameter[13].InitAsDescriptorTable(1, &srvTable[2], D3D12_SHADER_VISIBILITY_PIXEL);	//ambient render target
-	slotRootParameter[14].InitAsDescriptorTable(1, &srvTable[3], D3D12_SHADER_VISIBILITY_PIXEL);	//specular render target
-	slotRootParameter[15].InitAsDescriptorTable(1, &srvTable[4], D3D12_SHADER_VISIBILITY_PIXEL);	//normal render target
-	slotRootParameter[16].InitAsDescriptorTable(1, &srvTable[5], D3D12_SHADER_VISIBILITY_ALL);		//depth render target
-	//slotRootParameter[17].InitAsConstantBufferView(11);	//camera direction
-	slotRootParameter[17].InitAsConstantBufferView(11);	//camera inv view
-	slotRootParameter[18].InitAsConstantBufferView(12);	//camera inv proj
-	slotRootParameter[19].InitAsConstantBufferView(13);	//camera position
+	slotRootParameter[1].InitAsConstantBufferView(1);	//view, proj, invview, invproj, campos
+	slotRootParameter[2].InitAsConstantBufferView(2);	//Material diffuse, ambient, specular, position
+	slotRootParameter[3].InitAsConstantBufferView(3);	//light diffuse, ambient, specular, position, direction
+	slotRootParameter[4].InitAsDescriptorTable(1, &srvTable[0], D3D12_SHADER_VISIBILITY_PIXEL);	//Object texture
+	slotRootParameter[5].InitAsDescriptorTable(1, &srvTable[1], D3D12_SHADER_VISIBILITY_PIXEL);	//diffuse render target
+	slotRootParameter[6].InitAsDescriptorTable(1, &srvTable[2], D3D12_SHADER_VISIBILITY_PIXEL);	//ambient render target
+	slotRootParameter[7].InitAsDescriptorTable(1, &srvTable[3], D3D12_SHADER_VISIBILITY_PIXEL);	//specular render target
+	slotRootParameter[8].InitAsDescriptorTable(1, &srvTable[4], D3D12_SHADER_VISIBILITY_PIXEL);	//normal render target
+	slotRootParameter[9].InitAsDescriptorTable(1, &srvTable[5], D3D12_SHADER_VISIBILITY_ALL);	//depth render target
 
 	auto staticSamplers = GetStaticSamplers();
 
 	// A root signature is an array of root parameters.
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(20, slotRootParameter,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(10, slotRootParameter,
 		(UINT)staticSamplers.size(), staticSamplers.data(),
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 

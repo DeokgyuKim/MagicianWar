@@ -36,3 +36,28 @@ struct MeshInfo
 	int IdxCnt;
 	//버텍스 정보, 인덱스 정보
 };
+
+struct CameraCB
+{
+	XMFLOAT4X4	View = MathHelper::Identity4x4();
+	XMFLOAT4X4	Proj = MathHelper::Identity4x4();
+	XMFLOAT4X4	InvView = MathHelper::Identity4x4();
+	XMFLOAT4X4	InvProj = MathHelper::Identity4x4();
+	XMFLOAT4	Position = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+};
+
+struct MaterialCB
+{
+	XMFLOAT4	Diffuse;
+	XMFLOAT4	Ambient;
+	XMFLOAT4	Specular;
+};
+
+struct LightCB
+{
+	XMFLOAT4	Diffuse;
+	XMFLOAT4	Ambient;
+	XMFLOAT4	Specular;
+	XMFLOAT4	Position;
+	XMFLOAT4	Direction;
+};

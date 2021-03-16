@@ -10,70 +10,31 @@ cbuffer cbPerObjectWorld : register(b0)
 	float4x4 gWorld; 
 };
 
-
-cbuffer cbPerObjectView : register(b1)
+cbuffer cbCamera : register(b1)
 {
 	float4x4 gView;
-};
-
-cbuffer cbPerObjectProj : register(b2)
-{
 	float4x4 gProj;
+	float4x4 gInvView;
+	float4x4 gInvProj;
+	float4 gCamPosition;
 };
 
-cbuffer cbDiffuse : register(b3)
+cbuffer cbMaterial : register(b2)
 {
 	float4 gDiffuse;
-};
-cbuffer cbAmbient : register(b4)
-{
 	float4 gAmbient;
-};
-cbuffer cbSpecular : register(b5)
-{
 	float4 gSpecular;
 };
 
-
-cbuffer cbLightDiffuse : register(b6)
+cbuffer cbLight : register(b3)
 {
 	float4 gLightDiffuse;
-};
-cbuffer cbLightAmbient : register(b7)
-{
 	float4 gLightAmbient;
-};
-cbuffer cbLightSpecular : register(b8)
-{
 	float4 gLightSpecular;
-};
-
-cbuffer cbLightPosition : register(b9)
-{
 	float4 gLightPosition;
-};
-cbuffer cbLightDirection : register(b10)
-{
 	float4 gLightDirection;
 };
-//cbuffer cbCamDirection : register(b11)
-//{
-//	float4 gCamDirection;
-//};
 
-cbuffer cbPerObjectInvView : register(b11)
-{
-	float4x4 gInvView;
-};
-
-cbuffer cbPerObjectInvProj : register(b12)
-{
-	float4x4 gInvProj;
-};
-cbuffer cbCamPosition : register(b13)
-{
-	float4 gCamPosition;
-};
 
 Texture2D Texture : register(t0);
 SamplerState gsamLinear  : register(s0);

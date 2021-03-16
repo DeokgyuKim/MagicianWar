@@ -21,11 +21,7 @@ private:
     ID3D12DescriptorHeap*       m_pDescriptorHeap;
     Renderer*                   m_pRenderer;
 
-    unique_ptr<UploadBuffer<MatCB>>	    m_DiffuseCB;
-    unique_ptr<UploadBuffer<MatCB>>	    m_AmbientCB;
-    unique_ptr<UploadBuffer<MatCB>>	    m_SpecularCB;
-    unique_ptr<UploadBuffer<MatCB>>	    m_PositionCB;
-    unique_ptr<UploadBuffer<MatCB>>	    m_DirectionCB;
+    unique_ptr<UploadBuffer<LightCB>>	    m_LightCB;
 
 	LightGeo*   m_pLightGeo;
 

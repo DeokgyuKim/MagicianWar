@@ -102,39 +102,20 @@ void Camera::LateUpdate(const float& fTimeDelta)
 
 	XMStoreFloat4x4(&m_xmmView, view);
 
-	ObjectCB	ObjCBView, ObjCBProj, ObjCBInvView, ObjCBInvProj;
-	XMStoreFloat4x4(&ObjCBView.World, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmView)));
-	m_ObjectCBView->CopyData(0, ObjCBView);
-
-	XMStoreFloat4x4(&ObjCBProj.World, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmProj)));
-	m_ObjectCBProj->CopyData(0, ObjCBProj);
-
-	XMStoreFloat4x4(&ObjCBInvView.World, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmView)));
-	m_ObjectCBInvView->CopyData(0, ObjCBInvView);
-
-	XMStoreFloat4x4(&ObjCBInvProj.World, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmProj)));
-	m_ObjectCBInvProj->CopyData(0, ObjCBInvProj);
-
-	MatCB ObjCBCamDir, ObjCBCamPos;
-	//CamDir
-	//XMFLOAT4 look = XMFLOAT4(m_xmfLookVec.x, m_xmfLookVec.y, m_xmfLookVec.z, 0.f);
-	//XMStoreFloat4(&ObjCBCamDir.Material, XMLoadFloat4(&look));
-	//m_ObjectCBCamDir->CopyData(0, ObjCBCamDir);
-
+	CameraCB camCB;
+	XMStoreFloat4x4(&camCB.View, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmView)));
+	XMStoreFloat4x4(&camCB.Proj, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmProj)));
+	XMStoreFloat4x4(&camCB.InvView, XMMatrixTranspose(XMMatrixInverse(NULL, XMLoadFloat4x4(&m_xmmView))));
+	XMStoreFloat4x4(&camCB.InvProj, XMMatrixTranspose(XMMatrixInverse(NULL, XMLoadFloat4x4(&m_xmmProj))));
 	XMFLOAT4 position = XMFLOAT4(m_xmfPosition.x, m_xmfPosition.y, m_xmfPosition.z, 0.f);
-	XMStoreFloat4(&ObjCBCamDir.Material, XMLoadFloat4(&position));
-	m_ObjectCBCamPos->CopyData(0, ObjCBCamPos);
+	XMStoreFloat4(&camCB.Position, XMLoadFloat4(&position));
+
+	m_ObjectCB->CopyData(0, camCB);
 }
 
 void Camera::Render(const float& fTimeDelta)
 {
-	m_pCmdLst->SetGraphicsRootConstantBufferView(1, m_ObjectCBView->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootConstantBufferView(2, m_ObjectCBProj->Resource()->GetGPUVirtualAddress());
-	//CamDir
-	//m_pCmdLst->SetGraphicsRootConstantBufferView(17, m_ObjectCBCamDir->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootConstantBufferView(17, m_ObjectCBInvView->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootConstantBufferView(18, m_ObjectCBInvProj->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootConstantBufferView(19, m_ObjectCBCamPos->Resource()->GetGPUVirtualAddress());
+	m_pCmdLst->SetGraphicsRootConstantBufferView(1, m_ObjectCB->Resource()->GetGPUVirtualAddress());
 }
 
 
@@ -152,115 +133,10 @@ void Camera::Initialize()
 	
 	XMStoreFloat3(&m_xmfTarget, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&m_xmfLookVec));
 
-	BuildConstantBufferViewMatrix();
-	BuildConstantBufferProjMatrix();
-	//CamDir
-	//BuildConstantBufferCamDirection();
-	BuildConstantBufferCamPosition();
+	BuildConstantBuffer();
 }
 
-void Camera::BuildConstantBufferViewMatrix()
+void Camera::BuildConstantBuffer()
 {
-	//View
-	m_ObjectCBView = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
-
-	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
-
-	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_ObjectCBView->Resource()->GetGPUVirtualAddress();
-	// Offset to the ith object constant buffer in the buffer.
-	int boxCBufIndex = 0;
-	cbAddress += boxCBufIndex * objCBByteSize;
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
-
-	m_pRenderer->CreateConstantBufferView(cbvDesc);
-
-	//InvView
-	m_ObjectCBInvView = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
-
-	objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
-
-	cbAddress = m_ObjectCBInvView->Resource()->GetGPUVirtualAddress();
-	// Offset to the ith object constant buffer in the buffer.
-
-	cbAddress += boxCBufIndex * objCBByteSize;
-
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
-
-	m_pRenderer->CreateConstantBufferView(cbvDesc);
-	return;
-}
-void Camera::BuildConstantBufferProjMatrix()
-{
-	m_ObjectCBProj = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
-
-	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
-
-	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_ObjectCBProj->Resource()->GetGPUVirtualAddress();
-	// Offset to the ith object constant buffer in the buffer.
-	int boxCBufIndex = 0;
-	cbAddress += boxCBufIndex * objCBByteSize;
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
-
-	m_pRenderer->CreateConstantBufferView(cbvDesc);
-
-	//InvProj
-	m_ObjectCBInvProj = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
-
-	objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
-
-	cbAddress = m_ObjectCBInvProj->Resource()->GetGPUVirtualAddress();
-	// Offset to the ith object constant buffer in the buffer.
-	
-	cbAddress += boxCBufIndex * objCBByteSize;
-
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectCB));
-
-	m_pRenderer->CreateConstantBufferView(cbvDesc);
-	return;
-}
-
-void Camera::BuildConstantBufferCamDirection()
-{
-	m_ObjectCBCamDir = make_unique<UploadBuffer<MatCB>>(m_pDevice, 1, true);
-
-	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MatCB));
-
-	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_ObjectCBCamDir->Resource()->GetGPUVirtualAddress();
-	// Offset to the ith object constant buffer in the buffer.
-	int boxCBufIndex = 0;
-	cbAddress += boxCBufIndex * objCBByteSize;
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(MatCB));
-
-	m_pRenderer->CreateConstantBufferView(cbvDesc);
-	return;
-}
-
-void Camera::BuildConstantBufferCamPosition()
-{
-	m_ObjectCBCamPos = make_unique<UploadBuffer<MatCB>>(m_pDevice, 1, true);
-
-	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MatCB));
-
-	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_ObjectCBCamPos->Resource()->GetGPUVirtualAddress();
-	// Offset to the ith object constant buffer in the buffer.
-	int boxCBufIndex = 0;
-	cbAddress += boxCBufIndex * objCBByteSize;
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(MatCB));
-
-	m_pRenderer->CreateConstantBufferView(cbvDesc);
-	return;
+	m_ObjectCB = make_unique<UploadBuffer<CameraCB>>(m_pDevice, 1, true);
 }

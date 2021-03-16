@@ -22,20 +22,13 @@ public:
 
 private:
     void    Initialize();
-    void    BuildConstantBufferViewMatrix();
-    void    BuildConstantBufferProjMatrix();
-    void    BuildConstantBufferCamDirection();
-    void    BuildConstantBufferCamPosition();
+    void    BuildConstantBuffer();
+ 
 
 private:
     ID3D12Device*                       m_pDevice;
     ID3D12GraphicsCommandList*          m_pCmdLst;
-    unique_ptr<UploadBuffer<ObjectCB>>	m_ObjectCBView;
-    unique_ptr<UploadBuffer<ObjectCB>>	m_ObjectCBProj;
-    unique_ptr<UploadBuffer<ObjectCB>>	m_ObjectCBInvView;
-    unique_ptr<UploadBuffer<ObjectCB>>	m_ObjectCBInvProj;
-    unique_ptr<UploadBuffer<MatCB>>	    m_ObjectCBCamDir;
-    unique_ptr<UploadBuffer<MatCB>>	    m_ObjectCBCamPos;
+    unique_ptr<UploadBuffer<CameraCB>>  m_ObjectCB;
 
 
     XMFLOAT4X4                  m_xmmView;
