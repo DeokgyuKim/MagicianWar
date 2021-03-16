@@ -1,41 +1,41 @@
-
-struct MaterialData
-{
-	float4   DiffuseAlbedo;
-	float    Roughness;
-	float4x4 MatTransform;
-	uint     DiffuseMapIndex;
-	uint     NormalMapIndex;
-
-};
-
-
 cbuffer cbPerObjectWorld : register(b0)
 {
 	float4x4 gWorld;
-	float4x4 gTexTransform;
-	uint gMaterialIndex;
+	float4x4 gWorldNoScaling;
 };
 
-
-cbuffer cbPerObjectView : register(b1)
+cbuffer cbCamera : register(b1)
 {
 	float4x4 gView;
-};
-
-cbuffer cbPerObjectProj : register(b2)
-{
 	float4x4 gProj;
+	float4x4 gInvView;
+	float4x4 gInvProj;
+	float4 gCamPosition;
 };
 
-cbuffer cbSkinned : register(b3)
+cbuffer cbMaterial : register(b2)
 {
-	float4x4 gBoneTransforms[96];
+	float4 gDiffuse;
+	float4 gAmbient;
+	float4 gSpecular;
 };
+
+cbuffer cbLight : register(b3)
+{
+	float4 gLightDiffuse;
+	float4 gLightAmbient;
+	float4 gLightSpecular;
+	float4 gLightPosition;
+	float4 gLightDirection;
+};
+
 
 Texture2D Texture : register(t0);
-
-// 재질 자료를 space1에 배정한다. 따라서 위의 텍스처 배열과는 겹치지 않는다.
-StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
-
 SamplerState gsamLinear  : register(s0);
+
+
+Texture2D DiffTex : register(t1);
+Texture2D AmbiTex : register(t2);
+Texture2D SpecTex : register(t3);
+Texture2D NormalTex : register(t4);
+Texture2D DepthTex : register(t5);

@@ -9,9 +9,9 @@ HRESULT Shader::BuildShadersAndInputLayout(const TCHAR* vsName, const char* vsFu
 	m_psFunc = psFunc;
 
 	if (vsFunc != NULL)
-		m_vsByteCode = d3dUtil::CompileShader(vsName, nullptr, vsFunc, "vs_5_0");
+		m_vsByteCode = d3dUtil::CompileShader(vsName, nullptr, vsFunc, "vs_5_1");
 	if (psFunc != NULL)
-		m_psByteCode = d3dUtil::CompileShader(psName, nullptr, psFunc, "ps_5_0");
+		m_psByteCode = d3dUtil::CompileShader(psName, nullptr, psFunc, "ps_5_1");
 
 	m_InputLayout = InputLayout;
 	return S_OK;

@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "Camera.h"
 #include "Transform.h"
+#include "Material.h"
 
 Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer)
 {
@@ -25,10 +26,16 @@ void Player::Initialize()
 {
 	BuildConstantBuffer();
 
-	Component* pComponent = new Transform(XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(0.01f, 0.01f, 0.01f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER);
 	m_mapComponent["Mesh"] = pComponent;
+	pComponent = new MaterialCom(dynamic_cast<Mesh*>(pComponent)->GetDiffuseAlbedo(),
+		dynamic_cast<Mesh*>(pComponent)->GetAmbient(),
+		dynamic_cast<Mesh*>(pComponent)->GetSpecular());
+	m_mapComponent["Material"] = pComponent;
+
+	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 0.f, 0.f));
 }
 
 void Player::Release()
@@ -79,8 +86,7 @@ void Player::LateUpdate(const float& fTimeDelta)
 	// objCB Update
 	ObjectCB	ObjCB;
 	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
-	XMStoreFloat4x4(&ObjCB.TexTransform, XMMatrixTranspose(dynamic_cast<Mesh*>(m_mapComponent["Mesh"])->GetTexTransform()));
-	ObjCB.MaterialIndex = 0;
+	XMStoreFloat4x4(&ObjCB.WorldNoScaling, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrixNoScaling()));
 	m_ObjectCB->CopyData(0, ObjCB);
 
 	// SkinnedCB // 이거 애니메이션 붙이기 전까지 붙이면 안뜸..
@@ -88,12 +94,12 @@ void Player::LateUpdate(const float& fTimeDelta)
 	// MaterialCB
 	
 	MaterialCB matCB;
-	matCB.DiffuseAlbedo = dynamic_cast<Mesh*>(m_mapComponent["Mesh"])->GetDiffuseAlbedo();
-	matCB.Roughness = dynamic_cast<Mesh*>(m_mapComponent["Mesh"])->GetRoughness();
-	matCB.DiffuseMapIndex = dynamic_cast<Mesh*>(m_mapComponent["Mesh"])->GetDiffuseMapIndex();
+	XMStoreFloat4(&matCB.Diffuse, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetDiffuse());
+	XMStoreFloat4(&matCB.Ambient, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetAmbient());
+	XMStoreFloat4(&matCB.Specular, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetSpecular());
 	m_MaterialCB->CopyData(0, matCB);
 
-	m_pRenderer->PushObject(RENDER_TYPE::RENDER_MOVABLE, this);
+	m_pRenderer->PushObject(RENDER_TYPE::RENDER_DYNAMIC, this);
 
 }
 
@@ -101,7 +107,7 @@ void Player::Render(const float& fTimeDelta)
 {
 
 	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootShaderResourceView(5, m_MaterialCB->Resource()->GetGPUVirtualAddress());
+	m_pCmdLst->SetGraphicsRootConstantBufferView(2, m_MaterialCB->Resource()->GetGPUVirtualAddress());
 
 	Object::Render(fTimeDelta);
 	//m_pBuffer->Render(fTimeDelta);

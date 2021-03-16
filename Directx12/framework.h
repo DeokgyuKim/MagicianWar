@@ -53,6 +53,7 @@ using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
 
 #include "struct.h"
+#include "define.h"
 
 extern UINT gnCbvSrvUavDescriptorIncrementSize;
 extern UINT gnRtvDescriptorIncrementSize;
@@ -64,9 +65,11 @@ extern HWND        g_hWnd;
 #define WINCX 800
 #define WINCY 600
 
-enum OBJ_TYPE		{ OBJ_PLAYER, OBJ_CAMERA, OBJ_END };
-enum RENDER_TYPE	{ RENDER_COLOR, RENDER_NOBLEND, RENDER_SHADE, RENDER_END };
-enum CAMERA_MODE	{ CAMERA_NONE, CAMERA_FREE, CAMERA_THIRD };
+enum OBJ_TYPE			{ OBJ_PLAYER, OBJ_CAMERA, OBJ_END };
+enum RENDER_TYPE		{ RENDER_COLOR, RENDER_NOBLEND, RENDER_STATIC, RENDER_DYNAMIC, RENDER_SHADE, RENDER_END };
+enum CAMERA_MODE		{ CAMERA_NONE, CAMERA_FREE, CAMERA_THIRD };
+enum class MESH_TYPE	{ CHARACTER = 0, COUNT };
+enum BoneIndex			{ WIZARD = 0, COUNT };
 
 
 #ifdef UNICODE

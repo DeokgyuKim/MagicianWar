@@ -4,47 +4,7 @@
 // Transforms and colors geometry.
 //***************************************************************************************
 
-
-cbuffer cbPerObjectWorld : register(b0)
-{
-	float4x4 gWorld; 
-};
-
-cbuffer cbCamera : register(b1)
-{
-	float4x4 gView;
-	float4x4 gProj;
-	float4x4 gInvView;
-	float4x4 gInvProj;
-	float4 gCamPosition;
-};
-
-cbuffer cbMaterial : register(b2)
-{
-	float4 gDiffuse;
-	float4 gAmbient;
-	float4 gSpecular;
-};
-
-cbuffer cbLight : register(b3)
-{
-	float4 gLightDiffuse;
-	float4 gLightAmbient;
-	float4 gLightSpecular;
-	float4 gLightPosition;
-	float4 gLightDirection;
-};
-
-
-Texture2D Texture : register(t0);
-SamplerState gsamLinear  : register(s0);
-
-
-Texture2D DiffTex : register(t1);
-Texture2D AmbiTex : register(t2);
-Texture2D SpecTex : register(t3);
-Texture2D NormalTex : register(t4);
-Texture2D DepthTex : register(t5);
+#include "Common.hlsl"
 
 struct VertexIn
 {
@@ -72,7 +32,6 @@ struct PSOut
 VertexOut VS(VertexIn vin)
 {
 	VertexOut vout;
-	
 	// Transform to homogeneous clip space.
 	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorld), gView), gProj);
 	
@@ -203,8 +162,132 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	float4 ambient = AmbiTex.Sample(gsamLinear, pin.UV);
 	float4 specular = SpecTex.Sample(gsamLinear, pin.UV);
 
-	pOut.Shade = float4((diffuse.xyz * diffuseValue) + (ambient.xyz) + (specular.xyz * specularValue), 1.f);
+	pOut.Shade = float4((diffuse.xyz * diffuseValue) + (ambient.xyz), 1.f);
+	// + (specular.xyz * specularValue)
 
 
 	return pOut;
 }
+
+struct VertexIn_Static
+{   // 구조물
+	float3 PosL    : POSITION;
+	float3 NormalL : NORMAL;
+	float2 TexC    : TEXCOORD;
+	float3 TangentL : TANGENT;
+	float3 BinormalL : BINORMAL;
+};
+
+
+struct VertexIn_Movable
+{   // 움직이는 객체
+	float3 PosL    : POSITION;
+	float3 NormalL : NORMAL;
+	float2 TexC    : TEXCOORD;
+	float3 TangentL : TANGENT;
+	float3 BinormalL : BINORMAL;
+	float3 BoneWeights : WEIGHTS;
+	uint4 BoneIndices  : BONEINDICES;
+
+};
+
+struct VertexOut_Default
+{   // 기본 
+	float4 PosH    : SV_POSITION;
+	float3 PosW    : POSITION2;
+	float3 NormalW : NORMAL;
+	float2 TexC    : TEXCOORD;
+	float3 TangentW : TANGENT;
+	float3 BinormalW : BINORMAL;
+};
+
+VertexOut_Default VS_Static(VertexIn_Static vin)
+{
+	VertexOut_Default vout = (VertexOut_Default)0.0f;
+
+	// 월드 & 카메라 변환
+	float4 posH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorld), gView), gProj);
+	vout.PosH = posH;
+
+	vout.NormalW = mul(vin.NormalL, (float3x3)gWorldNoScaling);
+	vout.TangentW = mul(vin.TangentL, (float3x3)gWorldNoScaling);
+	vout.BinormalW = mul(vin.BinormalL, (float3x3)gWorldNoScaling);
+
+	vout.TexC = vin.TexC;
+
+	return vout;
+}
+
+PSOut PS_Static(VertexOut_Default pin)
+{
+	PSOut vout;
+	vout.Diffuse = float4(0.5f, 0.5f, 0.5f, 1.0f) * gDiffuse;
+	vout.Ambient = float4(0.5f, 0.5f, 0.5f, 1.0f) * gAmbient;
+	vout.Specular = float4(0.5f, 0.5f, 0.5f, 1.0f) * gSpecular;
+	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
+	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+
+	return vout;
+}
+
+VertexOut_Default VS_Movable(VertexIn_Movable vin)
+{
+	VertexOut_Default vout = (VertexOut_Default)0.0f;
+
+	// 월드 & 카메라 변환
+	float4 posW = mul(float4(vin.PosL, 1.0f), gWorld);
+	vout.PosW = posW.xyz;
+	//float4 posH = mul(mul(posW, gView), gProj);
+	//vout.PosH = posH;
+
+	vout.NormalW = mul(vin.NormalL, (float3x3)gWorldNoScaling);
+	vout.TangentW = mul(vin.TangentL, (float3x3)gWorldNoScaling);
+	vout.BinormalW = mul(vin.BinormalL, (float3x3)gWorldNoScaling);
+
+	vout.PosH = mul(mul(posW, gView), gProj);
+
+	vout.TexC = vin.TexC;
+
+	return vout;
+}
+
+PSOut PS_Movable(VertexOut_Default pin)
+{
+	PSOut vout;
+	vout.Diffuse = float4(0.5f, 0.5f, 0.5f, 1.0f) * gDiffuse;
+	vout.Ambient = float4(0.5f, 0.5f, 0.5f, 1.0f) * gAmbient;
+	vout.Specular = float4(0.5f, 0.5f, 0.5f, 1.0f) * gSpecular;
+	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
+
+	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+
+	return vout;
+}
+
+//float weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+//weights[0] = vin.BoneWeights.x;
+//weights[1] = vin.BoneWeights.y;
+//weights[2] = vin.BoneWeights.z;
+//weights[3] = 1.0f - weights[0] - weights[1] - weights[2];
+
+//float3 posL = float3(0.0f, 0.0f, 0.0f);
+//float3 normalL = float3(0.0f, 0.0f, 0.0f);
+//float3 tangentL = float3(0.0f, 0.0f, 0.0f);
+//float3 binormalL = float3(0.0f, 0.0f, 0.0f);
+
+//for (int i = 0; i < 4; ++i)
+//{
+//    // 변환들에 비균등 비례가 전혀 없다고 가정한다(따라서
+//    // 법선 변환 시 역전치 행렬을 사용할 필요가 없다.)
+
+//    posL += weights[i] * mul(float4(vin.PosL, 1.0f), gBoneTransforms[vin.BoneIndices[i]]).xyz;
+//    normalL += weights[i] * mul(vin.NormalL, (float3x3) gBoneTransforms[vin.BoneIndices[i]]);
+//    tangentL += weights[i] * mul(vin.TangentL.xyz, (float3x3) gBoneTransforms[vin.BoneIndices[i]]);
+//    binormalL += weights[i] * mul(vin.BinormalL, (float3x3)gBoneTransforms[vin.BoneIndices[i]]);
+
+//}
+
+//vin.PosL = posL;
+//vin.NormalL = normalL;
+//vin.TangentL.xyz = tangentL;
+//vin.BinormalL = binormalL;

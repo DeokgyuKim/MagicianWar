@@ -38,7 +38,6 @@ void CLight::Initialize()
 void CLight::BuildConstantBuffer()
 {
 	int boxCBufIndex = 0;
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
 
 	///Diffuse
 	m_LightCB = make_unique<UploadBuffer<LightCB>>(m_pDevice, 1, true);

@@ -59,7 +59,6 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pCamera->Render(0.f);
 
 	m_mapShaders[RENDER_TYPE::RENDER_COLOR]->PreRender(m_pCmdLst);
-
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_COLOR])
 	{
 		pObject->Render(fTimeDelta);
@@ -69,6 +68,14 @@ void Renderer::Render(const float& fTimeDelta)
 	m_mapShaders[RENDER_TYPE::RENDER_NOBLEND]->PreRender(m_pCmdLst);
 	 
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_NOBLEND])
+	{
+		if (pObject->GetTextureName() != "")
+			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+		pObject->Render(fTimeDelta);
+	}
+
+	m_mapShaders[RENDER_TYPE::RENDER_DYNAMIC]->PreRender(m_pCmdLst);
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_DYNAMIC])
 	{
 		if (pObject->GetTextureName() != "")
 			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
@@ -227,6 +234,34 @@ void Renderer::BuildShader()
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Shade", L"color.hlsl", "PS_Shade", layout);
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1);
 	m_mapShaders[RENDER_TYPE::RENDER_SHADE] = pShader;
+
+	// Static Model
+	pShader = new Shader;
+	layout = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Static", L"color.hlsl", "PS_Static", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5);
+	m_mapShaders[RENDER_TYPE::RENDER_STATIC] = pShader;
+
+	// Skinned Model
+	pShader = new Shader;
+	layout = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "WEIGHTS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 56, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "BONEINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, 68, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Movable", L"color.hlsl", "PS_Movable", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5);
+	m_mapShaders[RENDER_TYPE::RENDER_DYNAMIC] = pShader;
 }
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 {

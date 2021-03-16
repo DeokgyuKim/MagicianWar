@@ -24,7 +24,7 @@ Mesh::Mesh(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst,
 
 	TexTransform = MathHelper::Identity4x4();
 	
-	BuildMaterials();
+	
 	Initialize(device, heap);
 
 }
@@ -46,6 +46,9 @@ HRESULT Mesh::BuildGeometry(ID3D12Device* device)
 	if (check) { cout << "메쉬 로드 실패" << endl; }
 	check = MeshLoader->LoadSkeletonFile(*skinnedInfo, m_strFilePath);
 	if (check) { cout << "스켈레톤 로드 실패" << endl; }
+	
+	m_Material = materials.front();
+	
 
 	unique_ptr<SkinnedModelInstance> skinnedModelInst = make_unique<SkinnedModelInstance>();
 	skinnedModelInst->SkinnedInfo = move(skinnedInfo);
@@ -83,17 +86,6 @@ HRESULT Mesh::BuildGeometry(ID3D12Device* device)
 	m_BoxGeo->DrawArgs["BufferGeo"] = submesh;
 
 	return S_OK;
-}
-
-void Mesh::BuildMaterials()
-{
-	auto material = make_unique<Material>();
-	material->MatCBIndex = 1;
-	material->DiffuseSrvHeapIndex = 1;
-	material->DiffuseAlbedo = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-	material->Roughness = 0.3f;
-
-	m_Material = move(material);
 }
 
 

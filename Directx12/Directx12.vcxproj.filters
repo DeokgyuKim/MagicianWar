@@ -198,6 +198,11 @@
     <ClInclude Include="CLight.h">
       <Filter>01.Engine\08.Light</Filter>
     </ClInclude>
+    <ClInclude Include="SkinnedData.h" />
+    <ClInclude Include="SkinnedModelInstance.h" />
+    <ClInclude Include="define.h">
+      <Filter>99.Default\00.Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -284,6 +289,8 @@
     <ClCompile Include="CLight.cpp">
       <Filter>01.Engine\08.Light</Filter>
     </ClCompile>
+    <ClCompile Include="SkinnedData.cpp" />
+    <ClCompile Include="SkinnedModelInstance.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">
@@ -297,5 +304,10 @@
     <ResourceCompile Include="Directx12.rc">
       <Filter>99.Default</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="color.hlsl" />
+    <None Include="Default.hlsl" />
+    <None Include="Common.hlsl" />
   </ItemGroup>
 </Project>
