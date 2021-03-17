@@ -15,6 +15,6 @@ private:
 	
 protected:
 	ComPtr<ID3D12GraphicsCommandList>	m_CmdLst;
-	unique_ptr<MeshGeometry>			m_BoxGeo;
+	MeshGeometry*			m_BoxGeo;
 };
 

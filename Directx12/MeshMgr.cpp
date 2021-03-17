@@ -1,6 +1,91 @@
 #include "MeshMgr.h"
+#include "MaterialMgr.h"
 #include <fstream>
 MeshMgr* MeshMgr::m_pInstance = nullptr;
+
+void MeshMgr::InitMeshMgr(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCmdLst)
+{
+	m_pCore = pCore;
+	m_pDevice = pDevice;
+	m_pCmdLst = pCmdLst;
+	MaterialLoader = MaterialMgr::GetInstnace();
+}
+
+void MeshMgr::BuildSkinnedModel(string meshName, MESH_TYPE etype)
+{
+	if (m_Meshs.count(meshName)) {
+		cout << "중복 모델 로드" << endl;
+		return;
+	}
+
+	// 메쉬가 없다면
+	switch (etype)
+	{
+	case MESH_TYPE::CHARACTER:
+		m_strFilePath = "..//Resources//Models//Characters//";
+		break;
+	case MESH_TYPE::COUNT:
+		break;
+	default:
+		break;
+	}
+	m_strFilePath += meshName + "//" + meshName;
+
+	vector<SkinnedVertex>	skinnedVertices;
+	vector<UINT>			indices;
+	vector<Material>		materials;
+	unique_ptr<SkinnedData> skinnedInfo = make_unique<SkinnedData>();
+
+	bool check = true;
+	check = LoadMeshFile(skinnedVertices, indices, &materials, m_strFilePath);
+	if (!check) { cout << "메쉬 로드 실패" << endl; }
+	check = LoadSkeletonFile(*skinnedInfo, m_strFilePath);
+	if (!check) { cout << "스켈레톤 로드 실패" << endl; }
+
+	unique_ptr<SkinnedModelInstance> skinnedModelInst = make_unique<SkinnedModelInstance>();
+	skinnedModelInst->SkinnedInfo = move(skinnedInfo);
+	skinnedModelInst->Transforms.resize(skinnedModelInst->SkinnedInfo->BoneCount());
+	m_SkinnedModelInst[meshName] = move(skinnedModelInst);
+
+	const UINT vbByteSize = (UINT)skinnedVertices.size() * sizeof(SkinnedVertex);
+	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint32_t);
+
+	auto meshGeo = make_unique<MeshGeometry>();
+	meshGeo->Name = "BufferGeo"; // 메시 이름
+
+	ThrowIfFailed(D3DCreateBlob(vbByteSize, &meshGeo->VertexBufferCPU));
+	CopyMemory(meshGeo->VertexBufferCPU->GetBufferPointer(), skinnedVertices.data(), vbByteSize);
+
+	ThrowIfFailed(D3DCreateBlob(ibByteSize, &meshGeo->IndexBufferCPU));
+	CopyMemory(meshGeo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+	meshGeo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(m_pDevice,
+		m_pCmdLst, skinnedVertices.data(), vbByteSize, meshGeo->VertexBufferUploader);
+
+	meshGeo->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(m_pDevice,
+		m_pCmdLst, indices.data(), ibByteSize, meshGeo->IndexBufferUploader);
+
+	meshGeo->VertexByteStride = sizeof(SkinnedVertex);
+	meshGeo->VertexBufferByteSize = vbByteSize;
+	meshGeo->IndexFormat = DXGI_FORMAT_R32_UINT;
+	meshGeo->IndexBufferByteSize = ibByteSize;
+
+	SubmeshGeometry submesh;
+	submesh.IndexCount = (UINT)indices.size();
+	submesh.StartIndexLocation = 0;
+	submesh.BaseVertexLocation = 0;
+
+	meshGeo->DrawArgs["BufferGeo"] = submesh;
+	
+	m_Meshs[meshName] = move(meshGeo);
+	MaterialLoader->BuildMaterial(meshName, materials.front());
+	
+
+}
+
+void MeshMgr::BuildModel(string meshName, MESH_TYPE etype)
+{
+}
 
 bool MeshMgr::LoadMeshFile(vector<SkinnedVertex>& outVertex, vector<UINT>& outIndex, vector<Material>* outMaterial, string path)
 {
@@ -23,9 +108,10 @@ bool MeshMgr::LoadMeshFile(vector<SkinnedVertex>& outVertex, vector<UINT>& outIn
 		for (UINT i = 0; i < materialSize; ++i) {
 			// Material
 			Material tempMaterial;
-			// Fresnel이랑 Emissive 거르기
+			// Fresnel, Emissive, Roughness 거르기
 			XMFLOAT3 Fresnel_Net;
 			XMFLOAT3 Emissive_Net;
+			float Roughness_Net;
 
 			fileInput >> ignore >> tempMaterial.Name;
 			fileInput >> ignore >> tempMaterial.Ambient.x >> tempMaterial.Ambient.y >> tempMaterial.Ambient.z;
@@ -33,7 +119,7 @@ bool MeshMgr::LoadMeshFile(vector<SkinnedVertex>& outVertex, vector<UINT>& outIn
 			fileInput >> ignore >> Fresnel_Net.x >> Fresnel_Net.y >> Fresnel_Net.z;
 			fileInput >> ignore >> tempMaterial.Specular.x >> tempMaterial.Specular.y >> tempMaterial.Specular.z;
 			fileInput >> ignore >> Emissive_Net.x >> Emissive_Net.y >> Emissive_Net.z;
-			fileInput >> ignore >> tempMaterial.Roughness;
+			fileInput >> ignore >> Roughness_Net;
 			fileInput >> ignore;
 
 			for (int j = 0; j < 4; ++j) {

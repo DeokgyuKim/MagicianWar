@@ -157,6 +157,7 @@
     <ClInclude Include="LightGeo.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="MaterialMgr.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshMgr.h" />
@@ -193,6 +194,7 @@
     <ClCompile Include="LightGeo.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MaterialMgr.cpp" />
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshMgr.cpp" />

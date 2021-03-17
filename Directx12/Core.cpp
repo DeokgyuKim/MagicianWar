@@ -1,6 +1,6 @@
 #include "Core.h"
 #include "Renderer.h"
-
+#include "MeshMgr.h"
 #include "RenderTarget.h"
 
 Core* Core::m_pInstance = NULL;
@@ -31,7 +31,7 @@ HRESULT Core::InitDevice()
     if (FAILED(SetViewportAndScissorrect())) return E_FAIL;
 
     Renderer::GetInstance()->InitRenderer(this, m_ptrDevice.Get(), m_ptrCmdLst.Get());
-
+    MeshMgr::GetInstnace()->InitMeshMgr(this, m_ptrDevice.Get(), m_ptrCmdLst.Get());
     return S_OK;
 }
 

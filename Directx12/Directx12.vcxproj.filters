@@ -94,6 +94,9 @@
     <Filter Include="01.Engine\06.Component\01.Geometry\03. LightGeo">
       <UniqueIdentifier>{1f1249c9-e178-4eac-b353-18d33787f8f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\01.Renderer\02.MaterialMgr">
+      <UniqueIdentifier>{aa177ef9-3126-417d-8d35-5192c5873487}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -203,6 +206,7 @@
     <ClInclude Include="define.h">
       <Filter>99.Default\00.Header</Filter>
     </ClInclude>
+    <ClInclude Include="MaterialMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -291,6 +295,7 @@
     </ClCompile>
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="SkinnedModelInstance.cpp" />
+    <ClCompile Include="MaterialMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

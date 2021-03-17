@@ -5,6 +5,7 @@ class MaterialCom :
     public Component
 {
 public:
+    MaterialCom(string MaterialName);
     MaterialCom(const XMFLOAT4& diff, const XMFLOAT4& ambi, const XMFLOAT4& spec);
     virtual ~MaterialCom();
 public:
@@ -16,8 +17,8 @@ public:
     XMVECTOR    GetAmbient() { return XMLoadFloat4(&m_xmfAmbient); }
     XMVECTOR    GetSpecular() { return XMLoadFloat4(&m_xmfSpecular); }
 private:
+    Material* m_Material;
     XMFLOAT4    m_xmfDiffuse;
     XMFLOAT4    m_xmfAmbient;
     XMFLOAT4    m_xmfSpecular;
 };
-

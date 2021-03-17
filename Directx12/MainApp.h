@@ -3,6 +3,7 @@
 
 class Scene;
 class Core;
+class MeshMgr;
 class Renderer;
 class MainApp
 {
@@ -17,6 +18,7 @@ public:
 private:
 	Scene*		m_pScene;
 	Core*		m_pCore;
+	MeshMgr*	m_MeshMgr;
 	Renderer*	m_pRenderer;
 };
 

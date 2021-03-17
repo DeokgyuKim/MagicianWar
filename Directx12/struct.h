@@ -48,16 +48,12 @@ struct Material
 {
 	std::string Name;
 
-	int MatCBIndex = -1;
-	int DiffuseSrvHeapIndex = -1;
-	int NormalSrvHeapIndex = -1;
-
 	// Material constant buffer data used for shading.
 	XMFLOAT3 Ambient = { 0.f,0.f,0.f };
 	XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
 	XMFLOAT3 Specular = { 0.01f, 0.01f, 0.01f };
 
-	float Roughness = .25f;
+	
 	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();
 };
 
