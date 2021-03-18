@@ -28,7 +28,7 @@ void Player::Initialize()
 
 	Component* pComponent = new Transform(XMFLOAT3(0.01f, 0.01f, 0.01f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
-	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER);
+	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), CHARACTER_WIZARD_01);
 	m_mapComponent["Mesh"] = pComponent;
 	pComponent = new MaterialCom(CHARACTER_WIZARD_01);
 	m_mapComponent["Material"] = pComponent;

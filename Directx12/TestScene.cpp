@@ -4,6 +4,7 @@
 #include "Terrain.h"
 #include "Camera.h"
 #include "Player.h"
+#include "StaticObject.h"
 
 TestScene::TestScene()
 {
@@ -48,6 +49,14 @@ void TestScene::Initialize()
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 
-	m_pObjects[OBJ_PLAYER].push_back(pObj);
+	m_pObjects[OBJ_STATIC].push_back(pObj);
+
+	Core::GetInstance()->CmdLstReset();
+	pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	//(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance()->GetHeap());
+	Core::GetInstance()->CmdLstExecute();
+	Core::GetInstance()->WaitForGpuComplete();
+
+	m_pObjects[OBJ_STATIC].push_back(pObj);
 
 }

@@ -97,6 +97,9 @@
     <Filter Include="01.Engine\01.Renderer\02.MaterialMgr">
       <UniqueIdentifier>{aa177ef9-3126-417d-8d35-5192c5873487}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\02.Object\03.StaticObject">
+      <UniqueIdentifier>{10573e65-fbdb-4d3a-9cef-07d5b9772c71}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -207,6 +210,7 @@
       <Filter>99.Default\00.Header</Filter>
     </ClInclude>
     <ClInclude Include="MaterialMgr.h" />
+    <ClInclude Include="StaticObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -296,6 +300,7 @@
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="SkinnedModelInstance.cpp" />
     <ClCompile Include="MaterialMgr.cpp" />
+    <ClCompile Include="StaticObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

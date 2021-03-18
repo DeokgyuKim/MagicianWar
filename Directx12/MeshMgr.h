@@ -33,7 +33,12 @@ public:
 	void BuildModel(string meshName, MESH_TYPE etype);
 
 private: // mesh, skeleton Load
-	bool LoadMeshFile(vector<SkinnedVertex>& outVertex, vector<UINT>& outIndex, vector<Material>* outMaterial,string path);
+	bool LoadMeshFile(vector<SkinnedVertex>& outVertex, 
+		vector<UINT>& outIndex, vector<Material>* outMaterial,
+		string path);
+	bool LoadStaticMeshFile(vector<Vertex>& outVertex,
+		vector<uint32_t>& outIndex, vector<Material>* outMaterial,
+		string path);
 	bool LoadSkeletonFile(SkinnedData& outSkinnedData, string path);
 	MaterialMgr* MaterialLoader;
 public:
@@ -49,10 +54,13 @@ private:
 	ID3D12Device* m_pDevice = NULL;
 	ID3D12GraphicsCommandList* m_pCmdLst = NULL;
 
-	// Mesh 정보
+	// Mesh 정보 ( STATIC , MOVABLE 통합 )
 	unordered_map<string, unique_ptr<MeshGeometry>> m_Meshs;
 	// 애니메이션 정보
 	unordered_map <string, unique_ptr<SkinnedModelInstance>> m_SkinnedModelInst;
 	string m_strFilePath;
+
+
+
 };
 

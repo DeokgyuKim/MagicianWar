@@ -13,7 +13,10 @@ void MainApp::Initialize()
 	
 	m_MeshMgr = MeshMgr::GetInstnace();
 	m_MeshMgr->BuildSkinnedModel(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER);
-	
+	m_MeshMgr->BuildModel(ROCK_02, MESH_TYPE::ROCK);
+	m_MeshMgr->BuildModel(TREE_01, MESH_TYPE::TREE);
+	m_MeshMgr->BuildModel(HOUSE_02, MESH_TYPE::HOUSE);
+	m_MeshMgr->BuildModel(TILE_01, MESH_TYPE::TILE);
 	m_pCore->CmdLstExecute();
 	m_pCore->WaitForGpuComplete();
 

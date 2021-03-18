@@ -10,7 +10,7 @@ class Mesh :
 public:
 	Mesh(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst,
 		ID3D12DescriptorHeap* heap,
-		string _meshName, MESH_TYPE etype
+		string _meshName
 	);
 	~Mesh();
 public:
