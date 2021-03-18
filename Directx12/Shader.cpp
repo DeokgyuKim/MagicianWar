@@ -17,7 +17,7 @@ HRESULT Shader::BuildShadersAndInputLayout(const TCHAR* vsName, const char* vsFu
 	return S_OK;
 }
 
-HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* RootSignature, int numRt)
+HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* RootSignature, int numRt, bool ClockWise)
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -40,8 +40,24 @@ HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* Ro
 		};
 	}
 
-	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	//psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	if (ClockWise)
+	{
+		psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	}
+	else
+	{
+		psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+		psoDesc.RasterizerState.FrontCounterClockwise = TRUE;
+		psoDesc.RasterizerState.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
+		psoDesc.RasterizerState.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
+		psoDesc.RasterizerState.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+		psoDesc.RasterizerState.DepthClipEnable = TRUE;
+		psoDesc.RasterizerState.MultisampleEnable = FALSE;
+		psoDesc.RasterizerState.AntialiasedLineEnable = FALSE;
+		psoDesc.RasterizerState.ForcedSampleCount = 0;
+		psoDesc.RasterizerState.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+	}
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 
 	psoDesc.DepthStencilState.DepthEnable = TRUE;

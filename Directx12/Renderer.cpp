@@ -8,6 +8,7 @@
 #include "RenderTarget.h"
 #include "RenderTargetMgr.h"
 #include "CLight.h"
+#include "Skybox.h"
 
 Renderer* Renderer::m_pInstance = NULL;
 Renderer* Renderer::GetInstance()
@@ -39,7 +40,8 @@ void Renderer::InitRenderer(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCo
 	m_pTextureMgr->BuildTextures(m_pDevice, m_pCmdLst, m_ptrDescriptorHeap.Get());
 
 	m_pLight = new CLight(m_pDevice, m_pCmdLst, m_ptrDescriptorHeap.Get(), this,
-		XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f), XMFLOAT4(1.f, -1.f, 1.f, 1.f));
+		XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(-50.f, 50.f, -50.f, 1.f)
+		, XMFLOAT4(1.f, -1.f, 1.f, 0.f));
 	//BuildTextures();
 }
 
@@ -48,7 +50,7 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pCore->Render_Begin();
 
 	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Deffered");
-	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Deffered");
+	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Deffered", m_pCore->GetDSVCpuHandle());
 
     ////////////////////////////Render////////////////////////////
 	m_pCmdLst->SetGraphicsRootSignature(m_ptrRootSignature.Get());
@@ -84,7 +86,7 @@ void Renderer::Render(const float& fTimeDelta)
     //////////////////////////////////////////////////////////////
 
 	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Shade");
-	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Shade");
+	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Shade", m_pCore->GetDSVForShadeCpuHandle());
 	m_mapShaders[RENDER_TYPE::RENDER_SHADE]->PreRender(m_pCmdLst);
 
 	m_pRTMgr->GetRenderTarget("Diffuse")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 5);
@@ -96,7 +98,17 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pLight->RenderLight();
 
 
-	m_pCore->Render_EndTest(m_pRTMgr->GetRenderTarget("Shade"));
+	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Shade", m_pCore->GetDSVCpuHandle());
+	m_mapShaders[RENDER_TYPE::RENDER_SKYBOX]->PreRender(m_pCmdLst);
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_SKYBOX])
+	{
+		if (pObject->GetTextureName() != "")
+			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+		pObject->Render(fTimeDelta);
+	}
+
+	DebugKeyInput();
+	m_pCore->Render_EndTest(m_pRTMgr->GetRenderTarget(DebugInput));
 
 	//m_pCore->Render_End();
 	for(int i = 0; i < RENDER_TYPE::RENDER_END; ++i)
@@ -141,16 +153,17 @@ D3D12_CPU_DESCRIPTOR_HANDLE Renderer::CreateUnorderedAccessView(ID3D12Resource* 
 
 void Renderer::BuildRootSignature()
 {
-	CD3DX12_DESCRIPTOR_RANGE srvTable[6];
+	CD3DX12_DESCRIPTOR_RANGE srvTable[7];
 	srvTable[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 	srvTable[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
 	srvTable[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2);
 	srvTable[3].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3);
 	srvTable[4].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4);
 	srvTable[5].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 5);
+	srvTable[6].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 6);
 
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[10];
+	CD3DX12_ROOT_PARAMETER slotRootParameter[11];
 
 
 	slotRootParameter[0].InitAsConstantBufferView(0);	//world
@@ -163,11 +176,12 @@ void Renderer::BuildRootSignature()
 	slotRootParameter[7].InitAsDescriptorTable(1, &srvTable[3], D3D12_SHADER_VISIBILITY_PIXEL);	//specular render target
 	slotRootParameter[8].InitAsDescriptorTable(1, &srvTable[4], D3D12_SHADER_VISIBILITY_PIXEL);	//normal render target
 	slotRootParameter[9].InitAsDescriptorTable(1, &srvTable[5], D3D12_SHADER_VISIBILITY_ALL);	//depth render target
+	slotRootParameter[10].InitAsDescriptorTable(1, &srvTable[6], D3D12_SHADER_VISIBILITY_ALL);	//Skybox texture
 
 	auto staticSamplers = GetStaticSamplers();
 
 	// A root signature is an array of root parameters.
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(10, slotRootParameter,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(11, slotRootParameter,
 		(UINT)staticSamplers.size(), staticSamplers.data(),
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -262,6 +276,17 @@ void Renderer::BuildShader()
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Movable", L"color.hlsl", "PS_Movable", layout);
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5);
 	m_mapShaders[RENDER_TYPE::RENDER_DYNAMIC] = pShader;
+
+	// SkyBox
+	pShader = new Shader;
+	layout = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Skybox", L"color.hlsl", "PS_Skybox", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, false);
+	m_mapShaders[RENDER_TYPE::RENDER_SKYBOX] = pShader;
 }
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 {
@@ -318,4 +343,20 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 		pointWrap, pointClamp,
 		linearWrap, linearClamp,
 		anisotropicWrap, anisotropicClamp };
+}
+
+void Renderer::DebugKeyInput()
+{
+	if (GetAsyncKeyState(VK_NUMPAD0) & 0x0001)
+		DebugInput = "Shade";
+	if (GetAsyncKeyState(VK_NUMPAD1) & 0x0001)
+		DebugInput = "Diffuse";
+	if (GetAsyncKeyState(VK_NUMPAD2) & 0x0001)
+		DebugInput = "Ambient";
+	if (GetAsyncKeyState(VK_NUMPAD3) & 0x0001)
+		DebugInput = "Specular";
+	if (GetAsyncKeyState(VK_NUMPAD4) & 0x0001)
+		DebugInput = "Normal";
+	if (GetAsyncKeyState(VK_NUMPAD5) & 0x0001)
+		DebugInput = "Depth";
 }

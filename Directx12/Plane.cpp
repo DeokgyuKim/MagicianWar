@@ -15,12 +15,13 @@ Plane::~Plane()
 
 HRESULT Plane::BuildGeometry(ID3D12Device* device)
 {
+
 	std::array<UvVertex, 4> vertices =
 	{
-		UvVertex({ XMFLOAT3(m_fX - 0.5f,	0.0f,	m_fZ + 0.5f), XMFLOAT2(0.f, 0.f), XMFLOAT3(0.f, 1.f, 0.f) }),
-		UvVertex({ XMFLOAT3(m_fX + 0.5f,	0.0f,	m_fZ + 0.5f), XMFLOAT2(1.f, 0.f), XMFLOAT3(0.f, 1.f, 0.f) }),
-		UvVertex({ XMFLOAT3(m_fX + 0.5f,	0.0f,	m_fZ - 0.5f), XMFLOAT2(1.f, 1.f), XMFLOAT3(0.f, 1.f, 0.f) }),
-		UvVertex({ XMFLOAT3(m_fX - 0.5f,	0.0f,	m_fZ - 0.5f), XMFLOAT2(0.f, 1.f), XMFLOAT3(0.f, 1.f, 0.f) }),
+		UvVertex({ XMFLOAT3(m_fX - 0.5f,	0.f,	m_fZ + 0.5f), XMFLOAT2(0.f, 0.f), XMFLOAT3(0.f, 1.f, 0.f) }),
+		UvVertex({ XMFLOAT3(m_fX + 0.5f,	0.f,	m_fZ + 0.5f), XMFLOAT2(1.f, 0.f), XMFLOAT3(0.f, 1.f, 0.f) }),
+		UvVertex({ XMFLOAT3(m_fX + 0.5f,	0.f,	m_fZ - 0.5f), XMFLOAT2(1.f, 1.f), XMFLOAT3(0.f, 1.f, 0.f) }),
+		UvVertex({ XMFLOAT3(m_fX - 0.5f,	0.f,	m_fZ - 0.5f), XMFLOAT2(0.f, 1.f), XMFLOAT3(0.f, 1.f, 0.f) }),
 	};
 
 	std::array<std::uint16_t, 6> indices =

@@ -37,7 +37,7 @@ VertexOut VS(VertexIn vin)
 	
 	// Just pass vertex color into the pixel shader.
     vout.Color = vin.Color;
-	vout.Normal = mul(float4(vin.Normal, 0.f), gWorld);
+	vout.Normal = normalize(mul(float4(vin.Normal, 0.f), gWorld));
     
     return vout;
 }
@@ -49,7 +49,7 @@ PSOut PS(VertexOut pin)
 	vout.Diffuse = pin.Color * gDiffuse;
 	vout.Ambient = pin.Color * gAmbient;
 	vout.Specular = pin.Color * gSpecular;
-	vout.Normal = pin.Normal * 0.5f + 0.5f;
+	vout.Normal = float4(pin.Normal.xyz * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
 	return vout;
@@ -79,7 +79,7 @@ Out VS_Main(In vin)
 
 	// Just pass vertex color into the pixel shader.
 	vout.UV = vin.UV;
-	vout.Normal = mul(float4(vin.Normal, 0.f), gWorld);
+	vout.Normal = normalize(mul(float4(vin.Normal, 0.f), gWorld));
 
 	return vout;
 }
@@ -91,7 +91,7 @@ PSOut PS_Main(Out pin)
 	vout.Diffuse = Texture.Sample(gsamLinear, pin.UV) * gDiffuse;
 	vout.Ambient = Texture.Sample(gsamLinear, pin.UV) * gAmbient;
 	vout.Specular = Texture.Sample(gsamLinear, pin.UV) * gSpecular;
-	vout.Normal = pin.Normal * 0.5f + 0.5f;
+	vout.Normal = float4((pin.Normal * 0.5f + 0.5f).xyz, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
 	return vout;
@@ -139,22 +139,26 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 
 	float4 position;
 	position.x = (pin.UV.x * 2.f - 1.f) * ViewZ;
-	position.y = (pin.UV.y * 2.f - 1.f) * ViewZ;
+	position.y = (pin.UV.y * -2.f + 1.f) * ViewZ;
 	position.z = depth.x * ViewZ;
 	position.w = ViewZ;
 
-	position = mul(position, gInvProj);
 	position = mul(position, gInvView);
+	position = mul(position, gInvProj);
 
 	float3 camdir = normalize(position.xyz - gCamPosition.xyz);
 
-	float diffuseValue = saturate(dot(-normalize(gLightDirection.xyz), Normal.xyz));
-	float3 reflection = normalize(reflect(gLightDirection.xyz, Normal.xyz));
+	float diffuseValue = saturate(dot(normalize(gLightDirection.xyz) * -1.f, Normal.xyz));
+	diffuseValue = (ceil(diffuseValue * 3) / 3.f) / 2.f + 0.5f;
+
+	//reflect(vector(normalize(g_vLightDir.xyz), 0.f), vNormal);
+	float3 reflection = normalize(reflect(normalize(gLightDirection.xyz), Normal.xyz));
+	//float3 reflection = normalize(reflect(gLightDirection.xyz, Normal.xyz));
 	float3 specularValue = 0;
 
 	if (diffuseValue.x > 0)
 	{
-		specularValue = saturate(dot(reflection.xyz, -camdir));
+		specularValue = saturate(dot(reflection, -camdir));
 		specularValue = pow(specularValue, 20.f);
 	}
 
@@ -162,8 +166,8 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	float4 ambient = AmbiTex.Sample(gsamLinear, pin.UV);
 	float4 specular = SpecTex.Sample(gsamLinear, pin.UV);
 
-	pOut.Shade = float4((diffuse.xyz * diffuseValue) + (ambient.xyz), 1.f);
-	// + (specular.xyz * specularValue)
+	pOut.Shade = float4((diffuse.xyz * diffuseValue) + (ambient.xyz) + (specular.xyz * specularValue), 1.f);
+	//
 
 
 	return pOut;
@@ -209,9 +213,9 @@ VertexOut_Default VS_Static(VertexIn_Static vin)
 	float4 posH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorld), gView), gProj);
 	vout.PosH = posH;
 
-	vout.NormalW = mul(vin.NormalL, (float3x3)gWorldNoScaling);
-	vout.TangentW = mul(vin.TangentL, (float3x3)gWorldNoScaling);
-	vout.BinormalW = mul(vin.BinormalL, (float3x3)gWorldNoScaling);
+	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)gWorld));
+	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)gWorld));
+	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)gWorld));
 
 	vout.TexC = vin.TexC;
 
@@ -221,9 +225,9 @@ VertexOut_Default VS_Static(VertexIn_Static vin)
 PSOut PS_Static(VertexOut_Default pin)
 {
 	PSOut vout;
-	vout.Diffuse = float4(0.5f, 0.5f, 0.5f, 1.0f) * gDiffuse;
-	vout.Ambient = float4(0.5f, 0.5f, 0.5f, 1.0f) * gAmbient;
-	vout.Specular = float4(0.5f, 0.5f, 0.5f, 1.0f) * gSpecular;
+	vout.Diffuse = Texture.Sample(gsamLinear, pin.TexC) * gDiffuse;
+	vout.Ambient = Texture.Sample(gsamLinear, pin.TexC) * gAmbient;
+	vout.Specular = Texture.Sample(gsamLinear, pin.TexC) * gSpecular;
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
@@ -240,9 +244,9 @@ VertexOut_Default VS_Movable(VertexIn_Movable vin)
 	//float4 posH = mul(mul(posW, gView), gProj);
 	//vout.PosH = posH;
 
-	vout.NormalW = mul(vin.NormalL, (float3x3)gWorldNoScaling);
-	vout.TangentW = mul(vin.TangentL, (float3x3)gWorldNoScaling);
-	vout.BinormalW = mul(vin.BinormalL, (float3x3)gWorldNoScaling);
+	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)gWorld));
+	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)gWorld));
+	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)gWorld));
 
 	vout.PosH = mul(mul(posW, gView), gProj);
 
@@ -254,9 +258,9 @@ VertexOut_Default VS_Movable(VertexIn_Movable vin)
 PSOut PS_Movable(VertexOut_Default pin)
 {
 	PSOut vout;
-	vout.Diffuse = float4(0.5f, 0.5f, 0.5f, 1.0f) * gDiffuse;
-	vout.Ambient = float4(0.5f, 0.5f, 0.5f, 1.0f) * gAmbient;
-	vout.Specular = float4(0.5f, 0.5f, 0.5f, 1.0f) * gSpecular;
+	vout.Diffuse = Texture.Sample(gsamLinear, pin.TexC) * gDiffuse;
+	vout.Ambient = Texture.Sample(gsamLinear, pin.TexC) * gAmbient;
+	vout.Specular = Texture.Sample(gsamLinear, pin.TexC) * gSpecular;
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
@@ -291,3 +295,31 @@ PSOut PS_Movable(VertexOut_Default pin)
 //vin.NormalL = normalL;
 //vin.TangentL.xyz = tangentL;
 //vin.BinormalL = binormalL;
+
+
+struct SkyboxIn
+{
+	float3 PosL : POSITION;
+	float3 NormalL : NORMAL;
+	float3 TexC : TEXCOORD;
+};
+
+struct SkyboxOut
+{
+	float4 PosH : SV_POSITION;
+	float3 TexC : TEXCOORD;
+};
+
+SkyboxOut VS_Skybox(SkyboxIn vin)
+{
+	SkyboxOut vout;
+	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.f), gWorld), gView), gProj);
+	vout.TexC = vin.TexC;
+
+	return vout;
+}
+
+float4 PS_Skybox(SkyboxOut pin) : SV_Target
+{
+	return CubeMapTex.Sample(gsamLinear, pin.TexC);
+}

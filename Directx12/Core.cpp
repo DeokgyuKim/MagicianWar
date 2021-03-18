@@ -61,6 +61,7 @@ void Core::Render_Begin()
 
     m_ptrCmdLst->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor, 0, NULL);
     m_ptrCmdLst->ClearDepthStencilView(m_DsvCPUHandles, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
+    m_ptrCmdLst->ClearDepthStencilView(m_DsvForShadeCPUHandles, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
     m_ptrCmdLst->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &m_DsvCPUHandles);
 
 }
@@ -260,7 +261,7 @@ HRESULT Core::CreateDescriptorHeap()
 
 
     D3D12_DESCRIPTOR_HEAP_DESC dsvDesc;
-    dsvDesc.NumDescriptors = 1;
+    dsvDesc.NumDescriptors = 2;
     dsvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
     dsvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
     dsvDesc.NodeMask = 0;
@@ -322,6 +323,12 @@ HRESULT Core::CreateRtvDsvBufferAndView()
     )))
         return E_FAIL;
 
+    if (FAILED(m_ptrDevice->CreateCommittedResource(
+        &heapPro, D3D12_HEAP_FLAG_NONE, &rscDesc, D3D12_RESOURCE_STATE_DEPTH_WRITE,
+        &clearValue, IID_PPV_ARGS(&m_ptrDsvForShade)
+    )))
+        return E_FAIL;
+
     D3D12_DEPTH_STENCIL_VIEW_DESC dsvViewDesc;
     ZeroMemory(&dsvViewDesc, sizeof(D3D12_DEPTH_STENCIL_VIEW_DESC));
     dsvViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -330,6 +337,9 @@ HRESULT Core::CreateRtvDsvBufferAndView()
 
     m_DsvCPUHandles = m_ptrDSVHeap->GetCPUDescriptorHandleForHeapStart();
     m_ptrDevice->CreateDepthStencilView(m_ptrDsv.Get(), &dsvViewDesc, d3dDsvCPUDescriptorHandle);
+    d3dDsvCPUDescriptorHandle.ptr += gnDsvDescriptorIncrementSize;
+    m_DsvForShadeCPUHandles = d3dDsvCPUDescriptorHandle;
+    m_ptrDevice->CreateDepthStencilView(m_ptrDsvForShade.Get(), &dsvViewDesc, d3dDsvCPUDescriptorHandle);
 
     return S_OK;
 }
@@ -389,9 +399,9 @@ void Core::WaitForGpuComplete()
     }
 }
 
-void Core::SetRenderTarget(const int& numRenderTarget, D3D12_CPU_DESCRIPTOR_HANDLE RtStartHandle)
+void Core::SetRenderTarget(const int& numRenderTarget, D3D12_CPU_DESCRIPTOR_HANDLE RtStartHandle, D3D12_CPU_DESCRIPTOR_HANDLE DsvHandle)
 {
-    m_ptrCmdLst->OMSetRenderTargets(numRenderTarget, &RtStartHandle, TRUE, &m_DsvCPUHandles);
+    m_ptrCmdLst->OMSetRenderTargets(numRenderTarget, &RtStartHandle, TRUE, &DsvHandle);
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE Core::CreateRenderTargetView(ID3D12Resource* resource, D3D12_RENDER_TARGET_VIEW_DESC rtvDesc)

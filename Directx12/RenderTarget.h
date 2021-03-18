@@ -6,11 +6,12 @@ class Renderer;
 class RenderTarget
 {
 public:
-	RenderTarget(ID3D12Device* device, Renderer* pRenderer, const int width, const int height);
+	RenderTarget(ID3D12Device* device, Renderer* pRenderer, const int width, const int height, D3D12_CLEAR_VALUE clear);
 	~RenderTarget();
 public:
 	void	ResourceBarrier(ID3D12GraphicsCommandList* cmdLst, D3D12_RESOURCE_STATES postState);
 	void	SetShaderVariable(ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap, int RootParameterIdx);
+	void	ClearRenderTarget(ID3D12GraphicsCommandList* cmdLst);
 public:
 	D3D12_CPU_DESCRIPTOR_HANDLE	GetSrvHandle() { return m_SrvHandle; }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRtvHandle() { return m_RtvHandle; }
@@ -28,5 +29,7 @@ private:
 	D3D12_CPU_DESCRIPTOR_HANDLE m_UavHandle;
 	D3D12_CPU_DESCRIPTOR_HANDLE m_RtvHandle;
 	D3D12_RESOURCE_STATES		m_CurState;
+
+	D3D12_CLEAR_VALUE			m_ClearValue;
 };
 

@@ -16,7 +16,7 @@ CLight::CLight(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12De
 	m_xmfAmbient = ambi;
 	m_xmfSpecular = spec;
 	m_xmfPosition = pos;
-	m_xmfDirection = dir;
+	XMStoreFloat4(&m_xmfDirection, XMVector4Normalize(XMLoadFloat4(&dir)));
 
 	Initialize();
 }

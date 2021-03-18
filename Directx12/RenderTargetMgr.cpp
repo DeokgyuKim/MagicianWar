@@ -8,32 +8,47 @@ void RenderTargetMgr::BuildRenderTarget(ID3D12Device* device, Renderer* pRendere
 {
 	RenderTarget* Rt = NULL;
 
-	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY);
+	D3D12_CLEAR_VALUE clear;
+	clear.DepthStencil.Depth = 1.f;
+	clear.DepthStencil.Stencil = 0.f;
+	clear.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	clear.Color[0] = 0.f;
+	clear.Color[1] = 0.f;
+	clear.Color[2] = 0.f;
+	clear.Color[3] = 1.f;
+
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
 	m_mapRenderTarget["Diffuse"] = Rt;
 	m_mapMRT["Deffered"].push_back(Rt);
 
-	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY);
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
 	m_mapRenderTarget["Ambient"] = Rt;
 	m_mapMRT["Deffered"].push_back(Rt);
 
-	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY);
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
 	m_mapRenderTarget["Specular"] = Rt;
 	m_mapMRT["Deffered"].push_back(Rt);
 
-	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY);
+	clear.Color[3] = 0.f;
+
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
 	m_mapRenderTarget["Normal"] = Rt;
 	m_mapMRT["Deffered"].push_back(Rt);
 
-	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY);
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
 	m_mapRenderTarget["Depth"] = Rt;
 	m_mapMRT["Deffered"].push_back(Rt);
+	
+	clear.Color[2] = 1.f;
+	clear.Color[3] = 1.f;
 
-	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY);
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
 	m_mapRenderTarget["Shade"] = Rt;
 	m_mapMRT["Shade"].push_back(Rt);
 }
 
-void RenderTargetMgr::SetMultiRenderTarget(ID3D12GraphicsCommandList* cmdLst, string tagMRT)
+void RenderTargetMgr::SetMultiRenderTarget(ID3D12GraphicsCommandList* cmdLst, string tagMRT, D3D12_CPU_DESCRIPTOR_HANDLE DsvHandle)
 {
 	auto iter = m_mapMRT.find(tagMRT);
 	if (iter == m_mapMRT.end())
@@ -45,7 +60,7 @@ void RenderTargetMgr::SetMultiRenderTarget(ID3D12GraphicsCommandList* cmdLst, st
 	for (int i = 0; i < (*iter).second.size(); ++i)
 		(*iter).second[i]->ResourceBarrier(cmdLst, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-	Core::GetInstance()->SetRenderTarget((*iter).second.size(), (*iter).second.front()->GetRtvHandle());
+	Core::GetInstance()->SetRenderTarget((*iter).second.size(), (*iter).second.front()->GetRtvHandle(), DsvHandle);
 }
 
 void RenderTargetMgr::ClearMultiRenderTarget(ID3D12GraphicsCommandList* cmdLst, string tagMRT)
@@ -61,7 +76,8 @@ void RenderTargetMgr::ClearMultiRenderTarget(ID3D12GraphicsCommandList* cmdLst, 
 	for (int i = 0; i < (*iter).second.size(); ++i)
 	{
 		(*iter).second[i]->ResourceBarrier(cmdLst, D3D12_RESOURCE_STATE_RENDER_TARGET);
-		cmdLst->ClearRenderTargetView((*iter).second[i]->GetRtvHandle(), pfClearColor, 0, NULL);
+		(*iter).second[i]->ClearRenderTarget(cmdLst);
+		//cmdLst->ClearRenderTargetView((*iter).second[i]->GetRtvHandle(), pfClearColor, 0, NULL);
 	}
 
 }

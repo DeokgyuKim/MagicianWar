@@ -33,11 +33,13 @@ public:
 	void	CmdLstExecute();
 	void	MoveToNextFrame();
 	void	WaitForGpuComplete();
-	void	SetRenderTarget(const int& numRenderTarget, D3D12_CPU_DESCRIPTOR_HANDLE RtStartHandle);
+	void	SetRenderTarget(const int& numRenderTarget, D3D12_CPU_DESCRIPTOR_HANDLE RtStartHandle, D3D12_CPU_DESCRIPTOR_HANDLE DsvHandle);
 	D3D12_CPU_DESCRIPTOR_HANDLE CreateRenderTargetView(ID3D12Resource* resource, D3D12_RENDER_TARGET_VIEW_DESC rtvDesc);
 
 	ID3D12Device*				GetDevice() { return m_ptrDevice.Get(); }
 	ID3D12GraphicsCommandList*	GetCmdLst() { return m_ptrCmdLst.Get(); }
+	D3D12_CPU_DESCRIPTOR_HANDLE	GetDSVCpuHandle() { return m_DsvCPUHandles; }
+	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVForShadeCpuHandle() {	return m_DsvForShadeCPUHandles;	}
 private:
 	ComPtr<IDXGIFactory4>				m_ptrDxgiFactory;
 	ComPtr<IDXGISwapChain3>				m_ptrDxgiSwapChain;
@@ -54,9 +56,11 @@ private:
 
 	ComPtr<ID3D12Resource>				m_ptrSwapChainBackBuffers[2];
 	ComPtr<ID3D12Resource>				m_ptrDsv;
+	ComPtr<ID3D12Resource>				m_ptrDsvForShade;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE			m_SwapChainBackBufferRTVCPUHandles[2];
 	D3D12_CPU_DESCRIPTOR_HANDLE			m_DsvCPUHandles;
+	D3D12_CPU_DESCRIPTOR_HANDLE			m_DsvForShadeCPUHandles;
 
 	D3D12_VIEWPORT						m_Viewport;
 	D3D12_RECT							m_ScissorRect;

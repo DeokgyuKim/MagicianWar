@@ -20,6 +20,8 @@ public:
     CAMERA_MODE GetMode() { return m_eCamMode; }
     float       GetRotY() { return m_fRotX; }
 
+    XMFLOAT3    GetPosition() { return m_xmfPosition; }
+
 private:
     void    Initialize();
     void    BuildConstantBuffer();

@@ -1,7 +1,6 @@
 cbuffer cbPerObjectWorld : register(b0)
 {
 	float4x4 gWorld;
-	float4x4 gWorldNoScaling;
 };
 
 cbuffer cbCamera : register(b1)
@@ -39,3 +38,5 @@ Texture2D AmbiTex : register(t2);
 Texture2D SpecTex : register(t3);
 Texture2D NormalTex : register(t4);
 Texture2D DepthTex : register(t5);
+
+TextureCube CubeMapTex : register(t6);

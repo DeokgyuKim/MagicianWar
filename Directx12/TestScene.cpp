@@ -4,6 +4,7 @@
 #include "Terrain.h"
 #include "Camera.h"
 #include "Player.h"
+#include "Skybox.h"
 
 TestScene::TestScene()
 {
@@ -49,5 +50,11 @@ void TestScene::Initialize()
 	Core::GetInstance()->WaitForGpuComplete();
 
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
+
+
+	pObj = new Skybox(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	dynamic_cast<Skybox*>(pObj)->SetCamera(pCamera);
+	m_pObjects[OBJ_SKYBOX].push_back(pObj);
+	
 
 }

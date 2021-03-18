@@ -94,6 +94,12 @@
     <Filter Include="01.Engine\06.Component\01.Geometry\03. LightGeo">
       <UniqueIdentifier>{1f1249c9-e178-4eac-b353-18d33787f8f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\02.Object\03.SkyBox">
+      <UniqueIdentifier>{841ceca3-d734-4200-a73a-b7ca669047d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\06.Component\01.Geometry\00.Cube\00.SkyboxCube">
+      <UniqueIdentifier>{8a3f454d-3f1a-434b-92f2-0b39b7542692}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -203,6 +209,12 @@
     <ClInclude Include="define.h">
       <Filter>99.Default\00.Header</Filter>
     </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>01.Engine\02.Object\03.SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxCube.h">
+      <Filter>01.Engine\06.Component\01.Geometry\00.Cube\00.SkyboxCube</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -291,6 +303,12 @@
     </ClCompile>
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="SkinnedModelInstance.cpp" />
+    <ClCompile Include="Skybox.cpp">
+      <Filter>01.Engine\02.Object\03.SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxCube.cpp">
+      <Filter>01.Engine\06.Component\01.Geometry\00.Cube\00.SkyboxCube</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

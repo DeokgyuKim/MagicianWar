@@ -9,7 +9,7 @@ public:
 public:
 	HRESULT BuildShadersAndInputLayout(const TCHAR* vsName, const char* vsFunc, const TCHAR* psName,
 										const char* psFunc, vector<D3D12_INPUT_ELEMENT_DESC> InputLayout);
-	HRESULT BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* RootSignature, int numRt);
+	HRESULT BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* RootSignature, int numRt, bool ClockWise = true);
 
 public:
 	void	PreRender(ID3D12GraphicsCommandList* cmdLst);

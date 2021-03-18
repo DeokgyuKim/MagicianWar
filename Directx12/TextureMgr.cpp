@@ -11,6 +11,12 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Tree02", L"../Resources/Tree02.dds");
 	m_mapTextures["Tree02"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Tree02", L"../Resources/Models/Characters/wizard_01/wizard_01.dds");
+	m_mapTextures["wizard_01"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "SkyBox", L"../Resources/SkyBox/SkyBox_0.dds", true, 10);
+	m_mapTextures["SkyBox"] = pTexture;
 }
 
 DDSTexture* TextureMgr::GetTexture(string textureName)

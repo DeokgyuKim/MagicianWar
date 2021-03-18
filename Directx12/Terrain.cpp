@@ -28,7 +28,7 @@ void Terrain::Initialize()
 	m_strTextureName = "Stone01";
 
 	m_mapComponent["Material"] = new MaterialCom(XMFLOAT4(0.588f, 0.588f, 0.588f, 1.f), XMFLOAT4(0.588f, 0.588f, 0.588f, 1.f), 
-		XMFLOAT4(0.9f, 0.9f, 0.9f, 0.9f));
+		XMFLOAT4(1.f, 1.f, 1.f, 1.f));
 }
 
 void Terrain::Release()
@@ -59,7 +59,6 @@ void Terrain::LateUpdate(const float& fTimeDelta)
 	XMMATRIX world = XMLoadFloat4x4(&m_xmmWorld);// *view* proj;
 	ObjectCB	ObjCB;
 	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(world));
-	XMStoreFloat4x4(&ObjCB.WorldNoScaling, XMMatrixTranspose(world));
 	m_ObjectCB->CopyData(0, ObjCB);
 
 

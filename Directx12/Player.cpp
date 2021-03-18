@@ -36,6 +36,8 @@ void Player::Initialize()
 	m_mapComponent["Material"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 0.f, 0.f));
+
+	m_strTextureName = "wizard_01";
 }
 
 void Player::Release()
@@ -86,7 +88,6 @@ void Player::LateUpdate(const float& fTimeDelta)
 	// objCB Update
 	ObjectCB	ObjCB;
 	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
-	XMStoreFloat4x4(&ObjCB.WorldNoScaling, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrixNoScaling()));
 	m_ObjectCB->CopyData(0, ObjCB);
 
 	// SkinnedCB // 이거 애니메이션 붙이기 전까지 붙이면 안뜸..

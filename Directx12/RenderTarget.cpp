@@ -2,12 +2,13 @@
 #include "Renderer.h"
 #include "Core.h"
 
-RenderTarget::RenderTarget(ID3D12Device* device, Renderer* pRenderer, const int width, const int height)
+RenderTarget::RenderTarget(ID3D12Device* device, Renderer* pRenderer, const int width, const int height, D3D12_CLEAR_VALUE clear)
 {
 	m_pDevice = device;
 	m_pRenderer = pRenderer;
 	m_iWidth = width;
 	m_iHeight = height;
+	m_ClearValue = clear;
 	Initialize();
 	m_CurState = D3D12_RESOURCE_STATE_COMMON;
 }
@@ -40,6 +41,12 @@ void RenderTarget::SetShaderVariable(ID3D12GraphicsCommandList* cmdLst, ID3D12De
 	cmdLst->SetGraphicsRootDescriptorTable(RootParameterIdx, handle);
 }
 
+void RenderTarget::ClearRenderTarget(ID3D12GraphicsCommandList* cmdLst)
+{
+	float clear[4] = { m_ClearValue.Color[0], m_ClearValue.Color[1], m_ClearValue.Color[2], m_ClearValue.Color[3] };
+	cmdLst->ClearRenderTargetView(m_RtvHandle, clear, 0, NULL);
+}
+
 HRESULT RenderTarget::Initialize()
 {
 	D3D12_HEAP_PROPERTIES properties;
@@ -63,18 +70,10 @@ HRESULT RenderTarget::Initialize()
 	texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS | D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
-
-	D3D12_CLEAR_VALUE clearValue = {};
-	clearValue.Color[0] = 0.0f;
-	clearValue.Color[1] = 0.125f;
-	clearValue.Color[2] = 0.3f;
-	clearValue.Color[3] = 1.0f;
-	clearValue.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-
 	Core::GetInstance()->CmdLstReset();
 
 	m_pDevice->CreateCommittedResource(&properties, D3D12_HEAP_FLAG_NONE, &texDesc,
-		D3D12_RESOURCE_STATE_COMMON, &clearValue, IID_PPV_ARGS(m_ptrRenderTarget.GetAddressOf()));
+		D3D12_RESOURCE_STATE_COMMON, &m_ClearValue, IID_PPV_ARGS(m_ptrRenderTarget.GetAddressOf()));
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 

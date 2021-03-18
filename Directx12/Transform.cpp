@@ -66,18 +66,3 @@ XMMATRIX Transform::GetWorldMatrix()
 
 	return world;
 }
-
-XMMATRIX Transform::GetWorldMatrixNoScaling()
-{
-	XMMATRIX rotateX, rotateY, rotateZ, transform, world;
-
-	rotateX = XMMatrixRotationX(XMConvertToRadians(m_xmfRotate.x + m_xmfMeshRotate.x));
-	rotateY = XMMatrixRotationY(XMConvertToRadians(m_xmfRotate.y + m_xmfMeshRotate.y));
-	rotateZ = XMMatrixRotationZ(XMConvertToRadians(m_xmfRotate.z + m_xmfMeshRotate.z));
-
-	transform = XMMatrixTranslationFromVector(XMLoadFloat3(&m_xmfPosition));
-
-	world = rotateX * rotateY * rotateZ * transform;
-
-	return world;
-}

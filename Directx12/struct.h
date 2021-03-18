@@ -17,6 +17,13 @@ struct ColorVertex
 	XMFLOAT3 Normal;
 };
 
+struct SkyboxVertex
+{
+	XMFLOAT3 Pos;
+	XMFLOAT3 Normal;
+	XMFLOAT3 Uv;
+};
+
 
 struct UvVertex
 {
@@ -64,7 +71,6 @@ struct Material
 struct ObjectCB
 {
 	XMFLOAT4X4 World = MathHelper::Identity4x4();
-	XMFLOAT4X4 WorldNoScaling = MathHelper::Identity4x4();
 };
 struct MatCB
 {

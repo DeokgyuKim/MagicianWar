@@ -62,6 +62,7 @@ int Camera::Update(const float& fTimeDelta)
 		if (m_eCamMode == CAMERA_MODE::CAMERA_THIRD)
 		{
 			XMFLOAT3 xmfPlayerPos = m_pPlayer->GetPosition();
+			xmfPlayerPos.y += 1.f;
 			XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfLookVec) * m_fOffset);
 		}
 		else
@@ -87,7 +88,7 @@ int Camera::Update(const float& fTimeDelta)
 
 void Camera::LateUpdate(const float& fTimeDelta)
 {
-	XMMATRIX proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(90.f), 800.f / 600.f, 1.0f, 1000.0f);
+	XMMATRIX proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(90.f), 800.f / 600.f, 0.1f, 1000.0f);
 
 	XMStoreFloat4x4(&m_xmmProj, proj);
 

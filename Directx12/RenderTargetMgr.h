@@ -25,7 +25,7 @@ private:
 
 public:
 	void			BuildRenderTarget(ID3D12Device* device, Renderer* pRenderer);
-	void			SetMultiRenderTarget(ID3D12GraphicsCommandList* cmdLst, string tagMRT);
+	void			SetMultiRenderTarget(ID3D12GraphicsCommandList* cmdLst, string tagMRT, D3D12_CPU_DESCRIPTOR_HANDLE DsvHandle);
 	void			ClearMultiRenderTarget(ID3D12GraphicsCommandList* cmdLst, string tagMRT);
 
 	RenderTarget*	GetRenderTarget(string tagRT);
