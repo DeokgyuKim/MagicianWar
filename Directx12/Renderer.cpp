@@ -157,8 +157,9 @@ void Renderer::BuildRootSignature()
 	srvTable[4].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4);
 	srvTable[5].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 5);
 
+	const size_t rootSize = 11;
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[10];
+	CD3DX12_ROOT_PARAMETER slotRootParameter[rootSize];
 
 
 	slotRootParameter[0].InitAsConstantBufferView(0);	//world
@@ -171,11 +172,12 @@ void Renderer::BuildRootSignature()
 	slotRootParameter[7].InitAsDescriptorTable(1, &srvTable[3], D3D12_SHADER_VISIBILITY_PIXEL);	//specular render target
 	slotRootParameter[8].InitAsDescriptorTable(1, &srvTable[4], D3D12_SHADER_VISIBILITY_PIXEL);	//normal render target
 	slotRootParameter[9].InitAsDescriptorTable(1, &srvTable[5], D3D12_SHADER_VISIBILITY_ALL);	//depth render target
+	slotRootParameter[10].InitAsConstantBufferView(4); // Skinned
 
 	auto staticSamplers = GetStaticSamplers();
 
 	// A root signature is an array of root parameters.
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(10, slotRootParameter,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(rootSize, slotRootParameter,
 		(UINT)staticSamplers.size(), staticSamplers.data(),
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 

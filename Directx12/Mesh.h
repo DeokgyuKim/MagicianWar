@@ -2,7 +2,6 @@
 #include "Geometry.h"
 
 class MeshMgr;
-class SkinnedModelInstance;
 
 class Mesh :
     public Geometry

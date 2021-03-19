@@ -1,5 +1,6 @@
 #include "MeshMgr.h"
 #include "MaterialMgr.h"
+#include "AnimationMgr.h"
 #include <fstream>
 MeshMgr* MeshMgr::m_pInstance = nullptr;
 
@@ -9,6 +10,7 @@ void MeshMgr::InitMeshMgr(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsComm
 	m_pDevice = pDevice;
 	m_pCmdLst = pCmdLst;
 	MaterialLoader = MaterialMgr::GetInstnace();
+	AnimationLoader = AnimationMgr::GetInstance();
 }
 
 void MeshMgr::BuildSkinnedModel(string meshName, MESH_TYPE etype)
@@ -24,7 +26,7 @@ void MeshMgr::BuildSkinnedModel(string meshName, MESH_TYPE etype)
 	case MESH_TYPE::CHARACTER:
 		m_strFilePath = "..//Resources//Models//Characters//";
 		break;
-	case MESH_TYPE::COUNT:
+	case MESH_TYPE::COUNT: 
 		break;
 	default:
 		break;
@@ -41,11 +43,6 @@ void MeshMgr::BuildSkinnedModel(string meshName, MESH_TYPE etype)
 	if (!check) { cout << "메쉬 로드 실패" << endl; }
 	check = LoadSkeletonFile(*skinnedInfo, m_strFilePath);
 	if (!check) { cout << "스켈레톤 로드 실패" << endl; }
-
-	unique_ptr<SkinnedModelInstance> skinnedModelInst = make_unique<SkinnedModelInstance>();
-	skinnedModelInst->SkinnedInfo = move(skinnedInfo);
-	skinnedModelInst->Transforms.resize(skinnedModelInst->SkinnedInfo->BoneCount());
-	m_SkinnedModelInst[meshName] = move(skinnedModelInst);
 
 	const UINT vbByteSize = (UINT)skinnedVertices.size() * sizeof(SkinnedVertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(UINT);
@@ -79,7 +76,7 @@ void MeshMgr::BuildSkinnedModel(string meshName, MESH_TYPE etype)
 	
 	m_Meshs[meshName] = move(meshGeo);
 	MaterialLoader->BuildMaterial(meshName, materials.front());
-	
+	AnimationLoader->SetSkinnedDatas(meshName, move(skinnedInfo));
 
 }
 
@@ -330,15 +327,18 @@ bool MeshMgr::LoadSkeletonFile(SkinnedData& outSkinnedData, string path)
 		}
 
 		fileIn >> ignore;
-		for (UINT i = 0; i < boneSize; ++i)
-		{
-			std::string tempBoneName;
-			fileIn >> tempBoneName;
+		//for (UINT i = 0; i < boneSize; ++i)
+		//{
+		//	std::string tempBoneName;
+		//	fileIn >> tempBoneName;
 
-			outSkinnedData.SetBoneName(tempBoneName);
-		}
+		//	outSkinnedData.SetBoneName(tempBoneName);
+		//}
+
 		// Bone Offset
-		fileIn >> ignore;
+		while (ignore != "BoneOffset") {
+			fileIn >> ignore;
+		}
 		std::vector<DirectX::XMFLOAT4X4> boneOffsets;
 		for (UINT i = 0; i < boneSize; ++i)
 		{

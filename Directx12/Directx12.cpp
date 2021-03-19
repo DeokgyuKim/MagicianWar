@@ -3,7 +3,7 @@
 
 #include "framework.h"
 #include "DirectX12.h"
-
+#include "GameTimer.h"
 #include "MainApp.h"
 
 #define MAX_LOADSTRING 100
@@ -51,7 +51,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MainApp mainApp;
     mainApp.Initialize();
-
+    GameTimer::GetInstance()->Reset();
     // 기본 메시지 루프입니다.
     while (true)
     {
@@ -69,9 +69,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
         else
         {
-            mainApp.Update(0.f);
-            mainApp.LateUpdate(0.f);
-            mainApp.Render(0.f);
+            GameTimer::GetInstance()->Tick(60.f);
+            const float deltaTime = GameTimer::GetInstance()->GetDeltaTime();
+            mainApp.Update(deltaTime);
+            mainApp.LateUpdate(deltaTime);
+            mainApp.Render(deltaTime);
         }
     }
 

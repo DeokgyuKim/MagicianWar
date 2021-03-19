@@ -141,6 +141,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationMgr.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CLight.h" />
     <ClInclude Include="Component.h" />
@@ -153,6 +155,7 @@
     <ClInclude Include="define.h" />
     <ClInclude Include="Directx12.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="LightGeo.h" />
     <ClInclude Include="MainApp.h" />
@@ -182,6 +185,8 @@
     <ClInclude Include="UploadBuffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="AnimationMgr.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CLight.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -191,6 +196,7 @@
     <ClCompile Include="DDSTexture.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Directx12.cpp" />
+    <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="LightGeo.cpp" />
     <ClCompile Include="MainApp.cpp" />

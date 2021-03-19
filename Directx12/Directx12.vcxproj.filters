@@ -100,6 +100,15 @@
     <Filter Include="01.Engine\02.Object\03.StaticObject">
       <UniqueIdentifier>{10573e65-fbdb-4d3a-9cef-07d5b9772c71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\06.Component\03.Animation">
+      <UniqueIdentifier>{1f425272-5360-4391-8dde-4afe04877008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\01.Renderer\03.AnimationMgr">
+      <UniqueIdentifier>{7a3a8ee0-37a9-4c2f-aba0-88f853f9a3db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\06.Component\03.Animation\Control">
+      <UniqueIdentifier>{a5de9a72-fed3-4565-abc2-11254da75f93}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -204,13 +213,28 @@
     <ClInclude Include="CLight.h">
       <Filter>01.Engine\08.Light</Filter>
     </ClInclude>
-    <ClInclude Include="SkinnedData.h" />
-    <ClInclude Include="SkinnedModelInstance.h" />
     <ClInclude Include="define.h">
       <Filter>99.Default\00.Header</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialMgr.h" />
-    <ClInclude Include="StaticObject.h" />
+    <ClInclude Include="MaterialMgr.h">
+      <Filter>01.Engine\01.Renderer\02.MaterialMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedModelInstance.h">
+      <Filter>01.Engine\06.Component\03.Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedData.h">
+      <Filter>01.Engine\06.Component\03.Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticObject.h">
+      <Filter>01.Engine\02.Object\03.StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationMgr.h">
+      <Filter>01.Engine\01.Renderer\03.AnimationMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>01.Engine\06.Component\03.Animation\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -297,10 +321,25 @@
     <ClCompile Include="CLight.cpp">
       <Filter>01.Engine\08.Light</Filter>
     </ClCompile>
-    <ClCompile Include="SkinnedData.cpp" />
-    <ClCompile Include="SkinnedModelInstance.cpp" />
-    <ClCompile Include="MaterialMgr.cpp" />
-    <ClCompile Include="StaticObject.cpp" />
+    <ClCompile Include="MaterialMgr.cpp">
+      <Filter>01.Engine\01.Renderer\02.MaterialMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedModelInstance.cpp">
+      <Filter>01.Engine\06.Component\03.Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedData.cpp">
+      <Filter>01.Engine\06.Component\03.Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticObject.cpp">
+      <Filter>01.Engine\02.Object\03.StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationMgr.cpp">
+      <Filter>01.Engine\01.Renderer\03.AnimationMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>01.Engine\06.Component\03.Animation\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">
