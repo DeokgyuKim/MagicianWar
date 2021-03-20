@@ -105,7 +105,7 @@ void Player::Render(const float& fTimeDelta)
 
 	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());
 	m_pCmdLst->SetGraphicsRootConstantBufferView(2, m_MaterialCB->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootConstantBufferView(10, m_SkinnedCB->Resource()->GetGPUVirtualAddress());
+	m_pCmdLst->SetGraphicsRootConstantBufferView(11, m_SkinnedCB->Resource()->GetGPUVirtualAddress());
 	Object::Render(fTimeDelta);
 	//m_pBuffer->Render(fTimeDelta);
 }

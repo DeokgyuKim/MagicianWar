@@ -15,7 +15,7 @@ AnimationCom::~AnimationCom()
 
 int AnimationCom::Update(const float& fTimeDelta)
 {
-	curAnimation = ANIMATION_TYPE::DANCE; // ¿œ¥‹ √„√Á
+	curAnimation = ANIMATION_TYPE::WALK; // ¿œ¥‹ √„√Á
 	
 	
 	// Ω√∞£ »Â∏ß

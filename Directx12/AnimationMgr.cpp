@@ -37,6 +37,7 @@ void AnimationMgr::BuildAnimation(string meshName, MESH_TYPE eMesh, ANIMATION_TY
 		break;
 	case ANIMATION_TYPE::WALK:
 		m_strFilePath += "Walk";
+		break;
 	case ANIMATION_TYPE::DANCE:
 		m_strFilePath += "Dance";
 		break;

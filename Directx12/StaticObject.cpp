@@ -28,6 +28,8 @@ void StaticObject::Initialize()
 	pComponent = new MaterialCom(HOUSE_02);
 	m_mapComponent["Material"] = pComponent;
 
+	m_strTextureName = "StaticMesh";
+
 	//dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 0.f, 0.f));
 }
 
@@ -56,7 +58,6 @@ void StaticObject::LateUpdate(const float& fTimeDelta)
 	// objCB Update
 	ObjectCB	ObjCB;
 	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
-	XMStoreFloat4x4(&ObjCB.WorldNoScaling, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrixNoScaling()));
 	m_ObjectCB->CopyData(0, ObjCB);
 
 	// MaterialCB

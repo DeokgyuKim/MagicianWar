@@ -100,6 +100,18 @@
     <Filter Include="01.Engine\06.Component\01.Geometry\00.Cube\00.SkyboxCube">
       <UniqueIdentifier>{8a3f454d-3f1a-434b-92f2-0b39b7542692}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\01.Renderer\02.AnimationMgr">
+      <UniqueIdentifier>{83ca9cf5-e1a3-4bdc-a504-1993d1c9c095}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\06.Component\03. Animation">
+      <UniqueIdentifier>{9163647c-ed30-4090-bce7-25db8babc4bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object\04.StaticObject">
+      <UniqueIdentifier>{908d6fa5-819b-475c-92a6-050113c13f1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\01.Renderer\03.MaterailMgr">
+      <UniqueIdentifier>{09742e51-9db4-493f-8e23-dc200c3fb74d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -215,6 +227,21 @@
     <ClInclude Include="SkyBoxCube.h">
       <Filter>01.Engine\06.Component\01.Geometry\00.Cube\00.SkyboxCube</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationMgr.h">
+      <Filter>01.Engine\01.Renderer\02.AnimationMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>01.Engine\06.Component\03. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticObject.h">
+      <Filter>01.Engine\02.Object\04.StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>01.Engine\00.Core</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialMgr.h">
+      <Filter>01.Engine\01.Renderer\03.MaterailMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -308,6 +335,21 @@
     </ClCompile>
     <ClCompile Include="SkyBoxCube.cpp">
       <Filter>01.Engine\06.Component\01.Geometry\00.Cube\00.SkyboxCube</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationMgr.cpp">
+      <Filter>01.Engine\01.Renderer\02.AnimationMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>01.Engine\06.Component\03. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticObject.cpp">
+      <Filter>01.Engine\02.Object\04.StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>01.Engine\00.Core</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialMgr.cpp">
+      <Filter>01.Engine\01.Renderer\03.MaterailMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

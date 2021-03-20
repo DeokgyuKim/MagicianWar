@@ -141,6 +141,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationMgr.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CLight.h" />
     <ClInclude Include="Component.h" />
@@ -153,10 +155,12 @@
     <ClInclude Include="define.h" />
     <ClInclude Include="Directx12.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="LightGeo.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="MaterialMgr.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshMgr.h" />
@@ -173,6 +177,7 @@
     <ClInclude Include="SkinnedModelInstance.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="SkyBoxCube.h" />
+    <ClInclude Include="StaticObject.h" />
     <ClInclude Include="struct.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Terrain.h" />
@@ -182,6 +187,8 @@
     <ClInclude Include="UploadBuffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="AnimationMgr.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CLight.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -191,10 +198,12 @@
     <ClCompile Include="DDSTexture.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Directx12.cpp" />
+    <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="LightGeo.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MaterialMgr.cpp" />
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshMgr.cpp" />
@@ -210,6 +219,7 @@
     <ClCompile Include="SkinnedModelInstance.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SkyBoxCube.cpp" />
+    <ClCompile Include="StaticObject.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TextureMgr.cpp" />

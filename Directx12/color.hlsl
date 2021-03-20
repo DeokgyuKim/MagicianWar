@@ -149,7 +149,7 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	float3 camdir = normalize(position.xyz - gCamPosition.xyz);
 
 	float diffuseValue = saturate(dot(normalize(gLightDirection.xyz) * -1.f, Normal.xyz));
-	diffuseValue = (ceil(diffuseValue * 3) / 3.f) / 2.f + 0.5f;
+	diffuseValue = (ceil(diffuseValue * 3) / 3.f);
 
 	//reflect(vector(normalize(g_vLightDir.xyz), 0.f), vNormal);
 	float3 reflection = normalize(reflect(normalize(gLightDirection.xyz), Normal.xyz));
@@ -166,8 +166,8 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	float4 ambient = AmbiTex.Sample(gsamLinear, pin.UV);
 	float4 specular = SpecTex.Sample(gsamLinear, pin.UV);
 
-	pOut.Shade = float4((diffuse.xyz * diffuseValue) + (ambient.xyz) + (specular.xyz * specularValue), 1.f);
-	//
+	pOut.Shade = float4((diffuse.xyz * diffuseValue) + (ambient.xyz), 1.f);
+	// + (specular.xyz * specularValue)
 
 
 	return pOut;
@@ -237,6 +237,32 @@ PSOut PS_Static(VertexOut_Default pin)
 VertexOut_Default VS_Movable(VertexIn_Movable vin)
 {
 	VertexOut_Default vout = (VertexOut_Default)0.0f;
+
+	float weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	weights[0] = vin.BoneWeights.x;
+	weights[1] = vin.BoneWeights.y;
+	weights[2] = vin.BoneWeights.z;
+	weights[3] = 1.0f - weights[0] - weights[1] - weights[2];
+
+	float3 posL = float3(0.0f, 0.0f, 0.0f);
+	float3 normalL = float3(0.0f, 0.0f, 0.0f);
+	float3 tangentL = float3(0.0f, 0.0f, 0.0f);
+	float3 binormalL = float3(0.0f, 0.0f, 0.0f);
+	for (int i = 0; i < 4; ++i)
+	{
+		//	// Assume no nonuniform scaling when transforming normals, so 
+		//	// that we do not have to use the inverse-transpose.
+
+		posL += weights[i] * mul(float4(vin.PosL, 1.0f), gBoneTransforms[vin.BoneIndices[i]]).xyz;
+		normalL += weights[i] * mul(vin.NormalL, (float3x3)gBoneTransforms[vin.BoneIndices[i]]);
+		tangentL += weights[i] * mul(vin.TangentL.xyz, (float3x3)gBoneTransforms[vin.BoneIndices[i]]);
+		binormalL += weights[i] * mul(vin.BinormalL, (float3x3)gBoneTransforms[vin.BoneIndices[i]]);
+	}
+
+	vin.PosL = posL;
+	vin.NormalL = normalL;
+	vin.TangentL.xyz = tangentL;
+	vin.BinormalL = binormalL;
 
 	// 월드 & 카메라 변환
 	float4 posW = mul(float4(vin.PosL, 1.0f), gWorld);

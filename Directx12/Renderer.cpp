@@ -76,6 +76,14 @@ void Renderer::Render(const float& fTimeDelta)
 		pObject->Render(fTimeDelta);
 	}
 
+	m_mapShaders[RENDER_TYPE::RENDER_STATIC]->PreRender(m_pCmdLst);
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_STATIC])
+	{
+		if (pObject->GetTextureName() != "")
+			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+		pObject->Render(fTimeDelta);
+	}
+
 	m_mapShaders[RENDER_TYPE::RENDER_DYNAMIC]->PreRender(m_pCmdLst);
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_DYNAMIC])
 	{
@@ -163,7 +171,9 @@ void Renderer::BuildRootSignature()
 	srvTable[6].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 6);
 
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[11];
+	const size_t rootSize = 12;
+
+	CD3DX12_ROOT_PARAMETER slotRootParameter[rootSize];
 
 
 	slotRootParameter[0].InitAsConstantBufferView(0);	//world
@@ -177,11 +187,12 @@ void Renderer::BuildRootSignature()
 	slotRootParameter[8].InitAsDescriptorTable(1, &srvTable[4], D3D12_SHADER_VISIBILITY_PIXEL);	//normal render target
 	slotRootParameter[9].InitAsDescriptorTable(1, &srvTable[5], D3D12_SHADER_VISIBILITY_ALL);	//depth render target
 	slotRootParameter[10].InitAsDescriptorTable(1, &srvTable[6], D3D12_SHADER_VISIBILITY_ALL);	//Skybox texture
+	slotRootParameter[11].InitAsConstantBufferView(4); // Skinned
 
 	auto staticSamplers = GetStaticSamplers();
 
 	// A root signature is an array of root parameters.
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(11, slotRootParameter,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(rootSize, slotRootParameter,
 		(UINT)staticSamplers.size(), staticSamplers.data(),
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
