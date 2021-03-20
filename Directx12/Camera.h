@@ -21,6 +21,8 @@ public:
     float       GetRotY() { return m_fRotX; }
 
     XMFLOAT3    GetPosition() { return m_xmfPosition; }
+    XMFLOAT4X4  GetViewMatrix() { return m_xmmView; }
+    XMFLOAT4X4  GetProjMatrix() { return m_xmmProj; }
 
 private:
     void    Initialize();

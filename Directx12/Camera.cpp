@@ -111,6 +111,7 @@ void Camera::LateUpdate(const float& fTimeDelta)
 	XMFLOAT4 position = XMFLOAT4(m_xmfPosition.x, m_xmfPosition.y, m_xmfPosition.z, 0.f);
 	XMStoreFloat4(&camCB.Position, XMLoadFloat4(&position));
 
+
 	m_ObjectCB->CopyData(0, camCB);
 }
 

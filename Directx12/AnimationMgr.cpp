@@ -69,12 +69,14 @@ bool AnimationMgr::LoadAnimationFile(const ANIMATION_TYPE& eAnimation)
 	AnimationClip animationclip;
 	UINT boneAnimationSize, keyFrameSize;
 
+
 	string ignore;
 	if (fileInput)
 	{
 		fileInput >> ignore >> boneAnimationSize;
 		fileInput >> ignore >> keyFrameSize;
 
+		vector<XMFLOAT3> vecStartPos;
 		for (UINT i = 0; i < boneAnimationSize; ++i) {
 			BoneAnimation boneAnim;
 			for (UINT j = 0; j < keyFrameSize; ++j) {
@@ -83,6 +85,12 @@ bool AnimationMgr::LoadAnimationFile(const ANIMATION_TYPE& eAnimation)
 				fileInput >> key.Translation.x >> key.Translation.y >> key.Translation.z;
 				fileInput >> key.Scale.x >> key.Scale.y >> key.Scale.z;
 				fileInput >> key.RotationQuat.x >> key.RotationQuat.y >> key.RotationQuat.z >> key.RotationQuat.w;
+				if (i == 0)
+					vecStartPos.push_back(key.Translation);
+				else
+				{
+					XMStoreFloat3(&key.Translation, XMLoadFloat3(&key.Translation) - XMLoadFloat3(&vecStartPos[j]));
+				}
 				boneAnim.Keyframes.push_back(key);
 			}
 			animationclip.BoneAnimations.push_back(boneAnim);

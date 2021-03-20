@@ -5,27 +5,27 @@
 #include "Transform.h"
 #include "Material.h"
 
-StaticObject::StaticObject(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer)
+StaticObject::StaticObject(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 xmfPosition, string MeshName)
 {
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
 	m_pRenderer = pRenderer;
-	Initialize();
+	Initialize(xmfPosition, MeshName);
 }
 
 StaticObject::~StaticObject()
 {
 }
 
-void StaticObject::Initialize()
+void StaticObject::Initialize(XMFLOAT3 xmfPosition, string MeshName)
 {
 	BuildConstantBuffer();
 
-	Component* pComponent = new Transform(XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), xmfPosition);
 	m_mapComponent["Transform"] = pComponent;
-	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), HOUSE_02);
+	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), MeshName);
 	m_mapComponent["Mesh"] = pComponent;
-	pComponent = new MaterialCom(HOUSE_02);
+	pComponent = new MaterialCom(MeshName);
 	m_mapComponent["Material"] = pComponent;
 
 	m_strTextureName = "StaticMesh";

@@ -4,10 +4,10 @@ class StaticObject :
     public Object
 {
 public:
-    StaticObject(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer);
+    StaticObject(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 xmfPosition, string MeshName);
     ~StaticObject();
 private:
-    void    Initialize();
+    void    Initialize(XMFLOAT3 xmfPosition, string MeshName);
     void    Release();
     HRESULT BuildConstantBuffer();
 public:
@@ -16,7 +16,6 @@ public:
     virtual void LateUpdate(const float& fTimeDelta) override;
     virtual void Render(const float& fTimeDelta) override;
 
-protected:
 protected:
     ID3D12Device*                               m_pDevice;
     ID3D12GraphicsCommandList*                  m_pCmdLst;

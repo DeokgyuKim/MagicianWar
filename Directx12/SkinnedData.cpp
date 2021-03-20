@@ -140,6 +140,13 @@ void SkinnedData::GetFinalTransforms(const ANIMATION_TYPE eType, float timePos, 
 	auto clip = mAnimations.find(eType);
 	clip->second.Interpolate(timePos, toParentTransforms);
 
+	for (size_t i = 0; i < toParentTransforms.size(); ++i)
+	{
+		toParentTransforms[i]._41 -= mBoneOffsets[0]._41;
+		toParentTransforms[i]._42 -= mBoneOffsets[0]._42;
+		toParentTransforms[i]._43 -= mBoneOffsets[0]._43;
+	}
+
 	//
 	// 골격 계통구조를 흝으면서 모든 뼈대를 루트공간으로 변환한다.
 	//
@@ -148,7 +155,11 @@ void SkinnedData::GetFinalTransforms(const ANIMATION_TYPE eType, float timePos, 
 
 	// 뿌리 뼈대의 인덱스는 0이다. 뿌리 뼈대에는 부모가 없으므로,
 	// 뿌리 뼈대의 뿌리 변환은 그냥 자신의 로컬 뼈대 변환이다.
+	//toParentTransforms[0]._41 = 0.f;
+	//toParentTransforms[0]._42 = 0.f;
+	//toParentTransforms[0]._43 = 0.f;
 	m_ToRootTransforms[0] = toParentTransforms[0];
+
 
 	// 이제 자식 뼈대들의 루트 변환들을 구한다.
 	// 뼈대들을 흝으면서 부모 뼈대의 루트변환을 다음과 같이 조회한다.

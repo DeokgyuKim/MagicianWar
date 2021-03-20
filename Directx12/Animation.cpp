@@ -1,5 +1,6 @@
 #include "Animation.h"
 #include "AnimationMgr.h"
+
 AnimationCom::AnimationCom(const string& user)
 {
 	// 메쉬에 맞는 애니메이션 설정해주고
@@ -15,8 +16,7 @@ AnimationCom::~AnimationCom()
 
 int AnimationCom::Update(const float& fTimeDelta)
 {
-	curAnimation = ANIMATION_TYPE::WALK; // 일단 춤춰
-	
+	curAnimation = ANIMATION_TYPE::DANCE; // 일단 춤춰
 	
 	// 시간 흐름
 	TimePos += fTimeDelta;
