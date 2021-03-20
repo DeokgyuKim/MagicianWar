@@ -33,7 +33,7 @@ HRESULT Plane::BuildGeometry(ID3D12Device* device)
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(UvVertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
-	m_BoxGeo = make_unique<MeshGeometry>();
+	m_BoxGeo = new MeshGeometry;
 	m_BoxGeo->Name = "BufferGeo";
 
 	ThrowIfFailed(D3DCreateBlob(vbByteSize, &m_BoxGeo->VertexBufferCPU));

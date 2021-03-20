@@ -28,6 +28,11 @@ cbuffer cbLight : register(b3)
 	float4 gLightDirection;
 };
 
+cbuffer cbSkinned : register(b4)
+{
+	float4x4 gBoneTransforms[96];
+}
+
 
 Texture2D Texture : register(t0);
 SamplerState gsamLinear  : register(s0);

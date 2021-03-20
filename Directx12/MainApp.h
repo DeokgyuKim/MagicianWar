@@ -3,6 +3,8 @@
 
 class Scene;
 class Core;
+class MeshMgr;
+class AnimationMgr;
 class Renderer;
 class MainApp
 {
@@ -14,9 +16,16 @@ public:
 	void Update(const float& fTimeDelta);
 	void LateUpdate(const float& fTimeDelta);
 	void Render(const float& fTimeDelta);
+
 private:
-	Scene*		m_pScene;
-	Core*		m_pCore;
-	Renderer*	m_pRenderer;
+	void LoadSkinnedModels();
+	void LoadStaticModels();
+	void LoadAnimations();
+private:
+	Scene*			m_pScene;
+	Core*			m_pCore;
+	MeshMgr*		m_MeshMgr;
+	AnimationMgr*	m_AnimationMgr;
+	Renderer*		m_pRenderer;
 };
 
