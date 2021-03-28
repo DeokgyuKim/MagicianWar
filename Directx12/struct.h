@@ -46,7 +46,7 @@ struct SkinnedVertex// : Vertex
 	XMFLOAT3 Tangent;
 	XMFLOAT3 Binormal;
 	XMFLOAT3 BoneWeights;
-	BYTE BoneIndices[4];
+	BYTE BoneIndices[4]; // 하나의 정점에 영향을 주는 뼈대는 4개면 충분
 
 	UINT MaterialIndex;
 };
@@ -110,3 +110,4 @@ struct SkinnedCB
 	// 최대 뼈대 Character - 33 
 	XMFLOAT4X4 BoneTransforms[96];
 };
+

@@ -9,11 +9,12 @@ public:
 public:
     virtual void LateUpdate(const float& fTimeDelta) override;
 public:
-    void        KeyInput();
+    void        KeyInput(DWORD iKey);
 public:
     XMFLOAT3    GetScale() { return m_xmfScale; }
     XMFLOAT3    GetRotate() { return m_xmfRotate; }
     XMFLOAT3    GetPosition() { return m_xmfPosition; }
+    XMFLOAT3    GetLook();
     XMMATRIX    GetWorldMatrix(); 
 public:
     void        SetScale(XMFLOAT3 xmfSclae) { m_xmfScale = xmfSclae; }

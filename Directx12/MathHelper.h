@@ -95,6 +95,56 @@ public:
 	static const float Infinity;
 	static const float Pi;
 
+	static DirectX::XMFLOAT4X4 MultiplyFloat_X_Matrix(const float scalar, DirectX::XMFLOAT4X4 xmmtx4x4Matrix)
+	{
+		DirectX::XMFLOAT4X4 xmmtx4x4Result;
+		
+		xmmtx4x4Result._11 = xmmtx4x4Matrix._11 * scalar;
+		xmmtx4x4Result._12 = xmmtx4x4Matrix._12 * scalar;
+		xmmtx4x4Result._13 = xmmtx4x4Matrix._13 * scalar;
+		xmmtx4x4Result._14 = xmmtx4x4Matrix._14 * scalar;
+		
+		xmmtx4x4Result._21 = xmmtx4x4Matrix._21 * scalar;
+		xmmtx4x4Result._22 = xmmtx4x4Matrix._22 * scalar;
+		xmmtx4x4Result._23 = xmmtx4x4Matrix._23 * scalar;
+		xmmtx4x4Result._24 = xmmtx4x4Matrix._24 * scalar;
+		
+		xmmtx4x4Result._31 = xmmtx4x4Matrix._31 * scalar;
+		xmmtx4x4Result._32 = xmmtx4x4Matrix._32 * scalar;
+		xmmtx4x4Result._33 = xmmtx4x4Matrix._33 * scalar;
+		xmmtx4x4Result._34 = xmmtx4x4Matrix._34 * scalar;
 
+		xmmtx4x4Result._41 = xmmtx4x4Matrix._41 * scalar;
+		xmmtx4x4Result._42 = xmmtx4x4Matrix._42 * scalar;
+		xmmtx4x4Result._43 = xmmtx4x4Matrix._43 * scalar;
+		xmmtx4x4Result._44 = xmmtx4x4Matrix._44 * scalar;
+
+		return(xmmtx4x4Result);
+	}
+
+	static DirectX::XMFLOAT4X4 AddMatrix(DirectX::XMFLOAT4X4 xmmtx4x4Matrix1, DirectX::XMFLOAT4X4 xmmtx4x4Matrix2)
+	{
+		DirectX::XMFLOAT4X4 xmmtx4x4Result;
+		xmmtx4x4Result._11 = xmmtx4x4Matrix1._11 + xmmtx4x4Matrix2._11;
+		xmmtx4x4Result._12 = xmmtx4x4Matrix1._12 + xmmtx4x4Matrix2._12;
+		xmmtx4x4Result._13 = xmmtx4x4Matrix1._13 + xmmtx4x4Matrix2._13;
+		xmmtx4x4Result._14 = xmmtx4x4Matrix1._14 + xmmtx4x4Matrix2._14;
+												  
+		xmmtx4x4Result._21 = xmmtx4x4Matrix1._21 + xmmtx4x4Matrix2._21;
+		xmmtx4x4Result._22 = xmmtx4x4Matrix1._22 + xmmtx4x4Matrix2._22;
+		xmmtx4x4Result._23 = xmmtx4x4Matrix1._23 + xmmtx4x4Matrix2._23;
+		xmmtx4x4Result._24 = xmmtx4x4Matrix1._24 + xmmtx4x4Matrix2._24;
+												  
+		xmmtx4x4Result._31 = xmmtx4x4Matrix1._31 + xmmtx4x4Matrix2._31;
+		xmmtx4x4Result._32 = xmmtx4x4Matrix1._32 + xmmtx4x4Matrix2._32;
+		xmmtx4x4Result._33 = xmmtx4x4Matrix1._33 + xmmtx4x4Matrix2._33;
+		xmmtx4x4Result._34 = xmmtx4x4Matrix1._34 + xmmtx4x4Matrix2._34;
+												  
+		xmmtx4x4Result._41 = xmmtx4x4Matrix1._41 + xmmtx4x4Matrix2._41;
+		xmmtx4x4Result._42 = xmmtx4x4Matrix1._42 + xmmtx4x4Matrix2._42;
+		xmmtx4x4Result._43 = xmmtx4x4Matrix1._43 + xmmtx4x4Matrix2._43;
+		xmmtx4x4Result._44 = xmmtx4x4Matrix1._44 + xmmtx4x4Matrix2._44;
+		return(xmmtx4x4Result);
+	}
 };
 

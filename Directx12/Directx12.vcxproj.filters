@@ -112,6 +112,21 @@
     <Filter Include="01.Engine\01.Renderer\03.MaterailMgr">
       <UniqueIdentifier>{09742e51-9db4-493f-8e23-dc200c3fb74d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\06.Component\03. Animation\AnimationController">
+      <UniqueIdentifier>{9b15b9e2-04ed-4937-93a4-d8e004811478}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\06.Component\03. Animation\AnimationController\Interface">
+      <UniqueIdentifier>{ae474277-ff6c-4d31-a919-20314a648dea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\01.Renderer\02.AnimationMgr\interface">
+      <UniqueIdentifier>{3b770041-f07f-4689-a392-481f2b54b939}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09.Command">
+      <UniqueIdentifier>{e6c6d7ea-0df8-4af1-8eed-2145bb1e410d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09.Command\01.Animation">
+      <UniqueIdentifier>{a9ff344a-2686-486c-abea-3178c52aaeaa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -216,8 +231,6 @@
     <ClInclude Include="CLight.h">
       <Filter>01.Engine\08.Light</Filter>
     </ClInclude>
-    <ClInclude Include="SkinnedData.h" />
-    <ClInclude Include="SkinnedModelInstance.h" />
     <ClInclude Include="define.h">
       <Filter>99.Default\00.Header</Filter>
     </ClInclude>
@@ -242,6 +255,26 @@
     <ClInclude Include="MaterialMgr.h">
       <Filter>01.Engine\01.Renderer\03.MaterailMgr</Filter>
     </ClInclude>
+    <ClInclude Include="KeyMgr.h" />
+    <ClInclude Include="AnimationController.h">
+      <Filter>01.Engine\06.Component\03. Animation\AnimationController</Filter>
+    </ClInclude>
+    <ClInclude Include="InterfaceAnimation.h">
+      <Filter>01.Engine\06.Component\03. Animation\AnimationController\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedModelInstance.h">
+      <Filter>01.Engine\01.Renderer\02.AnimationMgr\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedData.h">
+      <Filter>01.Engine\01.Renderer\02.AnimationMgr\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationCommand.h">
+      <Filter>09.Command\01.Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="InterfaceCommand.h">
+      <Filter>09.Command</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationFSM.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -328,8 +361,6 @@
     <ClCompile Include="CLight.cpp">
       <Filter>01.Engine\08.Light</Filter>
     </ClCompile>
-    <ClCompile Include="SkinnedData.cpp" />
-    <ClCompile Include="SkinnedModelInstance.cpp" />
     <ClCompile Include="Skybox.cpp">
       <Filter>01.Engine\02.Object\03.SkyBox</Filter>
     </ClCompile>
@@ -351,6 +382,20 @@
     <ClCompile Include="MaterialMgr.cpp">
       <Filter>01.Engine\01.Renderer\03.MaterailMgr</Filter>
     </ClCompile>
+    <ClCompile Include="KeyMgr.cpp" />
+    <ClCompile Include="AnimationController.cpp">
+      <Filter>01.Engine\06.Component\03. Animation\AnimationController</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedModelInstance.cpp">
+      <Filter>01.Engine\01.Renderer\02.AnimationMgr\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedData.cpp">
+      <Filter>01.Engine\01.Renderer\02.AnimationMgr\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationCommand.cpp">
+      <Filter>09.Command\01.Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationFSM.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">
