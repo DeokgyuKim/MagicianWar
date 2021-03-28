@@ -87,6 +87,7 @@ struct CameraCB
 	XMFLOAT4X4	InvView = MathHelper::Identity4x4();
 	XMFLOAT4X4	InvProj = MathHelper::Identity4x4();
 	XMFLOAT4	Position = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	float		Time = 0.f;
 };
 
 struct MaterialCB
@@ -109,4 +110,11 @@ struct SkinnedCB
 {
 	// √÷¥Î ª¿¥Î Character - 33 
 	XMFLOAT4X4 BoneTransforms[96];
+};
+
+struct TransformStruct
+{
+	XMFLOAT3 xmfPosition;
+	XMFLOAT3 xmfRotate;
+	XMFLOAT3 xmfScale;
 };

@@ -88,26 +88,28 @@ void MeshMgr::BuildModel(string meshName, MESH_TYPE etype)
 		return;
 	}
 
-	// 메쉬가 없다면
-	switch (etype)
-	{
-	case MESH_TYPE::ROCK:
-		m_strFilePath = "..//Resources//Models//Rocks//";
-		break;
-	case MESH_TYPE::TREE:
-		m_strFilePath = "..//Resources//Models//Trees//";
-		break;
-	case MESH_TYPE::HOUSE:
-		m_strFilePath = "..//Resources//Models//Houses//";
-		break;
-	case MESH_TYPE::TILE:
-		m_strFilePath = "..//Resources//Models//Tiles//";
-	case MESH_TYPE::COUNT:
-		break;
-	default:
-		break;
-	}
-	m_strFilePath += meshName + "//" + meshName;
+	m_strFilePath = "..//Resources//Models//";
+
+	//// 메쉬가 없다면
+	//switch (etype)
+	//{
+	//case MESH_TYPE::ROCK:
+	//	m_strFilePath = "..//Resources//Models//";
+	//	break;
+	//case MESH_TYPE::TREE:
+	//	m_strFilePath = "..//Resources//Models//";
+	//	break;
+	//case MESH_TYPE::HOUSE:
+	//	m_strFilePath = "..//Resources//Models//";
+	//	break;
+	//case MESH_TYPE::TILE:
+	//	m_strFilePath = "..//Resources//Models//";
+	//case MESH_TYPE::COUNT:
+	//	break;
+	//default:
+	//	break;
+	//}
+	m_strFilePath += meshName;
 
 	vector<Vertex>			Vertices;
 	vector<UINT>			indices;
@@ -150,7 +152,8 @@ void MeshMgr::BuildModel(string meshName, MESH_TYPE etype)
 	meshGeo->DrawArgs["BufferGeo"] = submesh;
 
 	m_Meshs[meshName] = move(meshGeo);
-	MaterialLoader->BuildMaterial(meshName, materials.front());
+	if(!materials.empty())
+		MaterialLoader->BuildMaterial(meshName, materials.front());
 }
 
 bool MeshMgr::LoadMeshFile(vector<SkinnedVertex>& outVertex, vector<UINT>& outIndex, vector<Material>* outMaterial, string path)
@@ -239,6 +242,9 @@ bool MeshMgr::LoadStaticMeshFile(vector<Vertex>& outVertex,
 	UINT vertexSize, indexSize;
 	UINT materialSize;
 
+	//XMMATRIX xmmRotate = XMMatrixRotationX(XMConvertToRadians(-90.f));
+	//xmmRotate *= XMMatrixRotationZ(XMConvertToRadians(-90.f));
+
 	string ignore;
 	if (fileInput) {
 		fileInput >> ignore >> vertexSize;
@@ -247,31 +253,33 @@ bool MeshMgr::LoadStaticMeshFile(vector<Vertex>& outVertex,
 
 		if (vertexSize == 0 || indexSize == 0)
 			return false;
-
 		fileInput >> ignore;
-		for (UINT i = 0; i < materialSize; ++i) {
-			// Material
-			Material tempMaterial;
-			// Fresnel, Emissive, Roughness 거르기
-			XMFLOAT3 Fresnel_Net;
-			XMFLOAT3 Emissive_Net;
-			float Roughness_Net;
+		if (materialSize != 0)
+		{
+			for (UINT i = 0; i < materialSize; ++i) {
+				// Material
+				Material tempMaterial;
+				// Fresnel, Emissive, Roughness 거르기
+				XMFLOAT3 Fresnel_Net;
+				XMFLOAT3 Emissive_Net;
+				float Roughness_Net;
 
-			fileInput >> ignore >> tempMaterial.Name;
-			fileInput >> ignore >> tempMaterial.Ambient.x >> tempMaterial.Ambient.y >> tempMaterial.Ambient.z;
-			fileInput >> ignore >> tempMaterial.DiffuseAlbedo.x >> tempMaterial.DiffuseAlbedo.y >> tempMaterial.DiffuseAlbedo.z >> tempMaterial.DiffuseAlbedo.w;
-			fileInput >> ignore >> Fresnel_Net.x >> Fresnel_Net.y >> Fresnel_Net.z;
-			fileInput >> ignore >> tempMaterial.Specular.x >> tempMaterial.Specular.y >> tempMaterial.Specular.z;
-			fileInput >> ignore >> Emissive_Net.x >> Emissive_Net.y >> Emissive_Net.z;
-			fileInput >> ignore >> Roughness_Net;
-			fileInput >> ignore;
+				fileInput >> ignore >> tempMaterial.Name;
+				fileInput >> ignore >> tempMaterial.Ambient.x >> tempMaterial.Ambient.y >> tempMaterial.Ambient.z;
+				fileInput >> ignore >> tempMaterial.DiffuseAlbedo.x >> tempMaterial.DiffuseAlbedo.y >> tempMaterial.DiffuseAlbedo.z >> tempMaterial.DiffuseAlbedo.w;
+				fileInput >> ignore >> Fresnel_Net.x >> Fresnel_Net.y >> Fresnel_Net.z;
+				fileInput >> ignore >> tempMaterial.Specular.x >> tempMaterial.Specular.y >> tempMaterial.Specular.z;
+				fileInput >> ignore >> Emissive_Net.x >> Emissive_Net.y >> Emissive_Net.z;
+				fileInput >> ignore >> Roughness_Net;
+				fileInput >> ignore;
 
-			for (int j = 0; j < 4; ++j) {
-				for (int k = 0; k < 4; ++k) {
-					fileInput >> tempMaterial.MatTransform.m[j][k];
+				for (int j = 0; j < 4; ++j) {
+					for (int k = 0; k < 4; ++k) {
+						fileInput >> tempMaterial.MatTransform.m[j][k];
+					}
 				}
+				(*outMaterial).push_back(tempMaterial);
 			}
-			(*outMaterial).push_back(tempMaterial);
 		}
 
 		for (UINT i = 0; i < vertexSize; ++i) {
@@ -282,7 +290,12 @@ bool MeshMgr::LoadStaticMeshFile(vector<Vertex>& outVertex,
 			fileInput >> ignore >> vertex.TexC.x >> vertex.TexC.y;
 			fileInput >> ignore >> vertex.Tangent.x >> vertex.Tangent.y >> vertex.Tangent.z;
 			fileInput >> ignore >> vertex.Binormal.x >> vertex.Binormal.y >> vertex.Binormal.z;
-			
+
+			//XMStoreFloat3(&vertex.Pos, XMVector3TransformCoord(XMLoadFloat3(&vertex.Pos), xmmRotate));
+			//XMStoreFloat3(&vertex.Normal, XMVector3TransformNormal(XMLoadFloat3(&vertex.Normal), xmmRotate));
+			//XMStoreFloat3(&vertex.Tangent, XMVector3TransformNormal(XMLoadFloat3(&vertex.Tangent), xmmRotate));
+			//XMStoreFloat3(&vertex.Binormal, XMVector3TransformNormal(XMLoadFloat3(&vertex.Binormal), xmmRotate));
+
 			outVertex.push_back(vertex);
 		}
 

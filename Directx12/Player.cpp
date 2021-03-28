@@ -1,8 +1,13 @@
 #include "Player.h"
 
+#include "MainApp.h"
+#include "Scene.h"
+
 #include "Renderer.h"
 #include "Geometry.h"
 #include "Camera.h"
+#include "Bullet.h"
+
  // Component
 #include "Mesh.h"
 #include "Transform.h"
@@ -65,7 +70,18 @@ int Player::Update(const float& fTimeDelta)
 		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotate);
 
 		dynamic_cast<Transform*>(m_mapComponent["Transform"])->KeyInput();
+
+		if (GetAsyncKeyState(VK_LBUTTON) & 0x0001)
+		{
+			XMFLOAT3 pos = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
+			pos.y += 1.f;
+			Object* pObj = new Bullet(m_pDevice, m_pCmdLst, m_pRenderer, 
+				pos
+				, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate(), 10.f);
+			MainApp::GetInstance()->GetScene()->PushObject(pObj, OBJ_TYPE::OBJ_BULLET);
+		}
 	}
+
 
 
 	return 0;

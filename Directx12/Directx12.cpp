@@ -49,8 +49,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
-    MainApp mainApp;
-    mainApp.Initialize();
+    MainApp* mainApp = MainApp::GetInstance();
+    mainApp->Initialize();
     GameTimer::GetInstance()->Reset();
     // 기본 메시지 루프입니다.
     while (true)
@@ -71,11 +71,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         {
             GameTimer::GetInstance()->Tick(60.f);
             const float deltaTime = GameTimer::GetInstance()->GetDeltaTime();
-            mainApp.Update(deltaTime);
-            mainApp.LateUpdate(deltaTime);
-            mainApp.Render(deltaTime);
+            mainApp->Update(deltaTime);
+            mainApp->LateUpdate(deltaTime);
+            mainApp->Render(deltaTime);
         }
     }
+    mainApp->DestroyInstance();
 
     return (int)msg.wParam;
 }

@@ -76,6 +76,15 @@ void Renderer::Render(const float& fTimeDelta)
 		pObject->Render(fTimeDelta);
 	}
 
+	m_mapShaders[RENDER_TYPE::RENDER_BULLET]->PreRender(m_pCmdLst);
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_BULLET])
+	{
+		m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+		if (pObject->GetTextureName() != "")
+			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+		pObject->Render(fTimeDelta);
+	}
+
 	m_mapShaders[RENDER_TYPE::RENDER_STATIC]->PreRender(m_pCmdLst);
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_STATIC])
 	{
@@ -161,7 +170,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE Renderer::CreateUnorderedAccessView(ID3D12Resource* 
 
 void Renderer::BuildRootSignature()
 {
-	CD3DX12_DESCRIPTOR_RANGE srvTable[7];
+	CD3DX12_DESCRIPTOR_RANGE srvTable[8];
 	srvTable[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 	srvTable[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
 	srvTable[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2);
@@ -169,9 +178,10 @@ void Renderer::BuildRootSignature()
 	srvTable[4].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4);
 	srvTable[5].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 5);
 	srvTable[6].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 6);
+	srvTable[7].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 7);
 
 
-	const size_t rootSize = 12;
+	const size_t rootSize = 13;
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[rootSize];
 
@@ -188,6 +198,7 @@ void Renderer::BuildRootSignature()
 	slotRootParameter[9].InitAsDescriptorTable(1, &srvTable[5], D3D12_SHADER_VISIBILITY_ALL);	//depth render target
 	slotRootParameter[10].InitAsDescriptorTable(1, &srvTable[6], D3D12_SHADER_VISIBILITY_ALL);	//Skybox texture
 	slotRootParameter[11].InitAsConstantBufferView(4); // Skinned
+	slotRootParameter[12].InitAsDescriptorTable(1, &srvTable[7], D3D12_SHADER_VISIBILITY_ALL);	//Noise texture
 
 	auto staticSamplers = GetStaticSamplers();
 
@@ -298,6 +309,20 @@ void Renderer::BuildShader()
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Skybox", L"color.hlsl", "PS_Skybox", layout);
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, false);
 	m_mapShaders[RENDER_TYPE::RENDER_SKYBOX] = pShader;
+
+
+	// Static Model
+	pShader = new Shader;
+	layout = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_FireBall", L"color.hlsl", "PS_FireBall", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5);
+	m_mapShaders[RENDER_TYPE::RENDER_BULLET] = pShader;
 }
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 {

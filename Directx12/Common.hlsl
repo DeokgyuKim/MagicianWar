@@ -10,6 +10,7 @@ cbuffer cbCamera : register(b1)
 	float4x4 gInvView;
 	float4x4 gInvProj;
 	float4 gCamPosition;
+	float gTime;
 };
 
 cbuffer cbMaterial : register(b2)
@@ -45,3 +46,4 @@ Texture2D NormalTex : register(t4);
 Texture2D DepthTex : register(t5);
 
 TextureCube CubeMapTex : register(t6);
+Texture2D NoiseTex : register(t7);

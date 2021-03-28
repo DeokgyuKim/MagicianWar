@@ -112,6 +112,12 @@
     <Filter Include="01.Engine\01.Renderer\03.MaterailMgr">
       <UniqueIdentifier>{09742e51-9db4-493f-8e23-dc200c3fb74d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\02.Object\05. Bullet">
+      <UniqueIdentifier>{fd5797d6-413b-4fae-a1d4-c9c5c7278fb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr">
+      <UniqueIdentifier>{3f60bab8-6437-4a82-9bfd-c5a4f0d1b75f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -242,6 +248,12 @@
     <ClInclude Include="MaterialMgr.h">
       <Filter>01.Engine\01.Renderer\03.MaterailMgr</Filter>
     </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>01.Engine\02.Object\05. Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMeshMgr.h">
+      <Filter>01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -350,6 +362,12 @@
     </ClCompile>
     <ClCompile Include="MaterialMgr.cpp">
       <Filter>01.Engine\01.Renderer\03.MaterailMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>01.Engine\02.Object\05. Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMeshMgr.cpp">
+      <Filter>01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,9 @@
 #include "Player.h"
 #include "Skybox.h"
 #include "StaticObject.h"
+#include "Bullet.h"
+
+#include "StaticMeshMgr.h"
 
 TestScene::TestScene()
 {
@@ -72,11 +75,8 @@ int TestScene::Update(const float& fTimeDelta)
 
 			Object* pObj;
 
-			Core::GetInstance()->CmdLstReset();
-			pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), position, HOUSE_02);
+			//pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), position, HOUSE_02);
 			//(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance()->GetHeap());
-			Core::GetInstance()->CmdLstExecute();
-			Core::GetInstance()->WaitForGpuComplete();
 
 			m_pObjects[OBJ_STATIC].push_back(pObj);
 		}
@@ -129,6 +129,23 @@ void TestScene::Initialize()
 	pObj = new Skybox(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	dynamic_cast<Skybox*>(pObj)->SetCamera(pCamera);
 	m_pObjects[OBJ_SKYBOX].push_back(pObj);
+
+	//pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.01f, 0.01f, 0.01f), "overhang_building_a");
+	//m_pObjects[OBJ_STATIC].push_back(pObj);
+	//
+	//pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT3(0.f, 0.f, 10.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.01f, 0.01f, 0.01f), "street_gate");
+	//m_pObjects[OBJ_STATIC].push_back(pObj);
+
+	StaticMeshMgr::GetInstance()->LoadMeshInfo("../Data/Map1Data.txt");
+	multimap<string*, TransformStruct> mmapInfo = StaticMeshMgr::GetInstance()->GetMapMeshInfo();
+	for (auto iter = mmapInfo.begin(); iter != mmapInfo.end(); ++iter)
+	{
+		pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+			(*iter).second.xmfPosition, (*iter).second.xmfRotate, (*iter).second.xmfScale, *(*iter).first);
+		m_pObjects[OBJ_STATIC].push_back(pObj);
+	}
 
 
 	//Core::GetInstance()->CmdLstReset();

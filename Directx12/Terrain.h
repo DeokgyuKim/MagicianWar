@@ -2,8 +2,8 @@
 #include "framework.h"
 #include "Object.h"
 
-#define TerrainX 10
-#define TerrainZ 10
+#define TerrainX 1
+#define TerrainZ 1
 
 class Renderer;
 class Geometry;

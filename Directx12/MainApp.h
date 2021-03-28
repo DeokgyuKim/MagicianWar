@@ -8,15 +8,31 @@ class AnimationMgr;
 class Renderer;
 class MainApp
 {
-public:
+private:
 	MainApp() {}
-	~MainApp() {}
+	MainApp(const MainApp& rhs) {}
+	~MainApp() { Release(); }
+public:
+	static MainApp* GetInstance() {
+		if (m_pInstance == NULL)
+			m_pInstance = new MainApp();
+		return m_pInstance;
+	}
+	static void DestroyInstance() {
+		if (m_pInstance != NULL)
+			delete m_pInstance;
+		m_pInstance = NULL;
+	}
+private:
+	static MainApp* m_pInstance;
 public:
 	void Initialize();
 	void Update(const float& fTimeDelta);
 	void LateUpdate(const float& fTimeDelta);
 	void Render(const float& fTimeDelta);
-
+	void Release();
+public:
+	Scene* GetScene() { return m_pScene; }
 private:
 	void LoadSkinnedModels();
 	void LoadStaticModels();

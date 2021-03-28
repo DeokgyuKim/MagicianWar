@@ -20,6 +20,8 @@ public:
     void        SetRotate(XMFLOAT3 xmfRotate) { m_xmfRotate = xmfRotate; }
     void        SetPosition(XMFLOAT3 xmfPosition) { m_xmfPosition = xmfPosition; }
     void        SetMeshRotate(XMFLOAT3 xmfMeshRotate) { m_xmfMeshRotate = xmfMeshRotate; }
+public:
+    void        MoveForward(float speed);
 private:
     XMFLOAT3    m_xmfScale;
     XMFLOAT3	m_xmfRotate;

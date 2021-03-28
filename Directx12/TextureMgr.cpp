@@ -12,13 +12,31 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Tree02", L"../Resources/Tree02.dds");
 	m_mapTextures["Tree02"] = pTexture;
 
-	pTexture = new DDSTexture(device, cmdLst, heap, "Tree02", L"../Resources/Models/Characters/wizard_01/wizard_01.dds");
+	pTexture = new DDSTexture(device, cmdLst, heap, "Noise", L"../Resources/Noise.dds", false, 12);
+	m_mapTextures["Noise"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Noise2", L"../Resources/Noise2.dds", false, 12);
+	m_mapTextures["Noise2"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Noise3", L"../Resources/Noise3.dds", false, 12);
+	m_mapTextures["Noise3"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall", L"../Resources/FireBall.dds");
+	m_mapTextures["FireBall"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall2", L"../Resources/FireBall2.dds");
+	m_mapTextures["FireBall2"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall3", L"../Resources/FireBall3.dds");
+	m_mapTextures["FireBall3"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "wizard_01", L"../Resources/Models/Characters/wizard_01/wizard_01.dds");
 	m_mapTextures["wizard_01"] = pTexture;
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "SkyBox", L"../Resources/SkyBox/SkyBox_0.dds", true, 10);
 	m_mapTextures["SkyBox"] = pTexture;
 
-	pTexture = new DDSTexture(device, cmdLst, heap, "Tree02", L"../Resources/Models/Textures/Texture_01.dds");
+	pTexture = new DDSTexture(device, cmdLst, heap, "Texture_01", L"../Resources/Models/Textures/Texture_01.dds");
 	m_mapTextures["StaticMesh"] = pTexture;
 	
 }

@@ -4,10 +4,11 @@ class StaticObject :
     public Object
 {
 public:
-    StaticObject(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 xmfPosition, string MeshName);
+    StaticObject(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer,
+        XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3 xmfScale, string MeshName);
     ~StaticObject();
 private:
-    void    Initialize(XMFLOAT3 xmfPosition, string MeshName);
+    void    Initialize(XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3 xmfScale, string MeshName);
     void    Release();
     HRESULT BuildConstantBuffer();
 public:

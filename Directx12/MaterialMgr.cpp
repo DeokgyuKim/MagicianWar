@@ -23,3 +23,11 @@ void MaterialMgr::BuildMaterial(const string& MaterialName, Material Mat)
 
 }
 
+Material* MaterialMgr::GetMaterial(const string& MaterialName)
+{
+	auto iter = m_Materials.find(MaterialName);
+	if (iter == m_Materials.end())
+		return nullptr;
+	return (*iter).second.get();
+}
+

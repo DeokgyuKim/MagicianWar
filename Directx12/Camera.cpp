@@ -20,6 +20,7 @@ Camera::~Camera()
 
 int Camera::Update(const float& fTimeDelta)
 {
+	m_fTime += fTimeDelta;
 	if (GetAsyncKeyState(VK_F1) & 0x0001)
 		m_eCamMode = CAMERA_MODE::CAMERA_NONE;
 	if (GetAsyncKeyState(VK_F2) & 0x0001)
@@ -110,6 +111,7 @@ void Camera::LateUpdate(const float& fTimeDelta)
 	XMStoreFloat4x4(&camCB.InvProj, XMMatrixTranspose(XMMatrixInverse(NULL, XMLoadFloat4x4(&m_xmmProj))));
 	XMFLOAT4 position = XMFLOAT4(m_xmfPosition.x, m_xmfPosition.y, m_xmfPosition.z, 0.f);
 	XMStoreFloat4(&camCB.Position, XMLoadFloat4(&position));
+	camCB.Time = m_fTime;
 
 
 	m_ObjectCB->CopyData(0, camCB);

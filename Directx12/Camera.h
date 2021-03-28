@@ -53,5 +53,6 @@ private:
     CAMERA_MODE                 m_eCamMode = CAMERA_MODE::CAMERA_NONE;
 
     Player*                     m_pPlayer;
+    float                       m_fTime = 0.f;
 };
 

@@ -24,7 +24,8 @@ void Terrain::Initialize()
 			m_pBuffer[i][j] = new Plane(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), j, i);
 	BuildConstantBuffer();
 
-	XMStoreFloat4x4(&m_xmmWorld, XMMatrixIdentity());
+	XMFLOAT3 scale = XMFLOAT3(50.f, 1.f, 100.f);
+	XMStoreFloat4x4(&m_xmmWorld, XMMatrixScalingFromVector(XMLoadFloat3(&scale)) * XMMatrixTranslation(24.5f, 0.f, 49.5f));
 	m_strTextureName = "Stone01";
 
 	m_mapComponent["Material"] = new MaterialCom(XMFLOAT4(0.588f, 0.588f, 0.588f, 1.f), XMFLOAT4(0.588f, 0.588f, 0.588f, 1.f), 

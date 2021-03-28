@@ -66,3 +66,12 @@ XMMATRIX Transform::GetWorldMatrix()
 
 	return world;
 }
+
+void Transform::MoveForward(float speed)
+{
+	XMFLOAT3 look;
+	memcpy(&look, &m_xmmWorld._31, sizeof(XMFLOAT3));
+	XMStoreFloat3(&look, XMVector3Normalize(XMLoadFloat3(&look)));
+
+	XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&look) * speed);
+}

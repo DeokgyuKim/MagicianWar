@@ -1,27 +1,29 @@
 #include "StaticObject.h"
-
+#include "Core.h"
 #include "Renderer.h"
 #include "Mesh.h"
 #include "Transform.h"
 #include "Material.h"
 
-StaticObject::StaticObject(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 xmfPosition, string MeshName)
+StaticObject::StaticObject(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, 
+	XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3 xmfScale, string MeshName)
 {
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
 	m_pRenderer = pRenderer;
-	Initialize(xmfPosition, MeshName);
+	Initialize(xmfPosition, xmfRotate, xmfScale, MeshName);
 }
 
 StaticObject::~StaticObject()
 {
 }
 
-void StaticObject::Initialize(XMFLOAT3 xmfPosition, string MeshName)
+void StaticObject::Initialize(XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3 xmfScale, string MeshName)
 {
+	Core::GetInstance()->CmdLstReset();
 	BuildConstantBuffer();
 
-	Component* pComponent = new Transform(XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), xmfPosition);
+	Component* pComponent = new Transform(xmfScale, xmfRotate, xmfPosition);
 	m_mapComponent["Transform"] = pComponent;
 	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), MeshName);
 	m_mapComponent["Mesh"] = pComponent;
@@ -29,8 +31,10 @@ void StaticObject::Initialize(XMFLOAT3 xmfPosition, string MeshName)
 	m_mapComponent["Material"] = pComponent;
 
 	m_strTextureName = "StaticMesh";
+	Core::GetInstance()->CmdLstExecute();
+	Core::GetInstance()->WaitForGpuComplete();
 
-	//dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 0.f, 0.f));
+	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 90.f, 0.f));
 }
 
 void StaticObject::Release()
@@ -46,6 +50,23 @@ HRESULT StaticObject::BuildConstantBuffer()
 
 int StaticObject::Update(const float& fTimeDelta)
 {
+	XMFLOAT3 rotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
+	if (GetAsyncKeyState('I') & 0x8000)
+	{
+		rotate.x += 1.f;
+		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rotate);
+	}
+	if (GetAsyncKeyState('O') & 0x8000)
+	{
+		rotate.y += 1.f;
+		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rotate);
+	}
+	if (GetAsyncKeyState('P') & 0x8000)
+	{
+		rotate.z += 1.f;
+		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rotate);
+	}
+
 	Object::Update(fTimeDelta);;
     
 	return 0;

@@ -30,7 +30,7 @@ public:
 	void BuildMaterial(const string& MaterialName, Material Mat);
 
 public:
-	Material* GetMaterial(const string& MaterialName) { return m_Materials[MaterialName].get(); }
+	Material* GetMaterial(const string& MaterialName);
 
 private:
 	Core* m_pCore = NULL;

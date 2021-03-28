@@ -88,9 +88,11 @@ PSOut PS_Main(Out pin)
 {
 	PSOut vout;
 
-	vout.Diffuse = Texture.Sample(gsamLinear, pin.UV) * gDiffuse;
-	vout.Ambient = Texture.Sample(gsamLinear, pin.UV) * gAmbient;
-	vout.Specular = Texture.Sample(gsamLinear, pin.UV) * gSpecular;
+	float2 terrainsize = float2(50.f, 100.f);
+
+	vout.Diffuse = Texture.Sample(gsamLinear, pin.UV * terrainsize) * gDiffuse;
+	vout.Ambient = Texture.Sample(gsamLinear, pin.UV * terrainsize) * gAmbient;
+	vout.Specular = Texture.Sample(gsamLinear, pin.UV * terrainsize) * gSpecular;
 	vout.Normal = float4((pin.Normal * 0.5f + 0.5f).xyz, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
@@ -149,7 +151,7 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	float3 camdir = normalize(position.xyz - gCamPosition.xyz);
 
 	float diffuseValue = saturate(dot(normalize(gLightDirection.xyz) * -1.f, Normal.xyz));
-	diffuseValue = (ceil(diffuseValue * 3) / 3.f);
+	//diffuseValue = (ceil(diffuseValue * 3) / 3.f);
 
 	//reflect(vector(normalize(g_vLightDir.xyz), 0.f), vNormal);
 	float3 reflection = normalize(reflect(normalize(gLightDirection.xyz), Normal.xyz));
@@ -204,6 +206,56 @@ struct VertexOut_Default
 	float3 TangentW : TANGENT;
 	float3 BinormalW : BINORMAL;
 };
+
+VertexOut_Default VS_FireBall(VertexIn_Static vin)
+{
+	VertexOut_Default vout = (VertexOut_Default)0.0f;
+	vin.NormalL.x *= -1.f;
+
+	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)gWorld));
+	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)gWorld));
+	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)gWorld));
+
+	// 월드 & 카메라 변환
+	
+	float2 tex = vin.TexC;
+	tex.x += gTime * 0.1f;
+	tex.y -= gTime * 0.1f;
+	tex *= 3.f;
+
+	float Interval = NoiseTex.SampleLevel(gsamLinear, tex, 0).x;
+	Interval = Interval * 2.f - 1.f;
+	Interval *= 0.2f;
+
+	vin.PosL += vin.NormalL * Interval;
+
+	float4 posH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorld), gView), gProj);
+	vout.PosH = posH;
+
+
+	vout.TexC = vin.TexC;
+
+	return vout;
+}
+PSOut PS_FireBall(VertexOut_Default pin)
+{
+	PSOut vout;
+	float2 tex = pin.TexC;
+	tex.x += gTime * 0.1f;
+	tex.y -= gTime * 0.1f;
+	tex *= 3.f;
+
+	float4 color = Texture.Sample(gsamLinear, pin.TexC);
+	color *= saturate(pow(NoiseTex.Sample(gsamLinear, tex).x * 1.5f, 3.f));
+
+	vout.Diffuse = color * gDiffuse;
+	vout.Ambient = color * gAmbient;
+	vout.Specular = color * gSpecular;
+	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
+	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+
+	return vout;
+}
 
 VertexOut_Default VS_Static(VertexIn_Static vin)
 {
