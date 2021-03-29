@@ -119,6 +119,7 @@ void Player::Render(const float& fTimeDelta)
 	m_pCmdLst->SetGraphicsRootConstantBufferView(2, m_MaterialCB->Resource()->GetGPUVirtualAddress());	// material
 	m_pCmdLst->SetGraphicsRootConstantBufferView(11, m_SkinnedCB->Resource()->GetGPUVirtualAddress());	// skinned
 	Object::Render(fTimeDelta);
+
 	//m_pBuffer->Render(fTimeDelta);
 }
 
@@ -146,10 +147,11 @@ void Player::KeyPress()
 	if (KeyMgr::GetInstance()->KeyPressing('A')) dkey |= KEY_A;
 	if (KeyMgr::GetInstance()->KeyPressing('S')) dkey |= KEY_S;
 	if (KeyMgr::GetInstance()->KeyPressing('D')) dkey |= KEY_D;
+	if (KeyMgr::GetInstance()->KeyPressing(VK_SPACE)) dkey |= KEY_SPACE;
 
 	// 상태 패턴 구현해야할듯
-	dynamic_cast<Transform*>(m_mapComponent["Transform"])->KeyInput(dkey);
-	
+	int check = dynamic_cast<Transform*>(m_mapComponent["Transform"])->KeyInput(dkey);
+	m_AnimationController->SetJumpEnd(check);
 }
 
 void Player::KeyDown()

@@ -146,5 +146,15 @@ public:
 		xmmtx4x4Result._44 = xmmtx4x4Matrix1._44 + xmmtx4x4Matrix2._44;
 		return(xmmtx4x4Result);
 	}
+
+	//static XMFLOAT3 CrossProduct(XMFLOAT3& xmf3Vector1, XMFLOAT3& xmf3Vector2, bool _normalize = true)
+	//{
+	//	XMFLOAT3 xmf3Result;
+	//	if (_normalize)
+	//		XMStoreFloat3(&xmf3Result, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&xmf3Vector1), XMLoadFloat3(&xmf3Vector2))));
+	//	else
+	//		XMStoreFloat3(&xmf3Result, XMVector3Cross(XMLoadFloat3(&xmf3Vector1), XMLoadFloat3(&xmf3Vector2)));
+	//	return(xmf3Result);
+	//}
 };
 

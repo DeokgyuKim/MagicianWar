@@ -51,7 +51,7 @@ void AnimationMgr::BuildAnimation(string meshName, MESH_TYPE eMesh, ANIMATION_TY
 		m_strFilePath += "Attack";
 		break;
 	case ANIMATION_TYPE::JUMP:
-		m_strFilePath += "Standing_Jump";
+		m_strFilePath += "Jumping";
 	case ANIMATION_TYPE::NONE:
 		break;
 	}

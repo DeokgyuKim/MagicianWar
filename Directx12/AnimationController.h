@@ -16,14 +16,13 @@ public:
 public:
 	void Initialize(InterfaceAnimation* _pAni);
 	void Release();
-	void ChangeAnimation();
 	void LoopTime(const float fTimeDelta);
 	void CheckAnimation(const float fTimeDelta);
 public:
 	// Set
 	void Set_SkinnedModelInst(SkinnedModelInstance* _inst);
 	void SetAnimaionKey(DWORD _key);
-
+	void SetJumpEnd(int _check);
 public:
 	void MouseCallback();
 	void Handler(const float& fTimeDelta);

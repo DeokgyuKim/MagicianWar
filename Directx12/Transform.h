@@ -1,5 +1,7 @@
 #pragma once
 #include "Component.h"
+#include <ctime>
+
 class Transform :
     public Component
 {
@@ -9,7 +11,7 @@ public:
 public:
     virtual void LateUpdate(const float& fTimeDelta) override;
 public:
-    void        KeyInput(DWORD iKey);
+    int        KeyInput(DWORD iKey);
 public:
     XMFLOAT3    GetScale() { return m_xmfScale; }
     XMFLOAT3    GetRotate() { return m_xmfRotate; }
@@ -28,5 +30,17 @@ private:
     XMFLOAT4X4	m_xmmWorld;
 
     XMFLOAT3    m_xmfMeshRotate;
+
+    bool m_bJump;
+
+    // Èû
+    float m_fJumpTotal; 
+    float m_fJumpPower;
+    float Gravity;
+
+    // ½Ã°£
+    clock_t Current_tick;
+    clock_t Next_tick;
+
 };
 

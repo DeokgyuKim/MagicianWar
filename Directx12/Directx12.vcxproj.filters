@@ -127,6 +127,9 @@
     <Filter Include="09.Command\01.Animation">
       <UniqueIdentifier>{a9ff344a-2686-486c-abea-3178c52aaeaa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09.Command\FSM">
+      <UniqueIdentifier>{bf32f009-2ec1-4106-b403-059e9a2a1acd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -274,7 +277,9 @@
     <ClInclude Include="InterfaceCommand.h">
       <Filter>09.Command</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationFSM.h" />
+    <ClInclude Include="AnimationFSM.h">
+      <Filter>09.Command\FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -395,7 +400,9 @@
     <ClCompile Include="AnimationCommand.cpp">
       <Filter>09.Command\01.Animation</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationFSM.cpp" />
+    <ClCompile Include="AnimationFSM.cpp">
+      <Filter>09.Command\FSM</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

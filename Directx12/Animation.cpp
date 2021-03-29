@@ -37,13 +37,19 @@ int AnimationCom::Update(const float& fTimeDelta)
 
 void AnimationCom::DefaultAnimate(const float& fTimeDelta)
 {
-	curAnimation->Time += fTimeDelta;
+	if (curAnimation->eType == ANIMATION_TYPE::ATTACK)
+		curAnimation->Time += fTimeDelta * 5.f;
+	else if (curAnimation->eType == ANIMATION_TYPE::JUMP)
+		curAnimation->Time += fTimeDelta * 3.f;
+	else
+		curAnimation->Time += fTimeDelta * 5.f;
 
 	// 현재 애니메이션
 	m_SkinnedModelInst->UpdateAnimation(curAnimation->eType, curAnimation->Time);
 
 	if (curAnimation->Time > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(curAnimation->eType)) {
 		curAnimation->Time = 0.f;
+
 	}
 }
 

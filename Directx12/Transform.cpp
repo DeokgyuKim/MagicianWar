@@ -1,5 +1,6 @@
 #include "Transform.h"
 
+
 Transform::Transform(XMFLOAT3 xmfScale, XMFLOAT3 xmfRotate, XMFLOAT3 xmfPosition)
 {
 	m_xmfScale = xmfScale;
@@ -7,6 +8,12 @@ Transform::Transform(XMFLOAT3 xmfScale, XMFLOAT3 xmfRotate, XMFLOAT3 xmfPosition
 	m_xmfPosition = xmfPosition;
 	m_xmfMeshRotate = XMFLOAT3(0.f, 0.f, 0.f);
 	XMStoreFloat4x4(&m_xmmWorld, XMMatrixIdentity());
+
+	m_bJump = false;
+	m_fJumpTotal = 45.f;
+	m_fJumpPower = 9.f;
+	Gravity = 3.8f;
+
 }
 
 Transform::~Transform()
@@ -30,20 +37,42 @@ void Transform::LateUpdate(const float& fTimeDelta)
 	XMStoreFloat4x4(&m_xmmWorld, world);
 }
 
-void Transform::KeyInput(DWORD iKey)
+int Transform::KeyInput(DWORD iKey)
 {
-	XMFLOAT3 look, right;
+
+
+	XMFLOAT3 look, right, up;
 	memcpy(&look, &m_xmmWorld._31, sizeof(XMFLOAT3));
 	memcpy(&right, &m_xmmWorld._11, sizeof(XMFLOAT3));
 
 	XMStoreFloat3(&look, XMVector3Normalize(XMLoadFloat3(&look)));
 	XMStoreFloat3(&right, XMVector3Normalize(XMLoadFloat3(&right)));
+	XMStoreFloat3(&up, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&look), XMLoadFloat3(&right))));
 
+	if (m_bJump) {
+		Next_tick = ((clock() - Current_tick) + 100) / 100;
+		m_fJumpTotal = (m_fJumpPower * Next_tick) - (Gravity * Next_tick * Next_tick * 0.5f);
+		up.y = m_fJumpTotal;
+		XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&up) * 0.005f);
 
-	if (iKey & KEY_W) XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&look) * 0.1f);
-	if (iKey & KEY_S) XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&look) * 0.1f);
-	if (iKey & KEY_A) XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&right) * 0.1f);
-	if (iKey & KEY_D) XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&right) * 0.1f);
+		if (m_xmfPosition.y <= 0.f) { // 땅이다 라고 판별이 되면 애니메이션 처리를 해줘야하는데
+			m_xmfPosition.y = 0.f;  // return 을 통해 플레이어에게 알려줘야하나 흠..
+			m_bJump = false;
+			return 1;
+		}
+	}
+	else
+	{
+		if (iKey & KEY_W) XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&look) * 0.07f);
+		if (iKey & KEY_S) XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&look) * 0.02f);
+		if (iKey & KEY_A) XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&right) * 0.05f);
+		if (iKey & KEY_D) XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&right) * 0.05f);
+		if (iKey & KEY_SPACE) {
+			m_bJump = true; // 점프중
+			Current_tick = clock();
+		}
+	}
+
 
 	//switch (iKey)
 	//{
@@ -70,7 +99,7 @@ void Transform::KeyInput(DWORD iKey)
 	//	XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&right) * 0.1f);
 	//if (GetAsyncKeyState('D') & 0x8000)
 	//	XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&right) * 0.1f);
-
+	return 0;
 }
 
 XMFLOAT3 Transform::GetLook()
