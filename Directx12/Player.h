@@ -3,6 +3,7 @@
 
 class Geometry;
 class Camera;
+class AnimationController;
 
 class Player :
     public Object
@@ -26,7 +27,10 @@ public:
 
 private:
     void UpdateSkinnedAnimation(const float fTimeDelta);
-
+    void KeyInput();    // 키 입력
+    void KeyPress();     // 키 누름
+    void KeyDown();
+    void KeyUp();            // 키 뗌
 protected:
     ID3D12Device*                               m_pDevice;
     ID3D12GraphicsCommandList*                  m_pCmdLst;
@@ -36,5 +40,9 @@ protected:
     unique_ptr<UploadBuffer<MaterialCB>>        m_MaterialCB;
     
     Camera*                                     m_pCamera;
+
+    // 컨트롤러
+    unique_ptr<AnimationController>             m_AnimationController;
+
 };
 

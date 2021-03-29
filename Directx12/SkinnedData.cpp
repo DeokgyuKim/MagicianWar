@@ -1,4 +1,4 @@
-
+#include <algorithm>
 #include "SkinnedData.h"
 
 Keyframe::Keyframe()
@@ -190,9 +190,40 @@ void SkinnedData::GetFinalTransforms(const ANIMATION_TYPE eType, float timePos, 
 	}
 }
 
-void SkinnedData::GetBlendedAnimationData(const std::string& clipName1, float timePos1, const std::string& clipName2, float timePos2, float factor, std::vector<DirectX::XMFLOAT4X4>& finalTransform)
+void SkinnedData::GetBlendedFinalTransforms(
+	const ANIMATION_TYPE _curAnimation, float _curtimePos,
+	const ANIMATION_TYPE _nextAnimation, float _nexttimePos,
+	float _blendWeight, std::vector<DirectX::XMFLOAT4X4>& finalTransform)
 {
+	if (_curAnimation == ANIMATION_TYPE::NONE) return; // 잘못 넘기면 NONE 타입임
+	if (_nextAnimation == ANIMATION_TYPE::NONE) return; // 잘못 넘기면 NONE 타입임
+
+	vector<XMFLOAT4X4> Transform1;
+	vector<XMFLOAT4X4> Transform2;
+
+	GetFinalTransforms(_curAnimation, _curtimePos, Transform1);
+	GetFinalTransforms(_nextAnimation, _nexttimePos, Transform2);
+	
+	Transform1.resize(finalTransform.size());
+	Transform2.resize(finalTransform.size());
+
+	MathHelper::Clamp(_blendWeight, 0.0f, 1.f);
+
+	XMFLOAT4X4 BlendTransform;
+
+	for (UINT i = 0; i < finalTransform.size(); ++i) {
+		/*BlendTransform = (1.0f - _blendWeight) * Transform1[i] + (_blendWeight) * Transform2[i];*/
+
+		Transform1[i] = MathHelper::MultiplyFloat_X_Matrix((1.0f - _blendWeight), Transform1[i]);
+		Transform2[i] = MathHelper::MultiplyFloat_X_Matrix(_blendWeight, Transform2[i]);
+		BlendTransform = MathHelper::AddMatrix(Transform1[i], Transform2[i]);
+		
+		finalTransform[i] = BlendTransform;
+	}
 }
+
+
+
 
 void SkinnedData::SetBoneName(std::string boneName)
 {

@@ -3,10 +3,12 @@
 #include "Renderer.h"
 #include "MeshMgr.h"
 #include "AnimationMgr.h"
+#include "KeyMgr.h"
 #include "TestScene.h"
 #include "StaticMeshMgr.h"
 
 MainApp* MainApp::m_pInstance = NULL;
+
 
 void MainApp::Initialize()
 {
@@ -27,13 +29,14 @@ void MainApp::Initialize()
 	m_pCore->WaitForGpuComplete();
 
 	m_pRenderer = Renderer::GetInstance();
-
+	m_KeyMgr = KeyMgr::GetInstance();
 	m_pScene = new TestScene();
 }
 
 void MainApp::Update(const float& fTimeDelta)
 {
 	m_pScene->Update(fTimeDelta);
+	m_KeyMgr->KeyUpdate();
 }
 
 void MainApp::LateUpdate(const float& fTimeDelta)
@@ -101,6 +104,13 @@ void MainApp::LoadAnimations()
 {
 	// wizard_01
 	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::IDLE);
-	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK);
-	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::DANCE);
+	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::ATTACK);
+	
+	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_FOWARD);
+	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_BACK);
+	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_LEFT);
+	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_RIGHT);
+	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::JUMP);
+	
+
 }

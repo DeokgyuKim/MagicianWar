@@ -69,7 +69,10 @@ public:
 	// 일종의 캐싱 시스템을 도입하는 것이 바람직할 것이다.
 	// i번 뼈대의 부모의 부모의 오프셋 변환을 얻는 코드
 	void GetFinalTransforms(const ANIMATION_TYPE eType, float timePos, std::vector<DirectX::XMFLOAT4X4>& finalTransforms);
-	void GetBlendedAnimationData(const std::string& clipName1, float timePos1, const std::string& clipName2, float timePos2, float factor, std::vector<DirectX::XMFLOAT4X4>& finalTransform);
+	void GetBlendedFinalTransforms(
+		const ANIMATION_TYPE _curAnimation, float _curtimePos,
+		const ANIMATION_TYPE _nextAnimation, float _nexttimePos,
+		float _blendWeight, std::vector<DirectX::XMFLOAT4X4>& finalTransform);
 	std::vector<std::string> GetBoneName() const;
 
 public:

@@ -142,6 +142,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationController.h" />
+    <ClInclude Include="AnimationCommand.h" />
+    <ClInclude Include="AnimationFSM.h" />
     <ClInclude Include="AnimationMgr.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
@@ -158,6 +161,9 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Geometry.h" />
+    <ClInclude Include="InterfaceAnimation.h" />
+    <ClInclude Include="InterfaceCommand.h" />
+    <ClInclude Include="KeyMgr.h" />
     <ClInclude Include="LightGeo.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="Material.h" />
@@ -190,6 +196,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="AnimationController.cpp" />
+    <ClCompile Include="AnimationCommand.cpp" />
+    <ClCompile Include="AnimationFSM.cpp" />
     <ClCompile Include="AnimationMgr.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -203,6 +212,7 @@
     <ClCompile Include="Directx12.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="KeyMgr.cpp" />
     <ClCompile Include="LightGeo.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="Material.cpp" />

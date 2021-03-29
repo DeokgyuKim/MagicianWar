@@ -6,6 +6,7 @@ class Core;
 class MeshMgr;
 class AnimationMgr;
 class Renderer;
+class KeyMgr;
 class MainApp
 {
 private:
@@ -43,5 +44,6 @@ private:
 	MeshMgr*		m_MeshMgr;
 	AnimationMgr*	m_AnimationMgr;
 	Renderer*		m_pRenderer;
+	KeyMgr*			m_KeyMgr;
 };
 

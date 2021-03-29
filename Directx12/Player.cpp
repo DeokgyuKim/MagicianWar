@@ -1,24 +1,24 @@
 #include "Player.h"
 
-#include "MainApp.h"
-#include "Scene.h"
-
 #include "Renderer.h"
 #include "Geometry.h"
 #include "Camera.h"
-#include "Bullet.h"
-
  // Component
 #include "Mesh.h"
 #include "Transform.h"
 #include "Material.h"
 #include "Animation.h"
+#include "KeyMgr.h"
+// Controller
+#include "AnimationController.h"
+#include "InterfaceAnimation.h"
 
 Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer)
 {
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
 	m_pRenderer = pRenderer;
+	m_AnimationController = nullptr;
 	Initialize();
 
 	
@@ -41,9 +41,15 @@ void Player::Initialize()
 	m_mapComponent["Material"] = pComponent;
 	pComponent = new AnimationCom(CHARACTER_WIZARD_01);
 	m_mapComponent["Animation"] = pComponent;
-
+	
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 0.f, 0.f));
 
+	// 컨트롤러 만들기
+	InterfaceAnimation* pInterface = dynamic_cast<AnimationCom*>(m_mapComponent["Animation"]);
+	m_AnimationController = make_unique<AnimationController>();
+	m_AnimationController->Initialize(pInterface);
+	m_AnimationController->Set_SkinnedModelInst(dynamic_cast<AnimationCom*>(m_mapComponent["Animation"])->GetSkinnedModellnst());
+	
 	m_strTextureName = "wizard_01";
 }
 
@@ -69,20 +75,10 @@ int Player::Update(const float& fTimeDelta)
 		xmfRotate.y = m_pCamera->GetRotY();
 		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotate);
 
-		dynamic_cast<Transform*>(m_mapComponent["Transform"])->KeyInput();
-
-		if (GetAsyncKeyState(VK_LBUTTON) & 0x0001)
-		{
-			XMFLOAT3 pos = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
-			pos.y += 1.f;
-			Object* pObj = new Bullet(m_pDevice, m_pCmdLst, m_pRenderer, 
-				pos
-				, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate(), 10.f);
-			MainApp::GetInstance()->GetScene()->PushObject(pObj, OBJ_TYPE::OBJ_BULLET);
-		}
+		KeyInput();
+		
 	}
-
-
+	m_AnimationController->Handler(fTimeDelta);
 
 	return 0;
 }
@@ -119,10 +115,11 @@ void Player::LateUpdate(const float& fTimeDelta)
 void Player::Render(const float& fTimeDelta)
 {
 
-	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootConstantBufferView(2, m_MaterialCB->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootConstantBufferView(11, m_SkinnedCB->Resource()->GetGPUVirtualAddress());
+	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());	// obj
+	m_pCmdLst->SetGraphicsRootConstantBufferView(2, m_MaterialCB->Resource()->GetGPUVirtualAddress());	// material
+	m_pCmdLst->SetGraphicsRootConstantBufferView(11, m_SkinnedCB->Resource()->GetGPUVirtualAddress());	// skinned
 	Object::Render(fTimeDelta);
+
 	//m_pBuffer->Render(fTimeDelta);
 }
 
@@ -133,4 +130,38 @@ XMFLOAT3 Player::GetPosition()
 
 void Player::UpdateSkinnedAnimation(const float fTimeDelta)
 {
+}
+
+void Player::KeyInput()
+{
+	KeyPress(); // 누르고 있음
+	KeyDown(); // 누름 1번
+	KeyUp(); //  뗌
+}
+
+void Player::KeyPress()
+{
+	DWORD dkey = 0;
+	// 고민되네 키매니저 어케하고 move 어케할지
+	if (KeyMgr::GetInstance()->KeyPressing('W')) dkey |= KEY_W;
+	if (KeyMgr::GetInstance()->KeyPressing('A')) dkey |= KEY_A;
+	if (KeyMgr::GetInstance()->KeyPressing('S')) dkey |= KEY_S;
+	if (KeyMgr::GetInstance()->KeyPressing('D')) dkey |= KEY_D;
+	if (KeyMgr::GetInstance()->KeyPressing(VK_SPACE)) dkey |= KEY_SPACE;
+
+	// 상태 패턴 구현해야할듯
+	int check = dynamic_cast<Transform*>(m_mapComponent["Transform"])->KeyInput(dkey);
+	m_AnimationController->SetJumpEnd(check);
+}
+
+void Player::KeyDown()
+{
+
+
+}
+
+void Player::KeyUp()
+{
+
+
 }

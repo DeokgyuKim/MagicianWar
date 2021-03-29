@@ -35,12 +35,23 @@ void AnimationMgr::BuildAnimation(string meshName, MESH_TYPE eMesh, ANIMATION_TY
 	case ANIMATION_TYPE::IDLE:
 		m_strFilePath += "Idle";
 		break;
-	case ANIMATION_TYPE::WALK:
-		m_strFilePath += "Walk";
+	case ANIMATION_TYPE::WALK_FOWARD:
+		m_strFilePath += "Walk_Forward";
 		break;
-	case ANIMATION_TYPE::DANCE:
-		m_strFilePath += "Dance";
+	case ANIMATION_TYPE::WALK_BACK:
+		m_strFilePath += "Walk_Back";
 		break;
+	case ANIMATION_TYPE::WALK_LEFT:
+		m_strFilePath += "Walk_Left";
+		break;
+	case ANIMATION_TYPE::WALK_RIGHT:
+		m_strFilePath += "Walk_Right";
+		break;
+	case ANIMATION_TYPE::ATTACK:
+		m_strFilePath += "Attack";
+		break;
+	case ANIMATION_TYPE::JUMP:
+		m_strFilePath += "Jumping";
 	case ANIMATION_TYPE::NONE:
 		break;
 	}
