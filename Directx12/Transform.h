@@ -43,6 +43,7 @@ private:
     // ½Ã°£
     clock_t Current_tick;
     clock_t Next_tick;
+    DWORD   InputKey = 0;
 
 };
 

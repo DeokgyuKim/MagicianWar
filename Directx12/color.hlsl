@@ -151,7 +151,7 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	float3 camdir = normalize(position.xyz - gCamPosition.xyz);
 
 	float diffuseValue = saturate(dot(normalize(gLightDirection.xyz) * -1.f, Normal.xyz));
-	//diffuseValue = (ceil(diffuseValue * 3) / 3.f);
+	diffuseValue = (ceil(diffuseValue * 3) / 3.f);
 
 	//reflect(vector(normalize(g_vLightDir.xyz), 0.f), vNormal);
 	float3 reflection = normalize(reflect(normalize(gLightDirection.xyz), Normal.xyz));
@@ -168,7 +168,10 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	float4 ambient = AmbiTex.Sample(gsamLinear, pin.UV);
 	float4 specular = SpecTex.Sample(gsamLinear, pin.UV);
 
-	pOut.Shade = float4((diffuse.xyz * diffuseValue) + (ambient.xyz), 1.f);
+	float3 color = (diffuse.xyz * diffuseValue) + (ambient.xyz);
+	color = pow(color, 1.f / 2.2f);
+
+	pOut.Shade = float4(color.xyz, 1.f);
 	// + (specular.xyz * specularValue)
 
 
@@ -277,9 +280,12 @@ VertexOut_Default VS_Static(VertexIn_Static vin)
 PSOut PS_Static(VertexOut_Default pin)
 {
 	PSOut vout;
-	vout.Diffuse = Texture.Sample(gsamLinear, pin.TexC) * gDiffuse;
-	vout.Ambient = Texture.Sample(gsamLinear, pin.TexC) * gAmbient;
-	vout.Specular = Texture.Sample(gsamLinear, pin.TexC) * gSpecular;
+	float3 color = Texture.Sample(gsamLinear, pin.TexC).xyz;
+	color = pow(color, 2.2f);
+	float4 outcolor = float4(color.xyz, 1.f);
+	vout.Diffuse = outcolor * gDiffuse;
+	vout.Ambient = outcolor * gAmbient;
+	vout.Specular = outcolor * gSpecular;
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
@@ -336,9 +342,13 @@ VertexOut_Default VS_Movable(VertexIn_Movable vin)
 PSOut PS_Movable(VertexOut_Default pin)
 {
 	PSOut vout;
-	vout.Diffuse = Texture.Sample(gsamLinear, pin.TexC) * gDiffuse;
-	vout.Ambient = Texture.Sample(gsamLinear, pin.TexC) * gAmbient;
-	vout.Specular = Texture.Sample(gsamLinear, pin.TexC) * gSpecular;
+
+	float3 color = Texture.Sample(gsamLinear, pin.TexC).xyz;
+	color = pow(color, 2.2f);
+	float4 outcolor = float4(color.xyz, 1.f);
+	vout.Diffuse = outcolor * gDiffuse;
+	vout.Ambient = outcolor * gAmbient;
+	vout.Specular = outcolor * gSpecular;
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);

@@ -1,14 +1,19 @@
 #include "Player.h"
 
+#include "MainApp.h"
+#include "Scene.h"
 #include "Renderer.h"
 #include "Geometry.h"
 #include "Camera.h"
+#include "Bullet.h"
+
  // Component
 #include "Mesh.h"
 #include "Transform.h"
 #include "Material.h"
 #include "Animation.h"
 #include "KeyMgr.h"
+
 // Controller
 #include "AnimationController.h"
 #include "InterfaceAnimation.h"
@@ -32,7 +37,7 @@ void Player::Initialize()
 {
 	BuildConstantBuffer();
 
-	Component* pComponent = new Transform(XMFLOAT3(0.01f, 0.01f, 0.01f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(0.01f, 0.01f, 0.01f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(10.f, 0.f, 10.f));
 	//Component* pComponent = new Transform(XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), CHARACTER_WIZARD_01);
@@ -76,6 +81,13 @@ int Player::Update(const float& fTimeDelta)
 		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotate);
 
 		KeyInput();
+		if (GetAsyncKeyState(VK_LBUTTON) & 0x0001)
+		{
+			XMFLOAT3 pos = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
+			pos.y += 1.f;
+			MainApp::GetInstance()->GetScene()->PushObject(new Bullet(m_pDevice, m_pCmdLst, m_pRenderer,
+				pos, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate(), 30.f), OBJ_TYPE::OBJ_BULLET);
+		}
 		
 	}
 	m_AnimationController->Handler(fTimeDelta);

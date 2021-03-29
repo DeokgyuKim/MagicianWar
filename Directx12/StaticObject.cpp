@@ -30,7 +30,7 @@ void StaticObject::Initialize(XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3
 	pComponent = new MaterialCom(MeshName);
 	m_mapComponent["Material"] = pComponent;
 
-	m_strTextureName = "StaticMesh";
+	m_strTextureName = "StaticTexture";
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 

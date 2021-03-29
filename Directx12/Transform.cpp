@@ -39,8 +39,6 @@ void Transform::LateUpdate(const float& fTimeDelta)
 
 int Transform::KeyInput(DWORD iKey)
 {
-
-
 	XMFLOAT3 look, right, up;
 	memcpy(&look, &m_xmmWorld._31, sizeof(XMFLOAT3));
 	memcpy(&right, &m_xmmWorld._11, sizeof(XMFLOAT3));
@@ -53,6 +51,10 @@ int Transform::KeyInput(DWORD iKey)
 		Next_tick = ((clock() - Current_tick) + 100) / 100;
 		m_fJumpTotal = (m_fJumpPower * Next_tick) - (Gravity * Next_tick * Next_tick * 0.5f);
 		up.y = m_fJumpTotal;
+		if (InputKey & KEY_W) XMStoreFloat3(&up, XMLoadFloat3(&up) + XMLoadFloat3(&look) * 7.f);
+		if (InputKey & KEY_S) XMStoreFloat3(&up, XMLoadFloat3(&up) - XMLoadFloat3(&look) * 7.f);
+		if (InputKey & KEY_A) XMStoreFloat3(&up, XMLoadFloat3(&up) - XMLoadFloat3(&right) * 7.f);
+		if (InputKey & KEY_D) XMStoreFloat3(&up, XMLoadFloat3(&up) + XMLoadFloat3(&right) * 7.f);
 		XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&up) * 0.005f);
 
 		if (m_xmfPosition.y <= 0.f) { // 땅이다 라고 판별이 되면 애니메이션 처리를 해줘야하는데
@@ -68,8 +70,13 @@ int Transform::KeyInput(DWORD iKey)
 		if (iKey & KEY_A) XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&right) * 0.05f);
 		if (iKey & KEY_D) XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&right) * 0.05f);
 		if (iKey & KEY_SPACE) {
+			InputKey = 0;
 			m_bJump = true; // 점프중
 			Current_tick = clock();
+			if (iKey & KEY_W) InputKey |= KEY_W;
+			if (iKey & KEY_S) InputKey |= KEY_S;
+			if (iKey & KEY_A) InputKey |= KEY_A;
+			if (iKey & KEY_D) InputKey |= KEY_D;
 		}
 	}
 
