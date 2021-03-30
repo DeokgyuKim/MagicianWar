@@ -254,6 +254,10 @@
     <ClInclude Include="StaticMeshMgr.h">
       <Filter>01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationController.h" />
+    <ClInclude Include="KeyMgr.h" />
+    <ClInclude Include="PlayerFSM.h" />
+    <ClInclude Include="InterfaceFSM.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -369,6 +373,9 @@
     <ClCompile Include="StaticMeshMgr.cpp">
       <Filter>01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr</Filter>
     </ClCompile>
+    <ClCompile Include="AnimationController.cpp" />
+    <ClCompile Include="KeyMgr.cpp" />
+    <ClCompile Include="PlayerFSM.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

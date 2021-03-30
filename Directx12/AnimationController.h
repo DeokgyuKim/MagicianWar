@@ -4,7 +4,7 @@
 #include "SkinnedModelInstance.h"
 
 class InterfaceAnimation;
-class AnimationFSM;
+class ActorFSM;
 class AnimData;
 
 class AnimationController
@@ -39,7 +39,7 @@ private:
 	unordered_map<ANIMATION_TYPE, AnimData*> m_AnimData; // 
 	stack<AnimData*> m_automata;
 
-	AnimationFSM*	m_AnimationFSM;
+	ActorFSM*	m_AnimationFSM;
 
 	bool bCheck = false;
 

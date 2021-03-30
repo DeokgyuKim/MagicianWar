@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Component.h"
-#include "InterfaceAnimation.h"
 #include "SkinnedModelInstance.h"
 
 class AnimData
@@ -15,8 +14,7 @@ public:
 };
 
 class AnimationCom :
-	public Component,
-	public InterfaceAnimation
+	public Component
 {
 public:
 	AnimationCom(const string& user);
@@ -30,8 +28,7 @@ public:
 	SkinnedModelInstance* GetSkinnedModellnst() { return m_SkinnedModelInst; }
 
 public:
-	virtual void ChangeAnimation(ANIMATION_TYPE eType);
-	virtual void LoopTime(const float _time);
+	void ChangeAnimation(ANIMATION_TYPE eType);
 private: // 애니메이션Com은 애니메이션으로 비교를 하는게 정배지
 	bool StateCheck(ANIMATION_TYPE _eState);
 private:

@@ -14,16 +14,17 @@
 #include "Animation.h"
 #include "KeyMgr.h"
 
-// Controller
-#include "AnimationController.h"
-#include "InterfaceAnimation.h"
+// FSM
+#include "PlayerFSM.h"
+
+
+
 
 Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer)
 {
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
 	m_pRenderer = pRenderer;
-	m_AnimationController = nullptr;
 	Initialize();
 
 	
@@ -45,15 +46,19 @@ void Player::Initialize()
 	pComponent = new MaterialCom(CHARACTER_WIZARD_01);
 	m_mapComponent["Material"] = pComponent;
 	pComponent = new AnimationCom(CHARACTER_WIZARD_01);
-	m_mapComponent["Animation"] = pComponent;
+	m_mapComponent["Upper_Animation"] = pComponent;
+	pComponent = new AnimationCom(CHARACTER_WIZARD_01);
+	m_mapComponent["Root_Animation"] = pComponent;
 	
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 0.f, 0.f));
 
-	// 컨트롤러 만들기
-	InterfaceAnimation* pInterface = dynamic_cast<AnimationCom*>(m_mapComponent["Animation"]);
-	m_AnimationController = make_unique<AnimationController>();
-	m_AnimationController->Initialize(pInterface);
-	m_AnimationController->Set_SkinnedModelInst(dynamic_cast<AnimationCom*>(m_mapComponent["Animation"])->GetSkinnedModellnst());
+	// FSM 만들기
+	m_UpperBody = make_unique<PlayerFSM>(this);
+	m_RootBody = make_unique<PlayerFSM>(this);
+
+	dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(ANIMATION_TYPE::ATTACK);
+
+	dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->ChangeAnimation(ANIMATION_TYPE::WALK_FOWARD);
 	
 	m_strTextureName = "wizard_01";
 }
@@ -90,7 +95,8 @@ int Player::Update(const float& fTimeDelta)
 		}
 		
 	}
-	m_AnimationController->Handler(fTimeDelta);
+	//dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(ANIMATION_TYPE::ATTACK);
+	//dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->Update(fTimeDelta);
 
 	return 0;
 }
@@ -99,16 +105,26 @@ void Player::LateUpdate(const float& fTimeDelta)
 {
 	Object::LateUpdate(fTimeDelta);
 
+	//m_UpperBody->Execute();		// 상체 갱신
+	//m_RootBody->Execute();		// 하체 갱신
+	
 	// objCB Update
 	ObjectCB	ObjCB;
 	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
 	m_ObjectCB->CopyData(0, ObjCB);
 
-	// SkinnedCB // 이거 애니메이션 붙이기 전까지 붙이면 안뜸..
+	// SkinnedCB // 이거 애니메이션 붙이기 전까지 붙이면 안뜸 당연하지 쓰레기값가지고 계산되니까
 	SkinnedCB SkinnedCB;
-	copy(begin(dynamic_cast<AnimationCom*>(m_mapComponent["Animation"])->GetSkinnedModellnst()->FinalTransforms),
-		end(dynamic_cast<AnimationCom*>(m_mapComponent["Animation"])->GetSkinnedModellnst()->FinalTransforms),
-		&SkinnedCB.BoneTransforms[0]);
+	
+	for (int upper = 0; upper < 27; ++upper) { // 상체 갱신
+		SkinnedCB.BoneTransforms[upper] = dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetSkinnedModellnst()->FinalTransforms[upper];
+	}
+	for (int Root = 27; Root < 33; ++Root) { // 하체 갱신
+		SkinnedCB.BoneTransforms[Root] = dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms[Root];
+	}
+	//copy(begin(dynamic_cast<AnimationCom*>(m_mapComponent["Animation"])->GetSkinnedModellnst()->FinalTransforms),
+	//	end(dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms),
+	//	&SkinnedCB.BoneTransforms[0]);
 
 	m_SkinnedCB->CopyData(0, SkinnedCB);
 
@@ -163,7 +179,7 @@ void Player::KeyPress()
 
 	// 상태 패턴 구현해야할듯
 	int check = dynamic_cast<Transform*>(m_mapComponent["Transform"])->KeyInput(dkey);
-	m_AnimationController->SetJumpEnd(check);
+	
 }
 
 void Player::KeyDown()

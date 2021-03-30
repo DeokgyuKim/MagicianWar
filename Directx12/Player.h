@@ -4,6 +4,7 @@
 class Geometry;
 class Camera;
 class AnimationController;
+class InterfaceFSM;
 
 class Player :
     public Object
@@ -42,7 +43,10 @@ protected:
     Camera*                                     m_pCamera;
 
     // 컨트롤러
-    unique_ptr<AnimationController>             m_AnimationController;
+    //unique_ptr<AnimationController>             m_AnimationController;
+    // FSM
+    unique_ptr<InterfaceFSM>                    m_UpperBody;    // 상체
+    unique_ptr<InterfaceFSM>                    m_RootBody;     // 하체
 
 };
 
