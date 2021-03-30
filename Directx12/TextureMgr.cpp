@@ -41,6 +41,9 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	
 	pTexture = new DDSTexture(device, cmdLst, heap, "StaticTexture", L"../Resources/Models/Textures/StaticTexture.dds");
 	m_mapTextures["StaticTexture"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "StaticTexturePow", L"../Resources/Models/Textures/StaticTexturePow.dds");
+	m_mapTextures["StaticTexturePow"] = pTexture;
 }
 
 DDSTexture* TextureMgr::GetTexture(string textureName)

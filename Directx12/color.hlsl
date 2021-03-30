@@ -168,11 +168,11 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	float4 ambient = AmbiTex.Sample(gsamLinear, pin.UV);
 	float4 specular = SpecTex.Sample(gsamLinear, pin.UV);
 
-	float3 color = (diffuse.xyz * diffuseValue) + (ambient.xyz);
+	float3 color = (diffuse.xyz * diffuseValue) + (ambient.xyz) + (specular.xyz * specularValue);
 	color = pow(color, 1.f / 2.2f);
 
 	pOut.Shade = float4(color.xyz, 1.f);
-	// + (specular.xyz * specularValue)
+	
 
 
 	return pOut;

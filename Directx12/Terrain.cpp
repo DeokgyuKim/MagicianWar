@@ -29,7 +29,7 @@ void Terrain::Initialize()
 	m_strTextureName = "Stone01";
 
 	m_mapComponent["Material"] = new MaterialCom(XMFLOAT4(0.588f, 0.588f, 0.588f, 1.f), XMFLOAT4(0.588f, 0.588f, 0.588f, 1.f), 
-		XMFLOAT4(1.f, 1.f, 1.f, 1.f));
+		XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 }
 
 void Terrain::Release()

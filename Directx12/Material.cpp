@@ -18,6 +18,8 @@ MaterialCom::MaterialCom(string MaterialName)
 		m_xmfAmbient = XMFLOAT4(m_Material->Ambient.x, m_Material->Ambient.y, m_Material->Ambient.z, 1.0);
 		m_xmfSpecular = XMFLOAT4(m_Material->Specular.x, m_Material->Specular.y, m_Material->Specular.z, 1.0);
 	}
+	m_xmfDiffuse = XMFLOAT4(0.633f, 0.833f, 0.833f, 1.f);
+	m_xmfAmbient = XMFLOAT4(0.243f, 0.243f, 0.243f, 1.f);
 }
 
 MaterialCom::MaterialCom(const XMFLOAT4& diff, const XMFLOAT4& ambi, const XMFLOAT4& spec)
