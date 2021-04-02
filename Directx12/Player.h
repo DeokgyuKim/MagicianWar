@@ -3,8 +3,8 @@
 
 class Geometry;
 class Camera;
-class AnimationController;
 class InterfaceFSM;
+class Component;
 
 class Player :
     public Object
@@ -25,13 +25,21 @@ public:
 public:
     XMFLOAT3    GetPosition();
     void        SetCamera(Camera* pCamera) { m_pCamera = pCamera; }
-
+public:
+    // Get
+    Component* GetUpperAniController() { return m_mapComponent["Upper_Animation"]; }
+    Component* GetRootAniController() { return m_mapComponent["Root_Animation"]; }
+    Component* GetTransController() { return m_mapComponent["Transform"]; }
 private:
     void UpdateSkinnedAnimation(const float fTimeDelta);
     void KeyInput();    // 키 입력
     void KeyPress();     // 키 누름
     void KeyDown();
     void KeyUp();            // 키 뗌
+
+    
+
+
 protected:
     ID3D12Device*                               m_pDevice;
     ID3D12GraphicsCommandList*                  m_pCmdLst;
@@ -43,7 +51,9 @@ protected:
     Camera*                                     m_pCamera;
 
     // 컨트롤러
-    //unique_ptr<AnimationController>             m_AnimationController;
+    Component*                                  m_UpperAnimationController;
+    Component*                                  m_RootAnimationController;
+    Component*                                  m_TransController;
     // FSM
     unique_ptr<InterfaceFSM>                    m_UpperBody;    // 상체
     unique_ptr<InterfaceFSM>                    m_RootBody;     // 하체

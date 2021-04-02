@@ -53,12 +53,12 @@ void Player::Initialize()
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 0.f, 0.f));
 
 	// FSM 만들기
-	m_UpperBody = make_unique<PlayerFSM>(this);
-	m_RootBody = make_unique<PlayerFSM>(this);
+	m_UpperBody = make_unique<PlayerFSM>(this, BoneType::UPPER_BONE); // ( player , BoneType )
+	m_RootBody = make_unique<PlayerFSM>(this, BoneType::ROOT_BONE);
 
-	dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(ANIMATION_TYPE::ATTACK);
+	
+	
 
-	dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->ChangeAnimation(ANIMATION_TYPE::WALK_FOWARD);
 	
 	m_strTextureName = "wizard_01";
 }
@@ -95,7 +95,9 @@ int Player::Update(const float& fTimeDelta)
 		}
 		
 	}
-	//dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(ANIMATION_TYPE::ATTACK);
+	m_UpperBody->Execute();
+	m_RootBody->Execute();
+	//dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(ANIMATION_TYPE::IDLE);
 	//dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->Update(fTimeDelta);
 
 	return 0;
@@ -116,10 +118,11 @@ void Player::LateUpdate(const float& fTimeDelta)
 	// SkinnedCB // 이거 애니메이션 붙이기 전까지 붙이면 안뜸 당연하지 쓰레기값가지고 계산되니까
 	SkinnedCB SkinnedCB;
 	
-	for (int upper = 0; upper < 27; ++upper) { // 상체 갱신
+	SkinnedCB.BoneTransforms[0] = dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms[0]; // Root 뼈대 == 하체 중심
+	for (int upper = 1; upper < 27; ++upper) { // 상체
 		SkinnedCB.BoneTransforms[upper] = dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetSkinnedModellnst()->FinalTransforms[upper];
 	}
-	for (int Root = 27; Root < 33; ++Root) { // 하체 갱신
+	for (int Root = 27; Root < 33; ++Root) { // 하체
 		SkinnedCB.BoneTransforms[Root] = dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms[Root];
 	}
 	//copy(begin(dynamic_cast<AnimationCom*>(m_mapComponent["Animation"])->GetSkinnedModellnst()->FinalTransforms),

@@ -28,7 +28,8 @@ public:
 	SkinnedModelInstance* GetSkinnedModellnst() { return m_SkinnedModelInst; }
 
 public:
-	void ChangeAnimation(ANIMATION_TYPE eType);
+	void ChangeAnimation(int _Ani);
+	bool GetAttackEnd() { return m_bAttackEnd; }
 private: // 애니메이션Com은 애니메이션으로 비교를 하는게 정배지
 	bool StateCheck(ANIMATION_TYPE _eState);
 private:
@@ -42,6 +43,8 @@ private:
 	bool	m_bBlending;
 	float	m_fBlendTime;
 	float	m_fMaxBlendTime;
+
+	bool m_bAttackEnd;
 
 };
 

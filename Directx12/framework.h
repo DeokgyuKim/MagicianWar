@@ -74,6 +74,7 @@ enum CAMERA_MODE				{ CAMERA_NONE, CAMERA_FREE, CAMERA_THIRD };
 enum class MESH_TYPE			{ CHARACTER = 0, ROCK, HOUSE, TREE, TILE, COUNT };
 enum class ANIMATION_TYPE : int	{ IDLE = 0, WALK_FOWARD, WALK_BACK, WALK_LEFT, WALK_RIGHT, ATTACK, JUMP, NONE };
 enum class PLAYER_STATE	: int	{ IDLE = 0, MOVE, ATTACK, JUMP, NONE };
+enum class BoneType		: int	{ UPPER_BONE = 0, ROOT_BONE, NONE};
 enum BoneIndex					{ WIZARD = 0, COUNT };
 
 

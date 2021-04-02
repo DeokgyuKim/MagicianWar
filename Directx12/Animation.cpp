@@ -9,7 +9,7 @@ AnimationCom::AnimationCom(const string& user)
 	m_SkinnedModelInst = new SkinnedModelInstance();
 	m_SkinnedModelInst->FinalTransforms = inst->FinalTransforms;
 	m_SkinnedModelInst->SkinnedInfo = make_unique<SkinnedData>();
-	
+
 	m_SkinnedModelInst->SkinnedInfo->mAnimations = instData->mAnimations;
 	m_SkinnedModelInst->SkinnedInfo->mBoneHierarchy = instData->mBoneHierarchy;
 	m_SkinnedModelInst->SkinnedInfo->mBoneName = instData->mBoneName;
@@ -57,9 +57,12 @@ void AnimationCom::DefaultAnimate(const float& fTimeDelta)
 	// 현재 애니메이션
 	m_SkinnedModelInst->UpdateAnimation(curAnimation->eType, curAnimation->Time);
 
+	if (curAnimation->Time * 1.4 > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(curAnimation->eType)) {
+		m_bAttackEnd = true;
+	}
+
 	if (curAnimation->Time > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(curAnimation->eType)) {
 		curAnimation->Time = 0.f;
-
 	}
 }
 
@@ -86,13 +89,15 @@ void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 
 
 
-void AnimationCom::ChangeAnimation(ANIMATION_TYPE eType)
+void AnimationCom::ChangeAnimation(int _Ani)
 {
-	if (keyAnimation->eType != eType) { // 애니메이션이 바뀌면 Blending
+	ANIMATION_TYPE nextAni = static_cast<ANIMATION_TYPE>(_Ani);
+	if (keyAnimation->eType != nextAni) { // 애니메이션이 바뀌면 Blending
 		m_bBlending = true;
-		keyAnimation->eType = eType;
+		keyAnimation->eType = nextAni;
 		keyAnimation->Time = 0.f;
 		m_fBlendTime = 1.f;
+		m_bAttackEnd = false;
 	}
 }
 
