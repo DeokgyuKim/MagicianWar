@@ -65,6 +65,17 @@ void AnimationMgr::BuildAnimation(string meshName, MESH_TYPE eMesh, ANIMATION_TY
 
 }
 
+void AnimationMgr::BuildAnimations()
+{
+	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::IDLE);
+	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::ATTACK);
+	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_FOWARD);
+	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_BACK);
+	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_LEFT);
+	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_RIGHT);
+	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::JUMP);
+}
+
 void AnimationMgr::SetSkinnedDatas(string meshName, unique_ptr<SkinnedData> _skinnedinfo)
 {
 	unique_ptr<SkinnedModelInstance> skinnedModelInst = make_unique<SkinnedModelInstance>();

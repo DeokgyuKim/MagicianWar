@@ -58,7 +58,7 @@ int Camera::Update(const float& fTimeDelta)
 		XMStoreFloat3(&m_xmfRightVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&right), matRot)));
 		XMStoreFloat3(&m_xmfUpVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&up), matRot)));
 
-		SetCursorPos(WINCX, WINCY);
+		SetCursorPos(WINCX / 2, WINCY / 2);
 
 		if (m_eCamMode == CAMERA_MODE::CAMERA_THIRD)
 		{
@@ -126,8 +126,8 @@ void Camera::Render(const float& fTimeDelta)
 
 void Camera::Initialize()
 {
-	SetCursorPos(WINCX, WINCY);
-	m_ptOld.x = WINCX; m_ptOld.y = WINCY;
+	SetCursorPos(WINCX / 2, WINCY / 2);
+	m_ptOld.x = WINCX / 2; m_ptOld.y = WINCY / 2;
 
 	m_xmfPosition = XMFLOAT3(0.f, 3.f, 0.f);
 

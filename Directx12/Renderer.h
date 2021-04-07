@@ -59,5 +59,6 @@ private:
 
 	TextureMgr*							m_pTextureMgr;
 	RenderTargetMgr*					m_pRTMgr;
+	CRITICAL_SECTION					m_Crt;
 };
 

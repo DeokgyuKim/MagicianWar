@@ -37,16 +37,17 @@ void Renderer::InitRenderer(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCo
 	m_pRTMgr->BuildRenderTarget(m_pDevice, this);
 	BuildShader();
 	m_pTextureMgr = TextureMgr::GetInstance();
-	m_pTextureMgr->BuildTextures(m_pDevice, m_pCmdLst, m_ptrDescriptorHeap.Get());
 
 	m_pLight = new CLight(m_pDevice, m_pCmdLst, m_ptrDescriptorHeap.Get(), this,
 		XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(-50.f, 50.f, -50.f, 1.f)
 		, XMFLOAT4(1.f, -1.f, 1.f, 0.f));
+	InitializeCriticalSection(&m_Crt);
 	//BuildTextures();
 }
 
 void Renderer::Render(const float& fTimeDelta)
 {
+	//EnterCriticalSection(&m_Crt);
 	m_pCore->Render_Begin();
 
 	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Deffered");
@@ -124,8 +125,25 @@ void Renderer::Render(const float& fTimeDelta)
 		pObject->Render(fTimeDelta);
 	}
 
+
+	m_mapShaders[RENDER_TYPE::RENDER_UI]->PreRender(m_pCmdLst);
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_UI])
+	{
+		if (pObject->GetTextureName() != "")
+			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+		pObject->Render(fTimeDelta);
+	}
+
 	DebugKeyInput();
 	m_pCore->Render_EndTest(m_pRTMgr->GetRenderTarget(DebugInput));
+	//EnterCriticalSection(&m_Crt);
+
+	m_pCore->CmdLstExecute();
+
+	m_pCore->Present();
+
+	m_pCore->WaitForGpuComplete();
+	m_pCore->MoveToNextFrame();
 
 	//m_pCore->Render_End();
 	for(int i = 0; i < RENDER_TYPE::RENDER_END; ++i)
@@ -271,6 +289,15 @@ void Renderer::BuildShader()
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1);
 	m_mapShaders[RENDER_TYPE::RENDER_SHADE] = pShader;
 
+	pShader = new Shader;
+	layout = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_UI", L"color.hlsl", "PS_UI", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
+	m_mapShaders[RENDER_TYPE::RENDER_UI] = pShader;
+
 	// Static Model
 	pShader = new Shader;
 	layout = {
@@ -383,16 +410,16 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 
 void Renderer::DebugKeyInput()
 {
-	if (GetAsyncKeyState(VK_NUMPAD0) & 0x0001)
+	if (GetAsyncKeyState(VK_F4) & 0x8000)
 		DebugInput = "Shade";
-	if (GetAsyncKeyState(VK_NUMPAD1) & 0x0001)
+	if (GetAsyncKeyState(VK_F5) & 0x8000)
 		DebugInput = "Diffuse";
-	if (GetAsyncKeyState(VK_NUMPAD2) & 0x0001)
+	if (GetAsyncKeyState(VK_F6) & 0x8000)
 		DebugInput = "Ambient";
-	if (GetAsyncKeyState(VK_NUMPAD3) & 0x0001)
+	if (GetAsyncKeyState(VK_F7) & 0x8000)
 		DebugInput = "Specular";
-	if (GetAsyncKeyState(VK_NUMPAD4) & 0x0001)
+	if (GetAsyncKeyState(VK_F8) & 0x8000)
 		DebugInput = "Normal";
-	if (GetAsyncKeyState(VK_NUMPAD5) & 0x0001)
+	if (GetAsyncKeyState(VK_F9) & 0x8000)
 		DebugInput = "Depth";
 }

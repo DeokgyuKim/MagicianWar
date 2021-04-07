@@ -17,7 +17,7 @@ HRESULT Shader::BuildShadersAndInputLayout(const TCHAR* vsName, const char* vsFu
 	return S_OK;
 }
 
-HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* RootSignature, int numRt, bool ClockWise)
+HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* RootSignature, int numRt, bool ClockWise, bool DepthStencil)
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -59,13 +59,20 @@ HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* Ro
 		psoDesc.RasterizerState.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 	}
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+	if (DepthStencil)
+	{
+		psoDesc.DepthStencilState.DepthEnable = TRUE;
+		psoDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+		psoDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		psoDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	psoDesc.DepthStencilState.DepthEnable = TRUE;
-	psoDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	psoDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-	psoDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
-
-	psoDesc.DepthStencilState.StencilEnable = FALSE;
+		psoDesc.DepthStencilState.StencilEnable = FALSE;
+	}
+	else
+	{
+		psoDesc.DepthStencilState.DepthEnable = FALSE;
+		psoDesc.DepthStencilState.StencilEnable = FALSE;
+	}
 
 	psoDesc.SampleMask = UINT_MAX;
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;

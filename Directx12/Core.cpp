@@ -32,8 +32,8 @@ HRESULT Core::InitDevice()
     if (FAILED(SetViewportAndScissorrect())) return E_FAIL;
 
     Renderer::GetInstance()->InitRenderer(this, m_ptrDevice.Get(), m_ptrCmdLst.Get());
-    MeshMgr::GetInstnace()->InitMeshMgr(this, m_ptrDevice.Get(), m_ptrCmdLst.Get());
-    AnimationMgr::GetInstance()->InitAnimationMgr(this, m_ptrDevice.Get(), m_ptrCmdLst.Get());
+    MeshMgr::GetInstnace()->InitMeshMgr(this, m_ptrDevice.Get(), m_ptrCmdLstForLoading.Get());
+    AnimationMgr::GetInstance()->InitAnimationMgr(this, m_ptrDevice.Get(), m_ptrCmdLstForLoading.Get());
     return S_OK;
 }
 
@@ -112,14 +112,14 @@ void Core::Render_EndTest(RenderTarget* pRt)
     d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
     m_ptrCmdLst->ResourceBarrier(1, &d3dResourceBarrier);
 
-    m_ptrCmdLst->Close();
-    ID3D12CommandList* ppd3dCommandLists[] = { m_ptrCmdLst.Get() };
-    m_ptrCmdQueue->ExecuteCommandLists(1, ppd3dCommandLists);
-
-    m_ptrDxgiSwapChain->Present(0, 0);
-
-    WaitForGpuComplete();
-    MoveToNextFrame();
+    //m_ptrCmdLst->Close();
+    //ID3D12CommandList* ppd3dCommandLists[] = { m_ptrCmdLst.Get() };
+    //m_ptrCmdQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+    //
+    //m_ptrDxgiSwapChain->Present(0, 0);
+    //
+    //WaitForGpuComplete();
+    //MoveToNextFrame();
 }
 
 HRESULT Core::CreateDevice()
@@ -209,10 +209,17 @@ HRESULT Core::CreateCmdLstAndQueueAndAllocator()
     if (FAILED(m_ptrDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_ptrCmdAllocator))))
         return E_FAIL;
 
+    if (FAILED(m_ptrDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_ptrCmdAllocatorForLoading))))
+        return E_FAIL;
+    
     if (FAILED(m_ptrDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_ptrCmdAllocator.Get(), NULL, IID_PPV_ARGS(&m_ptrCmdLst))))
         return E_FAIL;
 
+    if (FAILED(m_ptrDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_ptrCmdAllocatorForLoading.Get(), NULL, IID_PPV_ARGS(&m_ptrCmdLstForLoading))))
+        return E_FAIL;
+
     m_ptrCmdLst->Close();
+    //m_ptrCmdLstForLoading->Close();
 
     return S_OK;
 }
@@ -363,6 +370,11 @@ HRESULT Core::SetViewportAndScissorrect()
     return S_OK;
 }
 
+void Core::Present()
+{
+    m_ptrDxgiSwapChain->Present(0, 0);
+}
+
 void Core::CmdLstReset()
 {
     m_ptrCmdLst->Reset(m_ptrCmdAllocator.Get(), nullptr);
@@ -371,8 +383,19 @@ void Core::CmdLstReset()
 void Core::CmdLstExecute()
 {
     m_ptrCmdLst->Close();
-    ID3D12CommandList* cmdsLists[] = { m_ptrCmdLst.Get() };
-    m_ptrCmdQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+    if(m_bLoadingThread)
+    {
+        ID3D12CommandList* cmdsLists[] = { m_ptrCmdLst.Get(), m_ptrCmdLstForLoading.Get() };
+        m_ptrCmdQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+        m_bLoadingThread = false;
+    }
+    else
+    {
+        ID3D12CommandList* cmdsLists[] = { m_ptrCmdLst.Get() };
+        m_ptrCmdQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+    }
+
+    
 }
 
 void Core::MoveToNextFrame()
@@ -399,6 +422,18 @@ void Core::WaitForGpuComplete()
         hResult = m_ptrFence->SetEventOnCompletion(nFenceValue, m_hFenceEvent);
         ::WaitForSingleObject(m_hFenceEvent, INFINITE);
     }
+}
+
+void Core::CmdLstForLoadingReset()
+{
+    m_ptrCmdAllocatorForLoading->Reset();
+    m_ptrCmdLstForLoading->Reset(m_ptrCmdAllocator.Get(), nullptr);
+}
+
+void Core::CmdLstForLoadingClose()
+{
+    m_bLoadingThread = true;
+    m_ptrCmdLstForLoading->Close();
 }
 
 void Core::SetRenderTarget(const int& numRenderTarget, D3D12_CPU_DESCRIPTOR_HANDLE RtStartHandle, D3D12_CPU_DESCRIPTOR_HANDLE DsvHandle)

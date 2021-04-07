@@ -24,11 +24,11 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall", L"../Resources/FireBall.dds");
 	m_mapTextures["FireBall"] = pTexture;
 
-	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall2", L"../Resources/FireBall2.dds");
-	m_mapTextures["FireBall2"] = pTexture;
-
 	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall3", L"../Resources/FireBall3.dds");
 	m_mapTextures["FireBall3"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall2", L"../Resources/FireBall2.dds");
+	m_mapTextures["FireBall2"] = pTexture;
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "wizard_01", L"../Resources/Models/Characters/wizard_01/wizard_01.dds");
 	m_mapTextures["wizard_01"] = pTexture;
@@ -44,6 +44,21 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "StaticTexturePow", L"../Resources/Models/Textures/StaticTexturePow.dds");
 	m_mapTextures["StaticTexturePow"] = pTexture;
+}
+
+void TextureMgr::BuildInitTextures(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap)
+{
+	DDSTexture* pTexture = NULL;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "MainUi", L"../Resources/UI/Loading/MagicianWar.dds");
+	m_mapTextures["MainUi"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "ButtonBase", L"../Resources/UI/Button/ButtonBase.dds");
+	m_mapTextures["ButtonBase"] = pTexture;
+	pTexture = new DDSTexture(device, cmdLst, heap, "ButtonMouseOn", L"../Resources/UI/Button/ButtonMouseOn.dds");
+	m_mapTextures["ButtonMouseOn"] = pTexture;
+	pTexture = new DDSTexture(device, cmdLst, heap, "ButtonOn", L"../Resources/UI/Button/ButtonOn.dds");
+	m_mapTextures["ButtonOn"] = pTexture;
 }
 
 DDSTexture* TextureMgr::GetTexture(string textureName)

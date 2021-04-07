@@ -91,16 +91,9 @@ void TestScene::Initialize()
 	Player* pPlayer = NULL;
 	Camera* pCamera = NULL;
 
-	//Core::GetInstance()->CmdLstReset();
-	//pObj = new Triangle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst());
-	//Core::GetInstance()->CmdLstExecute();
-	//Core::GetInstance()->WaitForGpuComplete();
-	//
-	//m_pObjects[OBJ_PLAYER].push_back(pObj);
 	Core::GetInstance()->CmdLstReset();
 	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	pPlayer = dynamic_cast<Player*>(pObj);
-	//(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance()->GetHeap());
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 	

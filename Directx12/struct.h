@@ -118,3 +118,9 @@ struct TransformStruct
 	XMFLOAT3 xmfRotate;
 	XMFLOAT3 xmfScale;
 };
+
+struct OtherPlayerInfo
+{
+	DWORD dwPlayerNum;
+	DWORD dwTeamNum;
+};

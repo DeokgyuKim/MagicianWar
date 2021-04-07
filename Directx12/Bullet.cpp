@@ -33,7 +33,7 @@ void Bullet::Initialize(XMFLOAT3 Pos, XMFLOAT3 Rotate)
 	Core::GetInstance()->CmdLstReset();
 
 	BuildConstantBuffer();
-	Component* pComponent = new Transform(XMFLOAT3(0.1f, 0.1f, 0.1f), Rotate, Pos);
+	Component* pComponent = new Transform(XMFLOAT3(1.f, 1.f, 1.f), Rotate, Pos);
 	m_mapComponent["Transform"] = pComponent;
 	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), "Sphere");
 	m_mapComponent["Mesh"] = pComponent;
@@ -62,7 +62,7 @@ int Bullet::Update(const float& fTimeDelta)
 {
 	Object::Update(fTimeDelta);
 
-	dynamic_cast<Transform*>(m_mapComponent["Transform"])->MoveForward(fTimeDelta * m_fSpeed);
+	//dynamic_cast<Transform*>(m_mapComponent["Transform"])->MoveForward(fTimeDelta * m_fSpeed);
 
 	return 0;
 }

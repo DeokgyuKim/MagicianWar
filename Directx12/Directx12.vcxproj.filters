@@ -118,6 +118,21 @@
     <Filter Include="01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr">
       <UniqueIdentifier>{3f60bab8-6437-4a82-9bfd-c5a4f0d1b75f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\09.Loading">
+      <UniqueIdentifier>{05d17adb-e6e8-47c5-80d1-fd4e75a09560}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\01.Scene\00.LoadingScene">
+      <UniqueIdentifier>{88daec61-33d6-4d9b-9122-334c0292841e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\06.Component\01.Geometry\04.UIPlane">
+      <UniqueIdentifier>{e3d4466b-bd34-491a-b56f-10d4260f9be2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object\06. UI">
+      <UniqueIdentifier>{6e6ec15f-4323-41d1-928b-bd66ae341385}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object\06. UI\00. Button">
+      <UniqueIdentifier>{1021fc5f-b6d9-4c4e-843e-f274cc51c961}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -254,6 +269,27 @@
     <ClInclude Include="StaticMeshMgr.h">
       <Filter>01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationController.h" />
+    <ClInclude Include="AnimationCommand.h" />
+    <ClInclude Include="AnimationFSM.h" />
+    <ClInclude Include="InterfaceAnimation.h" />
+    <ClInclude Include="InterfaceCommand.h" />
+    <ClInclude Include="KeyMgr.h" />
+    <ClInclude Include="Loading.h">
+      <Filter>01.Engine\09.Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScene.h">
+      <Filter>00.Game\01.Scene\00.LoadingScene</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPlane.h">
+      <Filter>01.Engine\06.Component\01.Geometry\04.UIPlane</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>01.Engine\02.Object\06. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>01.Engine\02.Object\06. UI\00. Button</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -368,6 +404,25 @@
     </ClCompile>
     <ClCompile Include="StaticMeshMgr.cpp">
       <Filter>01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationController.cpp" />
+    <ClCompile Include="AnimationCommand.cpp" />
+    <ClCompile Include="AnimationFSM.cpp" />
+    <ClCompile Include="KeyMgr.cpp" />
+    <ClCompile Include="Loading.cpp">
+      <Filter>01.Engine\09.Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingScene.cpp">
+      <Filter>00.Game\01.Scene\00.LoadingScene</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPlane.cpp">
+      <Filter>01.Engine\06.Component\01.Geometry\04.UIPlane</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>01.Engine\02.Object\06. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>01.Engine\02.Object\06. UI\00. Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

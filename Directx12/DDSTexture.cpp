@@ -5,14 +5,14 @@
 DDSTexture::DDSTexture(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap,
 	string strName, wstring wstrFilePath, bool Texture3D, int RootParameterIdx)
 {
-	Core::GetInstance()->CmdLstReset();
+	//Core::GetInstance()->CmdLstReset();
 
 	//Create Resource
 	m_strName = strName;
 	m_wstrFilePath = wstrFilePath;
 	CreateDDSTextureFromFile12(device, cmdLst, wstrFilePath.c_str(), m_ptrResource, m_ptrUploadHeap);
-	Core::GetInstance()->CmdLstExecute();
-	Core::GetInstance()->WaitForGpuComplete();
+	//Core::GetInstance()->CmdLstExecute();
+	//Core::GetInstance()->WaitForGpuComplete();
 
 
 	//Create Shader Resource View

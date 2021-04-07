@@ -156,6 +156,45 @@ void MeshMgr::BuildModel(string meshName, MESH_TYPE etype)
 		MaterialLoader->BuildMaterial(meshName, materials.front());
 }
 
+void MeshMgr::BuildModels()
+{
+	BuildModel(ROCK_02, MESH_TYPE::ROCK);
+	BuildModel(TREE_01, MESH_TYPE::TREE);
+	BuildModel(HOUSE_02, MESH_TYPE::HOUSE);
+	BuildModel(TILE_01, MESH_TYPE::TILE);
+	BuildModel("barrel_group", MESH_TYPE::TILE);
+	BuildModel("box", MESH_TYPE::TILE);
+	BuildModel("castle_door_1", MESH_TYPE::TILE);
+	BuildModel("castle_tower_octagon", MESH_TYPE::TILE);
+	BuildModel("castle_tower_round", MESH_TYPE::TILE);
+	BuildModel("citadel_base_a", MESH_TYPE::TILE);
+	BuildModel("city_tower_a", MESH_TYPE::TILE);
+	BuildModel("civilian_house_18_a", MESH_TYPE::TILE);
+	BuildModel("civilian_house_18_b", MESH_TYPE::TILE);
+	BuildModel("civilian_house_36_c", MESH_TYPE::TILE);
+	BuildModel("civilian_house_37_e", MESH_TYPE::TILE);
+	BuildModel("civilian_house_37_h", MESH_TYPE::TILE);
+	BuildModel("civilian_house_46", MESH_TYPE::TILE);
+	BuildModel("civilian_house_ruin_e", MESH_TYPE::TILE);
+	BuildModel("fountain_a", MESH_TYPE::TILE);
+	BuildModel("overhang_building_a", MESH_TYPE::TILE);
+	BuildModel("roof_building_4", MESH_TYPE::TILE);
+	BuildModel("roof_building_5", MESH_TYPE::TILE);
+	BuildModel("roof_building_11", MESH_TYPE::TILE);
+	BuildModel("roof_building_12", MESH_TYPE::TILE);
+	BuildModel("street_gate", MESH_TYPE::TILE);
+	BuildModel("tower_gates", MESH_TYPE::TILE);
+	BuildModel("wall_H10m_L15m", MESH_TYPE::TILE);
+	BuildModel("wall_H10m_L50m", MESH_TYPE::TILE);
+	BuildModel("wagon", MESH_TYPE::TILE);
+	BuildModel("Sphere", MESH_TYPE::TILE);
+}
+
+void MeshMgr::BuildSkinnedModels()
+{
+	BuildSkinnedModel(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER);
+}
+
 bool MeshMgr::LoadMeshFile(vector<SkinnedVertex>& outVertex, vector<UINT>& outIndex, vector<Material>* outMaterial, string path)
 {
 	path += ".mesh";

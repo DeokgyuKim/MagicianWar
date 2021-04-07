@@ -178,6 +178,25 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	return pOut;
 }
 
+Shade_Out VS_UI(Shade_In pin)
+{
+	Shade_Out vOut;
+	//vOut.PosH = mul(mul(float4(pin.PosL, 1.0f), gView), gProj);
+	float4 depth = DepthTex.SampleLevel(gsamLinear, pin.UV, 0);
+	vOut.PosH = float4(pin.PosL.x, pin.PosL.y, depth.x, 1.f);
+	vOut.UV = pin.UV;
+
+	return vOut;
+}
+PS_SHADE_OUT PS_UI(Shade_Out pin)
+{
+	PS_SHADE_OUT pOut;
+	
+	pOut.Shade = Texture.Sample(gsamLinear, pin.UV);
+
+	return pOut;
+}
+
 struct VertexIn_Static
 {   // ±¸Á¶¹°
 	float3 PosL    : POSITION;

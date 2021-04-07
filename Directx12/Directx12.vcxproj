@@ -147,6 +147,7 @@
     <ClInclude Include="AnimationFSM.h" />
     <ClInclude Include="AnimationMgr.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CLight.h" />
     <ClInclude Include="Component.h" />
@@ -165,6 +166,8 @@
     <ClInclude Include="InterfaceCommand.h" />
     <ClInclude Include="KeyMgr.h" />
     <ClInclude Include="LightGeo.h" />
+    <ClInclude Include="Loading.h" />
+    <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MaterialMgr.h" />
@@ -192,6 +195,8 @@
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TextureMgr.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UI.h" />
+    <ClInclude Include="UIPlane.h" />
     <ClInclude Include="UploadBuffer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +206,7 @@
     <ClCompile Include="AnimationFSM.cpp" />
     <ClCompile Include="AnimationMgr.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CLight.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -214,6 +220,8 @@
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="KeyMgr.cpp" />
     <ClCompile Include="LightGeo.cpp" />
+    <ClCompile Include="Loading.cpp" />
+    <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MaterialMgr.cpp" />
@@ -238,6 +246,8 @@
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TextureMgr.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UI.cpp" />
+    <ClCompile Include="UIPlane.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Directx12.rc" />

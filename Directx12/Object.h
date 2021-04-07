@@ -14,7 +14,7 @@ public:
 	virtual void	LateUpdate(const float& fTimeDelta);
 	virtual void	Render(const float& fTimeDelta);
 public:
-	string		GetTextureName() { return m_strTextureName; }
+	virtual string	GetTextureName() { return m_strTextureName; }
 public: // HBD
 	string		GetMeshName() const { return m_strMeshName; }
 	string		GetInstID() const { return m_strInstID; }

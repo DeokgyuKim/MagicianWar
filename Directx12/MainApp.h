@@ -32,13 +32,11 @@ public:
 	void LateUpdate(const float& fTimeDelta);
 	void Render(const float& fTimeDelta);
 	void Release();
+	void ChangeScene(Scene* pScene);
 public:
 	Scene* GetScene() { return m_pScene; }
 private:
-	void LoadSkinnedModels();
-	void LoadStaticModels();
-	void LoadAnimations();
-private:
+	int				m_iEvent;
 	Scene*			m_pScene;
 	Core*			m_pCore;
 	MeshMgr*		m_MeshMgr;

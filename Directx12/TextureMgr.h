@@ -26,6 +26,7 @@ private:
 
 public:
 	void		BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap);
+	void		BuildInitTextures(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap);
 	DDSTexture* GetTexture(string textureName);
 	HRESULT		PushTexture(string textureName, DDSTexture* texture);
 

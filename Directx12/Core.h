@@ -29,15 +29,20 @@ private:
 	HRESULT SetViewportAndScissorrect();
 
 public:
+	void	Present();
 	void	CmdLstReset();
 	void	CmdLstExecute();
 	void	MoveToNextFrame();
 	void	WaitForGpuComplete();
+	void	CmdLstForLoadingReset();
+	void	CmdLstForLoadingClose();
 	void	SetRenderTarget(const int& numRenderTarget, D3D12_CPU_DESCRIPTOR_HANDLE RtStartHandle, D3D12_CPU_DESCRIPTOR_HANDLE DsvHandle);
 	D3D12_CPU_DESCRIPTOR_HANDLE CreateRenderTargetView(ID3D12Resource* resource, D3D12_RENDER_TARGET_VIEW_DESC rtvDesc);
 
+	bool GetLoadingThreadExecute() { return m_bLoadingThread; }
 	ID3D12Device*				GetDevice() { return m_ptrDevice.Get(); }
 	ID3D12GraphicsCommandList*	GetCmdLst() { return m_ptrCmdLst.Get(); }
+	ID3D12GraphicsCommandList*	GetCmdLstForLoading() { return m_ptrCmdLstForLoading.Get(); }
 	D3D12_CPU_DESCRIPTOR_HANDLE	GetDSVCpuHandle() { return m_DsvCPUHandles; }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVForShadeCpuHandle() {	return m_DsvForShadeCPUHandles;	}
 private:
@@ -49,7 +54,10 @@ private:
 
 	ComPtr<ID3D12CommandQueue>			m_ptrCmdQueue;
 	ComPtr<ID3D12CommandAllocator>		m_ptrCmdAllocator;
+	ComPtr<ID3D12CommandAllocator>		m_ptrCmdAllocatorForLoading;
 	ComPtr<ID3D12GraphicsCommandList>	m_ptrCmdLst;
+	ComPtr<ID3D12GraphicsCommandList>	m_ptrCmdLstForLoading;
+	bool m_bLoadingThread;
 
 	ComPtr<ID3D12DescriptorHeap>		m_ptrRTVHeap;
 	ComPtr<ID3D12DescriptorHeap>		m_ptrDSVHeap;
