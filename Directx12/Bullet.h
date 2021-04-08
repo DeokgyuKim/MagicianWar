@@ -20,7 +20,8 @@ public:
     virtual int Update(const float& fTimeDelta) override;
     virtual void LateUpdate(const float& fTimeDelta) override;
     virtual void Render(const float& fTimeDelta) override;
-
+public:
+    void UpdateObjectCB();
 public:
     XMFLOAT3    GetPosition();
 
@@ -32,7 +33,6 @@ protected:
     ID3D12GraphicsCommandList*                  m_pCmdLst;
 
     unique_ptr<UploadBuffer<ObjectCB>>	        m_ObjectCB;
-    unique_ptr<UploadBuffer<MaterialCB>>        m_MaterialCB;
     
     float       m_fSpeed;
 };

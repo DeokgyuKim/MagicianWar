@@ -16,5 +16,7 @@ private:
 protected:
 	ComPtr<ID3D12GraphicsCommandList>	m_CmdLst;
 	MeshGeometry*			m_BoxGeo;
+
+	UINT m_InstanceCount;
 };
 

@@ -26,7 +26,7 @@ void StaticObject::Initialize(XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3
 	Component* pComponent = new Transform(xmfScale, xmfRotate, xmfPosition);
 	m_mapComponent["Transform"] = pComponent;
 	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), MeshName);
-	m_mapComponent["Mesh"] = pComponent;
+	m_mapComponent["Mesh"] = pComponent; // 이게 젤문제인듯
 	pComponent = new MaterialCom(MeshName);
 	m_mapComponent["Material"] = pComponent;
 
@@ -44,8 +44,14 @@ void StaticObject::Release()
 HRESULT StaticObject::BuildConstantBuffer()
 {
 	m_ObjectCB = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
-	m_MaterialCB = make_unique<UploadBuffer<MaterialCB>>(m_pDevice, 1, true);
     return S_OK;
+}
+
+void StaticObject::UpdateObjectCB()
+{
+	ObjectCB	ObjCB;
+	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
+	m_ObjectCB->CopyData(0, ObjCB);
 }
 
 int StaticObject::Update(const float& fTimeDelta)
@@ -77,17 +83,7 @@ void StaticObject::LateUpdate(const float& fTimeDelta)
 	Object::LateUpdate(fTimeDelta);
 
 	// objCB Update
-	ObjectCB	ObjCB;
-	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
-	m_ObjectCB->CopyData(0, ObjCB);
-
-	// MaterialCB
-
-	MaterialCB matCB;
-	XMStoreFloat4(&matCB.Diffuse, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetDiffuse());
-	XMStoreFloat4(&matCB.Ambient, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetAmbient());
-	XMStoreFloat4(&matCB.Specular, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetSpecular());
-	m_MaterialCB->CopyData(0, matCB);
+	UpdateObjectCB();
 
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_STATIC, this);
 }
@@ -95,7 +91,6 @@ void StaticObject::LateUpdate(const float& fTimeDelta)
 void StaticObject::Render(const float& fTimeDelta)
 {
 	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootConstantBufferView(2, m_MaterialCB->Resource()->GetGPUVirtualAddress());
-
+	
 	Object::Render(fTimeDelta);
 }

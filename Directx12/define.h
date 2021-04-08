@@ -3,6 +3,7 @@
 // RootSignature
 #define ParameterCount 6
 
+#define GRAVITY 9.8f
 
 // Model
 	// Character
@@ -25,3 +26,9 @@
 
 // function
 #define SCint static_cast<int> 
+
+// Magician Character 
+#define M_MoveForward_Speed 0.05f
+#define M_MoveLeft_Speed 0.05f
+#define M_MoveRight_Speed 0.05f
+#define M_MoveBackward_Speed 0.03f

@@ -11,6 +11,8 @@ PlayerFSM::PlayerFSM(Player* user, BoneType _bone)
 	m_BoneType = _bone;
 	DefaultKeyboard = KeyMgr::GetInstance();
 	m_curState = PLAYER_STATE::IDLE;
+
+
 }
 
 void PlayerFSM::ChangeState(int _State, int _Ani)
@@ -21,15 +23,16 @@ void PlayerFSM::ChangeState(int _State, int _Ani)
 	}
 
 	Exit();
-	
+
 	m_State = _State;
-	
+
 	Enter(_State, _Ani);
 
 }
 
 void PlayerFSM::Enter(int _State, int _Ani)
 {
+	dkey = 0;
 
 	if (m_BoneType == BoneType::UPPER_BONE)
 	{ // 상체 애니메이션을 갱신
@@ -52,7 +55,7 @@ void PlayerFSM::Enter(int _State, int _Ani)
 
 			break;
 		case SCint(PLAYER_STATE::JUMP):
-
+			m_beforejump = false;
 			break;
 	}
 }
@@ -190,6 +193,7 @@ void PlayerFSM::Move()
 			}
 			else
 				ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
+
 		}
 	}
 	else if (m_BoneType == BoneType::ROOT_BONE)
@@ -200,20 +204,46 @@ void PlayerFSM::Move()
 		}
 		else { // 이동중에 공격이면 하체는 안바꿔도됨
 			if (DefaultKeyboard->KeyPressing('W'))
-			{
+			{ // 위쪽
+				if (DefaultKeyboard->KeyPressing('A')) {
+					// 왼쪽
+					dynamic_cast<Transform*>(m_User->GetTransController())->MoveForward(M_MoveForward_Speed / sqrtf(2.f));
+					dynamic_cast<Transform*>(m_User->GetTransController())->MoveLeft(M_MoveLeft_Speed / sqrtf(2.f));
+				}
+				else if (DefaultKeyboard->KeyPressing('D')) {
+					// 오른쪽
+					dynamic_cast<Transform*>(m_User->GetTransController())->MoveForward(M_MoveForward_Speed / sqrtf(2.f));
+					dynamic_cast<Transform*>(m_User->GetTransController())->MoveRight(M_MoveRight_Speed / sqrtf(2.f));
+				}
+				else {
+					dynamic_cast<Transform*>(m_User->GetTransController())->MoveForward(M_MoveForward_Speed);
+				}
 				dynamic_cast<AnimationCom*>(m_User->GetRootAniController())->ChangeAnimation(SCint(ANIMATION_TYPE::WALK_FOWARD));
 			}
-			else if (DefaultKeyboard->KeyPressing('S'))
-			{
+			else if (DefaultKeyboard->KeyPressing('S')) {
+				// 아래쪽
+				if (DefaultKeyboard->KeyPressing('A')) {
+					// 왼쪽
+					dynamic_cast<Transform*>(m_User->GetTransController())->MoveBackward(M_MoveBackward_Speed / sqrtf(2.f));
+					dynamic_cast<Transform*>(m_User->GetTransController())->MoveLeft(M_MoveLeft_Speed / sqrtf(2.f));
+				}
+				else if (DefaultKeyboard->KeyPressing('D')) {
+					// 오른쪽
+					dynamic_cast<Transform*>(m_User->GetTransController())->MoveBackward(M_MoveBackward_Speed / sqrtf(2.f));
+					dynamic_cast<Transform*>(m_User->GetTransController())->MoveRight(M_MoveRight_Speed / sqrtf(2.f));
+				}
+				else {
+					dynamic_cast<Transform*>(m_User->GetTransController())->MoveBackward(M_MoveBackward_Speed);
+				}
 				dynamic_cast<AnimationCom*>(m_User->GetRootAniController())->ChangeAnimation(SCint(ANIMATION_TYPE::WALK_BACK));
 			}
-			else if (DefaultKeyboard->KeyPressing('A'))
-			{
+			else if (DefaultKeyboard->KeyPressing('A')) {
 				dynamic_cast<AnimationCom*>(m_User->GetRootAniController())->ChangeAnimation(SCint(ANIMATION_TYPE::WALK_LEFT));
+				//dynamic_cast<Transform*>(m_User->GetTransController())->MoveLeft(M_MoveLeft_Speed);
 			}
-			else if (DefaultKeyboard->KeyPressing('D'))
-			{
+			else if (DefaultKeyboard->KeyPressing('D')) {
 				dynamic_cast<AnimationCom*>(m_User->GetRootAniController())->ChangeAnimation(SCint(ANIMATION_TYPE::WALK_RIGHT));
+				//dynamic_cast<Transform*>(m_User->GetTransController())->MoveRight(M_MoveRight_Speed);
 			}
 			else
 				ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
@@ -230,6 +260,10 @@ void PlayerFSM::Attack()
 		if (dynamic_cast<AnimationCom*>(m_User->GetUpperAniController())->GetAttackEnd()) {
 			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
 		}
+		else if (DefaultKeyboard->KeyPressing(VK_SPACE)) // 점프
+		{
+			ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
+		}
 	}
 	else if (m_BoneType == BoneType::ROOT_BONE)
 	{ // 하체
@@ -244,17 +278,22 @@ void PlayerFSM::Jump()
 	if (m_BoneType == BoneType::UPPER_BONE)
 	{ // 상체
 		// 상체나 하체나 User가 땅에 닿았는가를 체크하는게 정배인듯?
-		if (dynamic_cast<Transform*>(m_User->GetTransController())->GetPosition().y <= 0.f) {
+		if (m_User->GetPosition().y <= 0.f) {
 			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
 		}
-		else
-		{
 
-		}
 	}
 	else if (m_BoneType == BoneType::ROOT_BONE)
 	{ // 하체
-		if (dynamic_cast<Transform*>(m_User->GetTransController())->GetPosition().y <= 0.f) {
+		if (!m_beforejump) {
+			if (DefaultKeyboard->KeyPressing('W')) dkey |= KEY_W;
+			if (DefaultKeyboard->KeyPressing('S')) dkey |= KEY_S;
+			if (DefaultKeyboard->KeyPressing('A')) dkey |= KEY_A;
+			if (DefaultKeyboard->KeyPressing('D')) dkey |= KEY_D;
+			m_beforejump = true;
+		}
+
+		if (dynamic_cast<Transform*>(m_User->GetTransController())->Jump(dkey)) {
 			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
 		}
 		else

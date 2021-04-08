@@ -74,6 +74,7 @@ void MeshMgr::BuildSkinnedModel(string meshName, MESH_TYPE etype)
 
 	meshGeo->DrawArgs["BufferGeo"] = submesh;
 	
+	materials.front().Name = meshName;
 	m_Meshs[meshName] = move(meshGeo);
 	MaterialLoader->BuildMaterial(meshName, materials.front());
 	AnimationLoader->SetSkinnedDatas(meshName, move(skinnedInfo));

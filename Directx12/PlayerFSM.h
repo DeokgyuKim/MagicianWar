@@ -33,9 +33,10 @@ private:
 	float m_fAttackTime;
 	float m_fAttackDeltaTime;
 
+	DWORD dkey;
 	bool m_bJump;
+	bool m_beforejump;
 	float m_fJumpTime;
 	float m_fJumpDeltaTime;
-
 };
 

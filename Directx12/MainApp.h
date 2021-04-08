@@ -7,6 +7,7 @@ class MeshMgr;
 class AnimationMgr;
 class Renderer;
 class KeyMgr;
+class MaterialMgr;
 class MainApp
 {
 private:
@@ -38,6 +39,7 @@ private:
 	void LoadSkinnedModels();
 	void LoadStaticModels();
 	void LoadAnimations();
+	void BuildMaterial();
 private:
 	Scene*			m_pScene;
 	Core*			m_pCore;
@@ -45,5 +47,6 @@ private:
 	AnimationMgr*	m_AnimationMgr;
 	Renderer*		m_pRenderer;
 	KeyMgr*			m_KeyMgr;
+	MaterialMgr*	m_MaterialMgr;
 };
 

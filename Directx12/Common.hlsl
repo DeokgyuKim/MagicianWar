@@ -1,6 +1,8 @@
-cbuffer cbPerObjectWorld : register(b0)
+
+cbuffer cbObject : register(b0) // 얘도 어떻게 해야함 
 {
-	float4x4 gWorld;
+	float4x4	gWorld;
+	uint		MaterialIndex;
 };
 
 cbuffer cbCamera : register(b1)
@@ -13,12 +15,12 @@ cbuffer cbCamera : register(b1)
 	float gTime;
 };
 
-cbuffer cbMaterial : register(b2)
-{
-	float4 gDiffuse;
-	float4 gAmbient;
-	float4 gSpecular;
-};
+//cbuffer cbMaterial : register(b2) // 얘도 어떻게 해야함 
+//{
+//	float4 gDiffuse;
+//	float4 gAmbient;
+//	float4 gSpecular;
+//};
 
 cbuffer cbLight : register(b3)
 {
@@ -47,3 +49,20 @@ Texture2D DepthTex : register(t5);
 
 TextureCube CubeMapTex : register(t6);
 Texture2D NoiseTex : register(t7);
+
+//// 인스턴싱 하는 애들이 사용
+struct InstanceObject
+{
+	float4x4	gWorld;
+	uint		MaterialIndex;
+};
+
+struct MaterialData
+{
+	float4 gDiffuse;
+	float4 gAmbient;
+	float4 gSpecular;
+};
+
+StructuredBuffer<InstanceObject> gInstanceData : register(t0, space1);
+StructuredBuffer<MaterialData>	 gMaterialData : register(t1, space1);

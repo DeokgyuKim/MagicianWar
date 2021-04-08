@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Object.h"
+#include "MaterialMgr.h"
 
 Scene::~Scene()
 {
@@ -27,6 +28,7 @@ void Scene::LateUpdate(const float& fTimeDelta)
 			Object->LateUpdate(fTimeDelta);
 		}
 	}
+	MaterialMgr::GetInstnace()->UpdateMaterialCBs();
 }
 
 void Scene::Release()
@@ -41,4 +43,9 @@ void Scene::Release()
 		}
 		m_pObjects[i].clear();
 	}
+}
+
+void Scene::BuildMaterialCBs()
+{
+	MaterialMgr::GetInstnace()->BuildMaterialCBs();
 }

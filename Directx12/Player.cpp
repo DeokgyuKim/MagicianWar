@@ -7,7 +7,7 @@
 #include "Camera.h"
 #include "Bullet.h"
 
- // Component
+// Component
 #include "Mesh.h"
 #include "Transform.h"
 #include "Material.h"
@@ -27,7 +27,7 @@ Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer
 	m_pRenderer = pRenderer;
 	Initialize();
 
-	
+
 }
 
 Player::~Player()
@@ -49,17 +49,17 @@ void Player::Initialize()
 	m_mapComponent["Upper_Animation"] = pComponent;
 	pComponent = new AnimationCom(CHARACTER_WIZARD_01);
 	m_mapComponent["Root_Animation"] = pComponent;
-	
+
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 0.f, 0.f));
 
 	// FSM 만들기
 	m_UpperBody = make_unique<PlayerFSM>(this, BoneType::UPPER_BONE); // ( player , BoneType )
 	m_RootBody = make_unique<PlayerFSM>(this, BoneType::ROOT_BONE);
 
-	
-	
 
-	
+
+
+
 	m_strTextureName = "wizard_01";
 }
 
@@ -71,8 +71,7 @@ HRESULT Player::BuildConstantBuffer()
 {
 	m_ObjectCB = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
 	m_SkinnedCB = make_unique<UploadBuffer<SkinnedCB>>(m_pDevice, 1, true);
-	m_MaterialCB = make_unique<UploadBuffer<MaterialCB>>(m_pDevice, 1, true);
-
+	
 	return S_OK;
 }
 
@@ -85,7 +84,7 @@ int Player::Update(const float& fTimeDelta)
 		xmfRotate.y = m_pCamera->GetRotY();
 		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotate);
 
-		KeyInput();
+
 		if (GetAsyncKeyState(VK_LBUTTON) & 0x0001)
 		{
 			XMFLOAT3 pos = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
@@ -93,12 +92,10 @@ int Player::Update(const float& fTimeDelta)
 			MainApp::GetInstance()->GetScene()->PushObject(new Bullet(m_pDevice, m_pCmdLst, m_pRenderer,
 				pos, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate(), 30.f), OBJ_TYPE::OBJ_BULLET);
 		}
-		
+
 	}
 	m_UpperBody->Execute();
 	m_RootBody->Execute();
-	//dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(ANIMATION_TYPE::IDLE);
-	//dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->Update(fTimeDelta);
 
 	return 0;
 }
@@ -107,19 +104,39 @@ void Player::LateUpdate(const float& fTimeDelta)
 {
 	Object::LateUpdate(fTimeDelta);
 
-	//m_UpperBody->Execute();		// 상체 갱신
-	//m_RootBody->Execute();		// 하체 갱신
+	UpdateObjectCB();
+	UpdateSkinnedCB();
+
+	m_pRenderer->PushObject(RENDER_TYPE::RENDER_DYNAMIC, this);
+}
+
+void Player::Render(const float& fTimeDelta)
+{
 	
+	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());	// obj
+	m_pCmdLst->SetGraphicsRootConstantBufferView(11, m_SkinnedCB->Resource()->GetGPUVirtualAddress());	// skinned
+	Object::Render(fTimeDelta); // 이거 쓰는걸로는 절대로 못함
+
+	//m_pBuffer->Render(fTimeDelta);
+}
+
+void Player::UpdateObjectCB()
+{
 	// objCB Update
 	ObjectCB	ObjCB;
 	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
+	ObjCB.MaterialIndex = dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetMaterialIndex();
 	m_ObjectCB->CopyData(0, ObjCB);
+}
 
+void Player::UpdateSkinnedCB()
+{
 	// SkinnedCB // 이거 애니메이션 붙이기 전까지 붙이면 안뜸 당연하지 쓰레기값가지고 계산되니까
 	SkinnedCB SkinnedCB;
-	
+
 	SkinnedCB.BoneTransforms[0] = dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms[0]; // Root 뼈대 == 하체 중심
-	for (int upper = 1; upper < 27; ++upper) { // 상체
+	SkinnedCB.BoneTransforms[1] = dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms[1]; // Root 뼈대 == 하체 중심
+	for (int upper = 2; upper < 27; ++upper) { // 상체
 		SkinnedCB.BoneTransforms[upper] = dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetSkinnedModellnst()->FinalTransforms[upper];
 	}
 	for (int Root = 27; Root < 33; ++Root) { // 하체
@@ -130,28 +147,6 @@ void Player::LateUpdate(const float& fTimeDelta)
 	//	&SkinnedCB.BoneTransforms[0]);
 
 	m_SkinnedCB->CopyData(0, SkinnedCB);
-
-	// MaterialCB
-	
-	MaterialCB matCB;
-	XMStoreFloat4(&matCB.Diffuse, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetDiffuse());
-	XMStoreFloat4(&matCB.Ambient, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetAmbient());
-	XMStoreFloat4(&matCB.Specular, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetSpecular());
-	m_MaterialCB->CopyData(0, matCB);
-
-	m_pRenderer->PushObject(RENDER_TYPE::RENDER_DYNAMIC, this);
-
-}
-
-void Player::Render(const float& fTimeDelta)
-{
-
-	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());	// obj
-	m_pCmdLst->SetGraphicsRootConstantBufferView(2, m_MaterialCB->Resource()->GetGPUVirtualAddress());	// material
-	m_pCmdLst->SetGraphicsRootConstantBufferView(11, m_SkinnedCB->Resource()->GetGPUVirtualAddress());	// skinned
-	Object::Render(fTimeDelta);
-
-	//m_pBuffer->Render(fTimeDelta);
 }
 
 XMFLOAT3 Player::GetPosition()
@@ -159,40 +154,4 @@ XMFLOAT3 Player::GetPosition()
 	return dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
 }
 
-void Player::UpdateSkinnedAnimation(const float fTimeDelta)
-{
-}
 
-void Player::KeyInput()
-{
-	KeyPress(); // 누르고 있음
-	KeyDown(); // 누름 1번
-	KeyUp(); //  뗌
-}
-
-void Player::KeyPress()
-{
-	DWORD dkey = 0;
-	// 고민되네 키매니저 어케하고 move 어케할지
-	if (KeyMgr::GetInstance()->KeyPressing('W')) dkey |= KEY_W;
-	if (KeyMgr::GetInstance()->KeyPressing('A')) dkey |= KEY_A;
-	if (KeyMgr::GetInstance()->KeyPressing('S')) dkey |= KEY_S;
-	if (KeyMgr::GetInstance()->KeyPressing('D')) dkey |= KEY_D;
-	if (KeyMgr::GetInstance()->KeyPressing(VK_SPACE)) dkey |= KEY_SPACE;
-
-	// 상태 패턴 구현해야할듯
-	int check = dynamic_cast<Transform*>(m_mapComponent["Transform"])->KeyInput(dkey);
-	
-}
-
-void Player::KeyDown()
-{
-
-
-}
-
-void Player::KeyUp()
-{
-
-
-}

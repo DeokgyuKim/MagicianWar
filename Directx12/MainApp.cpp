@@ -6,6 +6,7 @@
 #include "KeyMgr.h"
 #include "TestScene.h"
 #include "StaticMeshMgr.h"
+#include "MaterialMgr.h"
 
 MainApp* MainApp::m_pInstance = NULL;
 
@@ -19,10 +20,12 @@ void MainApp::Initialize()
 	
 	m_MeshMgr = MeshMgr::GetInstnace();
 	m_AnimationMgr = AnimationMgr::GetInstance();
+	m_MaterialMgr = MaterialMgr::GetInstnace();
+	m_MaterialMgr->InitMaterialMgr(m_pCore, m_pCore->GetDevice(), m_pCore->GetCmdLst());
 	LoadStaticModels();
 	LoadSkinnedModels();
 	LoadAnimations();
-
+	BuildMaterial();
 	
 	
 	m_pCore->CmdLstExecute();
@@ -113,4 +116,15 @@ void MainApp::LoadAnimations()
 	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::JUMP);
 	
 
+}
+
+void MainApp::BuildMaterial()
+{
+	Material Default_Materials;
+	Default_Materials.DiffuseAlbedo = XMFLOAT4(0.243f, 0.243f, 0.243f, 1.f);
+	Default_Materials.Ambient = XMFLOAT3(0.243f, 0.243f, 0.243f);
+	Default_Materials.Specular = XMFLOAT3(1.f, 1.f, 1.f);
+	Default_Materials.Name = "Map_Materials";
+
+	m_MaterialMgr->BuildMaterial("Map_Materials", Default_Materials);
 }

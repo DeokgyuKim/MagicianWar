@@ -23,6 +23,9 @@ public:
     virtual void Render(const float& fTimeDelta) override;
 
 public:
+    void UpdateObjectCB();
+    void UpdateSkinnedCB();
+public:
     XMFLOAT3    GetPosition();
     void        SetCamera(Camera* pCamera) { m_pCamera = pCamera; }
 public:
@@ -30,23 +33,14 @@ public:
     Component* GetUpperAniController() { return m_mapComponent["Upper_Animation"]; }
     Component* GetRootAniController() { return m_mapComponent["Root_Animation"]; }
     Component* GetTransController() { return m_mapComponent["Transform"]; }
-private:
-    void UpdateSkinnedAnimation(const float fTimeDelta);
-    void KeyInput();    // 키 입력
-    void KeyPress();     // 키 누름
-    void KeyDown();
-    void KeyUp();            // 키 뗌
-
-    
 
 
 protected:
     ID3D12Device*                               m_pDevice;
     ID3D12GraphicsCommandList*                  m_pCmdLst;
 
-    unique_ptr<UploadBuffer<ObjectCB>>	        m_ObjectCB;
-    unique_ptr<UploadBuffer<SkinnedCB>>         m_SkinnedCB;
-    unique_ptr<UploadBuffer<MaterialCB>>        m_MaterialCB;
+    unique_ptr<UploadBuffer<ObjectCB>>	        m_ObjectCB; // 이게 문제
+    unique_ptr<UploadBuffer<SkinnedCB>>         m_SkinnedCB; // 얘는 어쩔수없이 각 캐릭터가 들어야지
     
     Camera*                                     m_pCamera;
 

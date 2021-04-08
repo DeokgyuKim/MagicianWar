@@ -118,7 +118,7 @@ void Camera::LateUpdate(const float& fTimeDelta)
 }
 
 void Camera::Render(const float& fTimeDelta)
-{
+{ // 카메라 설정
 	m_pCmdLst->SetGraphicsRootConstantBufferView(1, m_ObjectCB->Resource()->GetGPUVirtualAddress());
 }
 

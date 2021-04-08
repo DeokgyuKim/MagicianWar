@@ -56,9 +56,7 @@ void Skybox::LateUpdate(const float& fTimeDelta)
 	Object::LateUpdate(fTimeDelta);
 
 	// objCB Update
-	ObjectCB	ObjCB;
-	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
-	m_ObjectCB->CopyData(0, ObjCB);
+	UpdateObjectCB();
 
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_SKYBOX, this);
 }
@@ -67,4 +65,13 @@ void Skybox::Render(const float& fTimeDelta)
 {
 	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());
 	Object::Render(fTimeDelta);
+}
+
+void Skybox::UpdateObjectCB()
+{
+	// objCB Update
+	ObjectCB	ObjCB;
+	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
+	ObjCB.MaterialIndex = -1;
+	m_ObjectCB->CopyData(0, ObjCB);
 }

@@ -138,14 +138,14 @@ void TestScene::Initialize()
 	//	XMFLOAT3(0.f, 0.f, 10.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.01f, 0.01f, 0.01f), "street_gate");
 	//m_pObjects[OBJ_STATIC].push_back(pObj);
 
-	StaticMeshMgr::GetInstance()->LoadMeshInfo("../Data/Map1Data.txt");
-	multimap<string*, TransformStruct> mmapInfo = StaticMeshMgr::GetInstance()->GetMapMeshInfo();
-	for (auto iter = mmapInfo.begin(); iter != mmapInfo.end(); ++iter)
-	{
-		pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-			(*iter).second.xmfPosition, (*iter).second.xmfRotate, (*iter).second.xmfScale, *(*iter).first);
-		m_pObjects[OBJ_STATIC].push_back(pObj);
-	}
+	//StaticMeshMgr::GetInstance()->LoadMeshInfo("../Data/Map1Data.txt");
+	//multimap<string*, TransformStruct> mmapInfo = StaticMeshMgr::GetInstance()->GetMapMeshInfo();
+	//for (auto iter = mmapInfo.begin(); iter != mmapInfo.end(); ++iter)
+	//{
+	//	pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//		(*iter).second.xmfPosition, (*iter).second.xmfRotate, (*iter).second.xmfScale, *(*iter).first);
+	//	m_pObjects[OBJ_STATIC].push_back(pObj);
+	//}
 
 
 	//Core::GetInstance()->CmdLstReset();
@@ -156,5 +156,5 @@ void TestScene::Initialize()
 	//
 	//m_pObjects[OBJ_STATIC].push_back(pObj);
 	
-
+	BuildMaterialCBs();
 }

@@ -142,7 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
-    <ClInclude Include="AnimationController.h" />
+    <ClInclude Include="InstanceInfo.h" />
     <ClInclude Include="PlayerFSM.h" />
     <ClInclude Include="AnimationMgr.h" />
     <ClInclude Include="Bullet.h" />
@@ -194,7 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
-    <ClCompile Include="AnimationController.cpp" />
+    <ClCompile Include="InstanceInfo.cpp" />
     <ClCompile Include="PlayerFSM.cpp" />
     <ClCompile Include="AnimationMgr.cpp" />
     <ClCompile Include="Bullet.cpp" />

@@ -9,6 +9,8 @@
 #include "RenderTargetMgr.h"
 #include "CLight.h"
 #include "Skybox.h"
+#include "InstanceInfo.h"
+#include "MaterialMgr.h"
 
 Renderer* Renderer::m_pInstance = NULL;
 Renderer* Renderer::GetInstance()
@@ -58,6 +60,9 @@ void Renderer::Render(const float& fTimeDelta)
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_ptrDescriptorHeap.Get() };
 	m_pCmdLst->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+
+	MaterialMgr::GetInstnace()->SetGraphicsShaderResourceView();
+
 	m_pCamera->Render(0.f);
 
 	m_mapShaders[RENDER_TYPE::RENDER_COLOR]->PreRender(m_pCmdLst);
@@ -65,6 +70,7 @@ void Renderer::Render(const float& fTimeDelta)
 	{
 		pObject->Render(fTimeDelta);
 	}
+	//DrawObject(,m_lstObjects[RENDER_TYPE::RENDER_COLOR])
 
 	//Set Pipeline
 	m_mapShaders[RENDER_TYPE::RENDER_NOBLEND]->PreRender(m_pCmdLst);
@@ -133,6 +139,10 @@ void Renderer::Render(const float& fTimeDelta)
 
 }
 
+void Renderer::DrawObject(InstanceInfo* _inst, list<Object*> _Objects)
+{
+}
+
 void Renderer::PushObject(RENDER_TYPE eType, Object* pObject)
 {
 	m_lstObjects[eType].push_back(pObject);
@@ -171,24 +181,24 @@ D3D12_CPU_DESCRIPTOR_HANDLE Renderer::CreateUnorderedAccessView(ID3D12Resource* 
 void Renderer::BuildRootSignature()
 {
 	CD3DX12_DESCRIPTOR_RANGE srvTable[8];
-	srvTable[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	srvTable[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
-	srvTable[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2);
-	srvTable[3].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3);
-	srvTable[4].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4);
-	srvTable[5].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 5);
-	srvTable[6].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 6);
-	srvTable[7].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 7);
+	srvTable[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // DDStexture
+	srvTable[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1); // Diff Texture
+	srvTable[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2); // Ambi Texture
+	srvTable[3].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3); // Specular Texture
+	srvTable[4].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4); // Normal Texture
+	srvTable[5].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 5); // Depth Texture
+	srvTable[6].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 6); // CubeMap Texture
+	srvTable[7].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 7); // Noise Texture
 
 
-	const size_t rootSize = 13;
+	const size_t rootSize = 14;
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[rootSize];
 
 
-	slotRootParameter[0].InitAsConstantBufferView(0);	//world
+	slotRootParameter[0].InitAsConstantBufferView(0);	// Obj
 	slotRootParameter[1].InitAsConstantBufferView(1);	//view, proj, invview, invproj, campos
-	slotRootParameter[2].InitAsConstantBufferView(2);	//Material diffuse, ambient, specular, position
+	slotRootParameter[2].InitAsShaderResourceView(1, 1); // Material diffuse, ambient, specular, position
 	slotRootParameter[3].InitAsConstantBufferView(3);	//light diffuse, ambient, specular, position, direction
 	slotRootParameter[4].InitAsDescriptorTable(1, &srvTable[0], D3D12_SHADER_VISIBILITY_PIXEL);	//Object texture
 	slotRootParameter[5].InitAsDescriptorTable(1, &srvTable[1], D3D12_SHADER_VISIBILITY_PIXEL);	//diffuse render target
@@ -199,6 +209,7 @@ void Renderer::BuildRootSignature()
 	slotRootParameter[10].InitAsDescriptorTable(1, &srvTable[6], D3D12_SHADER_VISIBILITY_ALL);	//Skybox texture
 	slotRootParameter[11].InitAsConstantBufferView(4); // Skinned
 	slotRootParameter[12].InitAsDescriptorTable(1, &srvTable[7], D3D12_SHADER_VISIBILITY_ALL);	//Noise texture
+	slotRootParameter[13].InitAsShaderResourceView(0, 1); // Instance Data
 
 	auto staticSamplers = GetStaticSamplers();
 
@@ -232,7 +243,7 @@ void Renderer::BuildDescrpitorHeap()
 {
 	//Create SRV Heap
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 33;///////////////////////
+	srvHeapDesc.NumDescriptors = 33;// 텍스처 개수 + blur skybox 등등
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	m_pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_ptrDescriptorHeap));

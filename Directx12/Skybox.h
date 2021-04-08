@@ -17,7 +17,8 @@ public:
     virtual int Update(const float& fTimeDelta) override;
     virtual void LateUpdate(const float& fTimeDelta) override;
     virtual void Render(const float& fTimeDelta) override;
-
+public:
+    void UpdateObjectCB();
 public:
     void        SetCamera(Camera* camera) { m_pCamera = camera; }
 
