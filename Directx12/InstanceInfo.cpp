@@ -1,16 +1,17 @@
 #include "InstanceInfo.h"
 
-InstanceInfo::InstanceInfo(string instanceID, UINT instanceIndex)
+InstanceInfo::InstanceInfo(string instanceID)
 	: InstanceCount(0)
 {
-	AddInstance(instanceID, instanceIndex);
+	m_InstanceMap[instanceID] = InstanceCount++; // 첫 생성 ㅊㅊ
+
 }
 
-void InstanceInfo::AddInstance(string instanceID, UINT istanceIndex)
+void InstanceInfo::AddInstance(string instanceID)
 {
-	if (m_InstanceMap.find(instanceID) == m_InstanceMap.end()) {
-		m_InstanceMap[instanceID] = istanceIndex;
-
-		InstanceCount += 1;	
+	auto iter = m_InstanceMap.find(instanceID);
+	if (iter == m_InstanceMap.end()) {
+		return; // 없음
 	}
+	m_InstanceMap[instanceID] = InstanceCount++; // 두번째 생성부터는 ++Instance
 }

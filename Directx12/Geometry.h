@@ -9,7 +9,7 @@ public:
 	~Geometry();
 public:
 	void			Initialize(ID3D12Device* device, ID3D12DescriptorHeap* heap);
-	virtual void	Render(const float& fTimeDelta);
+	virtual void	Render(const float& fTimeDelta, int _instanceCount = 1);
 private:
 	virtual HRESULT BuildGeometry(ID3D12Device* device) PURE;
 	

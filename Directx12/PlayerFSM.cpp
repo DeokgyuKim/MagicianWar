@@ -239,11 +239,11 @@ void PlayerFSM::Move()
 			}
 			else if (DefaultKeyboard->KeyPressing('A')) {
 				dynamic_cast<AnimationCom*>(m_User->GetRootAniController())->ChangeAnimation(SCint(ANIMATION_TYPE::WALK_LEFT));
-				//dynamic_cast<Transform*>(m_User->GetTransController())->MoveLeft(M_MoveLeft_Speed);
+				dynamic_cast<Transform*>(m_User->GetTransController())->MoveLeft(M_MoveLeft_Speed);
 			}
 			else if (DefaultKeyboard->KeyPressing('D')) {
 				dynamic_cast<AnimationCom*>(m_User->GetRootAniController())->ChangeAnimation(SCint(ANIMATION_TYPE::WALK_RIGHT));
-				//dynamic_cast<Transform*>(m_User->GetTransController())->MoveRight(M_MoveRight_Speed);
+				dynamic_cast<Transform*>(m_User->GetTransController())->MoveRight(M_MoveRight_Speed);
 			}
 			else
 				ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));

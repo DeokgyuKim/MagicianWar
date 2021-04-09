@@ -19,8 +19,8 @@
 
 
 
-
-Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer)
+Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName)
+	:Object(_meshName)
 {
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
@@ -51,14 +51,10 @@ void Player::Initialize()
 	m_mapComponent["Root_Animation"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 0.f, 0.f));
-
+	m_MaterialIndex = dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetMaterialIndex();
 	// FSM 만들기
 	m_UpperBody = make_unique<PlayerFSM>(this, BoneType::UPPER_BONE); // ( player , BoneType )
 	m_RootBody = make_unique<PlayerFSM>(this, BoneType::ROOT_BONE);
-
-
-
-
 
 	m_strTextureName = "wizard_01";
 }
@@ -69,7 +65,6 @@ void Player::Release()
 
 HRESULT Player::BuildConstantBuffer()
 {
-	m_ObjectCB = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
 	m_SkinnedCB = make_unique<UploadBuffer<SkinnedCB>>(m_pDevice, 1, true);
 	
 	return S_OK;
@@ -84,14 +79,14 @@ int Player::Update(const float& fTimeDelta)
 		xmfRotate.y = m_pCamera->GetRotY();
 		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotate);
 
-
-		if (GetAsyncKeyState(VK_LBUTTON) & 0x0001)
-		{
-			XMFLOAT3 pos = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
-			pos.y += 1.f;
-			MainApp::GetInstance()->GetScene()->PushObject(new Bullet(m_pDevice, m_pCmdLst, m_pRenderer,
-				pos, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate(), 30.f), OBJ_TYPE::OBJ_BULLET);
-		}
+		// 총알 발사
+		//if (GetAsyncKeyState(VK_LBUTTON) & 0x0001)
+		//{
+		//	XMFLOAT3 pos = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
+		//	pos.y += 1.f;
+		//	MainApp::GetInstance()->GetScene()->PushObject(new Bullet(m_pDevice, m_pCmdLst, m_pRenderer,"FireBall",
+		//		pos, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate(), 30.f), OBJ_TYPE::OBJ_BULLET);
+		//}
 
 	}
 	m_UpperBody->Execute();
@@ -104,30 +99,23 @@ void Player::LateUpdate(const float& fTimeDelta)
 {
 	Object::LateUpdate(fTimeDelta);
 
-	UpdateObjectCB();
+	//UpdateObjectCB();
 	UpdateSkinnedCB();
 
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_DYNAMIC, this);
 }
 
-void Player::Render(const float& fTimeDelta)
+void Player::Render(const float& fTimeDelta, int _instanceCount)
 {
-	
-	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());	// obj
+
+	//m_pCmdLst->SetGraphicsRootShaderResourceView(0, InstanceMgr::GetInstnace()->m_InstanceCBs[m_strMeshName]->Resource()->GetGPUVirtualAddress());	// obj
 	m_pCmdLst->SetGraphicsRootConstantBufferView(11, m_SkinnedCB->Resource()->GetGPUVirtualAddress());	// skinned
-	Object::Render(fTimeDelta); // 이거 쓰는걸로는 절대로 못함
+	Object::Render(fTimeDelta, _instanceCount); // 이거 쓰는걸로는 절대로 못함
 
-	//m_pBuffer->Render(fTimeDelta);
+	
 }
 
-void Player::UpdateObjectCB()
-{
-	// objCB Update
-	ObjectCB	ObjCB;
-	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
-	ObjCB.MaterialIndex = dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetMaterialIndex();
-	m_ObjectCB->CopyData(0, ObjCB);
-}
+
 
 void Player::UpdateSkinnedCB()
 {

@@ -7,6 +7,7 @@
 #include "TestScene.h"
 #include "StaticMeshMgr.h"
 #include "MaterialMgr.h"
+#include "InstanceMgr.h"
 
 MainApp* MainApp::m_pInstance = NULL;
 
@@ -22,6 +23,8 @@ void MainApp::Initialize()
 	m_AnimationMgr = AnimationMgr::GetInstance();
 	m_MaterialMgr = MaterialMgr::GetInstnace();
 	m_MaterialMgr->InitMaterialMgr(m_pCore, m_pCore->GetDevice(), m_pCore->GetCmdLst());
+	m_InstanceMgr = InstanceMgr::GetInstnace();
+	m_InstanceMgr->InitInstanceMgr(m_pCore, m_pCore->GetDevice(), m_pCore->GetCmdLst());
 	LoadStaticModels();
 	LoadSkinnedModels();
 	LoadAnimations();

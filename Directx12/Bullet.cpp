@@ -11,8 +11,9 @@
 #include "Material.h"
 #include "Animation.h"
 
-Bullet::Bullet(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer,
+Bullet::Bullet(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName,
 	XMFLOAT3 Pos, XMFLOAT3 Rotate, float speed)
+	:Object(_meshName)
 {
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
@@ -32,7 +33,7 @@ void Bullet::Initialize(XMFLOAT3 Pos, XMFLOAT3 Rotate)
 {
 	Core::GetInstance()->CmdLstReset();
 
-	BuildConstantBuffer();
+
 	Component* pComponent = new Transform(XMFLOAT3(0.1f, 0.1f, 0.1f), Rotate, Pos);
 	m_mapComponent["Transform"] = pComponent;
 	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), "Sphere");
@@ -41,7 +42,7 @@ void Bullet::Initialize(XMFLOAT3 Pos, XMFLOAT3 Rotate)
 	m_mapComponent["Material"] = pComponent;
 
 	m_strTextureName = "FireBall3";
-
+	m_MaterialIndex = dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetMaterialIndex();
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 }
@@ -50,12 +51,7 @@ void Bullet::Release()
 {
 }
 
-HRESULT Bullet::BuildConstantBuffer()
-{
-	m_ObjectCB = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
 
-	return S_OK;
-}
 
 int Bullet::Update(const float& fTimeDelta)
 {
@@ -70,28 +66,19 @@ void Bullet::LateUpdate(const float& fTimeDelta)
 {
 	Object::LateUpdate(fTimeDelta);
 
-	UpdateObjectCB();
-
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_BULLET, this);
 
 }
 
-void Bullet::Render(const float& fTimeDelta)
+void Bullet::Render(const float& fTimeDelta, int _instanceCount)
 {
 
 	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());
-	Object::Render(fTimeDelta);
-	//m_pBuffer->Render(fTimeDelta);
+	Object::Render(fTimeDelta, _instanceCount);
+
 }
 
-void Bullet::UpdateObjectCB()
-{
-	// objCB Update
-	ObjectCB	ObjCB;
-	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
-	ObjCB.MaterialIndex = dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetMaterialIndex();
-	m_ObjectCB->CopyData(0, ObjCB);
-}
+
 
 XMFLOAT3 Bullet::GetPosition()
 {

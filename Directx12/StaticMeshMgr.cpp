@@ -1,4 +1,5 @@
 #include "StaticMeshMgr.h"
+#include "MeshMgr.h"
 
 StaticMeshMgr* StaticMeshMgr::m_pInstance = NULL;
 

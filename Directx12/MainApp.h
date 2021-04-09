@@ -8,6 +8,8 @@ class AnimationMgr;
 class Renderer;
 class KeyMgr;
 class MaterialMgr;
+class InstanceMgr;
+
 class MainApp
 {
 private:
@@ -48,5 +50,6 @@ private:
 	Renderer*		m_pRenderer;
 	KeyMgr*			m_KeyMgr;
 	MaterialMgr*	m_MaterialMgr;
+	InstanceMgr*	m_InstanceMgr;
 };
 

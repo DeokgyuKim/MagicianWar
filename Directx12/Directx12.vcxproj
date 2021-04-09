@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="InstanceInfo.h" />
+    <ClInclude Include="InstanceMgr.h" />
     <ClInclude Include="PlayerFSM.h" />
     <ClInclude Include="AnimationMgr.h" />
     <ClInclude Include="Bullet.h" />
@@ -195,6 +196,7 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="InstanceInfo.cpp" />
+    <ClCompile Include="InstanceMgr.cpp" />
     <ClCompile Include="PlayerFSM.cpp" />
     <ClCompile Include="AnimationMgr.cpp" />
     <ClCompile Include="Bullet.cpp" />

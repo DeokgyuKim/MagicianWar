@@ -9,6 +9,7 @@
 #include "Bullet.h"
 
 #include "StaticMeshMgr.h"
+#include "InstanceMgr.h"
 
 TestScene::TestScene()
 {
@@ -98,14 +99,15 @@ void TestScene::Initialize()
 	//
 	//m_pObjects[OBJ_PLAYER].push_back(pObj);
 	Core::GetInstance()->CmdLstReset();
-	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		CHARACTER_WIZARD_01);
 	pPlayer = dynamic_cast<Player*>(pObj);
 	//(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance()->GetHeap());
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 	
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
-
+	
 	Core::GetInstance()->CmdLstReset();
 	pObj = new Camera(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	m_pCamera = pCamera = dynamic_cast<Camera*>(pObj);
@@ -118,7 +120,8 @@ void TestScene::Initialize()
 	m_pObjects[OBJ_CAMERA].push_back(pObj);
 
 	Core::GetInstance()->CmdLstReset();
-	pObj = new Terrain(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	pObj = new Terrain(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		"StoneTerrain");
 	//(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance()->GetHeap());
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
@@ -126,7 +129,8 @@ void TestScene::Initialize()
 	m_pObjects[OBJ_STATIC].push_back(pObj);
 
 
-	pObj = new Skybox(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	pObj = new Skybox(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		"SkyBox");
 	dynamic_cast<Skybox*>(pObj)->SetCamera(pCamera);
 	m_pObjects[OBJ_SKYBOX].push_back(pObj);
 
@@ -138,14 +142,14 @@ void TestScene::Initialize()
 	//	XMFLOAT3(0.f, 0.f, 10.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.01f, 0.01f, 0.01f), "street_gate");
 	//m_pObjects[OBJ_STATIC].push_back(pObj);
 
-	//StaticMeshMgr::GetInstance()->LoadMeshInfo("../Data/Map1Data.txt");
-	//multimap<string*, TransformStruct> mmapInfo = StaticMeshMgr::GetInstance()->GetMapMeshInfo();
-	//for (auto iter = mmapInfo.begin(); iter != mmapInfo.end(); ++iter)
-	//{
-	//	pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-	//		(*iter).second.xmfPosition, (*iter).second.xmfRotate, (*iter).second.xmfScale, *(*iter).first);
-	//	m_pObjects[OBJ_STATIC].push_back(pObj);
-	//}
+	StaticMeshMgr::GetInstance()->LoadMeshInfo("../Data/Map1Data.txt");
+	multimap<string*, TransformStruct> mmapInfo = StaticMeshMgr::GetInstance()->GetMapMeshInfo();
+	for (auto iter = mmapInfo.begin(); iter != mmapInfo.end(); ++iter)
+	{
+		pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+			(*iter).second.xmfPosition, (*iter).second.xmfRotate, (*iter).second.xmfScale, *(*iter).first);
+		m_pObjects[OBJ_STATIC].push_back(pObj);
+	}
 
 
 	//Core::GetInstance()->CmdLstReset();
@@ -156,5 +160,7 @@ void TestScene::Initialize()
 	//
 	//m_pObjects[OBJ_STATIC].push_back(pObj);
 	
+	
+	BuildInstanceCBs();
 	BuildMaterialCBs();
 }

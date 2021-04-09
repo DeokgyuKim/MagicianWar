@@ -258,6 +258,7 @@
     <ClInclude Include="PlayerFSM.h" />
     <ClInclude Include="InterfaceFSM.h" />
     <ClInclude Include="InstanceInfo.h" />
+    <ClInclude Include="InstanceMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MathHelper.cpp">
@@ -376,6 +377,7 @@
     <ClCompile Include="KeyMgr.cpp" />
     <ClCompile Include="PlayerFSM.cpp" />
     <ClCompile Include="InstanceInfo.cpp" />
+    <ClCompile Include="InstanceMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

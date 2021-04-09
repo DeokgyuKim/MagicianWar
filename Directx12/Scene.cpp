@@ -1,6 +1,8 @@
 #include "Scene.h"
 #include "Object.h"
 #include "MaterialMgr.h"
+#include "InstanceMgr.h"
+#include "InstanceInfo.h"
 
 Scene::~Scene()
 {
@@ -26,9 +28,11 @@ void Scene::LateUpdate(const float& fTimeDelta)
 		for (auto Object : m_pObjects[i])
 		{
 			Object->LateUpdate(fTimeDelta);
+			InstanceMgr::GetInstnace()->UpdateInstanceBuffer(Object);
 		}
 	}
 	MaterialMgr::GetInstnace()->UpdateMaterialCBs();
+	
 }
 
 void Scene::Release()
@@ -48,4 +52,9 @@ void Scene::Release()
 void Scene::BuildMaterialCBs()
 {
 	MaterialMgr::GetInstnace()->BuildMaterialCBs();
+}
+
+void Scene::BuildInstanceCBs()
+{
+	InstanceMgr::GetInstnace()->BuildInstanceBuffers();
 }

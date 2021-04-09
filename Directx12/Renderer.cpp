@@ -11,6 +11,7 @@
 #include "Skybox.h"
 #include "InstanceInfo.h"
 #include "MaterialMgr.h"
+#include "InstanceMgr.h"
 
 Renderer* Renderer::m_pInstance = NULL;
 Renderer* Renderer::GetInstance()
@@ -61,50 +62,75 @@ void Renderer::Render(const float& fTimeDelta)
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_ptrDescriptorHeap.Get() };
 	m_pCmdLst->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	MaterialMgr::GetInstnace()->SetGraphicsShaderResourceView();
+	MaterialMgr::GetInstnace()->SetGraphicsShaderResourceView(); // 1¹øÀÇ MatBuffer SRV ¿¬°á
 
 	m_pCamera->Render(0.f);
 
-	m_mapShaders[RENDER_TYPE::RENDER_COLOR]->PreRender(m_pCmdLst);
-	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_COLOR])
-	{
-		pObject->Render(fTimeDelta);
-	}
-	//DrawObject(,m_lstObjects[RENDER_TYPE::RENDER_COLOR])
+	//m_mapShaders[RENDER_TYPE::RENDER_COLOR]->PreRender(m_pCmdLst);
+	//for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_COLOR])
+	//{
+	//	pObject->Render(fTimeDelta);
 
-	//Set Pipeline
+	//}
+	////DrawObject(,m_lstObjects[RENDER_TYPE::RENDER_COLOR])
+
+	////Set Pipeline
 	m_mapShaders[RENDER_TYPE::RENDER_NOBLEND]->PreRender(m_pCmdLst);
 	 
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_NOBLEND])
 	{
-		if (pObject->GetTextureName() != "")
-			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
-		pObject->Render(fTimeDelta);
+		if (m_InstanceCheck.find(pObject->GetMeshName()) != m_InstanceCheck.end()) {
+			// ÀÌ¹Ì ÇÑ¹ø ·»´õ¸µ ÇÑ mesh¸é ·»´õ¸µ¾ÈÇÏ¸éµÊ
+		}
+		else
+		{
+			if (pObject->GetTextureName() != "")
+				m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+			m_pCmdLst->SetGraphicsRootShaderResourceView(0, InstanceMgr::GetInstnace()->m_InstanceCBs[pObject->GetMeshName()]->Resource()->GetGPUVirtualAddress());	// obj
+			m_InstanceCheck[pObject->GetMeshName()] = InstanceMgr::GetInstnace()->m_InstanceObjects[pObject->GetMeshName()]->GetInstanceCount();
+			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetMeshName()]);
+		}
 	}
 
-	m_mapShaders[RENDER_TYPE::RENDER_BULLET]->PreRender(m_pCmdLst);
-	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_BULLET])
-	{
-		m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
-		if (pObject->GetTextureName() != "")
-			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
-		pObject->Render(fTimeDelta);
-	}
+	//m_mapShaders[RENDER_TYPE::RENDER_BULLET]->PreRender(m_pCmdLst);
+	//for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_BULLET])
+	//{
+	//	m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+	//	if (pObject->GetTextureName() != "")
+	//		m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+	//	pObject->Render(fTimeDelta);
+	//}
 
 	m_mapShaders[RENDER_TYPE::RENDER_STATIC]->PreRender(m_pCmdLst);
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_STATIC])
 	{
-		if (pObject->GetTextureName() != "")
-			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
-		pObject->Render(fTimeDelta);
+		if (m_InstanceCheck.find(pObject->GetMeshName()) != m_InstanceCheck.end()) {
+			// ÀÌ¹Ì ÇÑ¹ø ·»´õ¸µ ÇÑ mesh¸é ·»´õ¸µ¾ÈÇÏ¸éµÊ
+		}
+		else
+		{
+			if (pObject->GetTextureName() != "")
+				m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+			m_pCmdLst->SetGraphicsRootShaderResourceView(0, InstanceMgr::GetInstnace()->m_InstanceCBs[pObject->GetMeshName()]->Resource()->GetGPUVirtualAddress());	// obj
+			m_InstanceCheck[pObject->GetMeshName()] = InstanceMgr::GetInstnace()->m_InstanceObjects[pObject->GetMeshName()]->GetInstanceCount();
+			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetMeshName()]);
+		}
 	}
 
 	m_mapShaders[RENDER_TYPE::RENDER_DYNAMIC]->PreRender(m_pCmdLst);
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_DYNAMIC])
 	{
-		if (pObject->GetTextureName() != "")
-			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
-		pObject->Render(fTimeDelta);
+		if (m_InstanceCheck.find(pObject->GetMeshName()) != m_InstanceCheck.end()) {
+			// ÀÌ¹Ì ÇÑ¹ø ·»´õ¸µ ÇÑ mesh¸é ·»´õ¸µ¾ÈÇÏ¸éµÊ
+		}
+		else
+		{
+			if (pObject->GetTextureName() != "")
+				m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+			m_pCmdLst->SetGraphicsRootShaderResourceView(0, InstanceMgr::GetInstnace()->m_InstanceCBs[pObject->GetMeshName()]->Resource()->GetGPUVirtualAddress());	// obj
+			m_InstanceCheck[pObject->GetMeshName()] = InstanceMgr::GetInstnace()->m_InstanceObjects[pObject->GetMeshName()]->GetInstanceCount();
+			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetMeshName()]);
+		}
 	}
     //////////////////////////////////////////////////////////////
 
@@ -125,9 +151,17 @@ void Renderer::Render(const float& fTimeDelta)
 	m_mapShaders[RENDER_TYPE::RENDER_SKYBOX]->PreRender(m_pCmdLst);
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_SKYBOX])
 	{
-		if (pObject->GetTextureName() != "")
-			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
-		pObject->Render(fTimeDelta);
+		if (m_InstanceCheck.find(pObject->GetMeshName()) != m_InstanceCheck.end()) {
+			// ÀÌ¹Ì ÇÑ¹ø ·»´õ¸µ ÇÑ mesh¸é ·»´õ¸µ¾ÈÇÏ¸éµÊ
+		}
+		else
+		{
+			if (pObject->GetTextureName() != "")
+				m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+			m_pCmdLst->SetGraphicsRootShaderResourceView(0, InstanceMgr::GetInstnace()->m_InstanceCBs[pObject->GetMeshName()]->Resource()->GetGPUVirtualAddress());	// obj
+			m_InstanceCheck[pObject->GetMeshName()] = InstanceMgr::GetInstnace()->m_InstanceObjects[pObject->GetMeshName()]->GetInstanceCount();
+			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetMeshName()]);
+		}
 	}
 
 	DebugKeyInput();
@@ -136,6 +170,8 @@ void Renderer::Render(const float& fTimeDelta)
 	//m_pCore->Render_End();
 	for(int i = 0; i < RENDER_TYPE::RENDER_END; ++i)
 		m_lstObjects[i].clear();
+
+	m_InstanceCheck.clear();
 
 }
 
@@ -191,12 +227,12 @@ void Renderer::BuildRootSignature()
 	srvTable[7].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 7); // Noise Texture
 
 
-	const size_t rootSize = 14;
+	const size_t rootSize = 13;
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[rootSize];
 
 
-	slotRootParameter[0].InitAsConstantBufferView(0);	// Obj
+	slotRootParameter[0].InitAsShaderResourceView(0, 1);	// Instance Data
 	slotRootParameter[1].InitAsConstantBufferView(1);	//view, proj, invview, invproj, campos
 	slotRootParameter[2].InitAsShaderResourceView(1, 1); // Material diffuse, ambient, specular, position
 	slotRootParameter[3].InitAsConstantBufferView(3);	//light diffuse, ambient, specular, position, direction
@@ -209,7 +245,7 @@ void Renderer::BuildRootSignature()
 	slotRootParameter[10].InitAsDescriptorTable(1, &srvTable[6], D3D12_SHADER_VISIBILITY_ALL);	//Skybox texture
 	slotRootParameter[11].InitAsConstantBufferView(4); // Skinned
 	slotRootParameter[12].InitAsDescriptorTable(1, &srvTable[7], D3D12_SHADER_VISIBILITY_ALL);	//Noise texture
-	slotRootParameter[13].InitAsShaderResourceView(0, 1); // Instance Data
+	
 
 	auto staticSamplers = GetStaticSamplers();
 

@@ -7,7 +7,9 @@
 #include "Transform.h"
 #include "SkyBoxCube.h"
 
-Skybox::Skybox(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer)
+Skybox::Skybox(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer,
+	string _meshName)
+	:Object(_meshName)
 {
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
@@ -21,7 +23,6 @@ Skybox::~Skybox()
 
 void Skybox::Initialize()
 {
-	BuildConstantBuffer();
 
 	Component* pComponent = new Transform(XMFLOAT3(100.f, 100.f, 100.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
@@ -39,12 +40,6 @@ void Skybox::Release()
 {
 }
 
-HRESULT Skybox::BuildConstantBuffer()
-{
-	m_ObjectCB = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
-    return S_OK;
-}
-
 int Skybox::Update(const float& fTimeDelta)
 {
     return 0;
@@ -55,23 +50,10 @@ void Skybox::LateUpdate(const float& fTimeDelta)
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetPosition(m_pCamera->GetPosition());
 	Object::LateUpdate(fTimeDelta);
 
-	// objCB Update
-	UpdateObjectCB();
-
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_SKYBOX, this);
 }
 
-void Skybox::Render(const float& fTimeDelta)
+void Skybox::Render(const float& fTimeDelta, int _instanceCount)
 {
-	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());
-	Object::Render(fTimeDelta);
-}
-
-void Skybox::UpdateObjectCB()
-{
-	// objCB Update
-	ObjectCB	ObjCB;
-	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix()));
-	ObjCB.MaterialIndex = -1;
-	m_ObjectCB->CopyData(0, ObjCB);
+	Object::Render(fTimeDelta, _instanceCount);
 }

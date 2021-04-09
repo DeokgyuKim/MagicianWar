@@ -53,7 +53,7 @@ private:
 	ComPtr<ID3D12DescriptorHeap>		m_ptrDescriptorHeap;
 
 	list<Object*>						m_lstObjects[RENDER_TYPE::RENDER_END];
-	map<string, InstanceInfo*>			m_InstanceInfos;
+	map<string, UINT>					m_InstanceCheck;
 
 	int									m_iCountView = 0;
 
@@ -62,5 +62,6 @@ private:
 
 	TextureMgr*							m_pTextureMgr;
 	RenderTargetMgr*					m_pRTMgr;
+	
 };
 

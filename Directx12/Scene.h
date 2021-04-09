@@ -12,6 +12,7 @@ public:
 	virtual void	LateUpdate(const float& fTimeDelta);
 	virtual void	Release();
 	virtual void	BuildMaterialCBs();
+	virtual void	BuildInstanceCBs();
 public:
 	void	PushObject(Object* pobj, OBJ_TYPE eType) { m_pObjects[eType].push_back(pobj); }
 protected:

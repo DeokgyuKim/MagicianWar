@@ -1,10 +1,4 @@
 
-cbuffer cbObject : register(b0) // 얘도 어떻게 해야함 
-{
-	float4x4	gWorld;
-	uint		MaterialIndex;
-};
-
 cbuffer cbCamera : register(b1)
 {
 	float4x4 gView;
@@ -14,13 +8,6 @@ cbuffer cbCamera : register(b1)
 	float4 gCamPosition;
 	float gTime;
 };
-
-//cbuffer cbMaterial : register(b2) // 얘도 어떻게 해야함 
-//{
-//	float4 gDiffuse;
-//	float4 gAmbient;
-//	float4 gSpecular;
-//};
 
 cbuffer cbLight : register(b3)
 {
