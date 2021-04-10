@@ -46,15 +46,6 @@
     <Filter Include="01.Engine\04.Texture\00.DDSTexture\00.DDSLoader">
       <UniqueIdentifier>{fc433d4d-6dfb-46d2-827c-923ea39c46bb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Engine\02.Object\00.Terrain">
-      <UniqueIdentifier>{0c404788-539d-4c7e-9e4a-502d7c154f6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Engine\02.Object\01.Camera">
-      <UniqueIdentifier>{64c3dd43-5d0f-4a48-b376-dd3b32eebd63}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Engine\02.Object\02.Player">
-      <UniqueIdentifier>{bd562d59-0208-4ef9-9a76-2d727fbd97ce}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Engine\01.Renderer\00.TextureMgr">
       <UniqueIdentifier>{8ef3ef22-48ce-4ae8-beca-12a3fb125068}</UniqueIdentifier>
     </Filter>
@@ -94,26 +85,14 @@
     <Filter Include="01.Engine\06.Component\01.Geometry\03. LightGeo">
       <UniqueIdentifier>{1f1249c9-e178-4eac-b353-18d33787f8f5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Engine\02.Object\03.SkyBox">
-      <UniqueIdentifier>{841ceca3-d734-4200-a73a-b7ca669047d4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Engine\06.Component\01.Geometry\00.Cube\00.SkyboxCube">
       <UniqueIdentifier>{8a3f454d-3f1a-434b-92f2-0b39b7542692}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Engine\01.Renderer\02.AnimationMgr">
       <UniqueIdentifier>{83ca9cf5-e1a3-4bdc-a504-1993d1c9c095}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Engine\06.Component\03. Animation">
-      <UniqueIdentifier>{9163647c-ed30-4090-bce7-25db8babc4bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Engine\02.Object\04.StaticObject">
-      <UniqueIdentifier>{908d6fa5-819b-475c-92a6-050113c13f1d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Engine\01.Renderer\03.MaterailMgr">
       <UniqueIdentifier>{09742e51-9db4-493f-8e23-dc200c3fb74d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr">
-      <UniqueIdentifier>{3f60bab8-6437-4a82-9bfd-c5a4f0d1b75f}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Engine\09.Loading">
       <UniqueIdentifier>{05d17adb-e6e8-47c5-80d1-fd4e75a09560}</UniqueIdentifier>
@@ -127,14 +106,65 @@
     <Filter Include="01.Engine\10.Network">
       <UniqueIdentifier>{8de6e769-7009-49b9-ad57-9cebab1cf71d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Engine\02.Object\06.UI">
+    <Filter Include="00.Game\02.Object">
+      <UniqueIdentifier>{d3063aec-64e0-4162-aca2-ae7d0aa2487e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\00.Terrain">
+      <UniqueIdentifier>{0c404788-539d-4c7e-9e4a-502d7c154f6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\01.Camera">
+      <UniqueIdentifier>{64c3dd43-5d0f-4a48-b376-dd3b32eebd63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\02.Player">
+      <UniqueIdentifier>{bd562d59-0208-4ef9-9a76-2d727fbd97ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\03.SkyBox">
+      <UniqueIdentifier>{841ceca3-d734-4200-a73a-b7ca669047d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\04.StaticObject">
+      <UniqueIdentifier>{908d6fa5-819b-475c-92a6-050113c13f1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\04.StaticObject\00.StaticMeshMgr">
+      <UniqueIdentifier>{3f60bab8-6437-4a82-9bfd-c5a4f0d1b75f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\05.Bullet">
+      <UniqueIdentifier>{fd5797d6-413b-4fae-a1d4-c9c5c7278fb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object\00.UI">
       <UniqueIdentifier>{6e6ec15f-4323-41d1-928b-bd66ae341385}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Engine\02.Object\06.UI\00. Button">
+    <Filter Include="01.Engine\02.Object\00.UI\00.Button">
       <UniqueIdentifier>{1021fc5f-b6d9-4c4e-843e-f274cc51c961}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Engine\02.Object\05.Bullet">
-      <UniqueIdentifier>{fd5797d6-413b-4fae-a1d4-c9c5c7278fb7}</UniqueIdentifier>
+    <Filter Include="01.Engine\06.Component\03.Animation">
+      <UniqueIdentifier>{9163647c-ed30-4090-bce7-25db8babc4bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\01.Renderer\04.InstanceMgr">
+      <UniqueIdentifier>{8c5fab7b-4c05-45a5-8fdd-45e85ce397cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\01.Renderer\04.InstanceMgr\00.InstanceInfo">
+      <UniqueIdentifier>{eab659e3-da46-471e-b2a4-ef7c14f6bb0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\01.Renderer\05.KeyMgr">
+      <UniqueIdentifier>{cf9eed9c-aed4-41c0-a0c6-b1cbda0e23d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object\99.Interface">
+      <UniqueIdentifier>{5cf28882-2fff-4b26-a2d2-82a76e641a12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\02.Player\00.PlayerFSM">
+      <UniqueIdentifier>{1ab5465b-5910-423c-82be-3f9f70e620f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\01.Renderer\02.AnimationMgr\00.SkinnedData">
+      <UniqueIdentifier>{074c270e-620e-435f-a12e-018b1333dc48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\01.Renderer\02.AnimationMgr\01.SkinnedModelInstance">
+      <UniqueIdentifier>{678e1b67-1828-4b32-a595-556214711498}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Default\99.Default">
+      <UniqueIdentifier>{d8a5381a-4546-411d-b68f-f923bd079150}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\03.Shader\00.HLSL">
+      <UniqueIdentifier>{da3a61cb-4e88-45df-b0d3-924f2ea48782}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -149,18 +179,6 @@
     </ClInclude>
     <ClInclude Include="UploadBuffer.h">
       <Filter>99.Default\00.Header</Filter>
-    </ClInclude>
-    <ClInclude Include="d3dUtil.h">
-      <Filter>99.Default</Filter>
-    </ClInclude>
-    <ClInclude Include="d3dx12.h">
-      <Filter>99.Default</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>99.Default</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>99.Default</Filter>
     </ClInclude>
     <ClInclude Include="Directx12.h">
       <Filter>00.Game</Filter>
@@ -193,16 +211,16 @@
       <Filter>01.Engine\04.Texture\00.DDSTexture\00.DDSLoader</Filter>
     </ClInclude>
     <ClInclude Include="Terrain.h">
-      <Filter>01.Engine\02.Object\00.Terrain</Filter>
+      <Filter>00.Game\02.Object\00.Terrain</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>01.Engine\02.Object\01.Camera</Filter>
+      <Filter>00.Game\02.Object\01.Camera</Filter>
     </ClInclude>
     <ClInclude Include="Plane.h">
       <Filter>01.Engine\06.Component\01.Geometry\01.Plane</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>01.Engine\02.Object\02.Player</Filter>
+      <Filter>00.Game\02.Object\02.Player</Filter>
     </ClInclude>
     <ClInclude Include="Cube.h">
       <Filter>01.Engine\06.Component\01.Geometry\00.Cube</Filter>
@@ -240,13 +258,11 @@
     <ClInclude Include="CLight.h">
       <Filter>01.Engine\08.Light</Filter>
     </ClInclude>
-    <ClInclude Include="SkinnedData.h" />
-    <ClInclude Include="SkinnedModelInstance.h" />
     <ClInclude Include="define.h">
       <Filter>99.Default\00.Header</Filter>
     </ClInclude>
     <ClInclude Include="Skybox.h">
-      <Filter>01.Engine\02.Object\03.SkyBox</Filter>
+      <Filter>00.Game\02.Object\03.SkyBox</Filter>
     </ClInclude>
     <ClInclude Include="SkyBoxCube.h">
       <Filter>01.Engine\06.Component\01.Geometry\00.Cube\00.SkyboxCube</Filter>
@@ -255,10 +271,10 @@
       <Filter>01.Engine\01.Renderer\02.AnimationMgr</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
-      <Filter>01.Engine\06.Component\03. Animation</Filter>
+      <Filter>01.Engine\06.Component\03.Animation</Filter>
     </ClInclude>
     <ClInclude Include="StaticObject.h">
-      <Filter>01.Engine\02.Object\04.StaticObject</Filter>
+      <Filter>00.Game\02.Object\04.StaticObject</Filter>
     </ClInclude>
     <ClInclude Include="GameTimer.h">
       <Filter>01.Engine\00.Core</Filter>
@@ -267,17 +283,11 @@
       <Filter>01.Engine\01.Renderer\03.MaterailMgr</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>01.Engine\02.Object\05.Bullet</Filter>
+      <Filter>00.Game\02.Object\05.Bullet</Filter>
     </ClInclude>
     <ClInclude Include="StaticMeshMgr.h">
-      <Filter>01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr</Filter>
+      <Filter>00.Game\02.Object\04.StaticObject\00.StaticMeshMgr</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationController.h" />
-    <ClInclude Include="AnimationCommand.h" />
-    <ClInclude Include="AnimationFSM.h" />
-    <ClInclude Include="InterfaceAnimation.h" />
-    <ClInclude Include="InterfaceCommand.h" />
-    <ClInclude Include="KeyMgr.h" />
     <ClInclude Include="Loading.h">
       <Filter>01.Engine\09.Loading</Filter>
     </ClInclude>
@@ -288,22 +298,49 @@
       <Filter>01.Engine\06.Component\01.Geometry\04.UIPlane</Filter>
     </ClInclude>
     <ClInclude Include="UI.h">
-      <Filter>01.Engine\02.Object\06.UI</Filter>
+      <Filter>01.Engine\02.Object\00.UI</Filter>
     </ClInclude>
     <ClInclude Include="Button.h">
-      <Filter>01.Engine\02.Object\06.UI\00. Button</Filter>
+      <Filter>01.Engine\02.Object\00.UI\00.Button</Filter>
     </ClInclude>
     <ClInclude Include="Network.h">
       <Filter>01.Engine\10.Network</Filter>
     </ClInclude>
+    <ClInclude Include="InstanceInfo.h">
+      <Filter>01.Engine\01.Renderer\04.InstanceMgr\00.InstanceInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="InstanceMgr.h">
+      <Filter>01.Engine\01.Renderer\04.InstanceMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyMgr.h">
+      <Filter>01.Engine\01.Renderer\05.KeyMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="InterfaceFSM.h">
+      <Filter>01.Engine\02.Object\99.Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerFSM.h">
+      <Filter>00.Game\02.Object\02.Player\00.PlayerFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedData.h">
+      <Filter>01.Engine\01.Renderer\02.AnimationMgr\00.SkinnedData</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedModelInstance.h">
+      <Filter>01.Engine\01.Renderer\02.AnimationMgr\01.SkinnedModelInstance</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dUtil.h">
+      <Filter>99.Default\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>99.Default\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>99.Default\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>99.Default\99.Default</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MathHelper.cpp">
-      <Filter>99.Default</Filter>
-    </ClCompile>
-    <ClCompile Include="d3dUtil.cpp">
-      <Filter>99.Default</Filter>
-    </ClCompile>
     <ClCompile Include="Directx12.cpp">
       <Filter>00.Game</Filter>
     </ClCompile>
@@ -338,13 +375,13 @@
       <Filter>01.Engine\06.Component\01.Geometry\01.Plane</Filter>
     </ClCompile>
     <ClCompile Include="Terrain.cpp">
-      <Filter>01.Engine\02.Object\00.Terrain</Filter>
+      <Filter>00.Game\02.Object\00.Terrain</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>01.Engine\02.Object\01.Camera</Filter>
+      <Filter>00.Game\02.Object\01.Camera</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>01.Engine\02.Object\02.Player</Filter>
+      <Filter>00.Game\02.Object\02.Player</Filter>
     </ClCompile>
     <ClCompile Include="Cube.cpp">
       <Filter>01.Engine\06.Component\01.Geometry\00.Cube</Filter>
@@ -382,10 +419,8 @@
     <ClCompile Include="CLight.cpp">
       <Filter>01.Engine\08.Light</Filter>
     </ClCompile>
-    <ClCompile Include="SkinnedData.cpp" />
-    <ClCompile Include="SkinnedModelInstance.cpp" />
     <ClCompile Include="Skybox.cpp">
-      <Filter>01.Engine\02.Object\03.SkyBox</Filter>
+      <Filter>00.Game\02.Object\03.SkyBox</Filter>
     </ClCompile>
     <ClCompile Include="SkyBoxCube.cpp">
       <Filter>01.Engine\06.Component\01.Geometry\00.Cube\00.SkyboxCube</Filter>
@@ -394,10 +429,10 @@
       <Filter>01.Engine\01.Renderer\02.AnimationMgr</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
-      <Filter>01.Engine\06.Component\03. Animation</Filter>
+      <Filter>01.Engine\06.Component\03.Animation</Filter>
     </ClCompile>
     <ClCompile Include="StaticObject.cpp">
-      <Filter>01.Engine\02.Object\04.StaticObject</Filter>
+      <Filter>00.Game\02.Object\04.StaticObject</Filter>
     </ClCompile>
     <ClCompile Include="GameTimer.cpp">
       <Filter>01.Engine\00.Core</Filter>
@@ -406,15 +441,11 @@
       <Filter>01.Engine\01.Renderer\03.MaterailMgr</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
-      <Filter>01.Engine\02.Object\05.Bullet</Filter>
+      <Filter>00.Game\02.Object\05.Bullet</Filter>
     </ClCompile>
     <ClCompile Include="StaticMeshMgr.cpp">
-      <Filter>01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr</Filter>
+      <Filter>00.Game\02.Object\04.StaticObject\00.StaticMeshMgr</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationController.cpp" />
-    <ClCompile Include="AnimationCommand.cpp" />
-    <ClCompile Include="AnimationFSM.cpp" />
-    <ClCompile Include="KeyMgr.cpp" />
     <ClCompile Include="Loading.cpp">
       <Filter>01.Engine\09.Loading</Filter>
     </ClCompile>
@@ -425,31 +456,61 @@
       <Filter>01.Engine\06.Component\01.Geometry\04.UIPlane</Filter>
     </ClCompile>
     <ClCompile Include="UI.cpp">
-      <Filter>01.Engine\02.Object\06.UI</Filter>
+      <Filter>01.Engine\02.Object\00.UI</Filter>
     </ClCompile>
     <ClCompile Include="Button.cpp">
-      <Filter>01.Engine\02.Object\06.UI\00. Button</Filter>
+      <Filter>01.Engine\02.Object\00.UI\00.Button</Filter>
     </ClCompile>
     <ClCompile Include="Network.cpp">
       <Filter>01.Engine\10.Network</Filter>
     </ClCompile>
+    <ClCompile Include="InstanceInfo.cpp">
+      <Filter>01.Engine\01.Renderer\04.InstanceMgr\00.InstanceInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="InstanceMgr.cpp">
+      <Filter>01.Engine\01.Renderer\04.InstanceMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyMgr.cpp">
+      <Filter>01.Engine\01.Renderer\05.KeyMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerFSM.cpp">
+      <Filter>00.Game\02.Object\02.Player\00.PlayerFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedData.cpp">
+      <Filter>01.Engine\01.Renderer\02.AnimationMgr\00.SkinnedData</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedModelInstance.cpp">
+      <Filter>01.Engine\01.Renderer\02.AnimationMgr\01.SkinnedModelInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dUtil.cpp">
+      <Filter>99.Default\99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>99.Default\99.Default</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">
-      <Filter>99.Default</Filter>
+      <Filter>99.Default\99.Default</Filter>
     </Image>
     <Image Include="small.ico">
-      <Filter>99.Default</Filter>
+      <Filter>99.Default\99.Default</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="color.hlsl">
+      <Filter>01.Engine\03.Shader\00.HLSL</Filter>
+    </None>
+    <None Include="Common.hlsl">
+      <Filter>01.Engine\03.Shader\00.HLSL</Filter>
+    </None>
+    <None Include="Default.hlsl">
+      <Filter>01.Engine\03.Shader\00.HLSL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Directx12.rc">
-      <Filter>99.Default</Filter>
+      <Filter>99.Default\99.Default</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="color.hlsl" />
-    <None Include="Default.hlsl" />
-    <None Include="Common.hlsl" />
   </ItemGroup>
 </Project>

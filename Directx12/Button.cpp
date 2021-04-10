@@ -65,7 +65,7 @@ void Button::LateUpdate(const float& fTimeDelta)
     UI::LateUpdate(fTimeDelta);
 }
 
-void Button::Render(const float& fTimeDelta)
+void Button::Render(const float& fTimeDelta, int _instanceCount)
 {
     UI::Render(fTimeDelta);
 }

@@ -5,6 +5,7 @@
 #include "AnimationMgr.h"
 #include "KeyMgr.h"
 #include "TestScene.h"
+#include "LoadingScene.h"
 #include "StaticMeshMgr.h"
 #include "MaterialMgr.h"
 #include "InstanceMgr.h"
@@ -16,8 +17,6 @@ void MainApp::Initialize()
 {
 	m_pCore = Core::GetInstance();
 	m_pCore->InitDevice();
-
-	m_pCore->CmdLstReset();
 	
 	m_MeshMgr = MeshMgr::GetInstnace();
 	m_AnimationMgr = AnimationMgr::GetInstance();
@@ -25,34 +24,32 @@ void MainApp::Initialize()
 	m_MaterialMgr->InitMaterialMgr(m_pCore, m_pCore->GetDevice(), m_pCore->GetCmdLst());
 	m_InstanceMgr = InstanceMgr::GetInstnace();
 	m_InstanceMgr->InitInstanceMgr(m_pCore, m_pCore->GetDevice(), m_pCore->GetCmdLst());
-	LoadStaticModels();
-	LoadSkinnedModels();
-	LoadAnimations();
+
 	BuildMaterial();
-	
-	
-	m_pCore->CmdLstExecute();
-	m_pCore->WaitForGpuComplete();
 
 	m_pRenderer = Renderer::GetInstance();
 	m_KeyMgr = KeyMgr::GetInstance();
-	m_pScene = new TestScene();
+	m_pScene = new LoadingScene();
 }
 
 void MainApp::Update(const float& fTimeDelta)
 {
-	m_pScene->Update(fTimeDelta);
-	m_KeyMgr->KeyUpdate();
+	m_iEvent = m_pScene->Update(fTimeDelta);
 }
 
 void MainApp::LateUpdate(const float& fTimeDelta)
 {
+	if (m_iEvent == -1)
+		return;
 	m_pScene->LateUpdate(fTimeDelta);
 }
 
 void MainApp::Render(const float& fTimeDelta)
 {
+	if (m_iEvent == -1)
+		return;
 	m_pRenderer->Render(0.f);
+	m_KeyMgr->KeyUpdate();
 }
 
 void MainApp::Release()
@@ -60,65 +57,10 @@ void MainApp::Release()
 	StaticMeshMgr::DestoryInstance();
 }
 
-void MainApp::LoadSkinnedModels()
+void MainApp::ChangeScene(Scene* pScene)
 {
-	// wizard_01
-	m_MeshMgr->BuildSkinnedModel(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER);
-	
-}
-
-void MainApp::LoadStaticModels()
-{
-	// Rocks
-	m_MeshMgr->BuildModel(ROCK_02, MESH_TYPE::ROCK);
-	// Trees
-	m_MeshMgr->BuildModel(TREE_01, MESH_TYPE::TREE);
-	// Houses
-	m_MeshMgr->BuildModel(HOUSE_02, MESH_TYPE::HOUSE);
-	// Tiles
-	m_MeshMgr->BuildModel(TILE_01, MESH_TYPE::TILE);
-	
-	m_MeshMgr->BuildModel("barrel_group", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("box", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("castle_door_1", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("castle_tower_octagon", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("castle_tower_round", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("citadel_base_a", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("city_tower_a", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("civilian_house_18_a", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("civilian_house_18_b", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("civilian_house_36_c", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("civilian_house_37_e", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("civilian_house_37_h", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("civilian_house_46", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("civilian_house_ruin_e", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("fountain_a", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("overhang_building_a", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("roof_building_4", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("roof_building_5", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("roof_building_11", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("roof_building_12", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("street_gate", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("tower_gates", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("wall_H10m_L15m", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("wall_H10m_L50m", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("wagon", MESH_TYPE::TILE);
-	m_MeshMgr->BuildModel("Sphere", MESH_TYPE::TILE);
-}
-
-void MainApp::LoadAnimations()
-{
-	// wizard_01
-	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::IDLE);
-	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::ATTACK);
-	
-	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_FOWARD);
-	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_BACK);
-	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_LEFT);
-	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_RIGHT);
-	m_AnimationMgr->BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::JUMP);
-	
-
+	delete m_pScene;
+	m_pScene = pScene;
 }
 
 void MainApp::BuildMaterial()

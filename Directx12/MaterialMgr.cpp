@@ -6,6 +6,9 @@ MaterialMgr* MaterialMgr::m_pInstance = nullptr;
 
 void MaterialMgr::UpdateMaterialCBs()
 {
+	if (m_MaterialCBs == NULL)
+		return;
+
 	auto curMaterialCBs = m_MaterialCBs.get();
 
 	for (auto& e : m_Materials) // 현재 존재하는 Material 갯수만큼
@@ -58,6 +61,8 @@ void MaterialMgr::BuildMaterialCBs()
 
 void MaterialMgr::SetGraphicsShaderResourceView()
 {
+	if (m_MaterialCBs == NULL)
+		return;
 	auto MatBuffer = m_MaterialCBs->Resource();
 	m_pCmdLst->SetGraphicsRootShaderResourceView(2, MatBuffer->GetGPUVirtualAddress());
 }

@@ -24,6 +24,8 @@
 #define KEY_D		0x00000008 // 0000 0000 0000 0000 0000 0000 0000 1000
 #define KEY_SPACE	0x00000010 // 0000 0000 0000 0000 0000 0000 0000 1000
 
+#define SERVERPORT 9000
+
 // function
 #define SCint static_cast<int> 
 

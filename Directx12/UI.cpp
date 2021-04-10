@@ -40,7 +40,7 @@ void UI::LateUpdate(const float& fTimeDelta)
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_UI, this);
 }
 
-void UI::Render(const float& fTimeDelta)
+void UI::Render(const float& fTimeDelta, int _instanceCount)
 {
 	Object::Render(fTimeDelta);
 }

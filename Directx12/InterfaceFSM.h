@@ -2,7 +2,6 @@
 
 #include "framework.h"
 
-class Player;
 class InterfaceFSM
 {
 public:
