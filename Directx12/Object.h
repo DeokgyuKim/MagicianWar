@@ -4,21 +4,29 @@
 class Component;
 class Renderer;
 
+
 class Object
 {
 public:
 	Object() {}
+	Object(string _meshName);
 	virtual ~Object();
 public:
 	virtual int		Update(const float& fTimeDelta);
 	virtual void	LateUpdate(const float& fTimeDelta);
-	virtual void	Render(const float& fTimeDelta);
+	virtual void	Render(const float& fTimeDelta,int _instanceCount = 1);
 public:
-	virtual string	GetTextureName() { return m_strTextureName; }
-public: // HBD
+	string		GetTextureName() { return m_strTextureName; }
+public: // Get
 	string		GetMeshName() const { return m_strMeshName; }
-	string		GetInstID() const { return m_strInstID; }
-	UINT		GetInstIndex() const { return m_instIndex; }
+	int			GetIndex() const { return m_Index; }
+	UINT		GetMaterialIndex() { return m_MaterialIndex; }
+
+	virtual Component* GetTransController() { 
+		if(m_mapComponent["Transform"] != nullptr) return m_mapComponent["Transform"];
+		return nullptr;
+	}
+
 protected:
 	Renderer*							m_pRenderer;
 	string								m_strTextureName = "";
@@ -27,7 +35,9 @@ protected:
 
 protected: // HBD
 	string								m_strMeshName = "";
-	string								m_strInstID;
-	UINT								m_instIndex;
+	UINT								m_Index;
+	UINT								m_MaterialIndex = 0;
+
+	
 };
 

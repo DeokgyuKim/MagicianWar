@@ -3,6 +3,7 @@
 // RootSignature
 #define ParameterCount 6
 
+#define GRAVITY 9.8f
 
 // Model
 	// Character
@@ -23,4 +24,11 @@
 #define KEY_D		0x00000008 // 0000 0000 0000 0000 0000 0000 0000 1000
 #define KEY_SPACE	0x00000010 // 0000 0000 0000 0000 0000 0000 0000 1000
 
-#define SERVERPORT 9000
+// function
+#define SCint static_cast<int> 
+
+// Magician Character 
+#define M_MoveForward_Speed 0.05f
+#define M_MoveLeft_Speed 0.05f
+#define M_MoveRight_Speed 0.05f
+#define M_MoveBackward_Speed 0.03f

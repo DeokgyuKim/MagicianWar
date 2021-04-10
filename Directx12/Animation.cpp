@@ -1,11 +1,21 @@
 #include "Animation.h"
 #include "AnimationMgr.h"
-#include "InterfaceAnimation.h"
 
 AnimationCom::AnimationCom(const string& user)
 {
-	// 메쉬에 맞는 애니메이션 설정해주고
-	m_SkinnedModelInst = AnimationMgr::GetInstance()->GetAnimations(user);
+	// 메쉬에 맞는 애니메이션들 세팅해주고
+	SkinnedModelInstance* inst = AnimationMgr::GetInstance()->GetAnimations(user);
+	SkinnedData* instData = inst->SkinnedInfo.get();
+	m_SkinnedModelInst = new SkinnedModelInstance();
+	m_SkinnedModelInst->FinalTransforms = inst->FinalTransforms;
+	m_SkinnedModelInst->SkinnedInfo = make_unique<SkinnedData>();
+
+	m_SkinnedModelInst->SkinnedInfo->mAnimations = instData->mAnimations;
+	m_SkinnedModelInst->SkinnedInfo->mBoneHierarchy = instData->mBoneHierarchy;
+	m_SkinnedModelInst->SkinnedInfo->mBoneName = instData->mBoneName;
+	m_SkinnedModelInst->SkinnedInfo->mBoneOffsets = instData->mBoneOffsets;
+	m_SkinnedModelInst->SkinnedInfo->mSubmeshOffset = instData->mSubmeshOffset;
+	m_SkinnedModelInst->SkinnedInfo->m_ToRootTransforms = instData->m_ToRootTransforms;
 	curAnimation = make_unique<AnimData>(ANIMATION_TYPE::IDLE, 0.f);
 	keyAnimation = make_unique<AnimData>(ANIMATION_TYPE::IDLE, 0.f);
 
@@ -47,9 +57,12 @@ void AnimationCom::DefaultAnimate(const float& fTimeDelta)
 	// 현재 애니메이션
 	m_SkinnedModelInst->UpdateAnimation(curAnimation->eType, curAnimation->Time);
 
+	if (curAnimation->Time * 1.4 > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(curAnimation->eType)) {
+		m_bAttackEnd = true;
+	}
+
 	if (curAnimation->Time > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(curAnimation->eType)) {
 		curAnimation->Time = 0.f;
-
 	}
 }
 
@@ -76,20 +89,19 @@ void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 
 
 
-void AnimationCom::ChangeAnimation(ANIMATION_TYPE eType)
+void AnimationCom::ChangeAnimation(int _Ani)
 {
-	if (keyAnimation->eType != eType) { // 애니메이션이 바뀌면 Blending
+	ANIMATION_TYPE nextAni = static_cast<ANIMATION_TYPE>(_Ani);
+	if (keyAnimation->eType != nextAni) { // 애니메이션이 바뀌면 Blending
 		m_bBlending = true;
-		keyAnimation->eType = eType;
+		keyAnimation->eType = nextAni;
 		keyAnimation->Time = 0.f;
 		m_fBlendTime = 1.f;
+		m_bAttackEnd = false;
 	}
 }
 
-void AnimationCom::LoopTime(const float _time)
-{
-	TimePos = _time;
-}
+
 
 bool AnimationCom::StateCheck(ANIMATION_TYPE _eState)
 {

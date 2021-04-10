@@ -37,7 +37,6 @@
 #include <vector>
 #include <map>
 #include <stack>
-#include <process.h>
 
 using namespace std;
 
@@ -66,9 +65,17 @@ extern UINT gnDsvDescriptorIncrementSize;
 extern HINSTANCE   g_hInst;
 extern HWND        g_hWnd;
 
-#define WINCX 1920
-#define WINCY 1080
+#define WINCX 800
+#define WINCY 600
 
+enum OBJ_TYPE					{ OBJ_PLAYER, OBJ_CAMERA, OBJ_SKYBOX, OBJ_STATIC, OBJ_BULLET, OBJ_END };
+enum RENDER_TYPE				{ RENDER_COLOR, RENDER_NOBLEND, RENDER_STATIC, RENDER_DYNAMIC, RENDER_SHADE, RENDER_SKYBOX, RENDER_BULLET, RENDER_END };
+enum CAMERA_MODE				{ CAMERA_NONE, CAMERA_FREE, CAMERA_THIRD };
+enum class MESH_TYPE			{ CHARACTER = 0, ROCK, HOUSE, TREE, TILE, COUNT };
+enum class ANIMATION_TYPE : int	{ IDLE = 0, WALK_FOWARD, WALK_BACK, WALK_LEFT, WALK_RIGHT, ATTACK, JUMP, NONE };
+enum class PLAYER_STATE	: int	{ IDLE = 0, MOVE, ATTACK, JUMP, NONE };
+enum class BoneType		: int	{ UPPER_BONE = 0, ROOT_BONE, NONE};
+enum BoneIndex					{ WIZARD = 0, COUNT };
 
 
 #ifdef UNICODE

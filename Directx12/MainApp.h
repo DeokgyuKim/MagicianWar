@@ -7,6 +7,9 @@ class MeshMgr;
 class AnimationMgr;
 class Renderer;
 class KeyMgr;
+class MaterialMgr;
+class InstanceMgr;
+
 class MainApp
 {
 private:
@@ -32,16 +35,21 @@ public:
 	void LateUpdate(const float& fTimeDelta);
 	void Render(const float& fTimeDelta);
 	void Release();
-	void ChangeScene(Scene* pScene);
 public:
 	Scene* GetScene() { return m_pScene; }
 private:
-	int				m_iEvent;
+	void LoadSkinnedModels();
+	void LoadStaticModels();
+	void LoadAnimations();
+	void BuildMaterial();
+private:
 	Scene*			m_pScene;
 	Core*			m_pCore;
 	MeshMgr*		m_MeshMgr;
 	AnimationMgr*	m_AnimationMgr;
 	Renderer*		m_pRenderer;
 	KeyMgr*			m_KeyMgr;
+	MaterialMgr*	m_MaterialMgr;
+	InstanceMgr*	m_InstanceMgr;
 };
 

@@ -3,8 +3,11 @@
 #include "Geometry.h"
 #include "Plane.h"
 #include "Material.h"
+#include "Transform.h"
 
-Terrain::Terrain(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer)
+Terrain::Terrain(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer,
+	string _meshName)
+	:Object(_meshName)
 {
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
@@ -22,14 +25,16 @@ void Terrain::Initialize()
 	for (int i = 0; i < TerrainZ; ++i)
 		for (int j = 0; j < TerrainX; ++j)
 			m_pBuffer[i][j] = new Plane(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), j, i);
-	BuildConstantBuffer();
 
 	XMFLOAT3 scale = XMFLOAT3(50.f, 1.f, 100.f);
 	XMStoreFloat4x4(&m_xmmWorld, XMMatrixScalingFromVector(XMLoadFloat3(&scale)) * XMMatrixTranslation(24.5f, 0.f, 49.5f));
 	m_strTextureName = "Stone01";
+	m_mapComponent["Transform"] = new Transform(scale, XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(24.5f, 0.f, 49.5f));
 
-	m_mapComponent["Material"] = new MaterialCom(XMFLOAT4(0.588f, 0.588f, 0.588f, 1.f), XMFLOAT4(0.588f, 0.588f, 0.588f, 1.f), 
+	m_mapComponent["Material"] = new MaterialCom("Stone01",XMFLOAT4(0.588f, 0.588f, 0.588f, 1.f), XMFLOAT4(0.588f, 0.588f, 0.588f, 1.f), 
 		XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+
+	m_MaterialIndex = dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetMaterialIndex();
 }
 
 void Terrain::Release()
@@ -43,13 +48,6 @@ void Terrain::Release()
 		}
 }
 
-HRESULT Terrain::BuildConstantBuffer()
-{
-	m_ObjectCB = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 1, true);
-	m_MaterialCB = make_unique<UploadBuffer<MaterialCB>>(m_pDevice, 1, true);
-	return S_OK;
-}
-
 int Terrain::Update(const float& fTimeDelta)
 {
 	return 0;
@@ -57,27 +55,12 @@ int Terrain::Update(const float& fTimeDelta)
 
 void Terrain::LateUpdate(const float& fTimeDelta)
 {
-	XMMATRIX world = XMLoadFloat4x4(&m_xmmWorld);// *view* proj;
-	ObjectCB	ObjCB;
-	XMStoreFloat4x4(&ObjCB.World, XMMatrixTranspose(world));
-	m_ObjectCB->CopyData(0, ObjCB);
-
-
-	MaterialCB	MatCB;
-	XMStoreFloat4(&MatCB.Diffuse, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetDiffuse());
-	XMStoreFloat4(&MatCB.Ambient, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetAmbient());
-	XMStoreFloat4(&MatCB.Specular, dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetSpecular());
-	m_MaterialCB->CopyData(0, MatCB);
-
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_NOBLEND, this);
 }
 
-void Terrain::Render(const float& fTimeDelta)
+void Terrain::Render(const float& fTimeDelta, int _instanceCount)
 {
-	m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());
-	m_pCmdLst->SetGraphicsRootConstantBufferView(2, m_MaterialCB->Resource()->GetGPUVirtualAddress());
-
 	for (int i = 0; i < TerrainZ; ++i)
 		for (int j = 0; j < TerrainX; ++j)
-			m_pBuffer[i][j]->Render(fTimeDelta);
+			m_pBuffer[i][j]->Render(fTimeDelta, _instanceCount);
 }

@@ -71,6 +71,7 @@ struct Material
 	XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
 	XMFLOAT3 Specular = { 0.01f, 0.01f, 0.01f };
 
+	int MaterialIndex = -1;
 	
 	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();
 };
@@ -78,11 +79,10 @@ struct Material
 struct ObjectCB
 {
 	XMFLOAT4X4 World = MathHelper::Identity4x4();
+	UINT MaterialIndex; // 각자의 Object들에 해당하는 Index;
+	
 };
-struct MatCB
-{
-	XMFLOAT4 Material = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-};
+
 
 struct MeshInfo
 {

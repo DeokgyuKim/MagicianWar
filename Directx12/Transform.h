@@ -11,7 +11,7 @@ public:
 public:
     virtual void LateUpdate(const float& fTimeDelta) override;
 public:
-    int        KeyInput(DWORD iKey);
+
 public:
     XMFLOAT3    GetScale() { return m_xmfScale; }
     XMFLOAT3    GetRotate() { return m_xmfRotate; }
@@ -25,6 +25,10 @@ public:
     void        SetMeshRotate(XMFLOAT3 xmfMeshRotate) { m_xmfMeshRotate = xmfMeshRotate; }
 public:
     void        MoveForward(float speed);
+    void        MoveBackward(float speed);
+    void        MoveLeft(float speed);
+    void        MoveRight(float speed);
+    int         Jump(DWORD iKey);
 private:
     XMFLOAT3    m_xmfScale;
     XMFLOAT3	m_xmfRotate;
@@ -38,12 +42,18 @@ private:
     // Èû
     float m_fJumpTotal; 
     float m_fJumpPower;
-    float Gravity;
+    float m_fJumpSpeed;
+    
 
     // ½Ã°£
     clock_t Current_tick;
     clock_t Next_tick;
     DWORD   InputKey = 0;
+
+    float m_jumpForwardSpeed;
+    float m_jumpBackwardSpeed;
+    float m_jumpLeftSpeed;
+    float m_jumpRightSpeed;
 
 };
 

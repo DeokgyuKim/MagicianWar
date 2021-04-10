@@ -9,6 +9,7 @@
 #include "Bullet.h"
 
 #include "StaticMeshMgr.h"
+#include "InstanceMgr.h"
 
 TestScene::TestScene()
 {
@@ -92,13 +93,14 @@ void TestScene::Initialize()
 	Camera* pCamera = NULL;
 
 	Core::GetInstance()->CmdLstReset();
-	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		CHARACTER_WIZARD_01);
 	pPlayer = dynamic_cast<Player*>(pObj);
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 	
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
-
+	
 	Core::GetInstance()->CmdLstReset();
 	pObj = new Camera(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	m_pCamera = pCamera = dynamic_cast<Camera*>(pObj);
@@ -111,7 +113,8 @@ void TestScene::Initialize()
 	m_pObjects[OBJ_CAMERA].push_back(pObj);
 
 	Core::GetInstance()->CmdLstReset();
-	pObj = new Terrain(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	pObj = new Terrain(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		"StoneTerrain");
 	//(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance()->GetHeap());
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
@@ -119,7 +122,8 @@ void TestScene::Initialize()
 	m_pObjects[OBJ_STATIC].push_back(pObj);
 
 
-	pObj = new Skybox(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	pObj = new Skybox(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		"SkyBox");
 	dynamic_cast<Skybox*>(pObj)->SetCamera(pCamera);
 	m_pObjects[OBJ_SKYBOX].push_back(pObj);
 
@@ -149,5 +153,7 @@ void TestScene::Initialize()
 	//
 	//m_pObjects[OBJ_STATIC].push_back(pObj);
 	
-
+	
+	BuildInstanceCBs();
+	BuildMaterialCBs();
 }

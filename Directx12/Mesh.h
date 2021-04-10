@@ -26,6 +26,7 @@ private:
 private:
 	
 	string meshName;
+	string InstanceID;
 	MeshMgr* MeshLoader;
 	// Material 클래스로 옮겨야할듯
 	Material			 m_Material;

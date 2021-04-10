@@ -18,6 +18,8 @@ struct VertexOut
 	float4 PosH  : SV_POSITION;
     float4 Color : COLOR;
 	float4 Normal : NORMAL;
+
+	nointerpolation uint MaterialIndex : MATINDEX;
 };
 
 struct PSOut
@@ -29,15 +31,21 @@ struct PSOut
 	float4 Depth : SV_TARGET4;
 };
 
-VertexOut VS(VertexIn vin)
+VertexOut VS(VertexIn vin, uint instanceID : SV_InstanceID)
 {
 	VertexOut vout;
+	// 인스턴싱
+	InstanceObject instObjData = gInstanceData[instanceID];
+	float4x4 world = instObjData.gWorld;
+	uint matIndex = instObjData.MaterialIndex;
+	vout.MaterialIndex = matIndex;
+
 	// Transform to homogeneous clip space.
-	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorld), gView), gProj);
+	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), world), gView), gProj);
 	
 	// Just pass vertex color into the pixel shader.
     vout.Color = vin.Color;
-	vout.Normal = normalize(mul(float4(vin.Normal, 0.f), gWorld));
+	vout.Normal = normalize(mul(float4(vin.Normal, 0.f), world));
     
     return vout;
 }
@@ -45,10 +53,10 @@ VertexOut VS(VertexIn vin)
 PSOut PS(VertexOut pin)
 {
 	PSOut vout;
-
-	vout.Diffuse = pin.Color * gDiffuse;
-	vout.Ambient = pin.Color * gAmbient;
-	vout.Specular = pin.Color * gSpecular;
+	MaterialData materialData = gMaterialData[pin.MaterialIndex];
+	vout.Diffuse = pin.Color * materialData.gDiffuse;
+	vout.Ambient = pin.Color * materialData.gAmbient;
+	vout.Specular = pin.Color * materialData.gSpecular;
 	vout.Normal = float4(pin.Normal.xyz * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
@@ -68,18 +76,25 @@ struct Out
 	float4 PosH  : SV_POSITION;
 	float2 UV : TEXCOORD;
 	float4 Normal : NORMAL;
+
+	nointerpolation uint MaterialIndex : MATINDEX;
 };
 
-Out VS_Main(In vin)
+Out VS_Main(In vin, uint instanceID : SV_InstanceID)
 {
 	Out vout;
 
+	InstanceObject instObjData = gInstanceData[instanceID];
+	float4x4 world = instObjData.gWorld;
+	uint matIndex = instObjData.MaterialIndex;
+	vout.MaterialIndex = matIndex;
+
 	// Transform to homogeneous clip space.
-	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorld), gView), gProj);
+	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), world), gView), gProj);
 
 	// Just pass vertex color into the pixel shader.
 	vout.UV = vin.UV;
-	vout.Normal = normalize(mul(float4(vin.Normal, 0.f), gWorld));
+	vout.Normal = normalize(mul(float4(vin.Normal, 0.f), world));
 
 	return vout;
 }
@@ -89,10 +104,11 @@ PSOut PS_Main(Out pin)
 	PSOut vout;
 
 	float2 terrainsize = float2(50.f, 100.f);
+	MaterialData materialData = gMaterialData[pin.MaterialIndex];
 
-	vout.Diffuse = Texture.Sample(gsamLinear, pin.UV * terrainsize) * gDiffuse;
-	vout.Ambient = Texture.Sample(gsamLinear, pin.UV * terrainsize) * gAmbient;
-	vout.Specular = Texture.Sample(gsamLinear, pin.UV * terrainsize) * gSpecular;
+	vout.Diffuse = Texture.Sample(gsamLinear, pin.UV * terrainsize) * materialData.gDiffuse;
+	vout.Ambient = Texture.Sample(gsamLinear, pin.UV * terrainsize) * materialData.gAmbient;
+	vout.Specular = Texture.Sample(gsamLinear, pin.UV * terrainsize) * materialData.gSpecular;
 	vout.Normal = float4((pin.Normal * 0.5f + 0.5f).xyz, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
@@ -227,16 +243,28 @@ struct VertexOut_Default
 	float2 TexC    : TEXCOORD;
 	float3 TangentW : TANGENT;
 	float3 BinormalW : BINORMAL;
+
+	// 인덱스가 삼각형을 따라 보간되지 않도록 하기위함
+	// 왜 필요한지는 잘 모르겟음
+	nointerpolation uint MaterialIndex : MATINDEX;
 };
 
-VertexOut_Default VS_FireBall(VertexIn_Static vin)
+VertexOut_Default VS_FireBall(VertexIn_Static vin, uint instanceID : SV_InstanceID)
 {
 	VertexOut_Default vout = (VertexOut_Default)0.0f;
+
+	// 인스턴싱
+	InstanceObject instObjData = gInstanceData[instanceID];
+	float4x4 world = instObjData.gWorld;
+	uint matIndex = instObjData.MaterialIndex;
+
+	vout.MaterialIndex = matIndex;
+
 	vin.NormalL.x *= -1.f;
 
-	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)gWorld));
-	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)gWorld));
-	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)gWorld));
+	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)world));
+	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)world));
+	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)world));
 
 	// 월드 & 카메라 변환
 	
@@ -251,7 +279,7 @@ VertexOut_Default VS_FireBall(VertexIn_Static vin)
 
 	vin.PosL += vin.NormalL * Interval;
 
-	float4 posH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorld), gView), gProj);
+	float4 posH = mul(mul(mul(float4(vin.PosL, 1.0f), world), gView), gProj);
 	vout.PosH = posH;
 
 
@@ -262,6 +290,7 @@ VertexOut_Default VS_FireBall(VertexIn_Static vin)
 PSOut PS_FireBall(VertexOut_Default pin)
 {
 	PSOut vout;
+	MaterialData materialData = gMaterialData[pin.MaterialIndex];
 	float2 tex = pin.TexC;
 	tex.x += gTime * 0.1f;
 	tex.y -= gTime * 0.1f;
@@ -270,26 +299,33 @@ PSOut PS_FireBall(VertexOut_Default pin)
 	float4 color = Texture.Sample(gsamLinear, pin.TexC);
 	color *= saturate(pow(NoiseTex.Sample(gsamLinear, tex).x * 1.5f, 3.f));
 
-	vout.Diffuse = color * gDiffuse;
-	vout.Ambient = color * gAmbient;
-	vout.Specular = color * gSpecular;
+	vout.Diffuse = color * materialData.gDiffuse;
+	vout.Ambient = color * materialData.gAmbient;
+	vout.Specular = color * materialData.gSpecular;
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
 	return vout;
 }
 
-VertexOut_Default VS_Static(VertexIn_Static vin)
+VertexOut_Default VS_Static(VertexIn_Static vin, uint instanceID : SV_InstanceID)
 {
 	VertexOut_Default vout = (VertexOut_Default)0.0f;
 
+	// 인스턴싱
+	InstanceObject instObjData = gInstanceData[instanceID];
+	float4x4 world = instObjData.gWorld;
+	uint matIndex = instObjData.MaterialIndex;
+
+	vout.MaterialIndex = matIndex;
+
 	// 월드 & 카메라 변환
-	float4 posH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorld), gView), gProj);
+	float4 posH = mul(mul(mul(float4(vin.PosL, 1.0f), world), gView), gProj);
 	vout.PosH = posH;
 
-	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)gWorld));
-	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)gWorld));
-	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)gWorld));
+	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)world));
+	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)world));
+	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)world));
 
 	vout.TexC = vin.TexC;
 
@@ -298,22 +334,31 @@ VertexOut_Default VS_Static(VertexIn_Static vin)
 
 PSOut PS_Static(VertexOut_Default pin)
 {
+	MaterialData materialData = gMaterialData[pin.MaterialIndex];
+
 	PSOut vout;
 	float3 color = Texture.Sample(gsamLinear, pin.TexC).xyz;
 	color = pow(color, 2.2f);
 	float4 outcolor = float4(color.xyz, 1.f);
-	vout.Diffuse = outcolor * gDiffuse;
-	vout.Ambient = outcolor * gAmbient;
-	vout.Specular = outcolor * gSpecular;
+	vout.Diffuse = outcolor * materialData.gDiffuse;
+	vout.Ambient = outcolor * materialData.gAmbient;
+	vout.Specular = outcolor * materialData.gSpecular;
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
 	return vout;
 }
 
-VertexOut_Default VS_Movable(VertexIn_Movable vin)
+VertexOut_Default VS_Movable(VertexIn_Movable vin, uint instanceID : SV_InstanceID)
 {
 	VertexOut_Default vout = (VertexOut_Default)0.0f;
+
+	// 인스턴싱
+	InstanceObject instObjData = gInstanceData[instanceID];
+	float4x4 world = instObjData.gWorld;
+	uint matIndex = instObjData.MaterialIndex;
+
+	vout.MaterialIndex = matIndex;
 
 	float weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	weights[0] = vin.BoneWeights.x;
@@ -327,8 +372,6 @@ VertexOut_Default VS_Movable(VertexIn_Movable vin)
 	float3 binormalL = float3(0.0f, 0.0f, 0.0f);
 	for (int i = 0; i < 4; ++i)
 	{
-		//	// Assume no nonuniform scaling when transforming normals, so 
-		//	// that we do not have to use the inverse-transpose.
 
 		posL += weights[i] * mul(float4(vin.PosL, 1.0f), gBoneTransforms[vin.BoneIndices[i]]).xyz;
 		normalL += weights[i] * mul(vin.NormalL, (float3x3)gBoneTransforms[vin.BoneIndices[i]]);
@@ -342,14 +385,14 @@ VertexOut_Default VS_Movable(VertexIn_Movable vin)
 	vin.BinormalL = binormalL;
 
 	// 월드 & 카메라 변환
-	float4 posW = mul(float4(vin.PosL, 1.0f), gWorld);
+	float4 posW = mul(float4(vin.PosL, 1.0f), world);
 	vout.PosW = posW.xyz;
 	//float4 posH = mul(mul(posW, gView), gProj);
 	//vout.PosH = posH;
 
-	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)gWorld));
-	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)gWorld));
-	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)gWorld));
+	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)world));
+	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)world));
+	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)world));
 
 	vout.PosH = mul(mul(posW, gView), gProj);
 
@@ -361,48 +404,20 @@ VertexOut_Default VS_Movable(VertexIn_Movable vin)
 PSOut PS_Movable(VertexOut_Default pin)
 {
 	PSOut vout;
-
+	MaterialData materialData = gMaterialData[pin.MaterialIndex];
+	
 	float3 color = Texture.Sample(gsamLinear, pin.TexC).xyz;
 	color = pow(color, 2.2f);
 	float4 outcolor = float4(color.xyz, 1.f);
-	vout.Diffuse = outcolor * gDiffuse;
-	vout.Ambient = outcolor * gAmbient;
-	vout.Specular = outcolor * gSpecular;
+	vout.Diffuse = outcolor * materialData.gDiffuse;
+	vout.Ambient = outcolor * materialData.gAmbient;
+	vout.Specular = outcolor * materialData.gSpecular;
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
 	return vout;
 }
-
-//float weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-//weights[0] = vin.BoneWeights.x;
-//weights[1] = vin.BoneWeights.y;
-//weights[2] = vin.BoneWeights.z;
-//weights[3] = 1.0f - weights[0] - weights[1] - weights[2];
-
-//float3 posL = float3(0.0f, 0.0f, 0.0f);
-//float3 normalL = float3(0.0f, 0.0f, 0.0f);
-//float3 tangentL = float3(0.0f, 0.0f, 0.0f);
-//float3 binormalL = float3(0.0f, 0.0f, 0.0f);
-
-//for (int i = 0; i < 4; ++i)
-//{
-//    // 변환들에 비균등 비례가 전혀 없다고 가정한다(따라서
-//    // 법선 변환 시 역전치 행렬을 사용할 필요가 없다.)
-
-//    posL += weights[i] * mul(float4(vin.PosL, 1.0f), gBoneTransforms[vin.BoneIndices[i]]).xyz;
-//    normalL += weights[i] * mul(vin.NormalL, (float3x3) gBoneTransforms[vin.BoneIndices[i]]);
-//    tangentL += weights[i] * mul(vin.TangentL.xyz, (float3x3) gBoneTransforms[vin.BoneIndices[i]]);
-//    binormalL += weights[i] * mul(vin.BinormalL, (float3x3)gBoneTransforms[vin.BoneIndices[i]]);
-
-//}
-
-//vin.PosL = posL;
-//vin.NormalL = normalL;
-//vin.TangentL.xyz = tangentL;
-//vin.BinormalL = binormalL;
-
 
 struct SkyboxIn
 {
@@ -417,10 +432,16 @@ struct SkyboxOut
 	float3 TexC : TEXCOORD;
 };
 
-SkyboxOut VS_Skybox(SkyboxIn vin)
+SkyboxOut VS_Skybox(SkyboxIn vin, uint instanceID : SV_InstanceID)
 {
 	SkyboxOut vout;
-	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.f), gWorld), gView), gProj);
+
+	// 인스턴싱
+	InstanceObject instObjData = gInstanceData[instanceID];
+	float4x4 world = instObjData.gWorld;
+	
+
+	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.f), world), gView), gProj);
 	vout.TexC = vin.TexC;
 
 	return vout;

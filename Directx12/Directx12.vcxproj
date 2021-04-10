@@ -142,9 +142,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
-    <ClInclude Include="AnimationController.h" />
-    <ClInclude Include="AnimationCommand.h" />
-    <ClInclude Include="AnimationFSM.h" />
+    <ClInclude Include="InstanceInfo.h" />
+    <ClInclude Include="InstanceMgr.h" />
+    <ClInclude Include="PlayerFSM.h" />
     <ClInclude Include="AnimationMgr.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
@@ -162,8 +162,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Geometry.h" />
-    <ClInclude Include="InterfaceAnimation.h" />
-    <ClInclude Include="InterfaceCommand.h" />
+    <ClInclude Include="InterfaceFSM.h" />
     <ClInclude Include="KeyMgr.h" />
     <ClInclude Include="LightGeo.h" />
     <ClInclude Include="Loading.h" />
@@ -202,9 +201,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
-    <ClCompile Include="AnimationController.cpp" />
-    <ClCompile Include="AnimationCommand.cpp" />
-    <ClCompile Include="AnimationFSM.cpp" />
+    <ClCompile Include="InstanceInfo.cpp" />
+    <ClCompile Include="InstanceMgr.cpp" />
+    <ClCompile Include="PlayerFSM.cpp" />
     <ClCompile Include="AnimationMgr.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />

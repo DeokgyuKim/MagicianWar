@@ -11,6 +11,7 @@ class RenderTarget;
 class RenderTargetMgr;
 class CLight;
 class Skybox;
+class InstanceInfo;
 
 class Renderer
 {
@@ -26,6 +27,7 @@ private:
 public:
 	void	InitRenderer(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCmdLst);
 	void	Render(const float& fTimeDelta);
+	void	DrawObject(InstanceInfo* _inst, list<Object*> _Objects);
 public:
 	void	PushObject(RENDER_TYPE eType, Object* pObject);
 public:
@@ -51,6 +53,7 @@ private:
 	ComPtr<ID3D12DescriptorHeap>		m_ptrDescriptorHeap;
 
 	list<Object*>						m_lstObjects[RENDER_TYPE::RENDER_END];
+	map<string, UINT>					m_InstanceCheck;
 
 	int									m_iCountView = 0;
 
@@ -59,6 +62,6 @@ private:
 
 	TextureMgr*							m_pTextureMgr;
 	RenderTargetMgr*					m_pRTMgr;
-	CRITICAL_SECTION					m_Crt;
+	
 };
 

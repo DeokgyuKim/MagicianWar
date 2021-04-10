@@ -26,12 +26,17 @@ private:
 	static MaterialMgr* m_pInstance;
 
 public:
+	// Loop
+	void UpdateMaterialCBs();
+public:
 	void InitMaterialMgr(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCmdLst);
 	void BuildMaterial(const string& MaterialName, Material Mat);
-
+	void BuildMaterialCBs();
+	// Set
+	void SetGraphicsShaderResourceView();
+	
 public:
 	Material* GetMaterial(const string& MaterialName);
-
 private:
 	Core* m_pCore = NULL;
 	ID3D12Device* m_pDevice = NULL;
@@ -39,6 +44,8 @@ private:
 
 
 	unordered_map<string, unique_ptr<Material>> m_Materials;
+	unique_ptr<UploadBuffer<MaterialCB>>		m_MaterialCBs;
+	int MaterialCount = -1;
 	
 };
 
