@@ -43,7 +43,7 @@ private:
 	//각 씬 단계의 스레드가 끝났는 지 판별
 	bool	m_bLobbyEnd;
 private:
-	map<DWORD, OtherPlayerInfo> m_mapOtherPlayerInfos;
+	map<DWORD, PlayerInfo> m_mapOtherPlayerInfos;
 public:
 	//Function For LobbyThread
 	bool IsMoveToMainGame();

@@ -1,5 +1,16 @@
 #pragma once
 
+#pragma comment(lib, "ws2_32")
+#include <winsock2.h>
+
+enum OBJ_TYPE { OBJ_PLAYER, OBJ_CAMERA, OBJ_SKYBOX, OBJ_STATIC, OBJ_BULLET, OBJ_UI, OBJ_END };
+enum RENDER_TYPE { RENDER_COLOR, RENDER_NOBLEND, RENDER_STATIC, RENDER_DYNAMIC, RENDER_SHADE, RENDER_SKYBOX, RENDER_BULLET, RENDER_UI, RENDER_END };
+enum CAMERA_MODE { CAMERA_NONE, CAMERA_FREE, CAMERA_THIRD };
+enum class MESH_TYPE { CHARACTER = 0, ROCK, HOUSE, TREE, TILE, COUNT };
+enum class ANIMATION_TYPE : int { IDLE = 0, WALK_FOWARD, WALK_BACK, WALK_LEFT, WALK_RIGHT, ATTACK, JUMP, NONE };
+enum class PLAYER_STATE { IDLE = 0, WALK, NONE };
+enum BoneIndex { WIZARD = 0, COUNT };
+enum BUTTON_STATE { NONE, MOUSEON, ON };
 
 struct Vertex
 {
@@ -119,8 +130,40 @@ struct TransformStruct
 	XMFLOAT3 xmfScale;
 };
 
-struct OtherPlayerInfo
+struct PlayerInfo
 {
 	DWORD dwPlayerNum;
 	DWORD dwTeamNum;
+};
+
+typedef struct ServerPlayerInfo
+{
+	PlayerInfo	info;
+	SOCKET		socket;
+}SERVERPLAYER;
+
+struct SendToServerPlayerInfo
+{
+	XMFLOAT4X4		matWorld;
+	PLAYER_STATE	ePlayerState;
+	ANIMATION_TYPE	eAnimType;
+	float			fAnimTime;
+	ANIMATION_TYPE	eAnimBlendType;
+	float			fWeight;
+};
+
+struct SendToServerKeyInput
+{
+	DWORD			dwKey;
+};
+
+struct SendToClientPlayerInfo
+{
+	PlayerInfo		playerInfo;
+	XMFLOAT4X4		matWorld;
+	PLAYER_STATE	ePlayerState;
+	ANIMATION_TYPE	eAnimType;
+	float			fAnimTime;
+	ANIMATION_TYPE	eAnimBlendType;
+	float			fWeight;
 };

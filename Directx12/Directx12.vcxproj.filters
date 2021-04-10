@@ -112,9 +112,6 @@
     <Filter Include="01.Engine\01.Renderer\03.MaterailMgr">
       <UniqueIdentifier>{09742e51-9db4-493f-8e23-dc200c3fb74d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Engine\02.Object\05. Bullet">
-      <UniqueIdentifier>{fd5797d6-413b-4fae-a1d4-c9c5c7278fb7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr">
       <UniqueIdentifier>{3f60bab8-6437-4a82-9bfd-c5a4f0d1b75f}</UniqueIdentifier>
     </Filter>
@@ -127,11 +124,17 @@
     <Filter Include="01.Engine\06.Component\01.Geometry\04.UIPlane">
       <UniqueIdentifier>{e3d4466b-bd34-491a-b56f-10d4260f9be2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Engine\02.Object\06. UI">
+    <Filter Include="01.Engine\10.Network">
+      <UniqueIdentifier>{8de6e769-7009-49b9-ad57-9cebab1cf71d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object\06.UI">
       <UniqueIdentifier>{6e6ec15f-4323-41d1-928b-bd66ae341385}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Engine\02.Object\06. UI\00. Button">
+    <Filter Include="01.Engine\02.Object\06.UI\00. Button">
       <UniqueIdentifier>{1021fc5f-b6d9-4c4e-843e-f274cc51c961}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object\05.Bullet">
+      <UniqueIdentifier>{fd5797d6-413b-4fae-a1d4-c9c5c7278fb7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -264,7 +267,7 @@
       <Filter>01.Engine\01.Renderer\03.MaterailMgr</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>01.Engine\02.Object\05. Bullet</Filter>
+      <Filter>01.Engine\02.Object\05.Bullet</Filter>
     </ClInclude>
     <ClInclude Include="StaticMeshMgr.h">
       <Filter>01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr</Filter>
@@ -285,10 +288,13 @@
       <Filter>01.Engine\06.Component\01.Geometry\04.UIPlane</Filter>
     </ClInclude>
     <ClInclude Include="UI.h">
-      <Filter>01.Engine\02.Object\06. UI</Filter>
+      <Filter>01.Engine\02.Object\06.UI</Filter>
     </ClInclude>
     <ClInclude Include="Button.h">
-      <Filter>01.Engine\02.Object\06. UI\00. Button</Filter>
+      <Filter>01.Engine\02.Object\06.UI\00. Button</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>01.Engine\10.Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -400,7 +406,7 @@
       <Filter>01.Engine\01.Renderer\03.MaterailMgr</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
-      <Filter>01.Engine\02.Object\05. Bullet</Filter>
+      <Filter>01.Engine\02.Object\05.Bullet</Filter>
     </ClCompile>
     <ClCompile Include="StaticMeshMgr.cpp">
       <Filter>01.Engine\02.Object\04.StaticObject\00.StaticMeshMgr</Filter>
@@ -419,10 +425,13 @@
       <Filter>01.Engine\06.Component\01.Geometry\04.UIPlane</Filter>
     </ClCompile>
     <ClCompile Include="UI.cpp">
-      <Filter>01.Engine\02.Object\06. UI</Filter>
+      <Filter>01.Engine\02.Object\06.UI</Filter>
     </ClCompile>
     <ClCompile Include="Button.cpp">
-      <Filter>01.Engine\02.Object\06. UI\00. Button</Filter>
+      <Filter>01.Engine\02.Object\06.UI\00. Button</Filter>
+    </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>01.Engine\10.Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

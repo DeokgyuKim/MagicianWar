@@ -115,7 +115,6 @@ void Renderer::Render(const float& fTimeDelta)
 
 	m_pLight->RenderLight();
 
-
 	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Shade", m_pCore->GetDSVCpuHandle());
 	m_mapShaders[RENDER_TYPE::RENDER_SKYBOX]->PreRender(m_pCmdLst);
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_SKYBOX])
@@ -286,7 +285,7 @@ void Renderer::BuildShader()
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Shade", L"color.hlsl", "PS_Shade", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
 	m_mapShaders[RENDER_TYPE::RENDER_SHADE] = pShader;
 
 	pShader = new Shader;

@@ -110,8 +110,8 @@ void Network::RecvOtherPlayerInfo()
 
 	for (int i = 0; i < OtherPlayerNum; ++i)
 	{
-		OtherPlayerInfo other;
-		retval = recvn(m_Sock, (char*)&other, sizeof(OtherPlayerInfo), 0);
+		PlayerInfo other;
+		retval = recvn(m_Sock, (char*)&other, sizeof(PlayerInfo), 0);
 		m_mapOtherPlayerInfos[other.dwPlayerNum] = other;
 	}
 	m_bLobbyEnd = true;
