@@ -34,3 +34,6 @@
 #define M_MoveLeft_Speed 0.05f
 #define M_MoveRight_Speed 0.05f
 #define M_MoveBackward_Speed 0.03f
+
+
+#define NETWORK

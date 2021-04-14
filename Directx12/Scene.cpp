@@ -4,6 +4,8 @@
 #include "InstanceMgr.h"
 #include "InstanceInfo.h"
 
+#include "UI.h"
+
 Scene::~Scene()
 {
 	Release();
@@ -57,4 +59,14 @@ void Scene::BuildMaterialCBs()
 void Scene::BuildInstanceCBs()
 {
 	InstanceMgr::GetInstnace()->BuildInstanceBuffers();
+}
+
+Object* Scene::GetUIForTag(int iTag)
+{
+	for (auto iter = m_pObjects[OBJ_TYPE::OBJ_UI].begin(); iter != m_pObjects[OBJ_TYPE::OBJ_UI].end(); ++iter)
+	{
+		if (dynamic_cast<UI*>(*iter)->GetTag() == iTag)
+			return (*iter);
+	}
+	return nullptr;
 }

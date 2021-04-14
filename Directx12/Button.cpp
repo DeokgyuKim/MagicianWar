@@ -24,8 +24,6 @@ int Button::Update(const float& fTimeDelta)
     GetCursorPos(&pt);
     ScreenToClient(g_hWnd, &pt);
 
-    cout << "x : " << pt.x << ", y : " << pt.y << endl;
-
     switch (m_eButtonState)
     {
     case NONE:

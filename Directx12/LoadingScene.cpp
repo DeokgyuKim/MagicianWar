@@ -2,6 +2,7 @@
 #include "TestScene.h"
 
 #include "MainApp.h"
+#include "Network.h"
 
 #include "Core.h"
 #include "Renderer.h"
@@ -34,7 +35,7 @@ int LoadingScene::Update(const float& fTimeDelta)
 	{
 		if (!Core::GetInstance()->GetLoadingThreadExecute())
 		{
-			if (m_pButton->GetButtonState() == BUTTON_STATE::ON)
+			if (Network::GetInstance()->GetLobbyEnd())
 			{
 				delete m_pLoading;
 				TestScene* pTestScene = new TestScene();
@@ -70,9 +71,15 @@ void LoadingScene::Initialize()
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	m_pButton = dynamic_cast<Button*>(pObj);
+	m_pButton->SetTag(0);
 
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 
 	m_pLoading = new Loading(Core::GetInstance(), Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLstForLoading(), Renderer::GetInstance()->GetHeap());
+
+#ifdef NETWORK
+	Network::GetInstance()->Init("172.16.1.140");
+#endif
 }
+

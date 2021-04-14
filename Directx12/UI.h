@@ -16,9 +16,13 @@ public:
     virtual int Update(const float& fTimeDelta) override;
     virtual void LateUpdate(const float& fTimeDelta) override;
     virtual void Render(const float& fTimeDelta, int _instanceCount = 1) override;
+public:
+    int         GetTag() { return m_iTag; }
+    void        SetTag(const int& iTag) { m_iTag = iTag; }
 private:
     ID3D12Device*               m_pDevice;
     ID3D12GraphicsCommandList*  m_pCmdLst;
     Renderer*                   m_pRenderer;
+    int                         m_iTag = -1;
 };
 

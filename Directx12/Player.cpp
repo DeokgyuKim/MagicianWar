@@ -19,13 +19,13 @@
 
 
 
-Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName)
+Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName, XMFLOAT3 pos)
 	:Object(_meshName)
 {
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
 	m_pRenderer = pRenderer;
-	Initialize();
+	Initialize(pos);
 
 
 }
@@ -34,11 +34,11 @@ Player::~Player()
 {
 }
 
-void Player::Initialize()
+void Player::Initialize(XMFLOAT3 pos)
 {
 	BuildConstantBuffer();
 
-	Component* pComponent = new Transform(XMFLOAT3(0.01f, 0.01f, 0.01f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(10.f, 0.f, 10.f));
+	Component* pComponent = new Transform(XMFLOAT3(0.01f, 0.01f, 0.01f), XMFLOAT3(0.f, 0.f, 0.f), pos);
 	//Component* pComponent = new Transform(XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), CHARACTER_WIZARD_01);
@@ -140,6 +140,13 @@ void Player::UpdateSkinnedCB()
 XMFLOAT3 Player::GetPosition()
 {
 	return dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
+}
+
+XMFLOAT4X4 Player::GetWorld()
+{
+	XMFLOAT4X4 world;
+	XMStoreFloat4x4(&world, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix());
+	return world;
 }
 
 

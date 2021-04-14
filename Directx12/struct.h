@@ -133,8 +133,9 @@ struct TransformStruct
 
 struct PlayerInfo
 {
-	DWORD dwPlayerNum;
-	DWORD dwTeamNum;
+	DWORD		dwPlayerNum;
+	DWORD		dwTeamNum;
+	XMFLOAT3	xmfPosition;
 };
 
 typedef struct ServerPlayerInfo

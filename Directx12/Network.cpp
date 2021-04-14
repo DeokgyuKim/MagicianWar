@@ -1,5 +1,14 @@
 #include "Network.h"
 
+#include "MainApp.h"
+#include "Scene.h"
+#include "UI.h"
+#include "Button.h"
+#include "Player.h"
+
+#include "KeyMgr.h"
+
+
 Network* Network::m_pInstance = NULL;
 
 unsigned int ReciveThreadForLobby(void* pArg)
@@ -7,12 +16,29 @@ unsigned int ReciveThreadForLobby(void* pArg)
 	int retval;
 	while (true)
 	{
+		Network::GetInstance()->SendReadyState();
+
 		//다음 씬으로 넘어갈건지 확인
 		if (Network::GetInstance()->IsMoveToMainGame())
 		{
 			//상대의 플레이어 정보 받아오기
 			Network::GetInstance()->RecvOtherPlayerInfo();
 			break;
+
+			while (true)	///MainPlay
+			{
+				//Send
+				//내 플레이어정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
+				Network::GetInstance()->SendMyPlayerInfo();
+				//키입력정보(w, a, s, d, 스킬12, 점프, 마우스클릭)
+				Network::GetInstance()->SendKeyInput();
+
+				//Recv
+				//내 정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
+				//다른플레이어정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
+				//스킬, 총알같은거 정보
+				//게임상태 가져오기
+			}
 		}
 	}
 	_endthreadex(0);
@@ -59,6 +85,8 @@ bool Network::Init(const string& strServerIP)
 	retval = recvn(m_Sock, (char*)&m_dwClientNum, sizeof(DWORD), 0);
 	retval = recvn(m_Sock, (char*)&m_dwTeamNum, sizeof(DWORD), 0);
 
+	cout << m_dwClientNum << ", " << m_dwTeamNum << endl;
+
 
 	m_hRecvThreadForLobby = (HANDLE)_beginthreadex(NULL, 0, ReciveThreadForLobby, this, 0, NULL);
 
@@ -99,6 +127,8 @@ bool Network::IsMoveToMainGame()
 	bool isNext = false;
 	int retval = recvn(m_Sock, (char*)&isNext, sizeof(bool), 0);
 
+	cout << "IsNext? " <<  isNext << endl;
+
 	return isNext;
 }
 
@@ -106,14 +136,92 @@ void Network::RecvOtherPlayerInfo()
 {
 	int retval;
 	int OtherPlayerNum;
+
+	m_mapRecvPlayerInfos[m_dwClientNum];
+
 	retval = recvn(m_Sock, (char*)&OtherPlayerNum, sizeof(DWORD), 0);
+
+	cout << "OtherPlayerNum: " << OtherPlayerNum << endl;
 
 	for (int i = 0; i < OtherPlayerNum; ++i)
 	{
 		PlayerInfo other;
 		retval = recvn(m_Sock, (char*)&other, sizeof(PlayerInfo), 0);
 		m_mapOtherPlayerInfos[other.dwPlayerNum] = other;
+		m_mapRecvPlayerInfos[other.dwPlayerNum];
 	}
 	m_bLobbyEnd = true;
+}
+
+void Network::RecvMyPlayerInfo()
+{
+	m_mapRecvPlayerInfos[m_dwClientNum];
+}
+
+void Network::SendReadyState()
+{
+	int retval;
+
+	Object* pObj = MainApp::GetInstance()->GetScene()->GetUIForTag(0);
+	DWORD Send = 0;
+	if (pObj != NULL)
+	{
+		switch (dynamic_cast<Button*>(pObj)->GetButtonState())
+		{
+		case BUTTON_STATE::MOUSEON:
+		case BUTTON_STATE::NONE:
+			Send = 0;
+			break;
+		case BUTTON_STATE::ON:
+			Send = 1;
+			break;
+		}
+	}
+	retval = send(m_Sock, (char*)&Send, sizeof(DWORD), 0);
+}
+
+void Network::SendMyPlayerInfo()
+{
+	Object* pObj = MainApp::GetInstance()->GetScene()->GetPlayer();
+	if (pObj == NULL)
+		return;
+
+	Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
+
+	SendToServerPlayerInfo tInfo;
+	tInfo.matWorld = pPlayer->GetWorld();
+	tInfo.ePlayerState = PLAYER_STATE::IDLE;
+	tInfo.eAnimType = ANIMATION_TYPE::IDLE;
+	tInfo.fAnimTime = 0.f;
+	tInfo.eAnimBlendType = ANIMATION_TYPE::IDLE;
+	tInfo.fWeight = 0.f;
+
+	int retval;
+	retval = send(m_Sock, (char*)&tInfo, sizeof(SendToServerPlayerInfo), 0);
+}
+
+void Network::SendKeyInput()
+{
+	DWORD dwKeyInput = 0;
+
+	if (KeyMgr::GetInstance()->KeyPressing('W'))
+	{
+		dwKeyInput |= 0x0001;
+	}
+	if (KeyMgr::GetInstance()->KeyPressing('A'))
+	{
+		dwKeyInput |= 0x0002;
+	}
+	if (KeyMgr::GetInstance()->KeyPressing('S'))
+	{
+		dwKeyInput |= 0x0003;
+	}
+	if (KeyMgr::GetInstance()->KeyPressing('D'))
+	{
+		dwKeyInput |= 0x0004;
+	}
+
+	int retval;
+	retval = send(m_Sock, (char*)&dwKeyInput, sizeof(DWORD), 0);
 }
 

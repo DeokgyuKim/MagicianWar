@@ -11,10 +11,10 @@ class Player :
 {
 public:
     Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer
-    ,string _meshName);
+    ,string _meshName, XMFLOAT3 pos = XMFLOAT3(10.f, 0.f, 10.f));
     ~Player();
 private:
-    void    Initialize();
+    void    Initialize(XMFLOAT3 pos);
     void    Release();
     HRESULT BuildConstantBuffer();
 public:
@@ -28,6 +28,7 @@ public:
     void UpdateSkinnedCB();
 public:
     XMFLOAT3    GetPosition();
+    XMFLOAT4X4  GetWorld();
     void        SetCamera(Camera* pCamera) { m_pCamera = pCamera; }
 public:
     // Get

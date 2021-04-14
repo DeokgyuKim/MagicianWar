@@ -44,9 +44,17 @@ private:
 	bool	m_bLobbyEnd;
 private:
 	map<DWORD, PlayerInfo> m_mapOtherPlayerInfos;
+	map<DWORD, SendToClientPlayerInfo> m_mapRecvPlayerInfos;
 public:
-	//Function For LobbyThread
+	//Function For LobbyThread Send
+	void SendReadyState();
+	void SendMyPlayerInfo();
+	void SendKeyInput();
+
+public:
+	//Function For LobbyThread Recv
 	bool IsMoveToMainGame();
 	void RecvOtherPlayerInfo();
+	void RecvMyPlayerInfo();
 };
 
