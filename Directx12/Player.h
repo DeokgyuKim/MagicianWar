@@ -29,6 +29,9 @@ public:
 public:
     XMFLOAT3    GetPosition();
     XMFLOAT4X4  GetWorld();
+    PlayerInfo  GetNetworkInfo() { return m_tNetInfo; }
+    void        SetPosition(XMFLOAT3 xmfPos);
+    void        SetWorld(XMFLOAT4X4 world);
     void        SetCamera(Camera* pCamera) { m_pCamera = pCamera; }
 public:
     // Get
@@ -38,6 +41,7 @@ public:
 
 
 protected:
+    PlayerInfo                                  m_tNetInfo;
     ID3D12Device*                               m_pDevice;
     ID3D12GraphicsCommandList*                  m_pCmdLst;
 

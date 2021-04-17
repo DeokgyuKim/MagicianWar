@@ -35,6 +35,7 @@ int LoadingScene::Update(const float& fTimeDelta)
 	{
 		if (!Core::GetInstance()->GetLoadingThreadExecute())
 		{
+#ifdef NETWORK
 			if (Network::GetInstance()->GetLobbyEnd())
 			{
 				delete m_pLoading;
@@ -42,6 +43,15 @@ int LoadingScene::Update(const float& fTimeDelta)
 				MainApp::GetInstance()->ChangeScene(pTestScene);
 				return -1;
 			}
+#else
+			if (m_pButton->GetButtonState() == BUTTON_STATE::ON)
+			{
+				delete m_pLoading;
+				TestScene* pTestScene = new TestScene();
+				MainApp::GetInstance()->ChangeScene(pTestScene);
+				return -1;
+			}
+#endif
 		}
 	}
 
@@ -79,7 +89,7 @@ void LoadingScene::Initialize()
 	m_pLoading = new Loading(Core::GetInstance(), Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLstForLoading(), Renderer::GetInstance()->GetHeap());
 
 #ifdef NETWORK
-	Network::GetInstance()->Init("172.16.1.140");
+	Network::GetInstance()->Init("192.168.219.104");
 #endif
 }
 

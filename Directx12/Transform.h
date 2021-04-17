@@ -34,6 +34,7 @@ private:
     XMFLOAT3    m_xmfScale;
     XMFLOAT3	m_xmfRotate;
     XMFLOAT3    m_xmfPosition;
+    XMFLOAT4X4	m_xmmOriginWorld;
     XMFLOAT4X4	m_xmmWorld;
 
     XMFLOAT3    m_xmfMeshRotate;

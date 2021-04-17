@@ -13,7 +13,6 @@ Network* Network::m_pInstance = NULL;
 
 unsigned int ReciveThreadForLobby(void* pArg)
 {
-	int retval;
 	while (true)
 	{
 		Network::GetInstance()->SendReadyState();
@@ -34,7 +33,7 @@ unsigned int ReciveThreadForLobby(void* pArg)
 
 				//Recv
 				//플레이어 정보들
-				//Network::GetInstance()->RecvPlayerInfo();
+				Network::GetInstance()->RecvPlayerInfo();
 				//스킬, 총알같은거 정보
 				//게임상태 가져오기
 			}
@@ -87,6 +86,8 @@ bool Network::Init(const string& strServerIP)
 	cout << m_tMyInfo.dwPlayerNum << ", " << m_tMyInfo.dwTeamNum << endl;
 
 
+	InitializeCriticalSection(&m_Crt);
+
 	m_hRecvThreadForLobby = (HANDLE)_beginthreadex(NULL, 0, ReciveThreadForLobby, this, 0, NULL);
 
     return false;
@@ -94,6 +95,7 @@ bool Network::Init(const string& strServerIP)
 
 bool Network::Release()
 {
+	DeleteCriticalSection(&m_Crt);
     return false;
 }
 
@@ -123,7 +125,25 @@ int Network::recvn(SOCKET s, char* buf, int len, int flags)
 
 void Network::SetMyPlayerInfo(Player* pPlayer)
 {
-	//pPlayer->S
+	EnterCriticalSection(&m_Crt);
+	XMFLOAT3 pos;
+	memcpy(&pos, &m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._41, sizeof(XMFLOAT3));
+
+	pPlayer->SetPosition(pos);
+	LeaveCriticalSection(&m_Crt);
+}
+
+void Network::SetOtherPlayerInfo(list<Object*>* plstPlayer)
+{
+	EnterCriticalSection(&m_Crt);
+	//pPlayer->SetWorld(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld);
+	for (auto iter = plstPlayer->begin(); iter != plstPlayer->end(); ++iter)
+	{
+		Player* pPlayer = dynamic_cast<Player*>(*iter);
+		pPlayer->SetWorld(m_mapRecvPlayerInfos[pPlayer->GetNetworkInfo().dwPlayerNum].matWorld);
+	}
+	LeaveCriticalSection(&m_Crt);
+
 }
 
 bool Network::IsMoveToMainGame()
@@ -168,8 +188,11 @@ void Network::RecvPlayerInfo()
 	for (int i = 0; i < m_iPlayerNum; ++i)
 	{
 		retval = recvn(m_Sock, (char*)&tInfo, sizeof(SendToClientPlayerInfo), 0);
+		EnterCriticalSection(&m_Crt);
 		m_mapRecvPlayerInfos[tInfo.playerInfo.dwPlayerNum] = tInfo;
+		LeaveCriticalSection(&m_Crt);
 	}
+	cout << "RecvPlayerInfo: " << m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._41 << ", " << m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._42 << ", " << m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._43 << endl;
 }
 
 void Network::SendReadyState()
@@ -234,11 +257,11 @@ void Network::SendKeyInput()
 	}
 	if (KeyMgr::GetInstance()->KeyPressing('S'))
 	{
-		dwKeyInput |= 0x0003;
+		dwKeyInput |= 0x0004;
 	}
 	if (KeyMgr::GetInstance()->KeyPressing('D'))
 	{
-		dwKeyInput |= 0x0004;
+		dwKeyInput |= 0x0008;
 	}
 
 	int retval;

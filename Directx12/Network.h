@@ -6,11 +6,12 @@
 #include <winsock2.h>
 
 class Player;
+class Object;
 class Network
 {
 private:
 	Network() {}
-	~Network() {}
+	~Network() { Release(); }
 private:
 	static Network* m_pInstance;
 public:
@@ -35,9 +36,12 @@ public:
 	bool		GetLobbyEnd() { return m_bLobbyEnd; }
 	XMFLOAT3	GetMyPlayerStartPos() { return m_tMyInfo.xmfPosition; }
 	void		SetMyPlayerInfo(Player* pPlayer);
+	void		SetOtherPlayerInfo(list<Object*>* plstPlayer);
 private:
 	SOCKET	m_Sock;
+	CRITICAL_SECTION m_Crt;
 	HANDLE	m_hRecvThreadForLobby;
+
 private:
 	//초기에 받아와야 할 변수
 	PlayerInfo	m_tMyInfo;

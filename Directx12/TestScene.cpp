@@ -88,6 +88,17 @@ int TestScene::Update(const float& fTimeDelta)
 	return 0;
 }
 
+void TestScene::LateUpdate(const float& fTimeDelta)
+{
+	Scene::LateUpdate(fTimeDelta);
+
+#ifdef NETWORK
+	Object* pObj = GetPlayer();
+	if (pObj != NULL)
+		Network::GetInstance()->SetMyPlayerInfo(dynamic_cast<Player*>(pObj));
+#endif
+}
+
 void TestScene::Initialize()
 {
 	Object* pObj = NULL;

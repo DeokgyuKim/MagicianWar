@@ -149,4 +149,14 @@ XMFLOAT4X4 Player::GetWorld()
 	return world;
 }
 
+void Player::SetPosition(XMFLOAT3 xmfPos)
+{
+	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetPosition(xmfPos);
+}
+
+void Player::SetWorld(XMFLOAT4X4 world)
+{
+	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetWorld(world);
+}
+
 

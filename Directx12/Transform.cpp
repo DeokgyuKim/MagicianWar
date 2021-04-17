@@ -8,6 +8,7 @@ Transform::Transform(XMFLOAT3 xmfScale, XMFLOAT3 xmfRotate, XMFLOAT3 xmfPosition
 	m_xmfPosition = xmfPosition;
 	m_xmfMeshRotate = XMFLOAT3(0.f, 0.f, 0.f);
 	XMStoreFloat4x4(&m_xmmWorld, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_xmmOriginWorld, XMMatrixIdentity());
 
 	m_bJump = false;
 	m_fJumpTotal = 45.f;
@@ -37,9 +38,14 @@ void Transform::LateUpdate(const float& fTimeDelta)
 
 	transform = XMMatrixTranslationFromVector(XMLoadFloat3(&m_xmfPosition));
 
-	XMMATRIX world = scale * rotateX * rotateY * rotateZ * transform;// *view* proj;
+	XMMATRIX world = scale * rotateX * rotateY * rotateZ * transform;
 
 	XMStoreFloat4x4(&m_xmmWorld, world);
+
+	rotateX = XMMatrixRotationX(XMConvertToRadians(m_xmfRotate.x));
+	rotateY = XMMatrixRotationY(XMConvertToRadians(m_xmfRotate.y));
+	rotateZ = XMMatrixRotationZ(XMConvertToRadians(m_xmfRotate.z));
+
 }
 
 
@@ -59,6 +65,9 @@ XMMATRIX Transform::GetWorldMatrix()
 
 void Transform::MoveForward(float speed)
 {
+#ifdef NETWORK
+	return;
+#endif
 	XMFLOAT3 look;
 	memcpy(&look, &m_xmmWorld._31, sizeof(XMFLOAT3));
 	XMStoreFloat3(&look, XMVector3Normalize(XMLoadFloat3(&look)));
@@ -68,6 +77,9 @@ void Transform::MoveForward(float speed)
 
 void Transform::MoveBackward(float speed)
 {
+#ifdef NETWORK
+	return;
+#endif
 	XMFLOAT3 look;
 	memcpy(&look, &m_xmmWorld._31, sizeof(XMFLOAT3));
 	XMStoreFloat3(&look, XMVector3Normalize(XMLoadFloat3(&look)));
@@ -77,6 +89,9 @@ void Transform::MoveBackward(float speed)
 
 void Transform::MoveLeft(float speed)
 {
+#ifdef NETWORK
+	return;
+#endif
 	XMFLOAT3 right;
 	memcpy(&right, &m_xmmWorld._11, sizeof(XMFLOAT3));
 	XMStoreFloat3(&right, XMVector3Normalize(XMLoadFloat3(&right)));
@@ -86,6 +101,9 @@ void Transform::MoveLeft(float speed)
 
 void Transform::MoveRight(float speed)
 {
+#ifdef NETWORK
+	return;
+#endif
 	XMFLOAT3 right;
 	memcpy(&right, &m_xmmWorld._11, sizeof(XMFLOAT3));
 	XMStoreFloat3(&right, XMVector3Normalize(XMLoadFloat3(&right)));
@@ -95,6 +113,9 @@ void Transform::MoveRight(float speed)
 
 int Transform::Jump(DWORD iKey)
 {
+#ifdef NETWORK
+	return 0;
+#endif
 	XMFLOAT3 look, right, up;
 	memcpy(&look, &m_xmmWorld._31, sizeof(XMFLOAT3));
 	memcpy(&right, &m_xmmWorld._11, sizeof(XMFLOAT3));

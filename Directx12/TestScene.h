@@ -9,7 +9,8 @@ public:
     TestScene();
     virtual ~TestScene() {}
 public:
-    virtual int		Update(const float& fTimeDelta);
+    virtual int		Update(const float& fTimeDelta) override;
+    virtual void    LateUpdate(const float& fTimeDelta) override;
 private:
     void Initialize();
 private:
