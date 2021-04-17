@@ -11,6 +11,8 @@
 #include "StaticMeshMgr.h"
 #include "InstanceMgr.h"
 
+#include "Network.h"
+
 TestScene::TestScene()
 {
 	Initialize();
@@ -92,9 +94,11 @@ void TestScene::Initialize()
 	Player* pPlayer = NULL;
 	Camera* pCamera = NULL;
 
+	XMFLOAT3 pos = Network::GetInstance()->GetMyPlayerStartPos();
+
 	Core::GetInstance()->CmdLstReset();
 	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		CHARACTER_WIZARD_01);
+		CHARACTER_WIZARD_01, pos);
 	pPlayer = dynamic_cast<Player*>(pObj);
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();

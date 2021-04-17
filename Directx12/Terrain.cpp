@@ -50,11 +50,13 @@ void Terrain::Release()
 
 int Terrain::Update(const float& fTimeDelta)
 {
+	Object::Update(fTimeDelta);
 	return 0;
 }
 
 void Terrain::LateUpdate(const float& fTimeDelta)
 {
+	Object::LateUpdate(fTimeDelta);
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_NOBLEND, this);
 }
 

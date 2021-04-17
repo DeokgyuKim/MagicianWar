@@ -154,11 +154,6 @@ struct SendToServerPlayerInfo
 	float			fWeight;
 };
 
-struct SendToServerKeyInput
-{
-	DWORD			dwKey;
-};
-
 struct SendToClientPlayerInfo
 {
 	PlayerInfo		playerInfo;

@@ -23,6 +23,7 @@ public:
     void        SetRotate(XMFLOAT3 xmfRotate) { m_xmfRotate = xmfRotate; }
     void        SetPosition(XMFLOAT3 xmfPosition) { m_xmfPosition = xmfPosition; }
     void        SetMeshRotate(XMFLOAT3 xmfMeshRotate) { m_xmfMeshRotate = xmfMeshRotate; }
+    void        SetWorld(XMFLOAT4X4 world) { m_xmmWorld = world; }
 public:
     void        MoveForward(float speed);
     void        MoveBackward(float speed);

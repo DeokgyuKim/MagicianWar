@@ -70,3 +70,10 @@ Object* Scene::GetUIForTag(int iTag)
 	}
 	return nullptr;
 }
+
+Object* Scene::GetPlayer()
+{
+	if(m_pObjects[OBJ_PLAYER].empty())
+		return nullptr;
+	return m_pObjects[OBJ_PLAYER].front();
+}

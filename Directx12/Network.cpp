@@ -23,7 +23,6 @@ unsigned int ReciveThreadForLobby(void* pArg)
 		{
 			//상대의 플레이어 정보 받아오기
 			Network::GetInstance()->RecvOtherPlayerInfo();
-			break;
 
 			while (true)	///MainPlay
 			{
@@ -34,8 +33,8 @@ unsigned int ReciveThreadForLobby(void* pArg)
 				Network::GetInstance()->SendKeyInput();
 
 				//Recv
-				//내 정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
-				//다른플레이어정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
+				//플레이어 정보들
+				//Network::GetInstance()->RecvPlayerInfo();
 				//스킬, 총알같은거 정보
 				//게임상태 가져오기
 			}
@@ -82,10 +81,10 @@ bool Network::Init(const string& strServerIP)
 		return false;
 	}
 
-	retval = recvn(m_Sock, (char*)&m_dwClientNum, sizeof(DWORD), 0);
-	retval = recvn(m_Sock, (char*)&m_dwTeamNum, sizeof(DWORD), 0);
+	retval = recvn(m_Sock, (char*)&m_tMyInfo.dwPlayerNum, sizeof(DWORD), 0);
+	retval = recvn(m_Sock, (char*)&m_tMyInfo.dwTeamNum, sizeof(DWORD), 0);
 
-	cout << m_dwClientNum << ", " << m_dwTeamNum << endl;
+	cout << m_tMyInfo.dwPlayerNum << ", " << m_tMyInfo.dwTeamNum << endl;
 
 
 	m_hRecvThreadForLobby = (HANDLE)_beginthreadex(NULL, 0, ReciveThreadForLobby, this, 0, NULL);
@@ -122,6 +121,11 @@ int Network::recvn(SOCKET s, char* buf, int len, int flags)
 	return (len - left);						//읽어야할 총 길이 - 수신해야할 데이터 양 = 읽은 데이터 양
 }
 
+void Network::SetMyPlayerInfo(Player* pPlayer)
+{
+	//pPlayer->S
+}
+
 bool Network::IsMoveToMainGame()
 {
 	bool isNext = false;
@@ -137,11 +141,14 @@ void Network::RecvOtherPlayerInfo()
 	int retval;
 	int OtherPlayerNum;
 
-	m_mapRecvPlayerInfos[m_dwClientNum];
+	retval = recvn(m_Sock, (char*)&m_tMyInfo, sizeof(PlayerInfo), 0);
+	m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum];
+	cout << "Pos: " << m_tMyInfo.xmfPosition.x << ", " << m_tMyInfo.xmfPosition.y << ", " << m_tMyInfo.xmfPosition.z << endl;
 
 	retval = recvn(m_Sock, (char*)&OtherPlayerNum, sizeof(DWORD), 0);
 
-	cout << "OtherPlayerNum: " << OtherPlayerNum << endl;
+	cout << "PlayerNum: " << OtherPlayerNum + 1 << endl;
+	m_iPlayerNum = OtherPlayerNum + 1;
 
 	for (int i = 0; i < OtherPlayerNum; ++i)
 	{
@@ -153,9 +160,16 @@ void Network::RecvOtherPlayerInfo()
 	m_bLobbyEnd = true;
 }
 
-void Network::RecvMyPlayerInfo()
+void Network::RecvPlayerInfo()
 {
-	m_mapRecvPlayerInfos[m_dwClientNum];
+	int retval;
+	SendToClientPlayerInfo tInfo;
+
+	for (int i = 0; i < m_iPlayerNum; ++i)
+	{
+		retval = recvn(m_Sock, (char*)&tInfo, sizeof(SendToClientPlayerInfo), 0);
+		m_mapRecvPlayerInfos[tInfo.playerInfo.dwPlayerNum] = tInfo;
+	}
 }
 
 void Network::SendReadyState()
@@ -183,13 +197,19 @@ void Network::SendReadyState()
 void Network::SendMyPlayerInfo()
 {
 	Object* pObj = MainApp::GetInstance()->GetScene()->GetPlayer();
-	if (pObj == NULL)
-		return;
-
-	Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
-
 	SendToServerPlayerInfo tInfo;
-	tInfo.matWorld = pPlayer->GetWorld();
+
+	if (pObj != NULL)
+	{
+		Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
+		tInfo.matWorld = pPlayer->GetWorld();
+	}
+	else
+	{
+		tInfo.matWorld = MathHelper::Identity4x4();
+	}
+
+
 	tInfo.ePlayerState = PLAYER_STATE::IDLE;
 	tInfo.eAnimType = ANIMATION_TYPE::IDLE;
 	tInfo.fAnimTime = 0.f;

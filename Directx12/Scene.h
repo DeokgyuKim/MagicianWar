@@ -17,7 +17,7 @@ public:
 public:
 	void	PushObject(Object* pobj, OBJ_TYPE eType) { m_pObjects[eType].push_back(pobj); }
 	Object* GetUIForTag(int iTag);
-	Object* GetPlayer() { return m_pObjects[OBJ_PLAYER].front(); }
+	Object* GetPlayer(); 
 protected:
 	list<Object*> m_pObjects[OBJ_TYPE::OBJ_END]; // Object 데이터들
 	

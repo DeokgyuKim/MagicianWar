@@ -5,6 +5,7 @@
 #pragma warning(disable : 4996)
 #include <winsock2.h>
 
+class Player;
 class Network
 {
 private:
@@ -31,20 +32,22 @@ public:
 	void Update();
 	int  recvn(SOCKET s, char* buf, int len, int flags);
 public:
-	bool GetLobbyEnd() { return m_bLobbyEnd; }
+	bool		GetLobbyEnd() { return m_bLobbyEnd; }
+	XMFLOAT3	GetMyPlayerStartPos() { return m_tMyInfo.xmfPosition; }
+	void		SetMyPlayerInfo(Player* pPlayer);
 private:
 	SOCKET	m_Sock;
 	HANDLE	m_hRecvThreadForLobby;
 private:
 	//초기에 받아와야 할 변수
-	DWORD	m_dwClientNum;
-	DWORD	m_dwTeamNum;
+	PlayerInfo	m_tMyInfo;
 private:
 	//각 씬 단계의 스레드가 끝났는 지 판별
 	bool	m_bLobbyEnd;
 private:
 	map<DWORD, PlayerInfo> m_mapOtherPlayerInfos;
 	map<DWORD, SendToClientPlayerInfo> m_mapRecvPlayerInfos;
+	int		m_iPlayerNum;
 public:
 	//Function For LobbyThread Send
 	void SendReadyState();
@@ -55,6 +58,6 @@ public:
 	//Function For LobbyThread Recv
 	bool IsMoveToMainGame();
 	void RecvOtherPlayerInfo();
-	void RecvMyPlayerInfo();
+	void RecvPlayerInfo();
 };
 

@@ -31,9 +31,9 @@ void Transform::LateUpdate(const float& fTimeDelta)
 
 	scale = XMMatrixScalingFromVector(XMLoadFloat3(&m_xmfScale));
 
-	rotateX = XMMatrixRotationX(XMConvertToRadians(m_xmfRotate.x));
-	rotateY = XMMatrixRotationY(XMConvertToRadians(m_xmfRotate.y));
-	rotateZ = XMMatrixRotationZ(XMConvertToRadians(m_xmfRotate.z));
+	rotateX = XMMatrixRotationX(XMConvertToRadians(m_xmfRotate.x + m_xmfMeshRotate.x));
+	rotateY = XMMatrixRotationY(XMConvertToRadians(m_xmfRotate.y + m_xmfMeshRotate.y));
+	rotateZ = XMMatrixRotationZ(XMConvertToRadians(m_xmfRotate.z + m_xmfMeshRotate.z));
 
 	transform = XMMatrixTranslationFromVector(XMLoadFloat3(&m_xmfPosition));
 
@@ -54,19 +54,7 @@ XMFLOAT3 Transform::GetLook()
 
 XMMATRIX Transform::GetWorldMatrix()
 {
-	XMMATRIX scale, rotateX, rotateY, rotateZ, transform, world;
-
-	scale = XMMatrixScalingFromVector(XMLoadFloat3(&m_xmfScale));
-
-	rotateX = XMMatrixRotationX(XMConvertToRadians(m_xmfRotate.x + m_xmfMeshRotate.x));
-	rotateY = XMMatrixRotationY(XMConvertToRadians(m_xmfRotate.y + m_xmfMeshRotate.y));
-	rotateZ = XMMatrixRotationZ(XMConvertToRadians(m_xmfRotate.z + m_xmfMeshRotate.z));
-
-	transform = XMMatrixTranslationFromVector(XMLoadFloat3(&m_xmfPosition));
-
-	world = scale * rotateX * rotateY * rotateZ * transform;
-
-	return world;
+	return XMLoadFloat4x4(&m_xmmWorld);
 }
 
 void Transform::MoveForward(float speed)
