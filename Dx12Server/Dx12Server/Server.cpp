@@ -29,6 +29,7 @@ using namespace DirectX::PackedVector;
 
 DWORD gClientNum = 0;
 unordered_map<int, SERVERPLAYER*>		g_Clients;
+unsigned int WorkThreadCount = 0; // 1개만 만들어야지
 
 
 int recvn(SOCKET s, char* buf, int len, int flags);
@@ -100,9 +101,15 @@ int main()
 		if (ThreadHandler == NULL) { closesocket(g_Clients[gClientNum]->socket); }
 		else { CloseHandle(ThreadHandler); }
 
+		//if (!WorkThreadCount) {
+		//	CreateThread(NULL, 0, WorkThread, 0, 0, NULL);
+		//	++WorkThreadCount;
+		//}
+
+
 		int retval = send(g_Clients[gClientNum]->socket, (char*)&g_Clients[gClientNum]->info.dwPlayerNum, sizeof(DWORD), 0);
 		retval = send(g_Clients[gClientNum]->socket, (char*)&g_Clients[gClientNum]->info.dwTeamNum, sizeof(DWORD), 0);
-		
+
 		gClientNum++;
 	}
 
