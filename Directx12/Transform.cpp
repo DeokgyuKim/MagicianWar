@@ -39,12 +39,17 @@ void Transform::LateUpdate(const float& fTimeDelta)
 	transform = XMMatrixTranslationFromVector(XMLoadFloat3(&m_xmfPosition));
 
 	XMMATRIX world = scale * rotateX * rotateY * rotateZ * transform;
+	if (m_pxmmParentWorld != NULL)
+		world *= XMLoadFloat4x4(m_pxmmParentWorld);
 
 	XMStoreFloat4x4(&m_xmmWorld, world);
 
 	rotateX = XMMatrixRotationX(XMConvertToRadians(m_xmfRotate.x));
 	rotateY = XMMatrixRotationY(XMConvertToRadians(m_xmfRotate.y));
 	rotateZ = XMMatrixRotationZ(XMConvertToRadians(m_xmfRotate.z));
+
+	world = scale * rotateX * rotateY * rotateZ * transform;
+	XMStoreFloat4x4(&m_xmmOriginWorld, world);
 
 }
 
@@ -69,7 +74,7 @@ void Transform::MoveForward(float speed)
 	return;
 #endif
 	XMFLOAT3 look;
-	memcpy(&look, &m_xmmWorld._31, sizeof(XMFLOAT3));
+	memcpy(&look, &m_xmmOriginWorld._31, sizeof(XMFLOAT3));
 	XMStoreFloat3(&look, XMVector3Normalize(XMLoadFloat3(&look)));
 
 	XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&look) * speed);
@@ -81,7 +86,7 @@ void Transform::MoveBackward(float speed)
 	return;
 #endif
 	XMFLOAT3 look;
-	memcpy(&look, &m_xmmWorld._31, sizeof(XMFLOAT3));
+	memcpy(&look, &m_xmmOriginWorld._31, sizeof(XMFLOAT3));
 	XMStoreFloat3(&look, XMVector3Normalize(XMLoadFloat3(&look)));
 
 	XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&look) * speed);

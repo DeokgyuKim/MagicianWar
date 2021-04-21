@@ -38,3 +38,11 @@ void DDSTexture::PreRender(ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHe
 
 	cmdLst->SetGraphicsRootDescriptorTable(m_RootParameterIdx, handle);
 }
+
+void DDSTexture::PreRender(ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap, int Idx)
+{
+	D3D12_GPU_DESCRIPTOR_HANDLE handle = heap->GetGPUDescriptorHandleForHeapStart();
+	handle.ptr += (m_hDescriptor.ptr - heap->GetCPUDescriptorHandleForHeapStart().ptr);
+
+	cmdLst->SetGraphicsRootDescriptorTable(Idx, handle);
+}

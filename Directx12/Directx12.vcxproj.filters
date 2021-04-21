@@ -166,6 +166,15 @@
     <Filter Include="01.Engine\03.Shader\00.HLSL">
       <UniqueIdentifier>{da3a61cb-4e88-45df-b0d3-924f2ea48782}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\02.Object\01.Skill">
+      <UniqueIdentifier>{eacb7f53-142e-4c20-b013-7eb8ec36e37f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\02.Object\01.Skill\00.SkillEff">
+      <UniqueIdentifier>{11ed6d18-b798-4c14-ab3d-5d260eaa0ff4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill">
+      <UniqueIdentifier>{8ad4fa02-644e-460f-acde-22684658724d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -339,6 +348,12 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Default\99.Default</Filter>
     </ClInclude>
+    <ClInclude Include="Skill.h">
+      <Filter>01.Engine\02.Object\01.Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillEff.h">
+      <Filter>01.Engine\02.Object\01.Skill\00.SkillEff</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -487,6 +502,12 @@
     </ClCompile>
     <ClCompile Include="MathHelper.cpp">
       <Filter>99.Default\99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Skill.cpp">
+      <Filter>01.Engine\02.Object\01.Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillEff.cpp">
+      <Filter>01.Engine\02.Object\01.Skill\00.SkillEff</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

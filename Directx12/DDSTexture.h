@@ -9,6 +9,7 @@ public:
 	~DDSTexture() {}
 public:
 	void	PreRender(ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap);
+	void	PreRender(ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap, int Idx);
 public:
 	int									m_RootParameterIdx;
 	string								m_strName;

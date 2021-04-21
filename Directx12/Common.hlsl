@@ -23,6 +23,11 @@ cbuffer cbSkinned : register(b4)
 	float4x4 gBoneTransforms[96];
 }
 
+cbuffer cbSkinned : register(b5)
+{
+	float4x4 gSkillTime;
+}
+
 
 Texture2D Texture : register(t0);
 SamplerState gsamLinear  : register(s0);
@@ -36,6 +41,12 @@ Texture2D DepthTex : register(t5);
 
 TextureCube CubeMapTex : register(t6);
 Texture2D NoiseTex : register(t7);
+
+Texture2D SkillEffTex1 : register(t8);
+Texture2D SkillEffTex2 : register(t9);
+Texture2D SkillEffTex3 : register(t10);
+Texture2D SkillEffTex4 : register(t11);
+Texture2D SkillEffTex5 : register(t12);
 
 //// 인스턴싱 하는 애들이 사용
 struct InstanceObject

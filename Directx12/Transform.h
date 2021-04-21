@@ -24,6 +24,7 @@ public:
     void        SetPosition(XMFLOAT3 xmfPosition) { m_xmfPosition = xmfPosition; }
     void        SetMeshRotate(XMFLOAT3 xmfMeshRotate) { m_xmfMeshRotate = xmfMeshRotate; }
     void        SetWorld(XMFLOAT4X4 world) { m_xmmWorld = world; }
+    void        SetParentMatrix(XMFLOAT4X4* pParentWorld) { m_pxmmParentWorld = pParentWorld; }
 public:
     void        MoveForward(float speed);
     void        MoveBackward(float speed);
@@ -36,6 +37,7 @@ private:
     XMFLOAT3    m_xmfPosition;
     XMFLOAT4X4	m_xmmOriginWorld;
     XMFLOAT4X4	m_xmmWorld;
+    XMFLOAT4X4* m_pxmmParentWorld = NULL;
 
     XMFLOAT3    m_xmfMeshRotate;
 

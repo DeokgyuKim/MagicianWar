@@ -183,6 +183,8 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Skill.h" />
+    <ClInclude Include="SkillEff.h" />
     <ClInclude Include="SkinnedData.h" />
     <ClInclude Include="SkinnedModelInstance.h" />
     <ClInclude Include="Skybox.h" />
@@ -237,6 +239,8 @@
     <ClCompile Include="RenderTargetMgr.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Skill.cpp" />
+    <ClCompile Include="SkillEff.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="SkinnedModelInstance.cpp" />
     <ClCompile Include="Skybox.cpp" />

@@ -133,6 +133,13 @@ void Renderer::Render(const float& fTimeDelta)
 			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetMeshName()]);
 		}
 	}
+
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_SKILL])
+	{
+		m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+		pObject->Render(fTimeDelta);
+	}
+
     //////////////////////////////////////////////////////////////
 
 	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Shade");
@@ -233,7 +240,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE Renderer::CreateUnorderedAccessView(ID3D12Resource* 
 
 void Renderer::BuildRootSignature()
 {
-	CD3DX12_DESCRIPTOR_RANGE srvTable[8];
+	CD3DX12_DESCRIPTOR_RANGE srvTable[13];
 	srvTable[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // DDStexture
 	srvTable[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1); // Diff Texture
 	srvTable[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2); // Ambi Texture
@@ -242,9 +249,14 @@ void Renderer::BuildRootSignature()
 	srvTable[5].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 5); // Depth Texture
 	srvTable[6].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 6); // CubeMap Texture
 	srvTable[7].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 7); // Noise Texture
+	srvTable[8].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 8);	// Skill Effect Texture1
+	srvTable[9].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 9);	// Skill Effect Texture2
+	srvTable[10].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 10);	// Skill Effect Texture3
+	srvTable[11].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 11);	// Skill Effect Texture4
+	srvTable[12].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 12);	// Skill Effect Texture5
 
 
-	const size_t rootSize = 13;
+	const size_t rootSize = 19;
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[rootSize];
 
@@ -261,7 +273,13 @@ void Renderer::BuildRootSignature()
 	slotRootParameter[9].InitAsDescriptorTable(1, &srvTable[5], D3D12_SHADER_VISIBILITY_ALL);	//depth render target
 	slotRootParameter[10].InitAsDescriptorTable(1, &srvTable[6], D3D12_SHADER_VISIBILITY_ALL);	//Skybox texture
 	slotRootParameter[11].InitAsConstantBufferView(4); // Skinned
-	slotRootParameter[12].InitAsDescriptorTable(1, &srvTable[7], D3D12_SHADER_VISIBILITY_ALL);	//Noise texture
+	slotRootParameter[12].InitAsDescriptorTable(1, &srvTable[7], D3D12_SHADER_VISIBILITY_ALL);		//Noise texture
+	slotRootParameter[13].InitAsDescriptorTable(1, &srvTable[8], D3D12_SHADER_VISIBILITY_PIXEL);	// Skill Effect Texture1
+	slotRootParameter[14].InitAsDescriptorTable(1, &srvTable[9], D3D12_SHADER_VISIBILITY_PIXEL);	// Skill Effect Texture2
+	slotRootParameter[15].InitAsDescriptorTable(1, &srvTable[10], D3D12_SHADER_VISIBILITY_PIXEL);	// Skill Effect Texture3
+	slotRootParameter[16].InitAsDescriptorTable(1, &srvTable[11], D3D12_SHADER_VISIBILITY_PIXEL);	// Skill Effect Texture4
+	slotRootParameter[17].InitAsDescriptorTable(1, &srvTable[12], D3D12_SHADER_VISIBILITY_PIXEL);	// Skill Effect Texture5
+	slotRootParameter[18].InitAsConstantBufferView(5);	//light diffuse, ambient, specular, position, direction
 	
 
 	auto staticSamplers = GetStaticSamplers();
