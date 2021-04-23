@@ -36,6 +36,8 @@ void SkillEff::Initialize()
     AddTexturesName();
     BuildConstantBuffers();
 
+    m_bInstanced = false;
+
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 }
@@ -63,7 +65,7 @@ void SkillEff::Render(const float& fTimeDelta, int _instanceCount)
     int idx = 0;
     for (auto iter = m_lstTextureName.begin(); iter != m_lstTextureName.end(); ++iter, ++idx)
         TextureMgr::GetInstance()->GetTexture(*iter)->PreRender(m_pCmdLst, m_pRenderer->GetHeap(), idx + 8);
-    m_pCmdLst->SetGraphicsRootConstantBufferView(0, m_ObjectCB->Resource()->GetGPUVirtualAddress());
+    m_pCmdLst->SetGraphicsRootConstantBufferView(19, m_ObjectCB->Resource()->GetGPUVirtualAddress());
     m_pCmdLst->SetGraphicsRootConstantBufferView(18, m_SkillCB->Resource()->GetGPUVirtualAddress());
 
     Object::Render(fTimeDelta);

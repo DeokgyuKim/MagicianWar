@@ -21,6 +21,7 @@ public: // Get
 	string		GetMeshName() const { return m_strMeshName; }
 	int			GetIndex() const { return m_Index; }
 	UINT		GetMaterialIndex() { return m_MaterialIndex; }
+	bool		GetIsInstancing() { return m_bInstanced; }
 
 	virtual Component* GetTransController() { 
 		if(m_mapComponent["Transform"] != nullptr) return m_mapComponent["Transform"];
@@ -31,6 +32,7 @@ protected:
 	Renderer*							m_pRenderer;
 	string								m_strTextureName = "";
 	unordered_map<string, Component*>	m_mapComponent;
+	bool								m_bInstanced = true;
 
 
 protected: // HBD

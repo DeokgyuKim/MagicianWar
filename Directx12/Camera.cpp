@@ -136,6 +136,7 @@ void Camera::Initialize()
 	m_xmfLookVec = XMFLOAT3(0.f, 0.f, 1.f);
 	
 	XMStoreFloat3(&m_xmfTarget, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&m_xmfLookVec));
+	m_bInstanced = false;
 
 	BuildConstantBuffer();
 }

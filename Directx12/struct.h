@@ -81,7 +81,6 @@ struct ObjectCB
 {
 	XMFLOAT4X4 World = MathHelper::Identity4x4();
 	UINT MaterialIndex; // 각자의 Object들에 해당하는 Index;
-	
 };
 
 struct SkillCB

@@ -175,6 +175,9 @@
     <Filter Include="00.Game\02.Object\06.Skill">
       <UniqueIdentifier>{8ad4fa02-644e-460f-acde-22684658724d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\00.SkillEff">
+      <UniqueIdentifier>{c2e7b632-2541-4c52-87f0-ff3fd576dec9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">

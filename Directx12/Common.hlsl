@@ -23,10 +23,16 @@ cbuffer cbSkinned : register(b4)
 	float4x4 gBoneTransforms[96];
 }
 
-cbuffer cbSkinned : register(b5)
+cbuffer cbSkill : register(b5)
 {
 	float4x4 gSkillTime;
 }
+
+cbuffer cbObject : register(b6)
+{
+	float4x4	gWorld;
+	uint		MaterialIndex;
+};
 
 
 Texture2D Texture : register(t0);

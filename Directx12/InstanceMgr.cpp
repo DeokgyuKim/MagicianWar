@@ -30,7 +30,7 @@ void InstanceMgr::BuildInstanceBuffers()
 
 void InstanceMgr::UpdateInstanceBuffer(Object* _obj)
 {
-	if (_obj->GetMeshName() == "") { // 메시를 다루지 않는 것 - Camera
+	if (_obj->GetMeshName() == "" || !_obj->GetIsInstancing()) { // 메시를 다루지 않는 것 - Camera
 		return;
 	}
 	ObjectCB data;
