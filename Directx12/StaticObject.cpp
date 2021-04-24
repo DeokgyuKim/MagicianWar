@@ -48,23 +48,6 @@ void StaticObject::Release()
 
 int StaticObject::Update(const float& fTimeDelta)
 {
-	XMFLOAT3 rotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
-	if (GetAsyncKeyState('I') & 0x8000)
-	{
-		rotate.x += 1.f;
-		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rotate);
-	}
-	if (GetAsyncKeyState('O') & 0x8000)
-	{
-		rotate.y += 1.f;
-		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rotate);
-	}
-	if (GetAsyncKeyState('P') & 0x8000)
-	{
-		rotate.z += 1.f;
-		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rotate);
-	}
-
 	Object::Update(fTimeDelta);;
     
 	return 0;

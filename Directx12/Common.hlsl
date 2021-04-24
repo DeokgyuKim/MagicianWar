@@ -25,18 +25,20 @@ cbuffer cbSkinned : register(b4)
 
 cbuffer cbSkill : register(b5)
 {
-	float4x4 gSkillTime;
+	float	gSkillTime;
+	uint	gSkillIdx;
 }
 
 cbuffer cbObject : register(b6)
 {
-	float4x4	gWorld;
-	uint		MaterialIndex;
+	float4x4	gWorldNoInstanced;
+	uint		MaterialIndexNoInstanced;
 };
 
 
 Texture2D Texture : register(t0);
 SamplerState gsamLinear  : register(s0);
+SamplerState gsamClamp  : register(s1);
 
 
 Texture2D DiffTex : register(t1);

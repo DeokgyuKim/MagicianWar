@@ -175,8 +175,17 @@
     <Filter Include="00.Game\02.Object\06.Skill">
       <UniqueIdentifier>{8ad4fa02-644e-460f-acde-22684658724d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.Game\02.Object\06.Skill\00.SkillEff">
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff">
       <UniqueIdentifier>{c2e7b632-2541-4c52-87f0-ff3fd576dec9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\00.Flames">
+      <UniqueIdentifier>{c4f7f436-e9cc-4abd-ab3f-4a7b9c1060af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\00.Flames\00.FireEff">
+      <UniqueIdentifier>{11bec554-00e8-44fb-aed2-bd15d9f24f57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\00.Flames">
+      <UniqueIdentifier>{86c78c32-8218-4afe-a25c-8beb053ef86d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -357,6 +366,12 @@
     <ClInclude Include="SkillEff.h">
       <Filter>01.Engine\02.Object\01.Skill\00.SkillEff</Filter>
     </ClInclude>
+    <ClInclude Include="Flames_FireEff.h">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\00.Flames\00.FireEff</Filter>
+    </ClInclude>
+    <ClInclude Include="Flames.h">
+      <Filter>00.Game\02.Object\06.Skill\00.Flames</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -512,6 +527,12 @@
     <ClCompile Include="SkillEff.cpp">
       <Filter>01.Engine\02.Object\01.Skill\00.SkillEff</Filter>
     </ClCompile>
+    <ClCompile Include="Flames_FireEff.cpp">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\00.Flames\00.FireEff</Filter>
+    </ClCompile>
+    <ClCompile Include="Flames.cpp">
+      <Filter>00.Game\02.Object\06.Skill\00.Flames</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">
@@ -529,6 +550,9 @@
       <Filter>01.Engine\03.Shader\00.HLSL</Filter>
     </None>
     <None Include="Default.hlsl">
+      <Filter>01.Engine\03.Shader\00.HLSL</Filter>
+    </None>
+    <None Include="Skill.hlsl">
       <Filter>01.Engine\03.Shader\00.HLSL</Filter>
     </None>
   </ItemGroup>

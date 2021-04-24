@@ -10,10 +10,10 @@ class Skill :
 public:
     Skill(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer);
     ~Skill();
-private:
+protected:
     virtual void Initialize();
     void    Release();
-private:
+protected:
     virtual void BuildComponents() PURE;
     virtual void BuildSkillEffects() PURE;
 public:

@@ -46,3 +46,12 @@ void Object::Render(const float& fTimeDelta, int _instanceCount)
     for (auto iter = m_mapComponent.begin(); iter != m_mapComponent.end(); ++iter)
         (*iter).second->Render(fTimeDelta, _instanceCount);
 }
+
+Component* Object::GetTransController()
+{
+    auto iter = m_mapComponent.find("Transform");
+    if (iter == m_mapComponent.end())
+        return nullptr;
+
+    return (*iter).second;
+}

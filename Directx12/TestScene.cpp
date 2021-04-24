@@ -7,6 +7,7 @@
 #include "Skybox.h"
 #include "StaticObject.h"
 #include "Bullet.h"
+#include "Flames.h"
 
 #include "StaticMeshMgr.h"
 #include "InstanceMgr.h"
@@ -165,6 +166,10 @@ void TestScene::Initialize()
 			(*iter).second.xmfPosition, (*iter).second.xmfRotate, (*iter).second.xmfScale, *(*iter).first);
 		m_pObjects[OBJ_STATIC].push_back(pObj);
 	}
+
+	pObj = new Flames(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT3(10.f, 1.f, 5.f));
+	m_pObjects[OBJ_SKILL].push_back(pObj);
 
 
 	//Core::GetInstance()->CmdLstReset();

@@ -17,7 +17,8 @@ HRESULT Shader::BuildShadersAndInputLayout(const TCHAR* vsName, const char* vsFu
 	return S_OK;
 }
 
-HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* RootSignature, int numRt, bool ClockWise, bool DepthStencil)
+HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* RootSignature, int numRt,
+	bool ClockWise, bool DepthStencil, bool CullNone)
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -40,7 +41,7 @@ HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* Ro
 		};
 	}
 
-	if (ClockWise)
+	if (ClockWise && !CullNone)
 	{
 		psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	}
@@ -58,6 +59,10 @@ HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* Ro
 		psoDesc.RasterizerState.ForcedSampleCount = 0;
 		psoDesc.RasterizerState.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 	}
+
+	if(CullNone)
+		psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	if (DepthStencil)
 	{

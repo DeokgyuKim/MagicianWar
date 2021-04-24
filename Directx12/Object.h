@@ -23,10 +23,7 @@ public: // Get
 	UINT		GetMaterialIndex() { return m_MaterialIndex; }
 	bool		GetIsInstancing() { return m_bInstanced; }
 
-	virtual Component* GetTransController() { 
-		if(m_mapComponent["Transform"] != nullptr) return m_mapComponent["Transform"];
-		return nullptr;
-	}
+	virtual Component* GetTransController();
 
 protected:
 	Renderer*							m_pRenderer;

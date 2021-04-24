@@ -89,7 +89,7 @@ int Camera::Update(const float& fTimeDelta)
 
 void Camera::LateUpdate(const float& fTimeDelta)
 {
-	XMMATRIX proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(90.f), 800.f / 600.f, 0.1f, 1000.0f);
+	XMMATRIX proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(90.f), (float)WINCX / (float)WINCY, 0.1f, 1000.0f);
 
 	XMStoreFloat4x4(&m_xmmProj, proj);
 

@@ -1,5 +1,7 @@
 #include "Skill.h"
 
+#include "Renderer.h"
+
 #include "SkillEff.h"
 
 Skill::Skill(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer)
@@ -8,7 +10,6 @@ Skill::Skill(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* 
     m_pDevice = device;
     m_pCmdLst = cmdLst;
     m_pRenderer = pRenderer;
-    Initialize();
 }
 
 Skill::~Skill()
@@ -47,7 +48,9 @@ void Skill::LateUpdate(const float& fTimeDelta)
 {
     Object::LateUpdate(fTimeDelta);
     for (int i = 0; i < m_vecSkillEff.size(); ++i)
+    {
         m_vecSkillEff[i]->LateUpdate(fTimeDelta);
+    }
 }
 
 void Skill::Render(const float& fTimeDelta, int _instanceCount)

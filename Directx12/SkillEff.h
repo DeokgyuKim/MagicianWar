@@ -9,10 +9,10 @@ class SkillEff :
 public:
     SkillEff(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Object* pParent = NULL);
     ~SkillEff();
-private:
+protected:
     void    Initialize();
     void    Release();
-private:
+protected:
     //Create Component, Set Options, and Add m_mapComponent
     virtual void    BuildComponent() PURE;
     //Push Texture Name at m_lstTextureName in order
@@ -40,5 +40,6 @@ protected:
     unique_ptr<UploadBuffer<SkillCB>>	        m_SkillCB;
     Shader*                                     m_pShader = NULL;
     Object*                                     m_pParent = NULL;
+    float m_fTime = 0.f;
 };
 

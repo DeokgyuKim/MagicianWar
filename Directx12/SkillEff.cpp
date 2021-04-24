@@ -19,7 +19,6 @@ SkillEff::SkillEff(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Rend
     m_pCmdLst = cmdLst;
     m_pRenderer = pRenderer;
     m_pParent = pParent;
-    Initialize();
 }
 
 SkillEff::~SkillEff()
@@ -49,6 +48,7 @@ void SkillEff::Release()
 
 int SkillEff::Update(const float& fTimeDelta)
 {
+    m_fTime += fTimeDelta;
     Object::Update(fTimeDelta);
     return 0;
 }
@@ -64,7 +64,7 @@ void SkillEff::Render(const float& fTimeDelta, int _instanceCount)
     m_pShader->PreRender(m_pCmdLst);
     int idx = 0;
     for (auto iter = m_lstTextureName.begin(); iter != m_lstTextureName.end(); ++iter, ++idx)
-        TextureMgr::GetInstance()->GetTexture(*iter)->PreRender(m_pCmdLst, m_pRenderer->GetHeap(), idx + 8);
+        TextureMgr::GetInstance()->GetTexture(*iter)->PreRender(m_pCmdLst, m_pRenderer->GetHeap(), idx + 13);
     m_pCmdLst->SetGraphicsRootConstantBufferView(19, m_ObjectCB->Resource()->GetGPUVirtualAddress());
     m_pCmdLst->SetGraphicsRootConstantBufferView(18, m_SkillCB->Resource()->GetGPUVirtualAddress());
 
