@@ -17,7 +17,7 @@ public:
     XMFLOAT3    GetRotate() { return m_xmfRotate; }
     XMFLOAT3    GetPosition() { return m_xmfPosition; }
     XMFLOAT3    GetLook();
-    XMMATRIX    GetWorldMatrix(); 
+    XMMATRIX    GetWorldMatrix();
     XMFLOAT4X4* GetWorldMatrixPointer() { return &m_xmmWorld; }
 public:
     void        SetScale(XMFLOAT3 xmfSclae) { m_xmfScale = xmfSclae; }

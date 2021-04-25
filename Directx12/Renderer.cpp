@@ -134,12 +134,6 @@ void Renderer::Render(const float& fTimeDelta)
 		}
 	}
 
-	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_SKILL])
-	{
-		m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
-		pObject->Render(fTimeDelta);
-	}
-
     //////////////////////////////////////////////////////////////
 
 	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Shade");
@@ -169,6 +163,12 @@ void Renderer::Render(const float& fTimeDelta)
 			m_InstanceCheck[pObject->GetMeshName()] = InstanceMgr::GetInstnace()->m_InstanceObjects[pObject->GetMeshName()]->GetInstanceCount();
 			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetMeshName()]);
 		}
+	}
+
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_SKILL])
+	{
+		m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+		pObject->Render(fTimeDelta);
 	}
 
 

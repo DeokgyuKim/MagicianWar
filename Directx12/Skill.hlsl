@@ -3,14 +3,14 @@
 struct In_Skill
 {
 	float3 PosL  : POSITION;
-	float2 UV : TEXCOORD;
+	float2 TexC : TEXCOORD;
 	float3 Normal : NORMAL;
 };
 
 struct Out_Skill
 {
 	float4 PosH  : SV_POSITION;
-	float2 UV : TEXCOORD;
+	float2 TexC : TEXCOORD;
 	float4 Normal : NORMAL;
 };
 
@@ -31,7 +31,7 @@ Out_Skill VS_Flames_FireEff(In_Skill vin)
 	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorldNoInstanced), gView), gProj);
 
 	// Just pass vertex color into the pixel shader.
-	vout.UV = vin.UV;
+	vout.TexC = vin.TexC;
 	vout.Normal = normalize(mul(float4(vin.Normal, 0.f), gWorldNoInstanced));
 
 	return vout;
@@ -43,9 +43,9 @@ PSOut_Skill PS_Flames_FireEff(Out_Skill pin)
 
 	MaterialData materialData = gMaterialData[MaterialIndexNoInstanced];
 
-	float2 uv1 = pin.UV;
-	float2 uv2 = pin.UV * 2.f;
-	float2 uv3 = pin.UV * 3.f;
+	float2 uv1 = pin.TexC;
+	float2 uv2 = pin.TexC * 2.f;
+	float2 uv3 = pin.TexC * 3.f;
 
 	float fOffset = gSkillIdx * 0.3f + 0.7f;
 	
@@ -72,9 +72,9 @@ PSOut_Skill PS_Flames_FireEff(Out_Skill pin)
 
 	float4 noise = noise1 + noise2 + noise3;
 
-	float perturb = ((1.f - pin.UV.y) * 0.8f) + 0.5f;
+	float perturb = ((1.f - pin.TexC.y) * 0.8f) + 0.5f;
 
-	float2 noiseCoord = (noise.xy * perturb) + pin.UV.xy;
+	float2 noiseCoord = (noise.xy * perturb) + pin.TexC.xy;
 	float4 fire = SkillEffTex1.Sample(gsamClamp, noiseCoord);
 
 	vout.Diffuse = fire;
@@ -83,6 +83,72 @@ PSOut_Skill PS_Flames_FireEff(Out_Skill pin)
 	//vout.Specular = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gSpecular;
 	vout.Normal = float4((pin.Normal * 0.5f + 0.5f).xyz, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+
+	return vout;
+}
+
+
+struct In_Skill_Static
+{   // 구조물
+	float3 PosL    : POSITION;
+	float3 NormalL : NORMAL;
+	float2 TexC    : TEXCOORD;
+	float3 TangentL : TANGENT;
+	float3 BinormalL : BINORMAL;
+};
+
+struct Out_Skill_Static
+{   // 기본 
+	float4 PosH    : SV_POSITION;
+	float3 PosW    : POSITION2;
+	float3 NormalW : NORMAL;
+	float2 TexC    : TEXCOORD;
+	float3 TangentW : TANGENT;
+	float3 BinormalW : BINORMAL;
+};
+
+Out_Skill_Static VS_FireShock_FireCylinder(In_Skill_Static vin)
+{
+	Out_Skill_Static vout = (Out_Skill_Static)0;
+
+	// 월드 & 카메라 변환
+	float4 posH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorldNoInstanced), gView), gProj);
+	vout.PosH = posH;
+
+	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)gWorldNoInstanced));
+	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)gWorldNoInstanced));
+	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)gWorldNoInstanced));
+
+	vout.TexC = vin.TexC;
+
+	return vout;
+}
+
+PSOut_Skill PS_FireShock_FireCylinder(Out_Skill_Static pin)
+{
+	PSOut_Skill vout = (PSOut_Skill)0;
+
+	float3 diff1 = SkillEffTex1.Sample(gsamLinear, pin.TexC).rgb;
+	float3 diff2 = SkillEffTex2.Sample(gsamLinear, pin.TexC).rgb;
+
+	float multi1 = ((diff2.r * sin(gSkillTime)) * 2.8);
+	float multi2 = diff2.r * sin(gSkillTime);
+	float b = saturate(pow(multi1 + multi2, 20));
+
+	float c = pow(multi1 + multi2, 20);
+
+	float3 Ke;
+
+	if (0.9f >= b)
+		Ke = float3(100.f, 1.f, 1.f);
+	else
+		Ke = float3(0.f, 0.f, 0.f);
+
+	float3 diffuse = (Ke * float3(0.f, 1.f, 0.f) + diff1);
+
+	vout.Diffuse = float4(diffuse, c);
+
+	//vout.Diffuse = float4(diff2.rgb, diff2.r);
 
 	return vout;
 }

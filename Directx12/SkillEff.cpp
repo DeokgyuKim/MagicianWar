@@ -48,7 +48,6 @@ void SkillEff::Release()
 
 int SkillEff::Update(const float& fTimeDelta)
 {
-    m_fTime += fTimeDelta;
     Object::Update(fTimeDelta);
     return 0;
 }

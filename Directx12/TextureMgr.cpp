@@ -24,6 +24,10 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Noise4", L"../Resources/Noise4.dds", false, 12);
 	m_mapTextures["Noise4"] = pTexture;
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "BoomParticle", L"../Resources/BoomParticle.dds", false, 12);
+	m_mapTextures["BoomParticle"] = pTexture;
+	
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall", L"../Resources/FireBall.dds");
 	m_mapTextures["FireBall"] = pTexture;
 

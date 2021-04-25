@@ -7,7 +7,9 @@
 #include "Skybox.h"
 #include "StaticObject.h"
 #include "Bullet.h"
+
 #include "Flames.h"
+#include "FireShock.h"
 
 #include "StaticMeshMgr.h"
 #include "InstanceMgr.h"
@@ -171,6 +173,8 @@ void TestScene::Initialize()
 		XMFLOAT3(10.f, 1.f, 5.f));
 	m_pObjects[OBJ_SKILL].push_back(pObj);
 
+	pObj = new FireShock(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	m_pObjects[OBJ_SKILL].push_back(pObj);
 
 	//Core::GetInstance()->CmdLstReset();
 	//pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());

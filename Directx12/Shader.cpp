@@ -64,6 +64,19 @@ HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* Ro
 		psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+	psoDesc.BlendState.AlphaToCoverageEnable = false;
+	psoDesc.BlendState.IndependentBlendEnable = false;
+	psoDesc.BlendState.RenderTarget[0].BlendEnable = true;
+	psoDesc.BlendState.RenderTarget[0].LogicOpEnable = false;
+	psoDesc.BlendState.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	psoDesc.BlendState.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	psoDesc.BlendState.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	psoDesc.BlendState.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
+	psoDesc.BlendState.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;
+	psoDesc.BlendState.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	psoDesc.BlendState.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	psoDesc.BlendState.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
 	if (DepthStencil)
 	{
 		psoDesc.DepthStencilState.DepthEnable = TRUE;

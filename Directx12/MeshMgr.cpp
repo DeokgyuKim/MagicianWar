@@ -163,6 +163,7 @@ void MeshMgr::BuildModels()
 	BuildModel(TREE_01, MESH_TYPE::TREE);
 	BuildModel(HOUSE_02, MESH_TYPE::HOUSE);
 	BuildModel(TILE_01, MESH_TYPE::TILE);
+	BuildModel("Cylinder", MESH_TYPE::TILE);
 	BuildModel("barrel_group", MESH_TYPE::TILE);
 	BuildModel("box", MESH_TYPE::TILE);
 	BuildModel("castle_door_1", MESH_TYPE::TILE);
