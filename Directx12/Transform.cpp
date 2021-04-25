@@ -122,7 +122,7 @@ int Transform::Jump(DWORD iKey)
 	return 0;
 #endif
 	XMFLOAT3 look, right, up;
-	memcpy(&look, &m_xmmWorld._31, sizeof(XMFLOAT3));
+	memcpy(&look, &m_xmmOriginWorld._31, sizeof(XMFLOAT3));
 	memcpy(&right, &m_xmmWorld._11, sizeof(XMFLOAT3));
 	up = XMFLOAT3(0.f, 1.f, 0.f);
 
