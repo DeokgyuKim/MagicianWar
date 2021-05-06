@@ -89,7 +89,7 @@ void LoadingScene::Initialize()
 	m_pLoading = new Loading(Core::GetInstance(), Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLstForLoading(), Renderer::GetInstance()->GetHeap());
 
 #ifdef NETWORK
-	Network::GetInstance()->Init("192.168.219.104");
+	Network::GetInstance()->Init("192.168.141.167");
 #endif
 }
 

@@ -36,4 +36,18 @@
 #define M_MoveBackward_Speed 0.03f
 
 
-#define NETWOR
+#define NETWORK
+
+#define MAX_BUFFER 1024
+#define MIN_BUFFER 256
+
+// protocol
+#define packet_skill 21
+#define packet_keyInput 22
+#define packet_ready 23
+#define ctos_playerInfo 25
+#define stoc_startInfo 26
+#define stoc_sceneChange 27
+#define stoc_otherPlayerNum 29
+#define stoc_OtherstartInfo 30
+#define stoc_playerInfo 31

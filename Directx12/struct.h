@@ -143,14 +143,19 @@ struct PlayerInfo
 	XMFLOAT3	xmfPosition;
 };
 
-typedef struct ServerPlayerInfo
+struct STOC_ServerPlayer
 {
+	short size;
+	unsigned char type;
 	PlayerInfo	info;
 	SOCKET		socket;
-}SERVERPLAYER;
+};
 
-struct SendToServerPlayerInfo
+struct CTOS_PlayerInfo
 {
+	short size;
+	unsigned char type;
+	unsigned char id;
 	XMFLOAT4X4		matWorld;
 	PLAYER_STATE	ePlayerState;
 	ANIMATION_TYPE	eAnimType;
@@ -159,8 +164,10 @@ struct SendToServerPlayerInfo
 	float			fWeight;
 };
 
-struct SendToClientPlayerInfo
+struct STOC_PlayerInfo
 {
+	short size;
+	unsigned char type;
 	PlayerInfo		playerInfo;
 	XMFLOAT4X4		matWorld;
 	PLAYER_STATE	ePlayerState;
@@ -168,4 +175,66 @@ struct SendToClientPlayerInfo
 	float			fAnimTime;
 	ANIMATION_TYPE	eAnimBlendType;
 	float			fWeight;
+};
+
+struct Client_State { // 
+	PlayerInfo		playerInfo;
+	XMFLOAT4X4		matWorld;
+	PLAYER_STATE	ePlayerState;
+	ANIMATION_TYPE	eAnimType;
+	float			fAnimTime;
+	ANIMATION_TYPE	eAnimBlendType;
+	float			fWeight;
+	bool			isConnected;
+};
+
+struct CTOS_Ready {
+	short size;
+	unsigned char type;
+	unsigned char id;
+	DWORD ready;
+};
+
+struct CTOS_Skill {
+	short size;
+	unsigned char type;
+	unsigned char id; // 누가 쏘는지
+	unsigned char skill_type; // 스킬 타입
+	XMFLOAT4X4		matWorld; 
+	// 또 뭐 필요하지
+};
+
+struct CTOS_keyInput {
+	short size;
+	unsigned char type;
+	unsigned char id;
+	DWORD key; // 키입력
+};
+
+struct STOC_sceneChange {
+	short size;
+	unsigned char type;
+	DWORD sceneNum; // 0 : Logo, 1 : Lobby, 2 : mainScene
+};
+
+struct STOC_startInfo {
+	short size;
+	unsigned char type;
+	DWORD		dwPlayerNum;
+	DWORD		dwTeamNum;
+	XMFLOAT3	xmfPosition;
+};
+
+struct STOC_OtherstartInfo {
+	short size;
+	unsigned char type;
+	DWORD		dwPlayerNum;
+	DWORD		dwTeamNum;
+	XMFLOAT3	xmfPosition;
+};
+
+struct STOC_otherPlayerCount {
+	short size;
+	unsigned char type;
+	DWORD playerCount;
 };
