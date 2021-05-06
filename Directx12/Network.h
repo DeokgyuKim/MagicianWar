@@ -39,8 +39,6 @@ public:
 	void		SetOtherPlayerInfo(list<Object*>* plstPlayer);
 private:
 	SOCKET	m_Sock;
-	CRITICAL_SECTION m_Crt;
-	HANDLE	m_hRecvThreadForLobby;
 
 private:
 	//초기에 받아와야 할 변수
@@ -50,7 +48,7 @@ private:
 	bool	m_bLobbyEnd;
 private:
 	map<DWORD, PlayerInfo> m_mapOtherPlayerInfos;
-	map<DWORD, SendToClientPlayerInfo> m_mapRecvPlayerInfos;
+	map<DWORD, STOC_PlayerInfo> m_mapRecvPlayerInfos;
 	int		m_iPlayerNum;
 public:
 	//Function For LobbyThread Send
@@ -62,6 +60,25 @@ public:
 	//Function For LobbyThread Recv
 	bool IsMoveToMainGame();
 	void RecvOtherPlayerInfo();
-	void RecvPlayerInfo();
+
+
+public:
+	void recvUpdate();
+	void recvProcessing(int _bytes);
+	void packetProcessing(char* _packetBuffer);
+
+private: // packets
+	CTOS_keyInput KEY_packet;
+	CTOS_PlayerInfo tInfo_packet;
+	CTOS_Ready Ready_packet;
+
+	char* packet_start_ptr;
+	char recvBuffer[MAX_BUFFER];
+	char packetBuffer[MAX_BUFFER];
+	short packet_size;
+	int savedPacket_size;
+
+	DWORD m_SceneChange;
+	bool mainSceneLateInit;
 };
 

@@ -143,11 +143,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerThread.cpp" />
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Directx12\define.h" />
+    <ClInclude Include="..\..\Directx12\struct.h" />
+    <ClInclude Include="include.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerThread.h" />
+    <ClInclude Include="serverDefine.h" />
+    <ClInclude Include="serverStruct.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

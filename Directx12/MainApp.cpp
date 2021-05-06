@@ -9,6 +9,7 @@
 #include "StaticMeshMgr.h"
 #include "MaterialMgr.h"
 #include "InstanceMgr.h"
+#include "Network.h"
 
 MainApp* MainApp::m_pInstance = NULL;
 
@@ -35,6 +36,10 @@ void MainApp::Initialize()
 void MainApp::Update(const float& fTimeDelta)
 {
 	m_iEvent = m_pScene->Update(fTimeDelta);
+#ifdef NETWORK
+	Network::GetInstance()->Update(); // network의 update도 계속 돌아야하니까
+#endif // NETWORK
+
 }
 
 void MainApp::LateUpdate(const float& fTimeDelta)

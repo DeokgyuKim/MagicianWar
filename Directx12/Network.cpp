@@ -11,38 +11,7 @@
 
 Network* Network::m_pInstance = NULL;
 
-unsigned int ReciveThreadForLobby(void* pArg)
-{
-	while (true)
-	{
-		Network::GetInstance()->SendReadyState();
 
-		//다음 씬으로 넘어갈건지 확인
-		if (Network::GetInstance()->IsMoveToMainGame())
-		{
-			//상대의 플레이어 정보 받아오기
-			Network::GetInstance()->RecvOtherPlayerInfo();
-
-			while (true)	///MainPlay
-			{
-				//Send
-				//내 플레이어정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
-				Network::GetInstance()->SendMyPlayerInfo();
-				//키입력정보(w, a, s, d, 스킬12, 점프, 마우스클릭)
-				Network::GetInstance()->SendKeyInput();
-
-				//Recv
-				//플레이어 정보들
-				Network::GetInstance()->RecvPlayerInfo();
-				//스킬, 총알같은거 정보
-				//게임상태 가져오기
-			}
-		}
-	}
-	_endthreadex(0);
-
-	return 0;
-}
 
 bool Network::Init(const string& strServerIP)
 {
@@ -80,27 +49,80 @@ bool Network::Init(const string& strServerIP)
 		return false;
 	}
 
-	retval = recvn(m_Sock, (char*)&m_tMyInfo.dwPlayerNum, sizeof(DWORD), 0);
-	retval = recvn(m_Sock, (char*)&m_tMyInfo.dwTeamNum, sizeof(DWORD), 0);
+	retval = recv(m_Sock, recvBuffer, MAX_BUFFER, 0);
+	if (retval > 0) recvProcessing(retval);
+
+		// nonBlocking
+		unsigned long nonBlocking = 1;
+	ioctlsocket(m_Sock, FIONBIO, &nonBlocking);
 
 	cout << m_tMyInfo.dwPlayerNum << ", " << m_tMyInfo.dwTeamNum << endl;
 
+	{ // packet 초기화
+		KEY_packet.size = sizeof(KEY_packet);
+		KEY_packet.type = packet_keyInput;
+		KEY_packet.id = m_tMyInfo.dwPlayerNum;
 
-	InitializeCriticalSection(&m_Crt);
+		tInfo_packet.size = sizeof(tInfo_packet);
+		tInfo_packet.type = ctos_playerInfo;
+		tInfo_packet.ePlayerState = PLAYER_STATE::IDLE;
+		tInfo_packet.eAnimType = ANIMATION_TYPE::IDLE;
+		tInfo_packet.fAnimTime = 0.f;
+		tInfo_packet.eAnimBlendType = ANIMATION_TYPE::IDLE;
+		tInfo_packet.fWeight = 0.f;
+		
 
-	m_hRecvThreadForLobby = (HANDLE)_beginthreadex(NULL, 0, ReciveThreadForLobby, this, 0, NULL);
+		Ready_packet.size = sizeof(Ready_packet);
+		Ready_packet.type = packet_ready;
+		Ready_packet.id = m_tMyInfo.dwPlayerNum;
+		Ready_packet.ready = 0;
+	}
 
-    return false;
+	packet_size = 0;
+	savedPacket_size = 0;
+	m_SceneChange = 1; // 첨부터 Lobby로 일단
+	mainSceneLateInit = false;
+
+
+	return false;
 }
 
 bool Network::Release()
 {
-	DeleteCriticalSection(&m_Crt);
-    return false;
+	
+	return false;
 }
 
 void Network::Update()
 {
+	// 이제 여기서 돌릴거
+	recvUpdate();
+
+	if (m_SceneChange == 0)  // Logo
+	{
+
+	}
+	else if (m_SceneChange == 1) // Lobby
+	{
+		SendReadyState(); // lobby에서는 ready만 보냄
+	}
+	else if (m_SceneChange == 2) // mainScene
+	{
+		if (!mainSceneLateInit)
+		{
+			//상대의 플레이어 정보 받아오기
+			RecvOtherPlayerInfo();
+			mainSceneLateInit = true;
+		}
+		//Send
+		//내 플레이어정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
+		SendMyPlayerInfo();
+		//키입력정보(w, a, s, d, 스킬12, 점프, 마우스클릭)
+		SendKeyInput();
+		//RecvPlayerInfo();
+
+	}
+
 }
 
 int Network::recvn(SOCKET s, char* buf, int len, int flags)
@@ -125,24 +147,26 @@ int Network::recvn(SOCKET s, char* buf, int len, int flags)
 
 void Network::SetMyPlayerInfo(Player* pPlayer)
 {
-	EnterCriticalSection(&m_Crt);
+	
 	XMFLOAT3 pos;
 	memcpy(&pos, &m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._41, sizeof(XMFLOAT3));
 
+	//cout << "( " << pos.x << ", " << pos.y << ", " << pos.z << endl;
+
 	pPlayer->SetPosition(pos);
-	LeaveCriticalSection(&m_Crt);
+	
 }
 
 void Network::SetOtherPlayerInfo(list<Object*>* plstPlayer)
 {
-	EnterCriticalSection(&m_Crt);
+
 	//pPlayer->SetWorld(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld);
 	for (auto iter = plstPlayer->begin(); iter != plstPlayer->end(); ++iter)
 	{
 		Player* pPlayer = dynamic_cast<Player*>(*iter);
 		pPlayer->SetWorld(m_mapRecvPlayerInfos[pPlayer->GetNetworkInfo().dwPlayerNum].matWorld);
 	}
-	LeaveCriticalSection(&m_Crt);
+	
 
 }
 
@@ -151,48 +175,124 @@ bool Network::IsMoveToMainGame()
 	bool isNext = false;
 	int retval = recvn(m_Sock, (char*)&isNext, sizeof(bool), 0);
 
-	cout << "IsNext? " <<  isNext << endl;
+	cout << "IsNext? " << isNext << endl;
 
 	return isNext;
 }
 
 void Network::RecvOtherPlayerInfo()
 {
-	int retval;
-	int OtherPlayerNum;
-
-	retval = recvn(m_Sock, (char*)&m_tMyInfo, sizeof(PlayerInfo), 0);
-	m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum];
-	cout << "Pos: " << m_tMyInfo.xmfPosition.x << ", " << m_tMyInfo.xmfPosition.y << ", " << m_tMyInfo.xmfPosition.z << endl;
-
-	retval = recvn(m_Sock, (char*)&OtherPlayerNum, sizeof(DWORD), 0);
-
-	cout << "PlayerNum: " << OtherPlayerNum + 1 << endl;
-	m_iPlayerNum = OtherPlayerNum + 1;
-
-	for (int i = 0; i < OtherPlayerNum; ++i)
-	{
-		PlayerInfo other;
-		retval = recvn(m_Sock, (char*)&other, sizeof(PlayerInfo), 0);
-		m_mapOtherPlayerInfos[other.dwPlayerNum] = other;
-		m_mapRecvPlayerInfos[other.dwPlayerNum];
-	}
 	m_bLobbyEnd = true;
 }
 
-void Network::RecvPlayerInfo()
+void Network::recvUpdate() // 모든 recv는 이걸 할거야 이제
 {
-	int retval;
-	SendToClientPlayerInfo tInfo;
-
-	for (int i = 0; i < m_iPlayerNum; ++i)
+	int retval = recv(m_Sock, recvBuffer, MAX_BUFFER, 0);
+	if (retval == SOCKET_ERROR)
 	{
-		retval = recvn(m_Sock, (char*)&tInfo, sizeof(SendToClientPlayerInfo), 0);
-		EnterCriticalSection(&m_Crt);
-		m_mapRecvPlayerInfos[tInfo.playerInfo.dwPlayerNum] = tInfo;
-		LeaveCriticalSection(&m_Crt);
+		if (WSAGetLastError() != WSAEWOULDBLOCK)
+		{
+			closesocket(m_Sock);
+			WSACleanup();
+		}
+
 	}
-	cout << "RecvPlayerInfo: " << m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._41 << ", " << m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._42 << ", " << m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._43 << endl;
+	else if (retval == 0) return;
+	else recvProcessing(retval);
+
+}
+
+void Network::recvProcessing(int _bytes)
+{
+	packet_start_ptr = recvBuffer;
+	int recvBytes = _bytes;
+	while (0 != recvBytes)
+	{
+		if (packet_size == 0)
+			packet_size = *(reinterpret_cast<short*>(&packet_start_ptr[0]));
+
+		if (recvBytes + savedPacket_size >= packet_size)
+		{
+			memcpy((packetBuffer + savedPacket_size), packet_start_ptr, (packet_size - savedPacket_size));
+
+			packetProcessing(packetBuffer);
+
+			packet_start_ptr += (packet_size - savedPacket_size);
+			recvBytes -= (packet_size - savedPacket_size);
+			packet_size = 0;
+			savedPacket_size = 0;
+		}
+		else
+		{
+			memcpy((packetBuffer + savedPacket_size), packet_start_ptr, recvBytes);
+			savedPacket_size += recvBytes;
+			recvBytes = 0;
+		}
+	}
+
+}
+
+void Network::packetProcessing(char* _packetBuffer)
+{
+	char packetType = _packetBuffer[2];
+	switch (packetType)
+	{
+	case stoc_startInfo: // 초기 recv 
+	{
+		cout << "초기 좌표 받기" << endl;
+		STOC_startInfo* data = reinterpret_cast<STOC_startInfo*>(_packetBuffer);
+		m_tMyInfo.dwPlayerNum = data->dwPlayerNum;
+		m_tMyInfo.dwTeamNum = data->dwTeamNum;
+		m_tMyInfo.xmfPosition = data->xmfPosition;
+		break;
+	}
+	case stoc_sceneChange: // IsMoveToMainGame
+	{
+		cout << "메인씬으로" << endl;
+		STOC_sceneChange* data = reinterpret_cast<STOC_sceneChange*>(_packetBuffer);
+		m_SceneChange = data->sceneNum; 
+		break;
+	}
+	case stoc_otherPlayerNum: // 다른 플레이어 인원수 받아오기
+	{
+		cout << "다른 플레이어 인원 수 받기" << endl;
+		STOC_otherPlayerCount* data = reinterpret_cast<STOC_otherPlayerCount*>(_packetBuffer);
+		m_iPlayerNum = data->playerCount + 1;
+		break;
+	}
+	case stoc_OtherstartInfo:
+	{
+		cout << "다른 플레이어 초기좌표" << endl;
+		STOC_OtherstartInfo* data = reinterpret_cast<STOC_OtherstartInfo*>(_packetBuffer);
+		m_mapOtherPlayerInfos[data->dwPlayerNum].dwPlayerNum = data->dwPlayerNum;
+		m_mapOtherPlayerInfos[data->dwPlayerNum].dwTeamNum = data->dwTeamNum;
+		m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition = data->xmfPosition;
+		m_mapRecvPlayerInfos[data->dwPlayerNum];
+		break;
+	}
+	case stoc_playerInfo:
+	{
+		//cout << "우리 플레이어 업데이트" << endl;
+		STOC_PlayerInfo* data = reinterpret_cast<STOC_PlayerInfo*>(_packetBuffer);
+		cout << "플레이어 넘버 - " << data->playerInfo.dwPlayerNum << endl;
+		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].eAnimBlendType = data->eAnimBlendType;
+		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].eAnimType = data->eAnimType;
+		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].ePlayerState = data->ePlayerState;
+		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].fAnimTime = data->fAnimTime;
+		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].fWeight = data->fWeight;
+		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].matWorld = data->matWorld;
+		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwPlayerNum = data->playerInfo.dwPlayerNum;
+		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwTeamNum = data->playerInfo.dwTeamNum;
+		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
+
+		//XMFLOAT3 pos;
+		//memcpy(&pos, &m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].matWorld._41, sizeof(XMFLOAT3));
+
+		//cout << "( " << pos.x << ", " << pos.y << ", " << pos.z << endl;
+		break;
+	}
+
+	}
 }
 
 void Network::SendReadyState()
@@ -200,47 +300,42 @@ void Network::SendReadyState()
 	int retval;
 
 	Object* pObj = MainApp::GetInstance()->GetScene()->GetUIForTag(0);
-	DWORD Send = 0;
+
 	if (pObj != NULL)
 	{
 		switch (dynamic_cast<Button*>(pObj)->GetButtonState())
 		{
 		case BUTTON_STATE::MOUSEON:
 		case BUTTON_STATE::NONE:
-			Send = 0;
+			Ready_packet.ready = 0;
 			break;
 		case BUTTON_STATE::ON:
-			Send = 1;
+			Ready_packet.ready = 1;
 			break;
 		}
 	}
-	retval = send(m_Sock, (char*)&Send, sizeof(DWORD), 0);
+	retval = send(m_Sock, (char*)&Ready_packet, Ready_packet.size, 0);
 }
 
 void Network::SendMyPlayerInfo()
 {
 	Object* pObj = MainApp::GetInstance()->GetScene()->GetPlayer();
-	SendToServerPlayerInfo tInfo;
+
 
 	if (pObj != NULL)
 	{
 		Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
-		tInfo.matWorld = pPlayer->GetWorld();
+		tInfo_packet.matWorld = pPlayer->GetWorld();
 	}
 	else
 	{
-		tInfo.matWorld = MathHelper::Identity4x4();
+		tInfo_packet.matWorld = MathHelper::Identity4x4();
 	}
 
-
-	tInfo.ePlayerState = PLAYER_STATE::IDLE;
-	tInfo.eAnimType = ANIMATION_TYPE::IDLE;
-	tInfo.fAnimTime = 0.f;
-	tInfo.eAnimBlendType = ANIMATION_TYPE::IDLE;
-	tInfo.fWeight = 0.f;
+	tInfo_packet.id = m_tMyInfo.dwPlayerNum;
 
 	int retval;
-	retval = send(m_Sock, (char*)&tInfo, sizeof(SendToServerPlayerInfo), 0);
+	retval = send(m_Sock, (char*)&tInfo_packet, tInfo_packet.size, 0);
 }
 
 void Network::SendKeyInput()
@@ -264,7 +359,9 @@ void Network::SendKeyInput()
 		dwKeyInput |= 0x0008;
 	}
 
+	KEY_packet.key = dwKeyInput;
+
 	int retval;
-	retval = send(m_Sock, (char*)&dwKeyInput, sizeof(DWORD), 0);
+	retval = send(m_Sock, (char*)&KEY_packet, KEY_packet.size, 0);
 }
 
