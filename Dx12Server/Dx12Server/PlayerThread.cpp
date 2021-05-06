@@ -175,7 +175,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 
 
 			gClients[player.info.dwPlayerNum].Lock();
-			gClients[player.info.dwPlayerNum].setPlayerInfo(player.info);
+			//gClients[player.info.dwPlayerNum].setPlayerInfo(player.info);
 			gClients[player.info.dwPlayerNum].Unlock();
 
 			for (int j = 0; j < gClientNum; ++j) {

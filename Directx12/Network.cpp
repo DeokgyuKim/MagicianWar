@@ -89,7 +89,8 @@ bool Network::Init(const string& strServerIP)
 
 bool Network::Release()
 {
-	
+	closesocket(m_Sock);
+	WSACleanup();
 	return false;
 }
 
