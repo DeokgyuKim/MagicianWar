@@ -13,6 +13,8 @@ enum class BoneType : int		{ UPPER_BONE = 0, ROOT_BONE, NONE };
 enum BoneIndex					{ WIZARD = 0, COUNT };
 enum BUTTON_STATE				{ NONE, MOUSEON, ON };
 
+
+
 struct Vertex
 {
 	XMFLOAT3 Pos;

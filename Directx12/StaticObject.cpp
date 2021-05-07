@@ -38,6 +38,12 @@ void StaticObject::Initialize(XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 90.f, 0.f));
 	m_MaterialIndex = dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetMaterialIndex();
+
+
+	///SetPhysX
+	Object::LateUpdate(0.f);
+
+	CPhysXMgr::GetInstance()->CreateTriangleStaticMesh(this, MeshName, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix());
 }
 
 void StaticObject::Release()

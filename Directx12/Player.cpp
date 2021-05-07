@@ -57,6 +57,11 @@ void Player::Initialize(XMFLOAT3 pos)
 	m_RootBody = make_unique<PlayerFSM>(this, BoneType::ROOT_BONE);
 
 	m_strTextureName = "wizard_01";
+
+	CPhysXMgr::GetInstance()->m_PlayerController = m_pCapsuleCon = CPhysXMgr::GetInstance()->
+		CreateCapsuleController(this, pos, 0.4f, 1.f, true);
+	m_pCapsuleCon->getActor()->setName("Player");
+	m_pCapsuleCon->getActor()->setMass(20.f);
 }
 
 void Player::Release()

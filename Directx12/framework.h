@@ -59,6 +59,8 @@ using namespace Microsoft::WRL;
 #include "struct.h"
 #include "define.h"
 
+#include "PhysXMgr.h"
+
 extern UINT gnCbvSrvUavDescriptorIncrementSize;
 extern UINT gnRtvDescriptorIncrementSize;
 extern UINT gnDsvDescriptorIncrementSize;

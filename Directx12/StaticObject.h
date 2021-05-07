@@ -22,6 +22,6 @@ protected:
     ID3D12Device*                               m_pDevice;
     ID3D12GraphicsCommandList*                  m_pCmdLst;
 
-
+    pxMeshVtxInfo   m_tPxMeshVtxInfo;
 };
 

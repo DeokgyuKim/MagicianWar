@@ -121,6 +121,20 @@ void MeshMgr::BuildModel(string meshName, MESH_TYPE etype)
 	check = LoadStaticMeshFile(Vertices, indices, &materials, m_strFilePath);
 	if (!check) { cout << "메쉬 로드 실패" << endl; }
 
+	m_StaticMeshVtxInfo[meshName].ulVertexCnt = Vertices.size();
+	for (int i = 0; i < m_StaticMeshVtxInfo[meshName].ulVertexCnt; ++i)
+		m_StaticMeshVtxInfo[meshName].vecVtxPos.push_back(Vertices[i].Pos);
+
+	for (int i = 0; i < indices.size() / 3; ++i)
+	{
+		Indices indic;
+		indic.i1 = 3 * indices[i];
+		indic.i2 = 3 * indices[i + 1];
+		indic.i3 = 3 * indices[i + 2];
+		m_StaticMeshVtxInfo[meshName].vecIdx.push_back(indic);
+	}
+
+
 
 	const UINT vbByteSize = (UINT)Vertices.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(UINT);

@@ -50,7 +50,7 @@ private: // Loader
 public:
 	// Get
 	MeshGeometry* GetMesh(const string& meshName) { return m_Meshs[meshName].get(); }
-
+	MeshVtxInfo GetMeshVtxInfo(const string& meshName) { return m_StaticMeshVtxInfo[meshName]; }
 private:
 	Core* m_pCore = NULL;
 	ID3D12Device* m_pDevice = NULL;
@@ -63,7 +63,7 @@ private:
 	unordered_map <string, unique_ptr<SkinnedModelInstance>> m_SkinnedModelInst;
 	string m_strFilePath;
 
-
+	unordered_map<string, MeshVtxInfo>	m_StaticMeshVtxInfo;
 
 };
 

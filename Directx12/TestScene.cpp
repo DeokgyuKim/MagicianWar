@@ -99,6 +99,16 @@ void TestScene::LateUpdate(const float& fTimeDelta)
 	Object* pObj = GetPlayer();
 	if (pObj != NULL)
 		Network::GetInstance()->SetMyPlayerInfo(dynamic_cast<Player*>(pObj));
+#else
+	if (CPhysXMgr::GetInstance()->PhysXStartTime > 10.f)
+	{
+		CPhysXMgr::GetInstance()->gScene->simulate(fTimeDelta);
+		CPhysXMgr::GetInstance()->gScene->fetchResults(true);
+	}
+	else
+	{
+		CPhysXMgr::GetInstance()->PhysXStartTime += fTimeDelta;
+	}
 #endif
 }
 

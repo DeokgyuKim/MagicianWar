@@ -46,12 +46,6 @@
     <Filter Include="01.Engine\04.Texture\00.DDSTexture\00.DDSLoader">
       <UniqueIdentifier>{fc433d4d-6dfb-46d2-827c-923ea39c46bb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Engine\01.Renderer\00.TextureMgr">
-      <UniqueIdentifier>{8ef3ef22-48ce-4ae8-beca-12a3fb125068}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Engine\01.Renderer\01.MeshMgr">
-      <UniqueIdentifier>{3fdb1b71-b260-41c8-8302-de5dfc4da908}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Engine\06.Component">
       <UniqueIdentifier>{40fdb1a1-aa4f-44fb-a3f2-8e679a2222bc}</UniqueIdentifier>
     </Filter>
@@ -87,12 +81,6 @@
     </Filter>
     <Filter Include="01.Engine\06.Component\01.Geometry\00.Cube\00.SkyboxCube">
       <UniqueIdentifier>{8a3f454d-3f1a-434b-92f2-0b39b7542692}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Engine\01.Renderer\02.AnimationMgr">
-      <UniqueIdentifier>{83ca9cf5-e1a3-4bdc-a504-1993d1c9c095}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Engine\01.Renderer\03.MaterailMgr">
-      <UniqueIdentifier>{09742e51-9db4-493f-8e23-dc200c3fb74d}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Engine\09.Loading">
       <UniqueIdentifier>{05d17adb-e6e8-47c5-80d1-fd4e75a09560}</UniqueIdentifier>
@@ -139,26 +127,11 @@
     <Filter Include="01.Engine\06.Component\03.Animation">
       <UniqueIdentifier>{9163647c-ed30-4090-bce7-25db8babc4bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Engine\01.Renderer\04.InstanceMgr">
-      <UniqueIdentifier>{8c5fab7b-4c05-45a5-8fdd-45e85ce397cd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Engine\01.Renderer\04.InstanceMgr\00.InstanceInfo">
-      <UniqueIdentifier>{eab659e3-da46-471e-b2a4-ef7c14f6bb0a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Engine\01.Renderer\05.KeyMgr">
-      <UniqueIdentifier>{cf9eed9c-aed4-41c0-a0c6-b1cbda0e23d5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Engine\02.Object\99.Interface">
       <UniqueIdentifier>{5cf28882-2fff-4b26-a2d2-82a76e641a12}</UniqueIdentifier>
     </Filter>
     <Filter Include="00.Game\02.Object\02.Player\00.PlayerFSM">
       <UniqueIdentifier>{1ab5465b-5910-423c-82be-3f9f70e620f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Engine\01.Renderer\02.AnimationMgr\00.SkinnedData">
-      <UniqueIdentifier>{074c270e-620e-435f-a12e-018b1333dc48}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Engine\01.Renderer\02.AnimationMgr\01.SkinnedModelInstance">
-      <UniqueIdentifier>{678e1b67-1828-4b32-a595-556214711498}</UniqueIdentifier>
     </Filter>
     <Filter Include="99.Default\99.Default">
       <UniqueIdentifier>{d8a5381a-4546-411d-b68f-f923bd079150}</UniqueIdentifier>
@@ -195,6 +168,39 @@
     </Filter>
     <Filter Include="00.Game\02.Object\06.Skill\01.FireShock">
       <UniqueIdentifier>{2c3c1177-2b7b-4b57-ac74-2aa2115ece1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\99.Manager">
+      <UniqueIdentifier>{1a909993-d9e0-4024-9f1c-435b0ad86ba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\99.Manager\00.TextureMgr">
+      <UniqueIdentifier>{8ef3ef22-48ce-4ae8-beca-12a3fb125068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\99.Manager\01.MeshMgr">
+      <UniqueIdentifier>{3fdb1b71-b260-41c8-8302-de5dfc4da908}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\99.Manager\02.AnimationMgr">
+      <UniqueIdentifier>{83ca9cf5-e1a3-4bdc-a504-1993d1c9c095}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\99.Manager\02.AnimationMgr\00.SkinnedData">
+      <UniqueIdentifier>{074c270e-620e-435f-a12e-018b1333dc48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\99.Manager\02.AnimationMgr\01.SkinnedModelInstance">
+      <UniqueIdentifier>{678e1b67-1828-4b32-a595-556214711498}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\99.Manager\03.MaterailMgr">
+      <UniqueIdentifier>{09742e51-9db4-493f-8e23-dc200c3fb74d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\99.Manager\04.InstanceMgr">
+      <UniqueIdentifier>{8c5fab7b-4c05-45a5-8fdd-45e85ce397cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\99.Manager\04.InstanceMgr\00.InstanceInfo">
+      <UniqueIdentifier>{eab659e3-da46-471e-b2a4-ef7c14f6bb0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\99.Manager\05.KeyMgr">
+      <UniqueIdentifier>{cf9eed9c-aed4-41c0-a0c6-b1cbda0e23d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Engine\99.Manager\06.PhysXMgr">
+      <UniqueIdentifier>{27dd3516-81f5-40a0-a50b-941856466643}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -265,13 +271,13 @@
       <Filter>01.Engine\06.Component\01.Geometry\02. Mesh</Filter>
     </ClInclude>
     <ClInclude Include="MeshMgr.h">
-      <Filter>01.Engine\01.Renderer\01.MeshMgr</Filter>
+      <Filter>01.Engine\99.Manager\01.MeshMgr</Filter>
     </ClInclude>
     <ClInclude Include="Geometry.h">
       <Filter>01.Engine\06.Component\01.Geometry</Filter>
     </ClInclude>
     <ClInclude Include="TextureMgr.h">
-      <Filter>01.Engine\01.Renderer\00.TextureMgr</Filter>
+      <Filter>01.Engine\99.Manager\00.TextureMgr</Filter>
     </ClInclude>
     <ClInclude Include="RenderTarget.h">
       <Filter>01.Engine\07.RenderTarget</Filter>
@@ -298,7 +304,7 @@
       <Filter>01.Engine\06.Component\01.Geometry\00.Cube\00.SkyboxCube</Filter>
     </ClInclude>
     <ClInclude Include="AnimationMgr.h">
-      <Filter>01.Engine\01.Renderer\02.AnimationMgr</Filter>
+      <Filter>01.Engine\99.Manager\02.AnimationMgr</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>01.Engine\06.Component\03.Animation</Filter>
@@ -310,7 +316,7 @@
       <Filter>01.Engine\00.Core</Filter>
     </ClInclude>
     <ClInclude Include="MaterialMgr.h">
-      <Filter>01.Engine\01.Renderer\03.MaterailMgr</Filter>
+      <Filter>01.Engine\99.Manager\03.MaterailMgr</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>00.Game\02.Object\05.Bullet</Filter>
@@ -337,13 +343,13 @@
       <Filter>01.Engine\10.Network</Filter>
     </ClInclude>
     <ClInclude Include="InstanceInfo.h">
-      <Filter>01.Engine\01.Renderer\04.InstanceMgr\00.InstanceInfo</Filter>
+      <Filter>01.Engine\99.Manager\04.InstanceMgr\00.InstanceInfo</Filter>
     </ClInclude>
     <ClInclude Include="InstanceMgr.h">
-      <Filter>01.Engine\01.Renderer\04.InstanceMgr</Filter>
+      <Filter>01.Engine\99.Manager\04.InstanceMgr</Filter>
     </ClInclude>
     <ClInclude Include="KeyMgr.h">
-      <Filter>01.Engine\01.Renderer\05.KeyMgr</Filter>
+      <Filter>01.Engine\99.Manager\05.KeyMgr</Filter>
     </ClInclude>
     <ClInclude Include="InterfaceFSM.h">
       <Filter>01.Engine\02.Object\99.Interface</Filter>
@@ -352,10 +358,10 @@
       <Filter>00.Game\02.Object\02.Player\00.PlayerFSM</Filter>
     </ClInclude>
     <ClInclude Include="SkinnedData.h">
-      <Filter>01.Engine\01.Renderer\02.AnimationMgr\00.SkinnedData</Filter>
+      <Filter>01.Engine\99.Manager\02.AnimationMgr\00.SkinnedData</Filter>
     </ClInclude>
     <ClInclude Include="SkinnedModelInstance.h">
-      <Filter>01.Engine\01.Renderer\02.AnimationMgr\01.SkinnedModelInstance</Filter>
+      <Filter>01.Engine\99.Manager\02.AnimationMgr\01.SkinnedModelInstance</Filter>
     </ClInclude>
     <ClInclude Include="d3dUtil.h">
       <Filter>99.Default\99.Default</Filter>
@@ -386,6 +392,9 @@
     </ClInclude>
     <ClInclude Include="FireShock.h">
       <Filter>00.Game\02.Object\06.Skill\01.FireShock</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysXMgr.h">
+      <Filter>01.Engine\99.Manager\06.PhysXMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -444,13 +453,13 @@
       <Filter>01.Engine\06.Component\01.Geometry\02. Mesh</Filter>
     </ClCompile>
     <ClCompile Include="MeshMgr.cpp">
-      <Filter>01.Engine\01.Renderer\01.MeshMgr</Filter>
+      <Filter>01.Engine\99.Manager\01.MeshMgr</Filter>
     </ClCompile>
     <ClCompile Include="Geometry.cpp">
       <Filter>01.Engine\06.Component\01.Geometry</Filter>
     </ClCompile>
     <ClCompile Include="TextureMgr.cpp">
-      <Filter>01.Engine\01.Renderer\00.TextureMgr</Filter>
+      <Filter>01.Engine\99.Manager\00.TextureMgr</Filter>
     </ClCompile>
     <ClCompile Include="RenderTarget.cpp">
       <Filter>01.Engine\07.RenderTarget</Filter>
@@ -474,7 +483,7 @@
       <Filter>01.Engine\06.Component\01.Geometry\00.Cube\00.SkyboxCube</Filter>
     </ClCompile>
     <ClCompile Include="AnimationMgr.cpp">
-      <Filter>01.Engine\01.Renderer\02.AnimationMgr</Filter>
+      <Filter>01.Engine\99.Manager\02.AnimationMgr</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>01.Engine\06.Component\03.Animation</Filter>
@@ -486,7 +495,7 @@
       <Filter>01.Engine\00.Core</Filter>
     </ClCompile>
     <ClCompile Include="MaterialMgr.cpp">
-      <Filter>01.Engine\01.Renderer\03.MaterailMgr</Filter>
+      <Filter>01.Engine\99.Manager\03.MaterailMgr</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>00.Game\02.Object\05.Bullet</Filter>
@@ -513,22 +522,22 @@
       <Filter>01.Engine\10.Network</Filter>
     </ClCompile>
     <ClCompile Include="InstanceInfo.cpp">
-      <Filter>01.Engine\01.Renderer\04.InstanceMgr\00.InstanceInfo</Filter>
+      <Filter>01.Engine\99.Manager\04.InstanceMgr\00.InstanceInfo</Filter>
     </ClCompile>
     <ClCompile Include="InstanceMgr.cpp">
-      <Filter>01.Engine\01.Renderer\04.InstanceMgr</Filter>
+      <Filter>01.Engine\99.Manager\04.InstanceMgr</Filter>
     </ClCompile>
     <ClCompile Include="KeyMgr.cpp">
-      <Filter>01.Engine\01.Renderer\05.KeyMgr</Filter>
+      <Filter>01.Engine\99.Manager\05.KeyMgr</Filter>
     </ClCompile>
     <ClCompile Include="PlayerFSM.cpp">
       <Filter>00.Game\02.Object\02.Player\00.PlayerFSM</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedData.cpp">
-      <Filter>01.Engine\01.Renderer\02.AnimationMgr\00.SkinnedData</Filter>
+      <Filter>01.Engine\99.Manager\02.AnimationMgr\00.SkinnedData</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedModelInstance.cpp">
-      <Filter>01.Engine\01.Renderer\02.AnimationMgr\01.SkinnedModelInstance</Filter>
+      <Filter>01.Engine\99.Manager\02.AnimationMgr\01.SkinnedModelInstance</Filter>
     </ClCompile>
     <ClCompile Include="d3dUtil.cpp">
       <Filter>99.Default\99.Default</Filter>
@@ -553,6 +562,9 @@
     </ClCompile>
     <ClCompile Include="FireShock.cpp">
       <Filter>00.Game\02.Object\06.Skill\01.FireShock</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysXMgr.cpp">
+      <Filter>01.Engine\99.Manager\06.PhysXMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
