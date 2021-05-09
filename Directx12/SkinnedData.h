@@ -58,6 +58,30 @@ struct AnimationClip
 class SkinnedData
 {
 public:
+	SkinnedData() {}
+	SkinnedData(const SkinnedData& rhs) {
+		for (auto o = rhs.mAnimations.begin(); o != rhs.mAnimations.end(); ++o) {
+			mAnimations[o->first] = o->second;
+		}
+		//copy(rhs.mAnimations.begin(), rhs.mAnimations.end(), mAnimations.begin());
+		mBoneHierarchy.resize(rhs.mBoneHierarchy.size());
+		copy(rhs.mBoneHierarchy.begin(), rhs.mBoneHierarchy.end(), mBoneHierarchy.begin());
+		mBoneName.resize(rhs.mBoneName.size());
+		copy(rhs.mBoneName.begin(), rhs.mBoneName.end(), mBoneName.begin());
+		mBoneOffsets.resize(rhs.mBoneOffsets.size());
+		copy(rhs.mBoneOffsets.begin(), rhs.mBoneOffsets.end(), mBoneOffsets.begin());
+		mSubmeshOffset.resize(rhs.mSubmeshOffset.size());
+		copy(rhs.mSubmeshOffset.begin(), rhs.mSubmeshOffset.end(), mSubmeshOffset.begin());
+		m_ToRootTransforms.resize(rhs.m_ToRootTransforms.size());
+		copy(rhs.m_ToRootTransforms.begin(), rhs.m_ToRootTransforms.end(), m_ToRootTransforms.begin());
+		//mAnimations = rhs.mAnimations;
+		//mBoneHierarchy = rhs.mBoneHierarchy;
+		//mBoneName = rhs.mBoneName;
+		//mBoneOffsets = rhs.mBoneOffsets;
+		//mSubmeshOffset = rhs.mSubmeshOffset;
+		//m_ToRootTransforms = rhs.m_ToRootTransforms;
+	}
+public:
 	// Get
 	UINT GetBoneCount()const;
 

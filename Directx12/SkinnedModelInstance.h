@@ -5,6 +5,9 @@
 class SkinnedModelInstance
 {
 public:
+	SkinnedModelInstance() {}
+	SkinnedModelInstance(const SkinnedModelInstance& rhs);
+public:
 	void UpdateAnimation(ANIMATION_TYPE _eAnimation, float timePos);
 	void UpdateBlendAnimation(
 		ANIMATION_TYPE _curAnimate, float _curtimePos,

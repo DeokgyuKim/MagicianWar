@@ -98,8 +98,10 @@ void TestScene::LateUpdate(const float& fTimeDelta)
 
 #ifdef NETWORK
 	Object* pObj = GetPlayer();
-	if (pObj != NULL)
+	if (pObj != NULL) {
 		Network::GetInstance()->SetMyPlayerInfo(dynamic_cast<Player*>(pObj));
+
+	}
 #else
 	if (CPhysXMgr::GetInstance()->PhysXStartTime > 10.f)
 	{
