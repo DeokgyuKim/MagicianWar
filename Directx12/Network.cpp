@@ -5,7 +5,8 @@
 #include "UI.h"
 #include "Button.h"
 #include "Player.h"
-
+#include "PlayerFSM.h"
+#include "Animation.h"
 #include "KeyMgr.h"
 
 
@@ -59,23 +60,7 @@ bool Network::Init(const string& strServerIP)
 	cout << m_tMyInfo.dwPlayerNum << ", " << m_tMyInfo.dwTeamNum << endl;
 
 	{ // packet 초기화
-		KEY_packet.size = sizeof(KEY_packet);
-		KEY_packet.type = packet_keyInput;
-		KEY_packet.id = m_tMyInfo.dwPlayerNum;
-
-		tInfo_packet.size = sizeof(tInfo_packet);
-		tInfo_packet.type = ctos_playerInfo;
-		tInfo_packet.ePlayerState = PLAYER_STATE::IDLE;
-		tInfo_packet.eAnimType = ANIMATION_TYPE::IDLE;
-		tInfo_packet.fAnimTime = 0.f;
-		tInfo_packet.eAnimBlendType = ANIMATION_TYPE::IDLE;
-		tInfo_packet.fWeight = 0.f;
-		
-
-		Ready_packet.size = sizeof(Ready_packet);
-		Ready_packet.type = packet_ready;
-		Ready_packet.id = m_tMyInfo.dwPlayerNum;
-		Ready_packet.ready = 0;
+		packetInit();
 	}
 
 	packet_size = 0;
@@ -85,6 +70,30 @@ bool Network::Init(const string& strServerIP)
 
 
 	return false;
+}
+
+void Network::packetInit()
+{
+	{ // packet 초기화
+		{ // packet_keyInput
+			KEY_packet.size = sizeof(KEY_packet);
+			KEY_packet.type = packet_keyInput;
+			KEY_packet.id = m_tMyInfo.dwPlayerNum;
+		}
+		{ // ctos_playerInfo
+			tInfo_packet.size = sizeof(tInfo_packet);
+			tInfo_packet.type = ctos_playerInfo;
+			tInfo_packet.ePlayerState = PLAYER_STATE::IDLE;
+			tInfo_packet.bAttackEnd = false;
+
+		}
+		{// packet_ready
+			Ready_packet.size = sizeof(Ready_packet);
+			Ready_packet.type = packet_ready;
+			Ready_packet.id = m_tMyInfo.dwPlayerNum;
+			Ready_packet.ready = 0;
+		}
+	}
 }
 
 bool Network::Release()
@@ -122,6 +131,12 @@ void Network::Update()
 		SendKeyInput();
 		//RecvPlayerInfo();
 
+		Object* pObj = MainApp::GetInstance()->GetScene()->GetPlayer();
+		if (pObj != nullptr) {
+			Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
+			dynamic_cast<AnimationCom*>(pPlayer->GetRootAniController())->ChangeAnimation(SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Root_eAnimType));
+			dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->ChangeAnimation(SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Upper_eAnimType));
+		}
 	}
 
 }
@@ -276,15 +291,19 @@ void Network::packetProcessing(char* _packetBuffer)
 		//cout << "우리 플레이어 업데이트" << endl;
 		STOC_PlayerInfo* data = reinterpret_cast<STOC_PlayerInfo*>(_packetBuffer);
 		cout << "플레이어 넘버 - " << data->playerInfo.dwPlayerNum << endl;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].eAnimBlendType = data->eAnimBlendType;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].eAnimType = data->eAnimType;
+		//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_eAnimBlendType = data->Root_eAnimBlendType;
+		//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_fAnimTime = data->Root_fAnimTime;
+		//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_fWeight = data->Root_fWeight;
+		
+		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_eAnimType = data->Root_eAnimType;
+		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Upper_eAnimType = data->Upper_eAnimType;
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].ePlayerState = data->ePlayerState;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].fAnimTime = data->fAnimTime;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].fWeight = data->fWeight;
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].matWorld = data->matWorld;
+
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwPlayerNum = data->playerInfo.dwPlayerNum;
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwTeamNum = data->playerInfo.dwTeamNum;
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
+
 
 		//XMFLOAT3 pos;
 		//memcpy(&pos, &m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].matWorld._41, sizeof(XMFLOAT3));
@@ -327,6 +346,8 @@ void Network::SendMyPlayerInfo()
 	{
 		Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
 		tInfo_packet.matWorld = pPlayer->GetWorld();
+		//tInfo_packet.ePlayerState = pPlayer->GetRootFSM()->GetState();
+		tInfo_packet.bAttackEnd = dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->GetAttackEnd();
 	}
 	else
 	{
@@ -358,6 +379,14 @@ void Network::SendKeyInput()
 	if (KeyMgr::GetInstance()->KeyPressing('D'))
 	{
 		dwKeyInput |= 0x0008;
+	}
+	if (KeyMgr::GetInstance()->KeyPressing(VK_SPACE))
+	{
+		dwKeyInput |= 0x0010;
+	}
+	if (KeyMgr::GetInstance()->KeyPressing(VK_LBUTTON))
+	{
+		dwKeyInput |= 0x0020;
 	}
 
 	KEY_packet.key = dwKeyInput;

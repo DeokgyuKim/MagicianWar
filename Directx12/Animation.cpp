@@ -16,6 +16,7 @@ AnimationCom::AnimationCom(const string& user)
 	m_SkinnedModelInst->SkinnedInfo->mBoneOffsets = instData->mBoneOffsets;
 	m_SkinnedModelInst->SkinnedInfo->mSubmeshOffset = instData->mSubmeshOffset;
 	m_SkinnedModelInst->SkinnedInfo->m_ToRootTransforms = instData->m_ToRootTransforms;
+
 	curAnimation = make_unique<AnimData>(ANIMATION_TYPE::IDLE, 0.f);
 	keyAnimation = make_unique<AnimData>(ANIMATION_TYPE::IDLE, 0.f);
 
@@ -58,7 +59,7 @@ void AnimationCom::DefaultAnimate(const float& fTimeDelta)
 	m_SkinnedModelInst->UpdateAnimation(curAnimation->eType, curAnimation->Time);
 
 	if (curAnimation->Time * 1.4 > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(curAnimation->eType)) {
-		m_bAttackEnd = true;
+		m_bAttackEnd = true; // 일반 공격시 공격이 끝나면 Idle로 바꾸기 위한 bool 변수
 	}
 
 	if (curAnimation->Time > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(curAnimation->eType)) {
@@ -71,7 +72,7 @@ void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 	curAnimation->Time += fTimeDelta;
 	keyAnimation->Time += fTimeDelta;
 
-	if (m_fBlendTime > m_fMaxBlendTime) {
+	if (m_fBlendTime > m_fMaxBlendTime) { // 블렌딩이 끝나면
 		curAnimation->eType = keyAnimation->eType;
 		curAnimation->Time = 0.f;
 		m_bBlending = false;
@@ -99,6 +100,20 @@ void AnimationCom::ChangeAnimation(int _Ani)
 		m_fBlendTime = 1.f;
 		m_bAttackEnd = false;
 	}
+}
+
+AnimData* AnimationCom::getCurAnimation()
+{
+	if (curAnimation == nullptr)
+		return nullptr;
+	return curAnimation.get();
+}
+
+AnimData* AnimationCom::getkeyAnimation()
+{
+	if (keyAnimation == nullptr)
+		return nullptr;
+	return keyAnimation.get();
 }
 
 

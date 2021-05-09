@@ -30,6 +30,8 @@ public:
 public:
 	void ChangeAnimation(int _Ani);
 	bool GetAttackEnd() { return m_bAttackEnd; }
+	AnimData* getCurAnimation();
+	AnimData* getkeyAnimation();
 private: // 애니메이션Com은 애니메이션으로 비교를 하는게 정배지
 	bool StateCheck(ANIMATION_TYPE _eState);
 private:

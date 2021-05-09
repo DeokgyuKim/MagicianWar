@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework.h"
+#include "include.h"
 
 class InterfaceFSM
 {
@@ -15,9 +15,8 @@ public:
 	virtual void Exit() = 0;
 	// Get
 	PLAYER_STATE GetState() const { return static_cast<PLAYER_STATE>(m_State); }
-	
+
 	virtual void Execute() = 0;
 protected:
 	int m_State;
 };
-

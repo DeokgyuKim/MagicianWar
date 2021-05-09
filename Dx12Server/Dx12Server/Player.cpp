@@ -1,14 +1,24 @@
 #include "Player.h"
 
+// FSM
+#include "PlayerFSM.h"
+
 Player::Player()
 {
 	ZeroMemory(&Info, sizeof(Info));
 	XMStoreFloat4x4(&matWorld, XMMatrixIdentity());
 	ePlayerState = PLAYER_STATE::NONE;
-	eAnimType = ANIMATION_TYPE::NONE;
-	fAnimTime = 0.f;
-	eAnimBlendType = ANIMATION_TYPE::NONE;
-	fWeight = 0.f;
+	
+	Root_eAnimType = ANIMATION_TYPE::NONE;
+	Root_fAnimTime = 0.f;
+	Root_eAnimBlendType = ANIMATION_TYPE::NONE;
+	Root_fWeight = 0.f;
+
+	Upper_eAnimType = ANIMATION_TYPE::NONE;
+	Upper_fAnimTime = 0.f;
+	Upper_eAnimBlendType = ANIMATION_TYPE::NONE;
+	Upper_fWeight = 0.f;
+
 	m_isConnected = false;
 
 	m_keyInput = 0;
@@ -33,24 +43,28 @@ void Player::Initialize(SOCKET& sock, int ID) // sock 와 id를 받아서 초기화
 
 	recv_start_ptr = recvBuf;
 	packet_start_ptr = recvBuf;
+
+	// FSM 만들기
+	m_UpperBody = make_unique<PlayerFSM>(this, BoneType::UPPER_BONE); // ( player , BoneType )
+	m_RootBody = make_unique<PlayerFSM>(this, BoneType::ROOT_BONE);
 }
 
 void Player::Update()
 {
 	// 여기서 이동에 관한 업데이트 하면 되겠지..
-	UpdatePosition();
+	//UpdatePosition();
+	m_UpperBody->Execute();
+	m_RootBody->Execute();
+
+	ePlayerState = m_RootBody->GetState();
 }
 
 void Player::UpdatePlayerInfo(CTOS_PlayerInfo* pInfo)
 {
 	m_mutex.lock();
 	//	
-	eAnimBlendType = pInfo->eAnimBlendType;
-	ePlayerState = pInfo->ePlayerState;
-	eAnimType = pInfo->eAnimType;
-	fAnimTime = pInfo->fAnimTime;
-	fWeight = pInfo->fWeight;
-
+	ePlayerState = m_RootBody->GetState(); // 플레이어 상태를 갱신해준다.
+	m_bAttackEnd = pInfo->bAttackEnd;
 	noTransWorldUpdate(pInfo->matWorld);
 	//
 	m_mutex.unlock();
@@ -177,6 +191,21 @@ int Player::sendPacket(void* _packet, int _size)
 	return send(Info.socket, (char*)(_packet), _size, 0);
 }
 
+InterfaceFSM* Player::GetRootFSM()
+{
+	if (m_RootBody == nullptr)
+		return nullptr;
+	return m_RootBody.get();
+
+}
+
+InterfaceFSM* Player::GetUpperFSM()
+{
+	if (m_UpperBody == nullptr)
+		return nullptr;
+	return m_UpperBody.get();
+}
+
 void Player::setKeyInput(DWORD _key)
 {
 	m_mutex.lock();
@@ -189,5 +218,28 @@ void Player::setReady(DWORD _ready)
 	m_mutex.lock();
 	m_Ready = _ready;
 	m_mutex.unlock();
+}
+
+void Player::setPosition(XMFLOAT3 pos)
+{
+	m_mutex.lock();
+	matWorld._41 = pos.x;
+	matWorld._42 = pos.y;
+	matWorld._43 = pos.z;
+	m_mutex.unlock();
+}
+
+void Player::ChangeUpperAnimation(int _Ani)
+{
+	ANIMATION_TYPE nextAni = static_cast<ANIMATION_TYPE>(_Ani);
+	if(Upper_eAnimType != nextAni)
+		Upper_eAnimType = nextAni;
+}
+
+void Player::ChangeRootAnimation(int _Ani)
+{
+	ANIMATION_TYPE nextAni = static_cast<ANIMATION_TYPE>(_Ani);
+	if (Root_eAnimType != nextAni)
+		Root_eAnimType = nextAni;
 }
 

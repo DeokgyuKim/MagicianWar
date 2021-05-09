@@ -190,11 +190,23 @@
     <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\01.FireShock">
       <UniqueIdentifier>{63ce6c79-b26c-4f76-a8f0-895c51f31eb3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\01.FireShock">
+      <UniqueIdentifier>{2c3c1177-2b7b-4b57-ac74-2aa2115ece1f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\01.FireShock\00.FireCylinder">
       <UniqueIdentifier>{4ffd52d9-080a-4c3d-b13e-d238cf8676e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.Game\02.Object\06.Skill\01.FireShock">
-      <UniqueIdentifier>{2c3c1177-2b7b-4b57-ac74-2aa2115ece1f}</UniqueIdentifier>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\01.FireShock\01.FireParticle">
+      <UniqueIdentifier>{496a9cde-0734-4f6d-9187-0896f09e67e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\02.FireRing">
+      <UniqueIdentifier>{18193932-9d5a-4666-9663-b21c7a722601}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\02.FireRing">
+      <UniqueIdentifier>{2039a4ee-7340-4533-9f00-22d78cd3f0d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\02.FireRing\00.FireCylinder">
+      <UniqueIdentifier>{d6a7496a-8463-477b-bcde-607b1f41740c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -387,6 +399,13 @@
     <ClInclude Include="FireShock.h">
       <Filter>00.Game\02.Object\06.Skill\01.FireShock</Filter>
     </ClInclude>
+    <ClInclude Include="FireShock_FireParticle.h" />
+    <ClInclude Include="FireRing_FireCylinder.h">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\02.FireRing\00.FireCylinder</Filter>
+    </ClInclude>
+    <ClInclude Include="FireRing.h">
+      <Filter>00.Game\02.Object\06.Skill\02.FireRing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -553,6 +572,13 @@
     </ClCompile>
     <ClCompile Include="FireShock.cpp">
       <Filter>00.Game\02.Object\06.Skill\01.FireShock</Filter>
+    </ClCompile>
+    <ClCompile Include="FireShock_FireParticle.cpp" />
+    <ClCompile Include="FireRing_FireCylinder.cpp">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\02.FireRing\00.FireCylinder</Filter>
+    </ClCompile>
+    <ClCompile Include="FireRing.cpp">
+      <Filter>00.Game\02.Object\06.Skill\02.FireRing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

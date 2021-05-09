@@ -4,6 +4,7 @@
 #include "Transform.h"
 
 #include "FireShock_FireCylinder.h"
+#include "FireShock_FireParticle.h"
 
 FireShock::FireShock(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer)
 	: Skill(device, cmdLst, pRenderer)
@@ -17,13 +18,15 @@ FireShock::~FireShock()
 
 void FireShock::BuildComponents()
 {
-	Component* pComponent = new Transform(XMFLOAT3(10.f, 10.f, 10.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 5.f, 10.f));
+	Component* pComponent = new Transform(XMFLOAT3(3.f, 3.f, 10.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 1.f, 10.f));
 	m_mapComponent["Transform"] = pComponent;
 }
 
 void FireShock::BuildSkillEffects()
 {
 	SkillEff* pEff = new FireShock_FireCylinder(m_pDevice, m_pCmdLst, m_pRenderer, this);
+	m_vecSkillEff.push_back(pEff);
+	pEff = new FireShock_FireParticle(m_pDevice, m_pCmdLst, m_pRenderer, this);
 	m_vecSkillEff.push_back(pEff);
 }
 

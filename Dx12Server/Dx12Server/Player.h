@@ -4,6 +4,7 @@
 #include <mutex>
 #include "include.h"
 
+class InterfaceFSM;
 
 class Player
 {
@@ -35,15 +36,27 @@ public:
 	STOC_ServerPlayer getInfo() { return Info; }
 	SOCKET getSocket() { return Info.socket; }
 	PLAYER_STATE getState() { return ePlayerState; }
-	ANIMATION_TYPE getAnimType() { return eAnimType; }
-	float getAnimTime() { return fAnimTime; }
-	ANIMATION_TYPE getAnimBlendType() { return eAnimBlendType; }
-	float getAnimWeight() { return fWeight; }
+
+	ANIMATION_TYPE getRootAnimType() { return Root_eAnimType; }
+	float getRootAnimTime() { return Root_fAnimTime; }
+	ANIMATION_TYPE getRootAnimBlendType() { return Root_eAnimBlendType; }
+	float getRootAnimWeight() { return Root_fWeight; }
+
+	ANIMATION_TYPE getUpperAnimType() { return Upper_eAnimType; }
+	float getUpperAnimTime() { return Upper_fAnimTime; }
+	ANIMATION_TYPE getUpperAnimBlendType() { return Upper_eAnimBlendType; }
+	float getUpperAnimWeight() { return Upper_fWeight; }
+	
+	
 	bool getReady() { return m_Ready; }
 	char* getBuffer() { return recvBuf; }
 	char* getPacketStart_Ptr() { return packet_start_ptr; }
 	char* getRecvStart_Ptr() { return recv_start_ptr; }
 	bool IsConnected() { return m_isConnected; }
+	bool IsAttackEnded() { return m_bAttackEnd; }
+
+	InterfaceFSM* GetRootFSM();
+	InterfaceFSM* GetUpperFSM();
 
 	// Set
 	void setPlayerInfo(PlayerInfo _info) { Info.info = _info; }
@@ -52,15 +65,28 @@ public:
 	void resetPacket_Ptr() { packet_start_ptr = recv_start_ptr; }
 	void setKeyInput(DWORD _key);
 	void setReady(DWORD _ready);
+	void setPosition(XMFLOAT3 pos);
+	void setAttackEnd(bool _check) { m_bAttackEnd = _check; }
+
+	void ChangeUpperAnimation(int _Ani);
+	void ChangeRootAnimation(int _Ani);
+
+
 private: // 
 	// info
 	STOC_ServerPlayer Info;
 	XMFLOAT4X4		matWorld;
 	PLAYER_STATE	ePlayerState;
-	ANIMATION_TYPE	eAnimType;
-	float			fAnimTime;
-	ANIMATION_TYPE	eAnimBlendType;
-	float			fWeight;
+
+	ANIMATION_TYPE	Root_eAnimType;
+	float			Root_fAnimTime;
+	ANIMATION_TYPE	Root_eAnimBlendType;
+	float			Root_fWeight;
+
+	ANIMATION_TYPE	Upper_eAnimType;
+	float			Upper_fAnimTime;
+	ANIMATION_TYPE	Upper_eAnimBlendType;
+	float			Upper_fWeight;
 
 
 	mutex m_mutex;
@@ -72,5 +98,12 @@ private: //
 	char* packet_start_ptr;
 
 	DWORD m_keyInput;
+
+	bool m_bAttackEnd;
+
+
+	// FSM
+	unique_ptr<InterfaceFSM>                    m_UpperBody;    // 상체
+	unique_ptr<InterfaceFSM>                    m_RootBody;     // 하체
 };
 

@@ -195,8 +195,8 @@ void SkinnedData::GetBlendedFinalTransforms(
 	const ANIMATION_TYPE _nextAnimation, float _nexttimePos,
 	float _blendWeight, std::vector<DirectX::XMFLOAT4X4>& finalTransform)
 {
-	if (_curAnimation == ANIMATION_TYPE::NONE) return; // 잘못 넘기면 NONE 타입임
-	if (_nextAnimation == ANIMATION_TYPE::NONE) return; // 잘못 넘기면 NONE 타입임
+	//if (_curAnimation == ANIMATION_TYPE::NONE) return; // 잘못 넘기면 NONE 타입임
+	//if (_nextAnimation == ANIMATION_TYPE::NONE) return; // 잘못 넘기면 NONE 타입임
 
 	vector<XMFLOAT4X4> Transform1;
 	vector<XMFLOAT4X4> Transform2;

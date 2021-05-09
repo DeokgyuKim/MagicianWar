@@ -10,6 +10,7 @@
 
 #include "Flames.h"
 #include "FireShock.h"
+#include "FireRing.h"
 
 #include "StaticMeshMgr.h"
 #include "InstanceMgr.h"
@@ -174,6 +175,9 @@ void TestScene::Initialize()
 	m_pObjects[OBJ_SKILL].push_back(pObj);
 
 	pObj = new FireShock(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	m_pObjects[OBJ_SKILL].push_back(pObj);
+
+	pObj = new FireRing(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	m_pObjects[OBJ_SKILL].push_back(pObj);
 
 	//Core::GetInstance()->CmdLstReset();
