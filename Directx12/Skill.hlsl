@@ -131,8 +131,13 @@ PSOut_Skill PS_FireShock_FireCylinder(Out_Skill_Static pin)
 	float3 diff1 = SkillEffTex1.Sample(gsamLinear, pin.TexC).rgb;
 	float3 diff2 = SkillEffTex2.Sample(gsamLinear, pin.TexC).rgb;
 
-	float multi1 = ((diff2.r * sin(gSkillTime)) * 2.8);
-	float multi2 = diff2.r * sin(gSkillTime);
+	/*
+	float multi2_time = gSkillTime % 1.f;
+	clamp(multi2_time, 0.5f, 1.f);
+
+	float multi1 = ((diff2.r * sin(0.5005f)) * 2.8);
+	float multi2 = diff2.r * sin(multi2_time);
+
 	float b = saturate(pow(multi1 + multi2, 20));
 
 	float c = pow(multi1 + multi2, 20);
@@ -144,11 +149,150 @@ PSOut_Skill PS_FireShock_FireCylinder(Out_Skill_Static pin)
 	else
 		Ke = float3(0.f, 0.f, 0.f);
 
-	float3 diffuse = (Ke * float3(0.f, 1.f, 0.f) + diff1);
+	
 
+	float3 diffuse = (Ke * float3(0.f, 1.f, 0.f) + diff1);
+	//diffuse.r = 0.5 + diffuse.r * sin(gSkillTime);
+	vout.Diffuse = float4(diff1, 1);
+
+	//vout.Diffuse = float4(diff2.rgb, diff2.r);
+	*/
+
+	vout.Diffuse = float4(diff1.rgb, diff2.r);
+
+	return vout;
+}
+
+Out_Skill_Static VS_FireShock_FireParticle(In_Skill_Static vin)
+{
+	Out_Skill_Static vout = (Out_Skill_Static)0;
+
+
+	float4 posH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorldNoInstanced), gView), gProj);
+	vout.PosH = posH;
+
+	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)gWorldNoInstanced));
+	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)gWorldNoInstanced));
+	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)gWorldNoInstanced));
+
+	// 월드 & 카메라 변환
+
+	//float cosTime = cos(gSkillTime * 10.f + vin.TexC.x * 1.f) * 0.1f;
+
+	//vin.PosL.x += cosTime;
+
+
+
+	vout.TexC = vin.TexC/* + float2(gSkillTime * 5.f, 0)*/;
+	//vout.TexC = vin.TexC;
+
+
+	return vout;
+}
+
+
+PSOut_Skill PS_FireShock_FireParticle(Out_Skill_Static pin)
+{
+	PSOut_Skill vout = (PSOut_Skill)0;
+
+	float3 diff1 = SkillEffTex1.Sample(gsamLinear, pin.TexC).rgb;
+	float3 diff2 = SkillEffTex2.Sample(gsamLinear, pin.TexC).rgb;
+
+	float multi2_time = gSkillTime % 1.f;
+	clamp(multi2_time, 0.5f, 1.f);
+	float multi1 = ((diff2.r * sin(1.5f)) * 2.8);
+
+
+	float multi2 = diff2.r * sin(0.50001f);
+	
+	
+	float b = saturate(pow(multi1 + multi2, 20));
+
+	float c = pow(multi1 + multi2, 20);
+
+	float3 Ke;
+
+	if (0.9f >= b)
+		Ke = float3(100.f, 1.f, 1.f);
+	else
+		Ke = float3(0.f, 0.f, 0.f);
+
+
+
+	float3 diffuse = (Ke * float3(0.f, 1.f, 0.f) + diff1);
+	//diffuse.r = diffuse.r * sin(gSkillTime);
 	vout.Diffuse = float4(diffuse, c);
 
 	//vout.Diffuse = float4(diff2.rgb, diff2.r);
+
+	return vout;
+}
+
+
+Out_Skill_Static VS_FireRing_FireCylinder(In_Skill_Static vin)
+{
+	Out_Skill_Static vout = (Out_Skill_Static)0;
+
+
+	float4 posH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorldNoInstanced), gView), gProj);
+	vout.PosH = posH;
+
+	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)gWorldNoInstanced));
+	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)gWorldNoInstanced));
+	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)gWorldNoInstanced));
+
+	// 월드 & 카메라 변환
+
+	//float cosTime = cos(gSkillTime * 10.f + vin.TexC.x * 1.f) * 0.1f;
+
+	//vin.PosL.x += cosTime;
+
+
+
+	vout.TexC = vin.TexC + float2(gSkillTime * 1.f, 0);
+	//vout.TexC = vin.TexC;
+
+
+	return vout;
+}
+
+
+PSOut_Skill PS_FireRing_FireCylinder(Out_Skill_Static pin)
+{
+	PSOut_Skill vout = (PSOut_Skill)0;
+
+	float3 diff1 = SkillEffTex1.Sample(gsamLinear, pin.TexC).rgb;
+	float3 diff2 = SkillEffTex2.Sample(gsamLinear, pin.TexC).rgb;
+
+	float multi2_time = gSkillTime % 1.f;
+	clamp(multi2_time, 0.5f, 1.f);
+	
+	float multi1 = ((diff2.r * 0.5) * 2.8);
+	float multi2 = diff2.r * 0.5;
+
+
+
+	//float b = saturate(multi1);
+	//float c = pow(multi1, 20);
+	float b = saturate(pow(multi1 + multi2, 20));
+	float c = pow(multi1*1.f + multi2* gDissolveC, 20);
+
+
+
+	float3 Ke;
+
+	if (0.9f >= b)
+		Ke = float3(100.f, 1.f, 1.f);
+	else
+		Ke = float3(0.f, 0.f, 0.f);
+
+
+
+	float3 diffuse = (Ke * float3(0.f, 1.f, 0.f) + diff1);
+	//diffuse.r = diffuse.r * sin(gSkillTime);
+	vout.Diffuse = float4(diffuse, c);
+
+	
 
 	return vout;
 }

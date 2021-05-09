@@ -149,8 +149,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="FireRing.h" />
+    <ClInclude Include="FireRing_FireCylinder.h" />
     <ClInclude Include="FireShock.h" />
     <ClInclude Include="FireShock_FireCylinder.h" />
+    <ClInclude Include="FireShock_FireParticle.h" />
     <ClInclude Include="Flames.h" />
     <ClInclude Include="Flames_FireEff.h" />
     <ClInclude Include="InstanceInfo.h" />
@@ -216,8 +219,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="FireRing.cpp" />
+    <ClCompile Include="FireRing_FireCylinder.cpp" />
     <ClCompile Include="FireShock.cpp" />
     <ClCompile Include="FireShock_FireCylinder.cpp" />
+    <ClCompile Include="FireShock_FireParticle.cpp" />
     <ClCompile Include="Flames.cpp" />
     <ClCompile Include="Flames_FireEff.cpp" />
     <ClCompile Include="InstanceInfo.cpp" />

@@ -89,6 +89,8 @@ struct SkillCB
 {
 	float fTime = 0.f;
 	UINT  SkillIdx = 0;
+	float DissolveC = 0.f;
+	
 };
 
 
@@ -157,13 +159,10 @@ struct CTOS_PlayerInfo
 {
 	short size;
 	unsigned char type;
-	unsigned char id;
+	unsigned char id; // ³» ID
 	XMFLOAT4X4		matWorld;
 	PLAYER_STATE	ePlayerState;
-	ANIMATION_TYPE	eAnimType;
-	float			fAnimTime;
-	ANIMATION_TYPE	eAnimBlendType;
-	float			fWeight;
+	bool bAttackEnd;
 };
 
 struct STOC_PlayerInfo
@@ -173,10 +172,10 @@ struct STOC_PlayerInfo
 	PlayerInfo		playerInfo;
 	XMFLOAT4X4		matWorld;
 	PLAYER_STATE	ePlayerState;
-	ANIMATION_TYPE	eAnimType;
-	float			fAnimTime;
-	ANIMATION_TYPE	eAnimBlendType;
-	float			fWeight;
+
+	ANIMATION_TYPE	Root_eAnimType;
+	ANIMATION_TYPE	Upper_eAnimType;
+	bool bAttackEnd;
 };
 
 struct Client_State { // 

@@ -29,6 +29,7 @@ public:
 	}
 public:
 	bool Init(const string& strServerIP = "127.0.0.1");
+	void packetInit();
 	bool Release();
 	void Update();
 	int  recvn(SOCKET s, char* buf, int len, int flags);

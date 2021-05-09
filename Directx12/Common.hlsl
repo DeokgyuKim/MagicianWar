@@ -27,6 +27,7 @@ cbuffer cbSkill : register(b5)
 {
 	float	gSkillTime;
 	uint	gSkillIdx;
+	float	gDissolveC;
 }
 
 cbuffer cbObject : register(b6)

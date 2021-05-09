@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerFSM.cpp" />
     <ClCompile Include="PlayerThread.cpp" />
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
@@ -151,7 +152,9 @@
     <ClInclude Include="..\..\Directx12\define.h" />
     <ClInclude Include="..\..\Directx12\struct.h" />
     <ClInclude Include="include.h" />
+    <ClInclude Include="InterfaceFSM.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerFSM.h" />
     <ClInclude Include="PlayerThread.h" />
     <ClInclude Include="serverDefine.h" />
     <ClInclude Include="serverStruct.h" />
