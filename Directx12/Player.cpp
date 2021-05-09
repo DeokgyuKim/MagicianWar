@@ -6,6 +6,7 @@
 #include "Geometry.h"
 #include "Camera.h"
 #include "Bullet.h"
+#include "Network.h"
 
 // Component
 #include "Mesh.h"
@@ -19,12 +20,15 @@
 
 
 
-Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName, XMFLOAT3 pos)
+Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName, XMFLOAT3 pos, PlayerInfo playerInfo)
 	:Object(_meshName)
 {
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
 	m_pRenderer = pRenderer;
+
+	m_tNetInfo = playerInfo;
+
 	Initialize(pos);
 
 
@@ -81,21 +85,24 @@ HRESULT Player::BuildConstantBuffer()
 int Player::Update(const float& fTimeDelta)
 {
 	Object::Update(fTimeDelta);
-	if (m_pCamera->GetMode() == CAMERA_MODE::CAMERA_THIRD)
+	if (m_pCamera != NULL)
 	{
-		XMFLOAT3 xmfRotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
-		xmfRotate.y = m_pCamera->GetRotY();
-		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotate);
+		if (m_pCamera->GetMode() == CAMERA_MODE::CAMERA_THIRD)
+		{
+			XMFLOAT3 xmfRotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
+			xmfRotate.y = m_pCamera->GetRotY();
+			dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotate);
 
-		// ÃÑ¾Ë ¹ß»ç
-		//if (GetAsyncKeyState(VK_LBUTTON) & 0x0001)
-		//{
-		//	XMFLOAT3 pos = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
-		//	pos.y += 1.f;
-		//	MainApp::GetInstance()->GetScene()->PushObject(new Bullet(m_pDevice, m_pCmdLst, m_pRenderer,"FireBall",
-		//		pos, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate(), 30.f), OBJ_TYPE::OBJ_BULLET);
-		//}
+			// ÃÑ¾Ë ¹ß»ç
+			//if (GetAsyncKeyState(VK_LBUTTON) & 0x0001)
+			//{
+			//	XMFLOAT3 pos = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
+			//	pos.y += 1.f;
+			//	MainApp::GetInstance()->GetScene()->PushObject(new Bullet(m_pDevice, m_pCmdLst, m_pRenderer,"FireBall",
+			//		pos, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate(), 30.f), OBJ_TYPE::OBJ_BULLET);
+			//}
 
+		}
 	}
 #ifndef NETWORK
 	m_UpperBody->Execute(fTimeDelta);
@@ -115,6 +122,12 @@ void Player::LateUpdate(const float& fTimeDelta)
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_DYNAMIC, this);
 
 	ModifyPhysXPos(fTimeDelta);
+
+	if (m_pCamera == NULL)
+	{
+		STOC_PlayerInfo info = Network::GetInstance()->GetRecvPlayerInfo(m_tNetInfo.dwPlayerNum);
+		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetWorld(info.matWorld);
+	}
 }
 
 void Player::Render(const float& fTimeDelta, int _instanceCount)

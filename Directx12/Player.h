@@ -11,7 +11,7 @@ class Player :
 {
 public:
     Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer
-    ,string _meshName, XMFLOAT3 pos = XMFLOAT3(10.f, 0.f, 10.f));
+        , string _meshName, XMFLOAT3 pos = XMFLOAT3(10.f, 0.f, 10.f), PlayerInfo playerInfo = {0});
     ~Player();
 private:
     void    Initialize(XMFLOAT3 pos);
@@ -51,7 +51,7 @@ protected:
 
     unique_ptr<UploadBuffer<SkinnedCB>>         m_SkinnedCB; // 얘는 어쩔수없이 각 캐릭터가 들어야지
     
-    Camera*                                     m_pCamera;
+    Camera*                                     m_pCamera = NULL;
 
     // 컨트롤러
     Component*                                  m_UpperAnimationController;

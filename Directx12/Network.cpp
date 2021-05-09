@@ -161,6 +161,14 @@ int Network::recvn(SOCKET s, char* buf, int len, int flags)
 	return (len - left);						//읽어야할 총 길이 - 수신해야할 데이터 양 = 읽은 데이터 양
 }
 
+STOC_PlayerInfo Network::GetRecvPlayerInfo(DWORD playerNum)
+{
+	auto iter = m_mapRecvPlayerInfos.find(playerNum);
+	if (iter == m_mapRecvPlayerInfos.end())
+		return { 0 };
+	return (*iter).second;
+}
+
 void Network::SetMyPlayerInfo(Player* pPlayer)
 {
 	

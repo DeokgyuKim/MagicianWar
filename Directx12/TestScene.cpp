@@ -125,7 +125,7 @@ void TestScene::Initialize()
 #ifdef NETWORK
 	XMFLOAT3 pos = Network::GetInstance()->GetMyPlayerStartPos();
 	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		CHARACTER_WIZARD_01, pos);
+		CHARACTER_WIZARD_01, pos, Network::GetInstance()->GetMyInfo());
 	pPlayer = dynamic_cast<Player*>(pObj);
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
 	Core::GetInstance()->CmdLstExecute();
@@ -137,7 +137,7 @@ void TestScene::Initialize()
 		Core::GetInstance()->CmdLstReset();
 		pos = (*iter).second.xmfPosition;
 		pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-			CHARACTER_WIZARD_01, pos);
+			CHARACTER_WIZARD_01, pos, (*iter).second);
 		Core::GetInstance()->CmdLstExecute();
 		Core::GetInstance()->WaitForGpuComplete();
 		m_pObjects[OBJ_PLAYER].push_back(pObj);

@@ -37,6 +37,8 @@ public:
 	bool		GetLobbyEnd() { return m_bLobbyEnd; }
 	XMFLOAT3	GetMyPlayerStartPos() { return m_tMyInfo.xmfPosition; }
 	map<DWORD, PlayerInfo>	GetOtherPlayerInfo() { return m_mapOtherPlayerInfos; }
+	STOC_PlayerInfo GetRecvPlayerInfo(DWORD playerNum);
+	PlayerInfo	GetMyInfo() { return m_tMyInfo; }
 	void		SetMyPlayerInfo(Player* pPlayer);
 	void		SetOtherPlayerInfo(list<Object*>* plstPlayer);
 private:
