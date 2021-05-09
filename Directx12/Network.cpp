@@ -131,12 +131,12 @@ void Network::Update()
 		SendKeyInput();
 		//RecvPlayerInfo();
 
-		Object* pObj = MainApp::GetInstance()->GetScene()->GetPlayer();
-		if (pObj != nullptr) {
-			Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
-			dynamic_cast<AnimationCom*>(pPlayer->GetRootAniController())->ChangeAnimation(SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Root_eAnimType));
-			dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->ChangeAnimation(SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Upper_eAnimType));
-		}
+		//Object* pObj = MainApp::GetInstance()->GetScene()->GetPlayer();
+		//if (pObj != nullptr) {
+		//	Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
+		//	dynamic_cast<AnimationCom*>(pPlayer->GetRootAniController())->ChangeAnimation(SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Root_eAnimType));
+		//	dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->ChangeAnimation(SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Upper_eAnimType));
+		//}
 	}
 
 }
@@ -173,12 +173,17 @@ void Network::SetMyPlayerInfo(Player* pPlayer)
 {
 	
 	XMFLOAT3 pos;
-	memcpy(&pos, &m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._41, sizeof(XMFLOAT3));
+	int Root_Ani = 0;
+	int Upper_Ani = 0;
 
+	memcpy(&pos, &m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._41, sizeof(XMFLOAT3));
+	Root_Ani = SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Root_eAnimType);
+	Upper_Ani = SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Upper_eAnimType);
 	//cout << "( " << pos.x << ", " << pos.y << ", " << pos.z << endl;
 
 	pPlayer->SetPosition(pos);
-	
+	dynamic_cast<AnimationCom*>(pPlayer->GetRootAniController())->ChangeAnimation(Root_Ani);
+	dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->ChangeAnimation(Upper_Ani);
 }
 
 void Network::SetOtherPlayerInfo(list<Object*>* plstPlayer)
