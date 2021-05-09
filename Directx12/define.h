@@ -37,6 +37,7 @@
 
 
 #define NETWOR
+#define PHYSX
 
 #define MAX_BUFFER 1024
 #define MIN_BUFFER 256

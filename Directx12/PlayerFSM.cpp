@@ -79,26 +79,26 @@ void PlayerFSM::Exit()
 			break;
 	}
 }
-void PlayerFSM::Execute()
+void PlayerFSM::Execute(const float& fTimeDelta)
 {
 	switch (m_State)
 	{
 		case static_cast<int>(PLAYER_STATE::IDLE) :
-			Idle();
+			Idle(fTimeDelta);
 			break;
 		case SCint(PLAYER_STATE::MOVE):
-			Move();
+			Move(fTimeDelta);
 			break;
 		case SCint(PLAYER_STATE::ATTACK):
-			Attack();
+			Attack(fTimeDelta);
 			break;
 		case SCint(PLAYER_STATE::JUMP):
-			Jump();
+			Jump(fTimeDelta);
 			break;
 	}
 }
 
-void PlayerFSM::Idle()
+void PlayerFSM::Idle(const float& fTimeDelta)
 {
 	// 상체 냐 하체냐
 	if (m_BoneType == BoneType::UPPER_BONE)
@@ -161,7 +161,7 @@ void PlayerFSM::Idle()
 	}
 }
 
-void PlayerFSM::Move()
+void PlayerFSM::Move(const float& fTimeDelta)
 {
 	//
 	if (m_BoneType == BoneType::UPPER_BONE)
@@ -203,47 +203,96 @@ void PlayerFSM::Move()
 			ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
 		}
 		else { // 이동중에 공격이면 하체는 안바꿔도됨
+
+			XMFLOAT3 vForward = dynamic_cast<Transform*>(m_User->GetTransController())->GetForwardVector();
+			XMFLOAT3 vBackward = dynamic_cast<Transform*>(m_User->GetTransController())->GetBackwardVector();
+			XMFLOAT3 vLeft = dynamic_cast<Transform*>(m_User->GetTransController())->GetLeftVector();
+			XMFLOAT3 vRight = dynamic_cast<Transform*>(m_User->GetTransController())->GetRightVector();
+			XMFLOAT3 vResult;
 			if (DefaultKeyboard->KeyPressing('W'))
 			{ // 위쪽
 				if (DefaultKeyboard->KeyPressing('A')) {
 					// 왼쪽
+					
+#ifndef PHYSX
 					dynamic_cast<Transform*>(m_User->GetTransController())->MoveForward(M_MoveForward_Speed / sqrtf(2.f));
 					dynamic_cast<Transform*>(m_User->GetTransController())->MoveLeft(M_MoveLeft_Speed / sqrtf(2.f));
+#else
+					XMStoreFloat3(&vResult, XMVector3Normalize(XMLoadFloat3(&vForward) + XMLoadFloat3(&vLeft)) * 5.f);
+					m_User->MoveCapsuleController(vResult, fTimeDelta);
+#endif
+
 				}
 				else if (DefaultKeyboard->KeyPressing('D')) {
 					// 오른쪽
+#ifndef PHYSX
 					dynamic_cast<Transform*>(m_User->GetTransController())->MoveForward(M_MoveForward_Speed / sqrtf(2.f));
 					dynamic_cast<Transform*>(m_User->GetTransController())->MoveRight(M_MoveRight_Speed / sqrtf(2.f));
+#else
+					XMStoreFloat3(&vResult, XMVector3Normalize(XMLoadFloat3(&vForward) + XMLoadFloat3(&vRight)) * 5.f);
+					m_User->MoveCapsuleController(vResult, fTimeDelta);
+#endif
 				}
 				else {
+#ifndef PHYSX
 					dynamic_cast<Transform*>(m_User->GetTransController())->MoveForward(M_MoveForward_Speed);
+#else
+					XMStoreFloat3(&vResult, XMLoadFloat3(&vForward) * 5.f);
+					m_User->MoveCapsuleController(vResult, fTimeDelta);
+#endif
 				}
 				dynamic_cast<AnimationCom*>(m_User->GetRootAniController())->ChangeAnimation(SCint(ANIMATION_TYPE::WALK_FOWARD));
 			}
 			else if (DefaultKeyboard->KeyPressing('S')) {
 				// 아래쪽
+
 				if (DefaultKeyboard->KeyPressing('A')) {
 					// 왼쪽
+#ifndef PHYSX
 					dynamic_cast<Transform*>(m_User->GetTransController())->MoveBackward(M_MoveBackward_Speed / sqrtf(2.f));
 					dynamic_cast<Transform*>(m_User->GetTransController())->MoveLeft(M_MoveLeft_Speed / sqrtf(2.f));
+#else
+					XMStoreFloat3(&vResult, XMVector3Normalize(XMLoadFloat3(&vBackward) + XMLoadFloat3(&vLeft)) * 5.f);
+					m_User->MoveCapsuleController(vResult, fTimeDelta);
+#endif
 				}
 				else if (DefaultKeyboard->KeyPressing('D')) {
 					// 오른쪽
+#ifndef PHYSX
 					dynamic_cast<Transform*>(m_User->GetTransController())->MoveBackward(M_MoveBackward_Speed / sqrtf(2.f));
 					dynamic_cast<Transform*>(m_User->GetTransController())->MoveRight(M_MoveRight_Speed / sqrtf(2.f));
+#else
+					XMStoreFloat3(&vResult, XMVector3Normalize(XMLoadFloat3(&vBackward) + XMLoadFloat3(&vRight)) * 5.f);
+					m_User->MoveCapsuleController(vResult, fTimeDelta);
+#endif
 				}
 				else {
+#ifndef PHYSX
 					dynamic_cast<Transform*>(m_User->GetTransController())->MoveBackward(M_MoveBackward_Speed);
+#else
+					XMStoreFloat3(&vResult, XMLoadFloat3(&vBackward) * 5.f);
+					m_User->MoveCapsuleController(vResult, fTimeDelta);
+#endif
 				}
 				dynamic_cast<AnimationCom*>(m_User->GetRootAniController())->ChangeAnimation(SCint(ANIMATION_TYPE::WALK_BACK));
 			}
 			else if (DefaultKeyboard->KeyPressing('A')) {
 				dynamic_cast<AnimationCom*>(m_User->GetRootAniController())->ChangeAnimation(SCint(ANIMATION_TYPE::WALK_LEFT));
+#ifndef PHYSX
 				dynamic_cast<Transform*>(m_User->GetTransController())->MoveLeft(M_MoveLeft_Speed);
+#else
+				XMStoreFloat3(&vResult, XMLoadFloat3(&vLeft) * 5.f);
+				m_User->MoveCapsuleController(vResult, fTimeDelta);
+#endif
 			}
 			else if (DefaultKeyboard->KeyPressing('D')) {
 				dynamic_cast<AnimationCom*>(m_User->GetRootAniController())->ChangeAnimation(SCint(ANIMATION_TYPE::WALK_RIGHT));
+#ifndef PHYSX
 				dynamic_cast<Transform*>(m_User->GetTransController())->MoveRight(M_MoveRight_Speed);
+#else
+				XMStoreFloat3(&vResult, XMLoadFloat3(&vRight) * 5.f);
+				m_User->MoveCapsuleController(vResult, fTimeDelta);
+#endif
 			}
 			else
 				ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
@@ -253,7 +302,7 @@ void PlayerFSM::Move()
 
 
 
-void PlayerFSM::Attack()
+void PlayerFSM::Attack(const float& fTimeDelta)
 {
 	if (m_BoneType == BoneType::UPPER_BONE)
 	{ // 상체
@@ -273,7 +322,7 @@ void PlayerFSM::Attack()
 	}
 }
 
-void PlayerFSM::Jump()
+void PlayerFSM::Jump(const float& fTimeDelta)
 {
 	if (m_BoneType == BoneType::UPPER_BONE)
 	{ // 상체

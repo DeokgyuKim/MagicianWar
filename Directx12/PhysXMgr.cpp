@@ -363,7 +363,6 @@ PxRigidStatic * CPhysXMgr::CreateTriangleStaticMesh(Object* pObj, string meshnam
 	PxTriangleMeshGeometry geom(triMesh);
 	PxShape* iglooShape = PxRigidActorExt::createExclusiveShape(*iglooActor, geom, *gMaterial);
 
-
 	gScene->addActor(*iglooActor);
 
 	MyPhysXGameObject str;
@@ -1550,29 +1549,29 @@ bool CPhysXMgr::SweepBetweenPlayerAndStatic(PxRigidActor * pBody0, PxRigidActor 
 //	return PhysXMatrix;
 //}
 //
-//_matrix CPhysXMgr::ToMatrix(PxMat44 _mat44)
-//{
-//	_matrix  matworld;
-//	matworld._11 = _mat44.column0.x;
-//	matworld._12 = _mat44.column0.y;
-//	matworld._13 = _mat44.column0.z;
-//	matworld._14 = _mat44.column0.w;
-//	matworld._21 = _mat44.column1.x;
-//	matworld._22 = _mat44.column1.y;
-//	matworld._23 = _mat44.column1.z;
-//	matworld._24 = _mat44.column1.w;
-//	matworld._31 = _mat44.column2.x;
-//	matworld._32 = _mat44.column2.y;
-//	matworld._33 = _mat44.column2.z;
-//	matworld._34 = _mat44.column2.w;
-//	matworld._41 = _mat44.column3.x;
-//	matworld._42 = _mat44.column3.y;
-//	matworld._43 = _mat44.column3.z;
-//	matworld._44 = _mat44.column3.w;
-//
-//	return matworld;
-//}
-//
+XMMATRIX CPhysXMgr::ToMatrix(PxMat44 _mat44)
+{
+	XMFLOAT4X4  matworld;
+	matworld._11 = _mat44.column0.x;
+	matworld._12 = _mat44.column0.y;
+	matworld._13 = _mat44.column0.z;
+	matworld._14 = _mat44.column0.w;
+	matworld._21 = _mat44.column1.x;
+	matworld._22 = _mat44.column1.y;
+	matworld._23 = _mat44.column1.z;
+	matworld._24 = _mat44.column1.w;
+	matworld._31 = _mat44.column2.x;
+	matworld._32 = _mat44.column2.y;
+	matworld._33 = _mat44.column2.z;
+	matworld._34 = _mat44.column2.w;
+	matworld._41 = _mat44.column3.x;
+	matworld._42 = _mat44.column3.y;
+	matworld._43 = _mat44.column3.z;
+	matworld._44 = _mat44.column3.w;
+
+	return XMLoadFloat4x4(&matworld);
+}
+
 //_vec3 CPhysXMgr::ToVec3(PxVec3 _PxVector3)
 //{
 //	_vec3 _vector3;
@@ -1582,14 +1581,14 @@ bool CPhysXMgr::SweepBetweenPlayerAndStatic(PxRigidActor * pBody0, PxRigidActor 
 //	return _vector3;
 //}
 //
-//PxVec3 CPhysXMgr::ToPxVec3(_vec3 _vector3)
-//{
-//	PxVec3 Pxvector3_;
-//	Pxvector3_.x = _vector3.x;
-//	Pxvector3_.y = _vector3.y;
-//	Pxvector3_.z = _vector3.z;
-//	return Pxvector3_;
-//}
+PxVec3 CPhysXMgr::ToPxVec3(XMFLOAT3 _vector3)
+{
+	PxVec3 Pxvector3_;
+	Pxvector3_.x = _vector3.x;
+	Pxvector3_.y = _vector3.y;
+	Pxvector3_.z = _vector3.z;
+	return Pxvector3_;
+}
 
 void CPhysXMgr::Clear_OldTerrain(void)
 {

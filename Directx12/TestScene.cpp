@@ -171,6 +171,7 @@ void TestScene::Initialize()
 	//m_pObjects[OBJ_STATIC].push_back(pObj);
 
 	StaticMeshMgr::GetInstance()->LoadMeshInfo("../Data/Map1Data.txt");
+	//StaticMeshMgr::GetInstance()->LoadMeshInfo("../Data/Saved.txt");
 	multimap<string*, TransformStruct> mmapInfo = StaticMeshMgr::GetInstance()->GetMapMeshInfo();
 	for (auto iter = mmapInfo.begin(); iter != mmapInfo.end(); ++iter)
 	{
@@ -179,12 +180,12 @@ void TestScene::Initialize()
 		m_pObjects[OBJ_STATIC].push_back(pObj);
 	}
 
-	pObj = new Flames(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT3(10.f, 1.f, 5.f));
-	m_pObjects[OBJ_SKILL].push_back(pObj);
-
-	pObj = new FireShock(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
-	m_pObjects[OBJ_SKILL].push_back(pObj);
+	//pObj = new Flames(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT3(10.f, 1.f, 5.f));
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
+	//
+	//pObj = new FireShock(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
 
 	//Core::GetInstance()->CmdLstReset();
 	//pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());

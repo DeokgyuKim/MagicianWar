@@ -31,7 +31,14 @@ public:
     void        MoveBackward(float speed);
     void        MoveLeft(float speed);
     void        MoveRight(float speed);
+    
+    XMFLOAT3    GetForwardVector();
+    XMFLOAT3    GetBackwardVector();
+    XMFLOAT3    GetLeftVector();
+    XMFLOAT3    GetRightVector();
+    
     int         Jump(DWORD iKey);
+
 private:
     XMFLOAT3    m_xmfScale;
     XMFLOAT3	m_xmfRotate;

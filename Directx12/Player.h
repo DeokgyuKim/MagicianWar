@@ -37,8 +37,11 @@ public:
     // Get
     Component* GetUpperAniController() { return m_mapComponent["Upper_Animation"]; }
     Component* GetRootAniController() { return m_mapComponent["Root_Animation"]; }
-    
-
+public:
+    void        MoveCapsuleController(XMFLOAT3 vSpeed, const float& fTimeDelta);
+private:
+    void        ModifyPhysXPos(const float& fTimeDelta);
+    void        GravityProgress(const float& fTimeDelta);
 
 protected:
     PlayerInfo                                  m_tNetInfo;

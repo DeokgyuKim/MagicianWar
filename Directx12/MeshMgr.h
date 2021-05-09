@@ -31,7 +31,7 @@ private:
 public:
 	void InitMeshMgr(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCmdLst);
 	void BuildSkinnedModel(string meshName, MESH_TYPE etype);
-	void BuildModel(string meshName, MESH_TYPE etype);
+	void BuildModel(string meshName, MESH_TYPE etype, bool bCollisionModel = false);
 	void BuildModels();
 	void BuildSkinnedModels();
 	//void Build

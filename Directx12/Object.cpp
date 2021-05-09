@@ -55,3 +55,12 @@ Component* Object::GetTransController()
 
     return (*iter).second;
 }
+
+Component* Object::GetComponent(string strCom)
+{
+    auto iter = m_mapComponent.find(strCom);
+    if (iter == m_mapComponent.end())
+        return nullptr;
+
+    return (*iter).second;
+}

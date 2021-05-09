@@ -94,8 +94,8 @@ int Player::Update(const float& fTimeDelta)
 		//}
 
 	}
-	m_UpperBody->Execute();
-	m_RootBody->Execute();
+	m_UpperBody->Execute(fTimeDelta);
+	m_RootBody->Execute(fTimeDelta);
 
 	return 0;
 }
@@ -108,6 +108,8 @@ void Player::LateUpdate(const float& fTimeDelta)
 	UpdateSkinnedCB();
 
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_DYNAMIC, this);
+
+	ModifyPhysXPos(fTimeDelta);
 }
 
 void Player::Render(const float& fTimeDelta, int _instanceCount)
@@ -162,6 +164,98 @@ void Player::SetPosition(XMFLOAT3 xmfPos)
 void Player::SetWorld(XMFLOAT4X4 world)
 {
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetWorld(world);
+}
+
+void Player::MoveCapsuleController(XMFLOAT3 vSpeed, const float& fTimeDelta)
+{
+	if (m_pCapsuleCon == NULL)
+		return;
+	PxControllerCollisionFlags colflag = m_pCapsuleCon->move(CPhysXMgr::GetInstance()->ToPxVec3(vSpeed) * fTimeDelta, 0.f, fTimeDelta, PxControllerFilters());
+}
+
+void Player::ModifyPhysXPos(const float& fTimeDelta)
+{
+#ifdef PHYSX
+	XMMATRIX matScale, matTrans, matQuat, matWorld;
+	XMVECTOR vQuat;
+
+	XMVECTOR vecs, vect;
+	XMFLOAT3 xmfScale = dynamic_cast<Transform*>(GetTransController())->GetScale();
+
+	PxRigidDynamic* pRigid = m_pCapsuleCon->getActor();
+	PxTransform gp = pRigid->getGlobalPose();
+
+	PxMat44 m = PxMat44(gp);
+
+	matWorld = CPhysXMgr::GetInstance()->ToMatrix(m);
+
+	XMMatrixDecompose(&vecs, &vQuat, &vect, dynamic_cast<Transform*>(GetTransController())->GetWorldMatrix());
+	matQuat = XMMatrixRotationQuaternion(vQuat);
+
+	matScale = XMMatrixScalingFromVector(XMLoadFloat3(&xmfScale));
+
+
+	///Gravity
+	GravityProgress(fTimeDelta);
+
+	PxExtendedVec3 GetPosition = m_pCapsuleCon->getPosition();
+	PxVec3 pxVecGp;
+	pxVecGp.x = float(GetPosition.x);
+	pxVecGp.y = float(GetPosition.y);
+	pxVecGp.z = float(GetPosition.z);
+	matTrans = XMMatrixTranslation(pxVecGp.x, pxVecGp.y, pxVecGp.z);
+
+	
+	XMFLOAT4X4 xmf4x4mat;
+	XMStoreFloat4x4(&xmf4x4mat, matScale * matQuat * matTrans);
+
+	dynamic_cast<Transform*>(GetTransController())->SetWorld(xmf4x4mat);
+	dynamic_cast<Transform*>(GetTransController())->SetPosition(XMFLOAT3(GetPosition.x, GetPosition.y, GetPosition.z));
+#endif
+}
+
+void Player::GravityProgress(const float& fTimeDelta)
+{
+	if (dynamic_cast<Transform*>(GetTransController())->GetPosition().y <= 0)
+		return;
+	PxVec3 upDisp = { 0, 1.f ,0 };
+	upDisp *= -9.81f * fTimeDelta;
+	const PxVec3 disp = upDisp;
+	const PxU32 flags = m_pCapsuleCon->move(disp, 0.0f, fTimeDelta, PxControllerFilters());
+
+	//const PxF32 heightDelta = getHeight(m_fTimeDelta);
+	//
+	//PxVec3 upDisp = { 0, 1.f ,0 };
+	//if (heightDelta != 0.0f) {
+	//	upDisp *= heightDelta;
+	//}
+	//else {
+	//	upDisp *= -9.81f * m_fTimeDelta;
+	//}
+	//const PxVec3 disp = upDisp;
+	//
+	//const PxU32 flags = m_pCapsuleCon->move(disp, 0.0f, m_fTimeDelta, PxControllerFilters());
+	//if (CPhysXMgr::GetInstance()->ToVec3(upDisp).y > 0) {
+	//	m_eJumpState = JUMP_UP;
+	//}
+	//else {
+	//	m_eJumpState = JUMP_DOWN;
+	//}
+	//
+	//if (flags & PxControllerCollisionFlag::eCOLLISION_DOWN) // 무언가에 부딪쳤을때
+	//{
+	//	m_eJumpState = JUMP_LAND;
+	//	//stopJump();// 점프를 멈춘다 -> 중력을 안받는다 
+	//}
+	//if (flags & PxControllerCollisionFlag::eCOLLISION_UP)
+	//{
+	//	//int a = 0;
+	//}
+	//
+	//if (flags & PxControllerCollisionFlag::eCOLLISION_SIDES)
+	//{
+	//	//int a = 0;
+	//}
 }
 
 

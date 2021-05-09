@@ -14,13 +14,13 @@ public:
 	// InterfaceCommand을(를) 통해 상속됨
 	virtual void ChangeState(int _State, int _Ani) override;
 	virtual void Enter(int _State, int _Ani) override;
-	virtual void Execute() override;
+	virtual void Execute(const float& fTimeDelta) override;
 	virtual void Exit() override;
 private:
-	void Idle();
-	void Move();
-	void Attack();
-	void Jump();
+	void Idle(const float& fTimeDelta);
+	void Move(const float& fTimeDelta);
+	void Attack(const float& fTimeDelta);
+	void Jump(const float& fTimeDelta);
 
 private:
 	Player* m_User;

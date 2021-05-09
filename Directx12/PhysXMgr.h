@@ -157,9 +157,9 @@ public:
 	//_matrix ApplyPhysXWorldMatrix(PxRigidActor * pRigid, _vec3 _Scale, _vec3 _Pivot = { 0.f, 0.f, 0.f });
 	//void ApplyPhysXAngle(PxRigidDynamic * pDynamic, _vec3 _Angle);
 	//PxMat44 ToPxMat(_matrix _matworld);
-	//_matrix ToMatrix(PxMat44 _mat44);
+	XMMATRIX ToMatrix(PxMat44 _mat44);
 	//_vec3   ToVec3(PxVec3 _PxVector3); // ววม๗ฝบบคลอ -> บคลอ
-	//PxVec3 ToPxVec3(_vec3 _vector3); // บคลอ -> ววม๗ฝบบคลอ
+	PxVec3 ToPxVec3(XMFLOAT3 _vector3); // บคลอ -> ววม๗ฝบบคลอ
 	//void Set_Layer(Engine::CLayer* pLayer) { m_StaticLayer = pLayer; }
 
 	void	Clear_OldTerrain(void);

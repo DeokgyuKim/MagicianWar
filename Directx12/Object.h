@@ -24,6 +24,7 @@ public: // Get
 	bool		GetIsInstancing() { return m_bInstanced; }
 
 	virtual Component* GetTransController();
+	Component* GetComponent(string strCom);
 
 protected:
 	Renderer*							m_pRenderer;

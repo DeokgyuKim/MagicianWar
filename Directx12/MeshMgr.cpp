@@ -82,14 +82,17 @@ void MeshMgr::BuildSkinnedModel(string meshName, MESH_TYPE etype)
 }
 
 
-void MeshMgr::BuildModel(string meshName, MESH_TYPE etype)
+void MeshMgr::BuildModel(string meshName, MESH_TYPE etype, bool bCollisionModel)
 {
 	if (m_Meshs.count(meshName)) {
 		cout << "중복 모델 로드" << endl;
 		return;
 	}
 
-	m_strFilePath = "..//Resources//Models//";
+	if(!bCollisionModel)
+		m_strFilePath = "..//Resources//Models//";
+	else
+		m_strFilePath = "..//Resources//Collision//";
 
 	//// 메쉬가 없다면
 	//switch (etype)
@@ -128,9 +131,9 @@ void MeshMgr::BuildModel(string meshName, MESH_TYPE etype)
 	for (int i = 0; i < indices.size() / 3; ++i)
 	{
 		Indices indic;
-		indic.i1 = 3 * indices[i];
-		indic.i2 = 3 * indices[i + 1];
-		indic.i3 = 3 * indices[i + 2];
+		indic.i1 = indices[3 * i];
+		indic.i2 = indices[3 * i + 1];
+		indic.i3 = indices[3 * i + 2];
 		m_StaticMeshVtxInfo[meshName].vecIdx.push_back(indic);
 	}
 
@@ -204,6 +207,7 @@ void MeshMgr::BuildModels()
 	BuildModel("wall_H10m_L50m", MESH_TYPE::TILE);
 	BuildModel("wagon", MESH_TYPE::TILE);
 	BuildModel("Sphere", MESH_TYPE::TILE);
+
 }
 
 void MeshMgr::BuildSkinnedModels()

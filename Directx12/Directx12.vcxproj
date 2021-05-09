@@ -212,6 +212,7 @@
     <ClInclude Include="UI.h" />
     <ClInclude Include="UIPlane.h" />
     <ClInclude Include="UploadBuffer.h" />
+    <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
@@ -270,6 +271,7 @@
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="UIPlane.cpp" />
+    <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Directx12.rc" />

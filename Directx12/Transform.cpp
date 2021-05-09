@@ -116,6 +116,38 @@ void Transform::MoveRight(float speed)
 	XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&right) * speed);
 }
 
+XMFLOAT3 Transform::GetForwardVector()
+{
+	XMFLOAT3 look;
+	memcpy(&look, &m_xmmOriginWorld._31, sizeof(XMFLOAT3));
+	XMStoreFloat3(&look, XMVector3Normalize(XMLoadFloat3(&look)));
+	return look;
+}
+
+XMFLOAT3 Transform::GetBackwardVector()
+{
+	XMFLOAT3 look;
+	memcpy(&look, &m_xmmOriginWorld._31, sizeof(XMFLOAT3));
+	XMStoreFloat3(&look, XMVector3Normalize(XMLoadFloat3(&look)) * -1.f);
+	return look;
+}
+
+XMFLOAT3 Transform::GetLeftVector()
+{
+	XMFLOAT3 right;
+	memcpy(&right, &m_xmmWorld._11, sizeof(XMFLOAT3));
+	XMStoreFloat3(&right, XMVector3Normalize(XMLoadFloat3(&right)) * -1.f);
+	return right;
+}
+
+XMFLOAT3 Transform::GetRightVector()
+{
+	XMFLOAT3 right;
+	memcpy(&right, &m_xmmWorld._11, sizeof(XMFLOAT3));
+	XMStoreFloat3(&right, XMVector3Normalize(XMLoadFloat3(&right)));
+	return right;
+}
+
 int Transform::Jump(DWORD iKey)
 {
 #ifdef NETWORK

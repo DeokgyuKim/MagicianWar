@@ -16,7 +16,7 @@ public:
 	// Get
 	int GetState() const { return m_State; }
 	
-	virtual void Execute() = 0;
+	virtual void Execute(const float& fTimeDelta) = 0;
 protected:
 	int m_State;
 };
