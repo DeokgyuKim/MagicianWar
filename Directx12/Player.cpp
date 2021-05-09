@@ -52,9 +52,12 @@ void Player::Initialize(XMFLOAT3 pos)
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 0.f, 0.f));
 	m_MaterialIndex = dynamic_cast<MaterialCom*>(m_mapComponent["Material"])->GetMaterialIndex();
+
+#ifndef NETWORK
 	// FSM ¸¸µé±â
 	m_UpperBody = make_unique<PlayerFSM>(this, BoneType::UPPER_BONE); // ( player , BoneType )
 	m_RootBody = make_unique<PlayerFSM>(this, BoneType::ROOT_BONE);
+#endif
 
 	m_strTextureName = "wizard_01";
 
@@ -94,8 +97,10 @@ int Player::Update(const float& fTimeDelta)
 		//}
 
 	}
+#ifndef NETWORK
 	m_UpperBody->Execute(fTimeDelta);
 	m_RootBody->Execute(fTimeDelta);
+#endif
 
 	return 0;
 }
@@ -164,6 +169,31 @@ void Player::SetPosition(XMFLOAT3 xmfPos)
 void Player::SetWorld(XMFLOAT4X4 world)
 {
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetWorld(world);
+}
+
+Component* Player::GetUpperAniController()
+{
+	auto iter = m_mapComponent.find("Upper_Animation");
+	if (iter == m_mapComponent.end())
+		return nullptr;
+
+	return (*iter).second;
+}
+
+Component* Player::GetRootAniController()
+{
+	auto iter = m_mapComponent.find("Root_Animation");
+	if (iter == m_mapComponent.end())
+		return nullptr;
+
+	return (*iter).second;
+}
+
+InterfaceFSM* Player::GetRootFSM()
+{
+	if (m_RootBody == nullptr) // 
+		return nullptr;
+	return m_RootBody.get();
 }
 
 void Player::MoveCapsuleController(XMFLOAT3 vSpeed, const float& fTimeDelta)

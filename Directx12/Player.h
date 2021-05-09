@@ -35,8 +35,9 @@ public:
     void        SetCamera(Camera* pCamera) { m_pCamera = pCamera; }
 public:
     // Get
-    Component* GetUpperAniController() { return m_mapComponent["Upper_Animation"]; }
-    Component* GetRootAniController() { return m_mapComponent["Root_Animation"]; }
+    Component* GetUpperAniController();
+    Component* GetRootAniController();
+    InterfaceFSM* GetRootFSM();
 public:
     void        MoveCapsuleController(XMFLOAT3 vSpeed, const float& fTimeDelta);
 private:

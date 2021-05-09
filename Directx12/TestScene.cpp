@@ -126,15 +126,33 @@ void TestScene::Initialize()
 	XMFLOAT3 pos = Network::GetInstance()->GetMyPlayerStartPos();
 	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		CHARACTER_WIZARD_01, pos);
+	pPlayer = dynamic_cast<Player*>(pObj);
+	m_pObjects[OBJ_PLAYER].push_back(pObj);
+	Core::GetInstance()->CmdLstExecute();
+	Core::GetInstance()->WaitForGpuComplete();
+
+	map<DWORD, PlayerInfo> Others = Network::GetInstance()->GetOtherPlayerInfo();
+	for (auto iter = Others.begin(); iter != Others.end(); ++iter)
+	{
+		Core::GetInstance()->CmdLstReset();
+		pos = (*iter).second.xmfPosition;
+		pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+			CHARACTER_WIZARD_01, pos);
+		Core::GetInstance()->CmdLstExecute();
+		Core::GetInstance()->WaitForGpuComplete();
+		m_pObjects[OBJ_PLAYER].push_back(pObj);
+	}
+
+
 #else
 	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		CHARACTER_WIZARD_01);
-#endif
 	pPlayer = dynamic_cast<Player*>(pObj);
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
-	
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
+#endif
+	
 	
 	Core::GetInstance()->CmdLstReset();
 	pObj = new Camera(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());

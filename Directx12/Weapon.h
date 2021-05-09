@@ -24,6 +24,6 @@ protected:
 
     int         m_iSocketIdx;
     XMFLOAT4X4  m_xmf4x4ParentWorld;
-    Object*     m_pParent
+    Object*     m_pParent;
 };
 

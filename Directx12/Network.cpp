@@ -284,6 +284,9 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_mapOtherPlayerInfos[data->dwPlayerNum].dwTeamNum = data->dwTeamNum;
 		m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition = data->xmfPosition;
 		m_mapRecvPlayerInfos[data->dwPlayerNum];
+		cout << m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.x << ", "
+			<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.y << ", "
+			<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.z << endl;
 		break;
 	}
 	case stoc_playerInfo:
