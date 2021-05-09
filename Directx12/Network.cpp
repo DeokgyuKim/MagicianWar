@@ -179,7 +179,8 @@ void Network::SetMyPlayerInfo(Player* pPlayer)
 	memcpy(&pos, &m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._41, sizeof(XMFLOAT3));
 	Root_Ani = SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Root_eAnimType);
 	Upper_Ani = SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Upper_eAnimType);
-	//cout << "( " << pos.x << ", " << pos.y << ", " << pos.z << endl;
+	cout << "1번 클라의 Root - " << Root_Ani << endl;
+	//cout << "1번 클라의 Upper - " << Root_Ani << endl;
 
 	pPlayer->SetPosition(pos);
 	dynamic_cast<AnimationCom*>(pPlayer->GetRootAniController())->ChangeAnimation(Root_Ani);

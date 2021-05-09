@@ -3,6 +3,14 @@
 
 
 
+SkinnedModelInstance::SkinnedModelInstance(const SkinnedModelInstance& rhs)
+{
+	SkinnedInfo = make_unique<SkinnedData>(*rhs.SkinnedInfo.get());
+	FinalTransforms.resize((int)rhs.FinalTransforms.size());
+	copy(rhs.FinalTransforms.begin(), rhs.FinalTransforms.end(), FinalTransforms.begin());
+	
+}
+
 void SkinnedModelInstance::UpdateAnimation(ANIMATION_TYPE _eAnimation, float timePos)
 {
 	// 해당 Animation에 대해 갱신을 한다.

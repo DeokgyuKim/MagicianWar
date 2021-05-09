@@ -4,7 +4,7 @@
 AnimationCom::AnimationCom(const string& user)
 {
 	// 메쉬에 맞는 애니메이션들 세팅해주고
-	SkinnedModelInstance* inst = AnimationMgr::GetInstance()->GetAnimations(user);
+	SkinnedModelInstance* inst = new SkinnedModelInstance(*AnimationMgr::GetInstance()->GetAnimations(user));
 	SkinnedData* instData = inst->SkinnedInfo.get();
 	m_SkinnedModelInst = new SkinnedModelInstance();
 	m_SkinnedModelInst->FinalTransforms = inst->FinalTransforms;
