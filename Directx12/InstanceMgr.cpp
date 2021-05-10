@@ -59,32 +59,49 @@ void InstanceMgr::UpdateSkinnedBuffers(Object* _obj)
 	}
 	SkinnedCB data;
 
-	memcpy(&data.right[0], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[0]._11, sizeof(XMFLOAT3));
-	memcpy(&data.up[0], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[0]._21, sizeof(XMFLOAT3));
-	memcpy(&data.look[0], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[0]._31, sizeof(XMFLOAT3));
-	memcpy(&data.pos[0], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[0]._41, sizeof(XMFLOAT3));
+	XMFLOAT4X4 root = dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[0];
+	XMMATRIX matRoot = XMLoadFloat4x4(&root);
+	matRoot = XMMatrixTranspose(matRoot);
+	XMStoreFloat4x4(&root, matRoot);
+
+	memcpy(&data.right[0], &root._11, sizeof(XMFLOAT3));
+	memcpy(&data.up[0], &root._21, sizeof(XMFLOAT3));
+	memcpy(&data.look[0], &root._31, sizeof(XMFLOAT3));
+	memcpy(&data.pos[0], &root._41, sizeof(XMFLOAT3));
+
+	root = dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[1];
+	matRoot = XMLoadFloat4x4(&root);
+	matRoot = XMMatrixTranspose(matRoot);
+	XMStoreFloat4x4(&root, matRoot);
 	
-	memcpy(&data.right[1], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[1]._11, sizeof(XMFLOAT3));
-	memcpy(&data.up[1], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[1]._21, sizeof(XMFLOAT3));
-	memcpy(&data.look[1], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[1]._31, sizeof(XMFLOAT3));
-	memcpy(&data.pos[1], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[1]._41, sizeof(XMFLOAT3));
+	memcpy(&data.right[1], &root._11, sizeof(XMFLOAT3));
+	memcpy(&data.up[1], &root._21, sizeof(XMFLOAT3));
+	memcpy(&data.look[1], &root._31, sizeof(XMFLOAT3));
+	memcpy(&data.pos[1], &root._41, sizeof(XMFLOAT3));
 
 	//data.BoneTransforms[0] = dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[0]; // Root 뼈대 == 하체 중심
 	//data.BoneTransforms[1] = dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[1]; // Root 뼈대 == 하체 중심
 	for (int upper = 2; upper < 27; ++upper) { // 상체
-		memcpy(&data.right[upper], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetUpperAniController())->GetSkinnedModellnst()->FinalTransforms[upper]._11, sizeof(XMFLOAT3));
-		memcpy(&data.up[upper], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetUpperAniController())->GetSkinnedModellnst()->FinalTransforms[upper]._21, sizeof(XMFLOAT3));
-		memcpy(&data.look[upper], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetUpperAniController())->GetSkinnedModellnst()->FinalTransforms[upper]._31, sizeof(XMFLOAT3));
-		memcpy(&data.pos[upper], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetUpperAniController())->GetSkinnedModellnst()->FinalTransforms[upper]._41, sizeof(XMFLOAT3));
+		root = dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetUpperAniController())->GetSkinnedModellnst()->FinalTransforms[upper];
+		matRoot = XMLoadFloat4x4(&root);
+		matRoot = XMMatrixTranspose(matRoot);
+		XMStoreFloat4x4(&root, matRoot);
+		memcpy(&data.right[upper],	&root._11, sizeof(XMFLOAT3));
+		memcpy(&data.up[upper],		&root._21, sizeof(XMFLOAT3));
+		memcpy(&data.look[upper],	&root._31, sizeof(XMFLOAT3));
+		memcpy(&data.pos[upper],	&root._41, sizeof(XMFLOAT3));
 
 		//data.BoneTransforms[upper] = dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetUpperAniController())->GetSkinnedModellnst()->FinalTransforms[upper];
 	}
 	for (int Root = 27; Root < 33; ++Root) { // 하체
-
-		memcpy(&data.right[Root], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[Root]._11, sizeof(XMFLOAT3));
-		memcpy(&data.up[Root], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[Root]._21, sizeof(XMFLOAT3));
-		memcpy(&data.look[Root], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[Root]._31, sizeof(XMFLOAT3));
-		memcpy(&data.pos[Root], &dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[Root]._41, sizeof(XMFLOAT3));
+		root = dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[Root];
+		matRoot = XMLoadFloat4x4(&root);
+		matRoot = XMMatrixTranspose(matRoot);
+		XMStoreFloat4x4(&root, matRoot);
+		memcpy(&data.right[Root],	&root._11, sizeof(XMFLOAT3));
+		memcpy(&data.up[Root],		&root._21, sizeof(XMFLOAT3));
+		memcpy(&data.look[Root],	&root._31, sizeof(XMFLOAT3));
+		memcpy(&data.pos[Root],		&root._41, sizeof(XMFLOAT3));
 		
 		//data.BoneTransforms[Root] = dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[Root];
 	}
