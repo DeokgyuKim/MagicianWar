@@ -31,7 +31,7 @@ void Renderer::DestroyInstance()
 void Renderer::InitRenderer(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCmdLst)
 {
 	m_pCore = pCore;
-    m_pDevice = pDevice;
+	m_pDevice = pDevice;
 	m_pCmdLst = pCmdLst;
 
 	BuildRootSignature();
@@ -56,7 +56,7 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Deffered");
 	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Deffered", m_pCore->GetDSVCpuHandle());
 
-    ////////////////////////////Render////////////////////////////
+	////////////////////////////Render////////////////////////////
 	m_pCmdLst->SetGraphicsRootSignature(m_ptrRootSignature.Get());
 
 
@@ -77,7 +77,7 @@ void Renderer::Render(const float& fTimeDelta)
 
 	////Set Pipeline
 	m_mapShaders[RENDER_TYPE::RENDER_NOBLEND]->PreRender(m_pCmdLst);
-	 
+
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_NOBLEND])
 	{
 		if (m_InstanceCheck.find(pObject->GetMeshName()) != m_InstanceCheck.end()) {
@@ -129,12 +129,15 @@ void Renderer::Render(const float& fTimeDelta)
 			if (pObject->GetTextureName() != "")
 				m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
 			m_pCmdLst->SetGraphicsRootShaderResourceView(0, InstanceMgr::GetInstnace()->m_InstanceCBs[pObject->GetMeshName()]->Resource()->GetGPUVirtualAddress());	// obj
+			if (pObject->GetMeshType() != MESH_TYPE::COUNT) {
+				m_pCmdLst->SetGraphicsRootShaderResourceView(11, InstanceMgr::GetInstnace()->m_SkinnedCBs[pObject->GetMeshName()]->Resource()->GetGPUVirtualAddress());
+			}
 			m_InstanceCheck[pObject->GetMeshName()] = InstanceMgr::GetInstnace()->m_InstanceObjects[pObject->GetMeshName()]->GetInstanceCount();
 			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetMeshName()]);
 		}
 	}
 
-    //////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////
 
 	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Shade");
 	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Shade", m_pCore->GetDSVForShadeCpuHandle());
@@ -192,7 +195,7 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pCore->MoveToNextFrame();
 
 	//m_pCore->Render_End();
-	for(int i = 0; i < RENDER_TYPE::RENDER_END; ++i)
+	for (int i = 0; i < RENDER_TYPE::RENDER_END; ++i)
 		m_lstObjects[i].clear();
 
 	m_InstanceCheck.clear();
@@ -272,7 +275,7 @@ void Renderer::BuildRootSignature()
 	slotRootParameter[8].InitAsDescriptorTable(1, &srvTable[4], D3D12_SHADER_VISIBILITY_PIXEL);	//normal render target
 	slotRootParameter[9].InitAsDescriptorTable(1, &srvTable[5], D3D12_SHADER_VISIBILITY_ALL);	//depth render target
 	slotRootParameter[10].InitAsDescriptorTable(1, &srvTable[6], D3D12_SHADER_VISIBILITY_ALL);	//Skybox texture
-	slotRootParameter[11].InitAsConstantBufferView(4); // Skinned
+	slotRootParameter[11].InitAsShaderResourceView(2, 2); // Skinned
 	slotRootParameter[12].InitAsDescriptorTable(1, &srvTable[7], D3D12_SHADER_VISIBILITY_ALL);		//Noise texture
 	slotRootParameter[13].InitAsDescriptorTable(1, &srvTable[8], D3D12_SHADER_VISIBILITY_PIXEL);	// Skill Effect Texture1
 	slotRootParameter[14].InitAsDescriptorTable(1, &srvTable[9], D3D12_SHADER_VISIBILITY_PIXEL);	// Skill Effect Texture2
@@ -281,7 +284,7 @@ void Renderer::BuildRootSignature()
 	slotRootParameter[17].InitAsDescriptorTable(1, &srvTable[12], D3D12_SHADER_VISIBILITY_PIXEL);	// Skill Effect Texture5
 	slotRootParameter[18].InitAsConstantBufferView(5);	//Skill Constant Buffer
 	slotRootParameter[19].InitAsConstantBufferView(6);	//Not Instanced Object Constant Buffer
-	
+
 
 	auto staticSamplers = GetStaticSamplers();
 

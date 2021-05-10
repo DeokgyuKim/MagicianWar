@@ -31,6 +31,7 @@ void Scene::LateUpdate(const float& fTimeDelta)
 		{
 			Object->LateUpdate(fTimeDelta);
 			InstanceMgr::GetInstnace()->UpdateInstanceBuffer(Object);
+			InstanceMgr::GetInstnace()->UpdateSkinnedBuffers(Object);
 		}
 	}
 	MaterialMgr::GetInstnace()->UpdateMaterialCBs();

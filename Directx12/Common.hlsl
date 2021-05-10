@@ -18,10 +18,10 @@ cbuffer cbLight : register(b3)
 	float4 gLightDirection;
 };
 
-cbuffer cbSkinned : register(b4)
-{
-	float4x4 gBoneTransforms[96];
-}
+//cbuffer cbSkinned : register(b4)
+//{
+//	float4x4 gBoneTransforms[96];
+//}
 
 cbuffer cbSkill : register(b5)
 {
@@ -62,6 +62,7 @@ struct InstanceObject
 {
 	float4x4	gWorld;
 	uint		MaterialIndex;
+	uint		gboolBone;
 };
 
 struct MaterialData
@@ -71,5 +72,31 @@ struct MaterialData
 	float4 gSpecular;
 };
 
+struct SkinnedData
+{
+	float3 gRight[33];
+	float3 gUp[33];
+	float3 gLook[33];
+	float3 gPos[33];
+};
+
+float4x4 makeFloat4x4ForFloat3x4(float3 r, float3 u, float3 l, float3 p)
+{
+	float4x4 result;
+	//result._11 = r.x; result._21 = r.y; result._31 = r.z; result._41 = 0;
+	//result._12 = u.x; result._22 = u.y; result._32 = u.z; result._42 = 0;
+	//result._13 = l.x; result._23 = l.y; result._33 = l.z; result._43 = 0;
+	//result._14 = p.x; result._24 = p.y; result._34 = p.z; result._44 = 1;
+
+
+	result._11 = r.x; result._12 = r.y; result._13 = r.z; result._14 = 0;
+	result._21 = u.x; result._22 = u.y; result._23 = u.z; result._24 = 0;
+	result._31 = l.x; result._32 = l.y; result._33 = l.z; result._34 = 0;
+	result._41 = p.x; result._42 = p.y; result._43 = p.z; result._44 = 1;
+
+	return result;
+}
+
 StructuredBuffer<InstanceObject> gInstanceData : register(t0, space1);
 StructuredBuffer<MaterialData>	 gMaterialData : register(t1, space1);
+StructuredBuffer<SkinnedData>	 gSkinnedData  : register(t2, space2);

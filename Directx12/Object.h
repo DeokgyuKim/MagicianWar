@@ -10,6 +10,7 @@ class Object
 public:
 	Object() {}
 	Object(string _meshName);
+	Object(string _meshName, MESH_TYPE _meshType);
 	virtual ~Object();
 public:
 	virtual int		Update(const float& fTimeDelta);
@@ -19,6 +20,7 @@ public:
 	virtual string	GetTextureName() { return m_strTextureName; }
 public: // Get
 	string		GetMeshName() const { return m_strMeshName; }
+	MESH_TYPE	GetMeshType() const { return m_strMeshType; }
 	int			GetIndex() const { return m_Index; }
 	UINT		GetMaterialIndex() { return m_MaterialIndex; }
 	bool		GetIsInstancing() { return m_bInstanced; }
@@ -36,6 +38,7 @@ protected:
 protected: // HBD
 	string								m_strMeshName = "";
 	UINT								m_Index;
+	MESH_TYPE							m_strMeshType = MESH_TYPE::COUNT;
 	UINT								m_MaterialIndex = 0;
 
 	

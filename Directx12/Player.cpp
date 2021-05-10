@@ -20,8 +20,9 @@
 
 
 
-Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName, XMFLOAT3 pos, PlayerInfo playerInfo)
-	:Object(_meshName)
+Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName, XMFLOAT3 pos,
+	PlayerInfo playerInfo, MESH_TYPE meshType)
+	:Object(_meshName, meshType)
 {
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
@@ -29,9 +30,20 @@ Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer
 
 	m_tNetInfo = playerInfo;
 
+	m_strMeshType = meshType;
 	Initialize(pos);
 
 
+}
+
+Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName,MESH_TYPE meshType, XMFLOAT3 pos)
+	:Object(_meshName, meshType)
+{
+	m_pDevice = device;
+	m_pCmdLst = cmdLst;
+	m_pRenderer = pRenderer;
+
+	Initialize(pos);
 }
 
 Player::~Player()
@@ -119,7 +131,7 @@ void Player::LateUpdate(const float& fTimeDelta)
 	Object::LateUpdate(fTimeDelta);
 
 	//UpdateObjectCB();
-	UpdateSkinnedCB();
+	//UpdateSkinnedCB();
 
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_DYNAMIC, this);
 
@@ -144,8 +156,8 @@ void Player::Render(const float& fTimeDelta, int _instanceCount)
 {
 
 	//m_pCmdLst->SetGraphicsRootShaderResourceView(0, InstanceMgr::GetInstnace()->m_InstanceCBs[m_strMeshName]->Resource()->GetGPUVirtualAddress());	// obj
-	m_pCmdLst->SetGraphicsRootConstantBufferView(11, m_SkinnedCB->Resource()->GetGPUVirtualAddress());	// skinned
-	Object::Render(fTimeDelta, _instanceCount); // 이거 쓰는걸로는 절대로 못함
+	//m_pCmdLst->SetGraphicsRootConstantBufferView(11, m_SkinnedCB->Resource()->GetGPUVirtualAddress());	// skinned
+	Object::Render(fTimeDelta, _instanceCount); 
 
 	
 }
@@ -154,22 +166,22 @@ void Player::Render(const float& fTimeDelta, int _instanceCount)
 
 void Player::UpdateSkinnedCB()
 {
-	// SkinnedCB // 이거 애니메이션 붙이기 전까지 붙이면 안뜸 당연하지 쓰레기값가지고 계산되니까
-	SkinnedCB SkinnedCB;
-
-	SkinnedCB.BoneTransforms[0] = dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms[0]; // Root 뼈대 == 하체 중심
-	SkinnedCB.BoneTransforms[1] = dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms[1]; // Root 뼈대 == 하체 중심
-	for (int upper = 2; upper < 27; ++upper) { // 상체
-		SkinnedCB.BoneTransforms[upper] = dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetSkinnedModellnst()->FinalTransforms[upper];
-	}
-	for (int Root = 27; Root < 33; ++Root) { // 하체
-		SkinnedCB.BoneTransforms[Root] = dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms[Root];
-	}
-	//copy(begin(dynamic_cast<AnimationCom*>(m_mapComponent["Animation"])->GetSkinnedModellnst()->FinalTransforms),
-	//	end(dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms),
-	//	&SkinnedCB.BoneTransforms[0]);
-
-	m_SkinnedCB->CopyData(0, SkinnedCB);
+	//// SkinnedCB // 이거 애니메이션 붙이기 전까지 붙이면 안뜸 당연하지 쓰레기값가지고 계산되니까
+	//SkinnedCB SkinnedCB;
+	//
+	//SkinnedCB.BoneTransforms[0] = dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms[0]; // Root 뼈대 == 하체 중심
+	//SkinnedCB.BoneTransforms[1] = dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms[1]; // Root 뼈대 == 하체 중심
+	//for (int upper = 2; upper < 27; ++upper) { // 상체
+	//	SkinnedCB.BoneTransforms[upper] = dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetSkinnedModellnst()->FinalTransforms[upper];
+	//}
+	//for (int Root = 27; Root < 33; ++Root) { // 하체
+	//	SkinnedCB.BoneTransforms[Root] = dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms[Root];
+	//}
+	////copy(begin(dynamic_cast<AnimationCom*>(m_mapComponent["Animation"])->GetSkinnedModellnst()->FinalTransforms),
+	////	end(dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->GetSkinnedModellnst()->FinalTransforms),
+	////	&SkinnedCB.BoneTransforms[0]);
+	//
+	//m_SkinnedCB->CopyData(0, SkinnedCB);
 }
 
 XMFLOAT3 Player::GetPosition()

@@ -158,6 +158,7 @@
     <ClInclude Include="Flames_FireEff.h" />
     <ClInclude Include="InstanceInfo.h" />
     <ClInclude Include="InstanceMgr.h" />
+    <ClInclude Include="netHeader.h" />
     <ClInclude Include="PhysXMgr.h" />
     <ClInclude Include="PlayerFSM.h" />
     <ClInclude Include="AnimationMgr.h" />
