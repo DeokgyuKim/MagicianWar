@@ -56,6 +56,8 @@ using namespace DirectX::PackedVector;
 #include <wrl.h>
 using namespace Microsoft::WRL;
 
+#pragma comment(lib, "ws2_32")
+#include <winsock2.h>
 #include "struct.h"
 #include "define.h"
 

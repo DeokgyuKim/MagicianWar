@@ -26,7 +26,9 @@ void MainApp::Initialize()
 	m_InstanceMgr = InstanceMgr::GetInstnace();
 	m_InstanceMgr->InitInstanceMgr(m_pCore, m_pCore->GetDevice(), m_pCore->GetCmdLst());
 
+#ifdef PHYSX
 	CPhysXMgr::GetInstance()->Initialize();
+#endif
 
 	BuildMaterial();
 

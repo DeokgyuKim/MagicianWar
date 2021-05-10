@@ -1,22 +1,11 @@
-#pragma comment(lib, "ws2_32")
-#pragma warning(disable : 4996)
+#include "include.h"
+#include "StaticMeshMgr.h"
+
 #include <iostream>
 #include <unordered_map>
 #include <map>
 #include <vector>
-#include <winsock2.h>
 #include <chrono>
-
-#pragma comment(lib, "d3dcompiler.lib")
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
-
-#pragma comment(lib, "dxguid.lib")
-#include "d3dUtil.h"
-
-
-using namespace DirectX;
-using namespace DirectX::PackedVector;
 
 #include "PlayerThread.h"
 #include "Player.h"
@@ -161,6 +150,13 @@ void packetProcessing(STOC_ServerPlayer arg)
 		}
 		if (Start && curScene == 1) // 시작이고 현재 씬이 Lobby이면
 		{
+			gClients[0].setPlayerInitPos(XMFLOAT3(20.f, 0.f, 10.f));
+			//gClients[1].setPlayerInitPos(XMFLOAT3(20.f, 0.f, 15.f));
+			for (int i = 0; i < gClientNum; ++i)
+			{
+				gClients[i].CreateCapsuleController();
+			}
+
 			for (int i = 0; i < gClientNum; ++i) { // 전체 순회
 				ReadyCheck[i] = false; // 한번만 타게 해주자 start를
 			}
@@ -241,7 +237,7 @@ void WorkThread() // send & physics & function
 		else if (curScene == 2) // Stage
 		{
 			auto start_time = chrono::system_clock::now();
-			chrono::duration<double> frame_time = start_time - prev_time;
+			chrono::duration<float> frame_time = start_time - prev_time;
 			for (int i = 0; i < gClientNum; ++i)
 			{
 				gClients[i].Lock();
@@ -250,8 +246,21 @@ void WorkThread() // send & physics & function
 					gClients[i].Update(); // 플레이어들 Update 키입력에 따른 위치 변화
 					// 충돌체크?
 					Physics_Collision(i);
-					UpdatePlayerInfoPacket(gClients[i].getInfo().info.dwPlayerNum, gClients[i]);
 
+				}
+				gClients[i].Unlock();
+			}
+			///PhysXUpdate
+			CPhysXMgr::GetInstance()->gScene->simulate(frame_time.count());
+			CPhysXMgr::GetInstance()->gScene->fetchResults(true);
+
+			for (int i = 0; i < gClientNum; ++i)
+			{
+				gClients[i].Lock();
+				if (gClients[i].IsConnected()) // 연결 됐다면
+				{
+					gClients[i].ModifyPhysXPos(frame_time.count());
+					UpdatePlayerInfoPacket(gClients[i].getInfo().info.dwPlayerNum, gClients[i]);
 				}
 				gClients[i].Unlock();
 			}

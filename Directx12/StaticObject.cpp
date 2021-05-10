@@ -43,7 +43,9 @@ void StaticObject::Initialize(XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3
 	///SetPhysX
 	Object::LateUpdate(0.f);
 
+#ifdef PHYSX
 	CPhysXMgr::GetInstance()->CreateTriangleStaticMesh(this, MeshName, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix());
+#endif
 }
 
 void StaticObject::Release()

@@ -65,10 +65,12 @@ void Player::Initialize(XMFLOAT3 pos)
 
 	m_strTextureName = "wizard_01";
 
+#ifdef PHYSX
 	CPhysXMgr::GetInstance()->m_PlayerController = m_pCapsuleCon = CPhysXMgr::GetInstance()->
 		CreateCapsuleController(this, pos, 0.4f, 1.f, true);
 	m_pCapsuleCon->getActor()->setName("Player");
 	m_pCapsuleCon->getActor()->setMass(20.f);
+#endif
 }
 
 void Player::Release()

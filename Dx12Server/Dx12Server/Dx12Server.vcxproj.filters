@@ -30,10 +30,19 @@
     <ClCompile Include="PlayerThread.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerFSM.cpp">
+      <Filter>소스 파일\FSM\PlayerFSM</Filter>
+    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerFSM.cpp">
+    <ClCompile Include="MeshMgr.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysXMgr.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMeshMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -63,7 +72,16 @@
       <Filter>소스 파일\FSM</Filter>
     </ClInclude>
     <ClInclude Include="PlayerFSM.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>소스 파일\FSM\PlayerFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshMgr.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysXMgr.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMeshMgr.h">
+      <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

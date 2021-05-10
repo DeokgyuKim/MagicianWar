@@ -177,6 +177,7 @@ void Network::SetMyPlayerInfo(Player* pPlayer)
 	int Upper_Ani = 0;
 
 	memcpy(&pos, &m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._41, sizeof(XMFLOAT3));
+	cout << pos.x << ", " << pos.y << ", " << pos.z << endl;
 	Root_Ani = SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Root_eAnimType);
 	Upper_Ani = SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Upper_eAnimType);
 	cout << "1번 클라의 Root - " << Root_Ani << endl;

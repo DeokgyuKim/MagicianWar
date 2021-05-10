@@ -35,6 +35,7 @@ int LoadingScene::Update(const float& fTimeDelta)
 	{
 		if (!Core::GetInstance()->GetLoadingThreadExecute())
 		{
+			cout << "Loading End" << endl;
 #ifdef NETWORK
 			if (Network::GetInstance()->GetLobbyEnd())
 			{
@@ -89,7 +90,7 @@ void LoadingScene::Initialize()
 	m_pLoading = new Loading(Core::GetInstance(), Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLstForLoading(), Renderer::GetInstance()->GetHeap());
 
 #ifdef NETWORK
-	Network::GetInstance()->Init("192.168.219.109");
+	Network::GetInstance()->Init();
 #endif
 }
 

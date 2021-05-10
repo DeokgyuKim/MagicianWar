@@ -1,6 +1,5 @@
 #pragma once
 
-#include <WS2tcpip.h>
 #include <mutex>
 #include "include.h"
 
@@ -67,9 +66,17 @@ public:
 	void setReady(DWORD _ready);
 	void setPosition(XMFLOAT3 pos);
 	void setAttackEnd(bool _check) { m_bAttackEnd = _check; }
+	void setPlayerInitPos(XMFLOAT3 pos) { Info.info.xmfPosition = pos; }
 
 	void ChangeUpperAnimation(int _Ani);
 	void ChangeRootAnimation(int _Ani);
+
+public:
+	//PhysX
+	void CreateCapsuleController();
+	void ModifyPhysXPos(const float& fTimeDelta);
+	void GravityProgress(const float& fTimeDelta);
+	void MoveCapsuleController(XMFLOAT3 vSpeed, const float& fTimeDelta);
 
 
 private: // 
@@ -105,5 +112,8 @@ private: //
 	// FSM
 	unique_ptr<InterfaceFSM>                    m_UpperBody;    // 상체
 	unique_ptr<InterfaceFSM>                    m_RootBody;     // 하체
+
+	//PhysX
+	PxCapsuleController* m_pCapsuleCon = nullptr;
 };
 

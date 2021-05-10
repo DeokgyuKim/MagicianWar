@@ -3,7 +3,6 @@
 #pragma comment(lib, "ws2_32")
 #pragma warning(disable : 4996)
 
-#include <winsock2.h>
 #include <unordered_map>
 #include <iostream>
 #include <algorithm>
@@ -19,6 +18,8 @@
 #include "Player.h"
 
 #include "include.h"
+#include "MeshMgr.h"
+#include "StaticMeshMgr.h"
 
 int gClientNum = 0;
 
@@ -30,6 +31,35 @@ int recvn(SOCKET s, char* buf, int len, int flags);
 
 int main()
 {
+	StaticMeshMgr::GetInstance()->LoadMeshInfo("../../Data/Map1Data.txt");
+	MeshMgr::GetInstnace()->BuildModels();
+
+	//Initailize PhysX
+	CPhysXMgr::GetInstance()->Initialize();
+	//for (int i = 0; i < gClientNum; ++i)
+	//{
+	//	gClients[i].CreateCapsuleController();
+	//}
+	multimap<string*, TransformStruct> vtxs = StaticMeshMgr::GetInstance()->GetMapMeshInfo();
+	for (auto iter = vtxs.begin(); iter != vtxs.end(); ++iter)
+	{
+		XMFLOAT3 scale = (*iter).second.xmfScale;
+		XMFLOAT3 rotate = (*iter).second.xmfRotate;
+		XMFLOAT3 trans = (*iter).second.xmfPosition;
+
+		XMMATRIX	s, rx, ry, rz, t, world;
+		s = XMMatrixScaling(scale.x, scale.y, scale.z);
+		rx = XMMatrixRotationX(XMConvertToRadians(rotate.x - 90.f));
+		ry = XMMatrixRotationY(XMConvertToRadians(rotate.y + 90.f));
+		rz = XMMatrixRotationZ(XMConvertToRadians(rotate.z));
+		t = XMMatrixTranslation(trans.x, trans.y, trans.z);
+
+		world = s * rx * ry * rz * t;
+
+		CPhysXMgr::GetInstance()->CreateTriangleStaticMesh(*(*iter).first, world);
+	}
+	cout << "All Load Complete!" << endl;
+
 	int retval;
 
 	// 윈속 초기화

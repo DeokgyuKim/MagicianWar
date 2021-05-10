@@ -133,10 +133,14 @@ void Player::MoveForward(float speed)
 	XMStoreFloat3(&look, XMVector3Normalize(XMLoadFloat3(&look)));
 	//XMStoreFloat3(&look, XMVector3TransformNormal(XMLoadFloat3(&look), XMMatrixRotationX(XMConvertToRadians(90.f))));
 
-	XMStoreFloat3(&pos, XMLoadFloat3(&pos) - XMLoadFloat3(&look) * speed);
-	matWorld._41 = pos.x;
-	matWorld._42 = pos.y;
-	matWorld._43 = pos.z;
+	XMFLOAT3 vSpeed;
+	XMStoreFloat3(&vSpeed, -XMLoadFloat3(&look) * speed);
+	MoveCapsuleController(vSpeed, 1.f);
+
+	//XMStoreFloat3(&pos, XMLoadFloat3(&pos) - XMLoadFloat3(&look) * speed);
+	//matWorld._41 = pos.x;
+	//matWorld._42 = pos.y;
+	//matWorld._43 = pos.z;
 }
 
 void Player::MoveBackward(float speed)
@@ -147,10 +151,14 @@ void Player::MoveBackward(float speed)
 	XMStoreFloat3(&look, XMVector3Normalize(XMLoadFloat3(&look)));
 	//XMStoreFloat3(&look, XMVector3TransformNormal(XMLoadFloat3(&look), XMMatrixRotationX(XMConvertToRadians(90.f))));
 
-	XMStoreFloat3(&pos, XMLoadFloat3(&pos) + XMLoadFloat3(&look) * speed);
-	matWorld._41 = pos.x;
-	matWorld._42 = pos.y;
-	matWorld._43 = pos.z;
+	XMFLOAT3 vSpeed;
+	XMStoreFloat3(&vSpeed, XMLoadFloat3(&look) * speed);
+	MoveCapsuleController(vSpeed, 1.f);
+
+	//XMStoreFloat3(&pos, XMLoadFloat3(&pos) + XMLoadFloat3(&look) * speed);
+	//matWorld._41 = pos.x;
+	//matWorld._42 = pos.y;
+	//matWorld._43 = pos.z;
 }
 
 void Player::MoveLeft(float speed)
@@ -161,10 +169,14 @@ void Player::MoveLeft(float speed)
 	XMStoreFloat3(&left, XMVector3Normalize(XMLoadFloat3(&left)));
 	//XMStoreFloat3(&look, XMVector3TransformNormal(XMLoadFloat3(&look), XMMatrixRotationX(XMConvertToRadians(90.f))));
 
-	XMStoreFloat3(&pos, XMLoadFloat3(&pos) - XMLoadFloat3(&left) * speed);
-	matWorld._41 = pos.x;
-	matWorld._42 = pos.y;
-	matWorld._43 = pos.z;
+	XMFLOAT3 vSpeed;
+	XMStoreFloat3(&vSpeed, -XMLoadFloat3(&left) * speed);
+	MoveCapsuleController(vSpeed, 1.f);
+
+	//XMStoreFloat3(&pos, XMLoadFloat3(&pos) - XMLoadFloat3(&left) * speed);
+	//matWorld._41 = pos.x;
+	//matWorld._42 = pos.y;
+	//matWorld._43 = pos.z;
 }
 
 void Player::MoveRight(float speed)
@@ -175,10 +187,14 @@ void Player::MoveRight(float speed)
 	XMStoreFloat3(&right, XMVector3Normalize(XMLoadFloat3(&right)));
 	//XMStoreFloat3(&look, XMVector3TransformNormal(XMLoadFloat3(&look), XMMatrixRotationX(XMConvertToRadians(90.f))));
 
-	XMStoreFloat3(&pos, XMLoadFloat3(&pos) + XMLoadFloat3(&right) * speed);
-	matWorld._41 = pos.x;
-	matWorld._42 = pos.y;
-	matWorld._43 = pos.z;
+	XMFLOAT3 vSpeed;
+	XMStoreFloat3(&vSpeed, XMLoadFloat3(&right) * speed);
+	MoveCapsuleController(vSpeed, 1.f);
+
+	//XMStoreFloat3(&pos, XMLoadFloat3(&pos) + XMLoadFloat3(&right) * speed);
+	//matWorld._41 = pos.x;
+	//matWorld._42 = pos.y;
+	//matWorld._43 = pos.z;
 }
 
 int Player::recvPacket()
@@ -241,5 +257,66 @@ void Player::ChangeRootAnimation(int _Ani)
 	ANIMATION_TYPE nextAni = static_cast<ANIMATION_TYPE>(_Ani);
 	if (Root_eAnimType != nextAni)
 		Root_eAnimType = nextAni;
+}
+
+void Player::CreateCapsuleController()
+{
+	CPhysXMgr::GetInstance()->m_PlayerController = m_pCapsuleCon = CPhysXMgr::GetInstance()->
+		CreateCapsuleController(Info.info.dwPlayerNum, Info.info.xmfPosition, 0.4f, 1.f, true);
+	m_pCapsuleCon->getActor()->setName("Player");
+	m_pCapsuleCon->getActor()->setMass(20.f);
+}
+
+void Player::ModifyPhysXPos(const float& fTimeDelta)
+{
+	XMMATRIX matScale, matTrans, matQuat, matWorl;
+	XMVECTOR vQuat;
+
+	XMVECTOR vecs, vect;
+	XMFLOAT3 xmfScale = XMFLOAT3(0.01f, 0.01f, 0.01f);
+
+	PxRigidDynamic* pRigid = m_pCapsuleCon->getActor();
+	PxTransform gp = pRigid->getGlobalPose();
+
+	PxMat44 m = PxMat44(gp);
+
+	matWorl = CPhysXMgr::GetInstance()->ToMatrix(m);
+
+	XMMatrixDecompose(&vecs, &vQuat, &vect, XMLoadFloat4x4(&matWorld));
+	matQuat = XMMatrixRotationQuaternion(vQuat);
+
+	matScale = XMMatrixScalingFromVector(XMLoadFloat3(&xmfScale));
+
+
+	///Gravity
+	GravityProgress(fTimeDelta);
+
+	PxExtendedVec3 GetPosition = m_pCapsuleCon->getPosition();
+	PxVec3 pxVecGp;
+	pxVecGp.x = float(GetPosition.x);
+	pxVecGp.y = float(GetPosition.y);
+	pxVecGp.z = float(GetPosition.z);
+	matTrans = XMMatrixTranslation(pxVecGp.x, pxVecGp.y, pxVecGp.z);
+
+
+	XMStoreFloat4x4(&matWorld, matScale * matQuat * matTrans);
+}
+
+void Player::GravityProgress(const float& fTimeDelta)
+{
+	if (matWorld._42 <= 0)
+		return;
+	PxVec3 upDisp = { 0, 1.f ,0 };
+	upDisp *= -9.81f * fTimeDelta;
+	const PxVec3 disp = upDisp;
+	const PxU32 flags = m_pCapsuleCon->move(disp, 0.0f, fTimeDelta, PxControllerFilters());
+}
+
+void Player::MoveCapsuleController(XMFLOAT3 vSpeed, const float& fTimeDelta)
+{
+	if (m_pCapsuleCon == NULL)
+		return;
+	PxControllerCollisionFlags colflag = m_pCapsuleCon->move(CPhysXMgr::GetInstance()->ToPxVec3(vSpeed) * fTimeDelta, 0.f, fTimeDelta, PxControllerFilters());
+
 }
 
