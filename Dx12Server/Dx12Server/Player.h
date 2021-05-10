@@ -83,6 +83,7 @@ private: //
 	// info
 	STOC_ServerPlayer Info;
 	XMFLOAT4X4		matWorld;
+	XMFLOAT4X4		m_matRealWorld;
 	PLAYER_STATE	ePlayerState;
 
 	ANIMATION_TYPE	Root_eAnimType;

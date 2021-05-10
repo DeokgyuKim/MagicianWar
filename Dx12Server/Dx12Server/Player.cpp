@@ -262,14 +262,14 @@ void Player::ChangeRootAnimation(int _Ani)
 void Player::CreateCapsuleController()
 {
 	CPhysXMgr::GetInstance()->m_PlayerController = m_pCapsuleCon = CPhysXMgr::GetInstance()->
-		CreateCapsuleController(Info.info.dwPlayerNum, Info.info.xmfPosition, 0.4f, 1.f, true);
+		CreateCapsuleController(Info.info.dwPlayerNum, Info.info.xmfPosition, 0.5f, 0.5f, true);
 	m_pCapsuleCon->getActor()->setName("Player");
 	m_pCapsuleCon->getActor()->setMass(20.f);
 }
 
 void Player::ModifyPhysXPos(const float& fTimeDelta)
 {
-	XMMATRIX matScale, matTrans, matQuat, matWorl;
+	XMMATRIX matScale, matTrans, matQuat, matWorl, matOffset;
 	XMVECTOR vQuat;
 
 	XMVECTOR vecs, vect;
@@ -298,13 +298,16 @@ void Player::ModifyPhysXPos(const float& fTimeDelta)
 	pxVecGp.z = float(GetPosition.z);
 	matTrans = XMMatrixTranslation(pxVecGp.x, pxVecGp.y, pxVecGp.z);
 
+	matOffset = XMMatrixTranslation(0.f, -0.75f, 0.f);
 
-	XMStoreFloat4x4(&matWorld, matScale * matQuat * matTrans);
+	
+	XMStoreFloat4x4(&m_matRealWorld, matScale * matQuat * matTrans);
+	XMStoreFloat4x4(&matWorld, matScale * matQuat * matTrans * matOffset);
 }
 
 void Player::GravityProgress(const float& fTimeDelta)
 {
-	if (matWorld._42 <= 0)
+	if (m_matRealWorld._42 <= 0.f)
 		return;
 	PxVec3 upDisp = { 0, 1.f ,0 };
 	upDisp *= -9.81f * fTimeDelta;

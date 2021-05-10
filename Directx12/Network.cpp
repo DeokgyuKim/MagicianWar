@@ -308,7 +308,7 @@ void Network::packetProcessing(char* _packetBuffer)
 	{
 		//cout << "우리 플레이어 업데이트" << endl;
 		STOC_PlayerInfo* data = reinterpret_cast<STOC_PlayerInfo*>(_packetBuffer);
-		cout << "플레이어 넘버 - " << data->playerInfo.dwPlayerNum << endl;
+		//cout << "플레이어 넘버 - " << data->playerInfo.dwPlayerNum << endl;
 		//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_eAnimBlendType = data->Root_eAnimBlendType;
 		//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_fAnimTime = data->Root_fAnimTime;
 		//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_fWeight = data->Root_fWeight;
