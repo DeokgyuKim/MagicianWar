@@ -151,7 +151,8 @@ void packetProcessing(STOC_ServerPlayer arg)
 		if (Start && curScene == 1) // 시작이고 현재 씬이 Lobby이면
 		{
 			gClients[0].setPlayerInitPos(XMFLOAT3(20.f, 0.f, 10.f));
-			//gClients[1].setPlayerInitPos(XMFLOAT3(20.f, 0.f, 15.f));
+			if(gClientNum > 1)
+				gClients[1].setPlayerInitPos(XMFLOAT3(20.f, 0.f, 15.f));
 			for (int i = 0; i < gClientNum; ++i)
 			{
 				gClients[i].CreateCapsuleController();
