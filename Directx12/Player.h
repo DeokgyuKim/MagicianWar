@@ -11,7 +11,9 @@ class Player :
 {
 public:
     Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer
-        , string _meshName, XMFLOAT3 pos = XMFLOAT3(10.f, 0.f, 10.f), PlayerInfo playerInfo = {0});
+        ,string _meshName, XMFLOAT3 pos = XMFLOAT3(10.f, 0.f, 10.f), PlayerInfo playerInfo = {0}, MESH_TYPE meshType = MESH_TYPE::COUNT);
+    Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer
+        , string _meshName, MESH_TYPE meshType = MESH_TYPE::COUNT, XMFLOAT3 pos = XMFLOAT3(10.f, 0.f, 10.f));
     ~Player();
 private:
     void    Initialize(XMFLOAT3 pos);

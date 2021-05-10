@@ -83,6 +83,7 @@ struct ObjectCB
 {
 	XMFLOAT4X4 World = MathHelper::Identity4x4();
 	UINT MaterialIndex; // 각자의 Object들에 해당하는 Index;
+	UINT boolBone; 
 };
 
 struct SkillCB
@@ -130,7 +131,11 @@ struct LightCB
 struct SkinnedCB
 {
 	// 최대 뼈대 Character - 33 
-	XMFLOAT4X4 BoneTransforms[96];
+	XMFLOAT3 right[33];
+	XMFLOAT3 up[33];
+	XMFLOAT3 look[33];
+	XMFLOAT3 pos[33];
+
 };
 
 struct TransformStruct

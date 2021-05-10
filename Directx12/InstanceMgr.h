@@ -27,8 +27,12 @@ private:
 	static InstanceMgr* m_pInstance;
 public:
 	void InitInstanceMgr(Core* _core, ID3D12Device* _device,ID3D12GraphicsCommandList* _cmdList);
+	
 	void BuildInstanceBuffers();
 	void UpdateInstanceBuffer(Object* _obj);
+	
+
+	void UpdateSkinnedBuffers(Object* _obj);
 
 private:
 	Core* m_pCore = NULL;
@@ -40,5 +44,7 @@ public:
 	map<string, InstanceInfo*> m_InstanceObjects; 
 	// 모든 오브젝트들의 Mesh별로 나뉜 CB
 	map<string, unique_ptr<UploadBuffer<ObjectCB>>> m_InstanceCBs;
+	// 모든 오브젝트들의 Bone별로 나뉜 CB
+	map<string, unique_ptr<UploadBuffer<SkinnedCB>>> m_SkinnedCBs;
 };
 

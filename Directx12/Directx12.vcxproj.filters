@@ -402,6 +402,12 @@
     <ClInclude Include="Weapon.h">
       <Filter>00.Game\02.Object\07.Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="FireRing.h" />
+    <ClInclude Include="FireRing_FireCylinder.h" />
+    <ClInclude Include="FireShock_FireParticle.h" />
+    <ClInclude Include="netHeader.h">
+      <Filter>99.Default\00.Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -575,6 +581,9 @@
     <ClCompile Include="Weapon.cpp">
       <Filter>00.Game\02.Object\07.Weapon</Filter>
     </ClCompile>
+    <ClCompile Include="FireRing.cpp" />
+    <ClCompile Include="FireRing_FireCylinder.cpp" />
+    <ClCompile Include="FireShock_FireParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

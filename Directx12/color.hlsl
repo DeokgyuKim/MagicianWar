@@ -38,7 +38,10 @@ VertexOut VS(VertexIn vin, uint instanceID : SV_InstanceID)
 	InstanceObject instObjData = gInstanceData[instanceID];
 	float4x4 world = instObjData.gWorld;
 	uint matIndex = instObjData.MaterialIndex;
+	uint boolBone = instObjData.gboolBone;
 	vout.MaterialIndex = matIndex;
+
+	//SkinnedData instSkinned = gSkinnedData[instanceID];
 
 	// Transform to homogeneous clip space.
 	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), world), gView), gProj);
@@ -358,6 +361,13 @@ VertexOut_Default VS_Movable(VertexIn_Movable vin, uint instanceID : SV_Instance
 	float4x4 world = instObjData.gWorld;
 	uint matIndex = instObjData.MaterialIndex;
 
+	SkinnedData instSkinned = gSkinnedData[instanceID];
+	//float4x4 SkinnedBoneTransforms[33];
+	//for (int i = 0; i < 33; ++i)
+	//{
+	//	SkinnedBoneTransforms[i] = makeFloat4x4ForFloat3x4(instSkinned.gRight[i], instSkinned.gUp[i], instSkinned.gLook[i], instSkinned.gPos[i]);
+	//}
+
 	vout.MaterialIndex = matIndex;
 
 	float weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -373,10 +383,16 @@ VertexOut_Default VS_Movable(VertexIn_Movable vin, uint instanceID : SV_Instance
 	for (int i = 0; i < 4; ++i)
 	{
 
-		posL += weights[i] * mul(float4(vin.PosL, 1.0f), gBoneTransforms[vin.BoneIndices[i]]).xyz;
-		normalL += weights[i] * mul(vin.NormalL, (float3x3)gBoneTransforms[vin.BoneIndices[i]]);
-		tangentL += weights[i] * mul(vin.TangentL.xyz, (float3x3)gBoneTransforms[vin.BoneIndices[i]]);
-		binormalL += weights[i] * mul(vin.BinormalL, (float3x3)gBoneTransforms[vin.BoneIndices[i]]);
+		//posL += weights[i] * mul(float4(vin.PosL, 1.0f), SkinnedBoneTransforms[vin.BoneIndices[i]]).xyz;
+		//normalL += weights[i] * mul(vin.NormalL, (float3x3)SkinnedBoneTransforms[vin.BoneIndices[i]]);
+		//tangentL += weights[i] * mul(vin.TangentL.xyz, (float3x3)instSkinned.gStructedBoneTransforms[vin.BoneIndices[i]]);
+		//binormalL += weights[i] * mul(vin.BinormalL, (float3x3)instSkinned.gStructedBoneTransforms[vin.BoneIndices[i]]);
+
+		
+		posL += weights[i] * mul(float4(vin.PosL, 1.0f), makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]])).xyz;
+		normalL += weights[i] * mul(vin.NormalL, (float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
+		tangentL += weights[i] * mul(vin.TangentL.xyz, (float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
+		binormalL += weights[i] * mul(vin.BinormalL, (float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
 	}
 
 	vin.PosL = posL;
@@ -439,7 +455,7 @@ SkyboxOut VS_Skybox(SkyboxIn vin, uint instanceID : SV_InstanceID)
 	// ÀÎ½ºÅÏ½Ì
 	InstanceObject instObjData = gInstanceData[instanceID];
 	float4x4 world = instObjData.gWorld;
-	
+
 
 	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.f), world), gView), gProj);
 	vout.TexC = vin.TexC;
