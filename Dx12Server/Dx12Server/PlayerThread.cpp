@@ -281,7 +281,7 @@ void WorkThread() // send & physics & function
 				{
 					gClients[i].Update(); // 플레이어들 Update 키입력에 따른 위치 변화
 
-					if (key[i] |= 0x0020) { // 왼쪽 클릭
+					if (key[i] & 0x0020) { // 왼쪽 클릭
 						
 						temp.SetUser(User[i]);
 						temp.setInstanceName(InstanceName[i]);
