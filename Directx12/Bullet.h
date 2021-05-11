@@ -27,6 +27,11 @@ public:
 private:
     void UpdateSkinnedAnimation(const float fTimeDelta);
 
+private:
+    void        ModifyPhysXPos(const float& fTimeDelta);
+    void        GravityProgress(const float& fTimeDelta);
+    PxTransform MakePxTransform();
+
 protected:
     ID3D12Device*                               m_pDevice;
     ID3D12GraphicsCommandList*                  m_pCmdLst;
@@ -34,5 +39,8 @@ protected:
     unique_ptr<UploadBuffer<ObjectCB>>	        m_ObjectCB;
     
     float       m_fSpeed;
+
+    //PHYSX
+    PxRigidDynamic* m_pRigidDynamic = NULL;
 };
 

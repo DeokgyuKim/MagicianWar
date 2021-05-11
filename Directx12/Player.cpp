@@ -250,6 +250,9 @@ void Player::ModifyPhysXPos(const float& fTimeDelta)
 	PxRigidDynamic* pRigid = m_pCapsuleCon->getActor();
 	PxTransform gp = pRigid->getGlobalPose();
 
+
+	cout << "Modify" << gp.p.x << ", " << gp.p.y << ", " << gp.p.z << endl;
+
 	PxMat44 m = PxMat44(gp);
 
 	matWorld = CPhysXMgr::GetInstance()->ToMatrix(m);
@@ -276,6 +279,19 @@ void Player::ModifyPhysXPos(const float& fTimeDelta)
 
 	dynamic_cast<Transform*>(GetTransController())->SetWorld(xmf4x4mat);
 	dynamic_cast<Transform*>(GetTransController())->SetPosition(XMFLOAT3(GetPosition.x, GetPosition.y, GetPosition.z));
+
+	XMFLOAT4 xmfQuat;
+	XMStoreFloat4(&xmfQuat, vQuat);
+
+	PxTransform px;
+	px.p = pxVecGp;
+	px.q.x = xmfQuat.x;
+	px.q.y = xmfQuat.y;
+	px.q.z = xmfQuat.z;
+	px.q.w = xmfQuat.w;
+
+	pRigid->setGlobalPose(px);
+
 #endif
 }
 

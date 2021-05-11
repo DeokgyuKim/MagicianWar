@@ -89,7 +89,7 @@ public:
 public:
 	bool Initialize();
 	
-	//PxRigidDynamic * CreateSphere(CPhysXObject* pObj, _vec3 Pos, float Radius, const PxVec3 & velocity = { 0,0,0 }, PxMaterial*	Material_ = nullptr);
+	PxRigidDynamic * CreateSphere(Object* pObj, XMFLOAT3 Pos, float Radius, const PxVec3 & velocity = { 0,0,0 }, PxMaterial*	Material_ = nullptr);
 	//
 	//PxRigidDynamic * CreateBox(CPhysXObject* pObj, _vec3 Pos, PxReal x, PxReal y, PxReal z, PxMaterial*	Material_ = nullptr);
 	//
@@ -114,7 +114,7 @@ public:
 	
 
 
-	//bool OverlapBetweenTwoObject(PxRigidActor * pBody0, PxRigidActor * pBody1); // 겹쳐있는지 검사
+	bool OverlapBetweenTwoObject(PxRigidActor * pBody0, PxRigidActor * pBody1); // 겹쳐있는지 검사
 
 	//bool SweepBetweenTwoObject(PxRigidDynamic * pBody0, PxRigidDynamic * pBody1);
 

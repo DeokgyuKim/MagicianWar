@@ -40,6 +40,7 @@ public:
     Component* GetUpperAniController();
     Component* GetRootAniController();
     InterfaceFSM* GetRootFSM();
+    PxCapsuleController* GetPxCapsuleController() { return m_pCapsuleCon; }
 public:
     void        MoveCapsuleController(XMFLOAT3 vSpeed, const float& fTimeDelta);
 private:

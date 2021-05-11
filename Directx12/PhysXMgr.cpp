@@ -115,31 +115,31 @@ bool CPhysXMgr::Initialize()
 	return false;
 }
 
-//PxRigidDynamic* CPhysXMgr::CreateSphere(CPhysXObject* pObj, _vec3 Pos, float Radius, const PxVec3& velocity, PxMaterial* Material_)
-//{	
-//	const PxTransform& t = PxTransform(PxVec3(Pos.x, Pos.y, Pos.z));
-//
-//	if (Material_ == nullptr)
-//		Material_ = gMaterial;
-//
-//	PxRigidDynamic* body = PxCreateDynamic(*gPhysics, t, PxSphereGeometry(Radius), *Material_, 5.0f);
-//	body->setAngularDamping(0.5f);
-//	body->setLinearDamping(0.5f);
-//	body->setLinearVelocity(velocity); //객체의 선형 속도
-//	//dynamic->setMass(1.f);
-//	gScene->addActor(*body);
-//	
-//	MyPhysXGameObject str;
-//	str.pObject = pObj;
-//	str.pRigidDynamic = body;
-//	VecPGO.push_back(str);
-//	
-//	PDynamiclist.push_back(body);
-//
-//	body->setName("");
-//
-//	return body;
-//}
+PxRigidDynamic* CPhysXMgr::CreateSphere(Object* pObj, XMFLOAT3 Pos, float Radius, const PxVec3& velocity, PxMaterial* Material_)
+{	
+	const PxTransform& t = PxTransform(PxVec3(Pos.x, Pos.y, Pos.z));
+
+	if (Material_ == nullptr)
+		Material_ = gMaterial;
+
+	PxRigidDynamic* body = PxCreateDynamic(*gPhysics, t, PxSphereGeometry(Radius), *Material_, 5.0f);
+	body->setAngularDamping(0.5f);
+	body->setLinearDamping(0.5f);
+	body->setLinearVelocity(velocity); //객체의 선형 속도
+	//dynamic->setMass(1.f);
+	gScene->addActor(*body);
+	
+	MyPhysXGameObject str;
+	str.pObject = pObj;
+	str.pRigidDynamic = body;
+	VecPGO.push_back(str);
+	
+	PDynamiclist.push_back(body);
+
+	body->setName("");
+
+	return body;
+}
 //
 //
 //
@@ -637,39 +637,79 @@ PxCapsuleController * CPhysXMgr::CreateCapsuleController(Object* pObj, XMFLOAT3 
 //
 //
 //
-//bool CPhysXMgr::OverlapBetweenTwoObject(PxRigidActor * pBody0, PxRigidActor * pBody1) // 겹침체크
-//{
-//	PxShape* Shape[2];
-//	pBody0->getShapes(&Shape[0], 1);
-//	pBody1->getShapes(&Shape[1], 1);
-//	PxGeometry* Geometry[2];
-//
-//	if (Shape[0]->getGeometryType() == PxGeometryType::eBOX)
-//	{
-//		PxBoxGeometry boxgeom;
-//		Shape[0]->getBoxGeometry(boxgeom);
-//		Geometry[0] = &boxgeom;
-//	}
-//	else
-//		return false;
-//	
-//
-//	if (Shape[1]->getGeometryType() == PxGeometryType::eBOX)
-//	{
-//		PxBoxGeometry boxgeom;
-//		Shape[1]->getBoxGeometry(boxgeom);
-//		Geometry[1] = &boxgeom;
-//	}
-//	else
-//		return false;
-//
-//	if (PxGeometryQuery::overlap(*Geometry[0], pBody0->getGlobalPose(), *Geometry[1], pBody1->getGlobalPose()))
-//	{
-//		return true;
-//	}
-//	else
-//		return false;
-//}
+bool CPhysXMgr::OverlapBetweenTwoObject(PxRigidActor * pBody0, PxRigidActor * pBody1) // 겹침체크
+{
+	PxShape* Shape[2];
+	pBody0->getShapes(&Shape[0], 1);
+	pBody1->getShapes(&Shape[1], 1);
+	PxGeometry* Geometry[2];
+
+	if (Shape[0]->getGeometryType() == PxGeometryType::eBOX)
+	{
+		PxBoxGeometry boxgeom;
+		Shape[0]->getBoxGeometry(boxgeom);
+		Geometry[0] = &boxgeom;
+	}
+	else if (Shape[0]->getGeometryType() == PxGeometryType::eSPHERE)
+	{
+		PxSphereGeometry spheregeom;
+		Shape[0]->getSphereGeometry(spheregeom);
+		Geometry[0] = &spheregeom;
+	}
+	else if (Shape[0]->getGeometryType() == PxGeometryType::eCAPSULE)
+	{
+		PxCapsuleGeometry capgeom;
+		Shape[0]->getCapsuleGeometry(capgeom);
+		Geometry[0] = &capgeom;
+	}
+	else if (Shape[0]->getGeometryType() == PxGeometryType::eTRIANGLEMESH)
+	{
+		PxTriangleMeshGeometry trigeom;
+		Shape[0]->getTriangleMeshGeometry(trigeom);
+		Geometry[0] = &trigeom;
+	}
+	else
+		return false;
+	
+
+	if (Shape[1]->getGeometryType() == PxGeometryType::eBOX)
+	{
+		PxBoxGeometry boxgeom;
+		Shape[1]->getBoxGeometry(boxgeom);
+		Geometry[1] = &boxgeom;
+	}
+	else if (Shape[1]->getGeometryType() == PxGeometryType::eSPHERE)
+	{
+		PxSphereGeometry spheregeom;
+		Shape[1]->getSphereGeometry(spheregeom);
+		Geometry[1] = &spheregeom;
+	}
+	else if (Shape[1]->getGeometryType() == PxGeometryType::eCAPSULE)
+	{
+		PxCapsuleGeometry capgeom;
+		Shape[1]->getCapsuleGeometry(capgeom);
+		Geometry[1] = &capgeom;
+	}
+	else if (Shape[1]->getGeometryType() == PxGeometryType::eTRIANGLEMESH)
+	{
+		PxTriangleMeshGeometry trigeom;
+		Shape[1]->getTriangleMeshGeometry(trigeom);
+		Geometry[1] = &trigeom;
+	}
+	else
+		return false;
+
+	XMFLOAT3 pos1 = XMFLOAT3(pBody0->getGlobalPose().p.x, pBody0->getGlobalPose().p.y, pBody0->getGlobalPose().p.z);
+	XMFLOAT3 pos2 = XMFLOAT3(pBody1->getGlobalPose().p.x, pBody1->getGlobalPose().p.y, pBody1->getGlobalPose().p.z);
+	cout << "Collision" << pos2.x << ", " << pos2.y << ", " << pos2.z << endl;
+
+	if (PxGeometryQuery::overlap(*Geometry[0], pBody0->getGlobalPose(), *Geometry[1], pBody1->getGlobalPose()))
+	{
+		return true;
+	}
+	else
+		return false;
+}
 
 //bool CPhysXMgr::SweepBetweenTwoObject(PxRigidDynamic * pBody0, PxRigidDynamic * pBody1){
 //	PxVec3 Pos[2];
