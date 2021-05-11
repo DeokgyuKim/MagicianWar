@@ -41,6 +41,7 @@ public:
 	PlayerInfo	GetMyInfo() { return m_tMyInfo; }
 	void		SetMyPlayerInfo(Player* pPlayer);
 	void		SetOtherPlayerInfo(list<Object*>* plstPlayer);
+	void		SetLoadingEnd() { LoadingEnd = true; }
 private:
 	SOCKET	m_Sock;
 
@@ -59,7 +60,7 @@ public:
 	void SendReadyState();
 	void SendMyPlayerInfo();
 	void SendKeyInput();
-
+	void SendLoadingEnd();
 public:
 	//Function For LobbyThread Recv
 	bool IsMoveToMainGame();
@@ -75,6 +76,7 @@ private: // packets
 	CTOS_keyInput KEY_packet;
 	CTOS_PlayerInfo tInfo_packet;
 	CTOS_Ready Ready_packet;
+	CTOS_LoadingEnd LoadingEnd_packet;
 
 	char* packet_start_ptr;
 	char recvBuffer[MAX_BUFFER];
@@ -84,5 +86,6 @@ private: // packets
 
 	DWORD m_SceneChange;
 	bool mainSceneLateInit;
+	bool LoadingEnd;
 };
 

@@ -20,6 +20,7 @@ Player::Player()
 	Upper_fWeight = 0.f;
 
 	m_isConnected = false;
+	m_LoadingEnd = false;
 
 	m_keyInput = 0;
 }
@@ -47,6 +48,7 @@ void Player::Initialize(SOCKET& sock, int ID) // sock 와 id를 받아서 초기화
 	// FSM 만들기
 	m_UpperBody = make_unique<PlayerFSM>(this, BoneType::UPPER_BONE); // ( player , BoneType )
 	m_RootBody = make_unique<PlayerFSM>(this, BoneType::ROOT_BONE);
+	
 }
 
 void Player::Update()
@@ -66,6 +68,8 @@ void Player::UpdatePlayerInfo(CTOS_PlayerInfo* pInfo)
 	ePlayerState = m_RootBody->GetState(); // 플레이어 상태를 갱신해준다.
 	m_bAttackEnd = pInfo->bAttackEnd;
 	noTransWorldUpdate(pInfo->matWorld);
+	m_InstanceName = pInfo->InstanceName;
+	m_ID = pInfo->id;
 	//
 	m_mutex.unlock();
 }
@@ -123,6 +127,7 @@ void Player::noTransWorldUpdate(XMFLOAT4X4 _world)
 	matWorld._32 = _world._32;
 	matWorld._33 = _world._33;
 	matWorld._34 = _world._34;
+
 }
 
 void Player::MoveForward(float speed)
@@ -245,6 +250,20 @@ void Player::setPosition(XMFLOAT3 pos)
 	m_mutex.unlock();
 }
 
+void Player::setPlayerInitPos(XMFLOAT3 pos)
+{
+	m_mutex.lock();
+	Info.info.xmfPosition = pos;
+	m_mutex.unlock();
+}
+
+void Player::setLoaddingEnd(bool _load)
+{
+	m_mutex.lock();
+	m_LoadingEnd = _load;
+	m_mutex.unlock();
+}
+
 void Player::ChangeUpperAnimation(int _Ani)
 {
 	ANIMATION_TYPE nextAni = static_cast<ANIMATION_TYPE>(_Ani);
@@ -261,10 +280,12 @@ void Player::ChangeRootAnimation(int _Ani)
 
 void Player::CreateCapsuleController()
 {
+	m_mutex.lock();
 	CPhysXMgr::GetInstance()->m_PlayerController = m_pCapsuleCon = CPhysXMgr::GetInstance()->
 		CreateCapsuleController(Info.info.dwPlayerNum, Info.info.xmfPosition, 0.5f, 0.5f, true);
 	m_pCapsuleCon->getActor()->setName("Player");
 	m_pCapsuleCon->getActor()->setMass(20.f);
+	m_mutex.unlock();
 }
 
 void Player::ModifyPhysXPos(const float& fTimeDelta)

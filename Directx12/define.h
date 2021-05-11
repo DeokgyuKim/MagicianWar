@@ -8,6 +8,7 @@
 // Model
 	// Character
 #define CHARACTER_WIZARD_01 "wizard_01"
+#define WIZARD_FIRE 99
 	// Tree
 #define TREE_01 "Tree_01"
 	// Rock
@@ -24,6 +25,7 @@
 #define KEY_D		0x00000008 // 0000 0000 0000 0000 0000 0000 0000 1000
 #define KEY_SPACE	0x00000010 // 0000 0000 0000 0000 0000 0000 0001 0000
 #define KEY_LBUTTON	0x00000020 // 0000 0000 0000 0000 0000 0000 0010 0000
+#define KEY_E		0x00000040 // 0000 0000 0000 0000 0000 0000 0100 0000
 
 #define SERVERPORT 9000
 
@@ -53,3 +55,7 @@
 #define stoc_otherPlayerNum 29
 #define stoc_OtherstartInfo 30
 #define stoc_playerInfo 31
+#define ctos_LoadingEnd 33
+#define stoc_Skill_FireRing 34
+#define stoc_bullet 35
+//#define stoc_ 34

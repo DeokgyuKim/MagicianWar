@@ -45,7 +45,7 @@ public:
 	float getUpperAnimTime() { return Upper_fAnimTime; }
 	ANIMATION_TYPE getUpperAnimBlendType() { return Upper_eAnimBlendType; }
 	float getUpperAnimWeight() { return Upper_fWeight; }
-	
+	DWORD getKey() const { return m_keyInput; }
 	
 	bool getReady() { return m_Ready; }
 	char* getBuffer() { return recvBuf; }
@@ -53,6 +53,9 @@ public:
 	char* getRecvStart_Ptr() { return recv_start_ptr; }
 	bool IsConnected() { return m_isConnected; }
 	bool IsAttackEnded() { return m_bAttackEnd; }
+	bool getLoaddingEnd() { return m_LoadingEnd; }
+	unsigned char getInstanceName() { return m_InstanceName; }
+	unsigned char getID() { return m_ID; }
 
 	InterfaceFSM* GetRootFSM();
 	InterfaceFSM* GetUpperFSM();
@@ -66,7 +69,9 @@ public:
 	void setReady(DWORD _ready);
 	void setPosition(XMFLOAT3 pos);
 	void setAttackEnd(bool _check) { m_bAttackEnd = _check; }
-	void setPlayerInitPos(XMFLOAT3 pos) { Info.info.xmfPosition = pos; }
+	void setPlayerInitPos(XMFLOAT3 pos);
+	void setLoaddingEnd(bool _load);
+	
 
 	void ChangeUpperAnimation(int _Ani);
 	void ChangeRootAnimation(int _Ani);
@@ -99,7 +104,9 @@ private: //
 
 	mutex m_mutex;
 	bool m_Ready; // ready
+	bool m_LoadingEnd;
 	bool m_isConnected;
+
 
 	char recvBuf[MAX_BUFFER]; // buffer
 	char* recv_start_ptr;
@@ -109,6 +116,9 @@ private: //
 
 	bool m_bAttackEnd;
 
+	// 05 11 bullet
+	unsigned char m_InstanceName;
+	unsigned char m_ID;
 
 	// FSM
 	unique_ptr<InterfaceFSM>                    m_UpperBody;    // ªÛ√º
