@@ -5,18 +5,25 @@
 #include <unordered_map>
 #include <map>
 #include <vector>
+#include <list>
 #include <chrono>
 
 #include "PlayerThread.h"
 #include "Player.h"
 #include "PlayerFSM.h"
+#include "Bullet.h"
 
 unordered_map<DWORD, bool> ReadyCheck;
+unordered_map<DWORD, bool> LoadingCheck;
 unordered_map<DWORD, STOC_PlayerInfo> g_PlayerInfoPacket;
 unordered_map<DWORD, DWORD> playerKeyInput;
 extern unordered_map<int, STOC_PlayerInfo*>	g_Clients;
 extern Player gClients[2];
 extern int gClientNum; // 접속한 Client들의 명수
+
+list<Bullet> gBullets;
+mutex gBullet_mutex;
+
 
 unsigned int curScene = 1; // 1: SCENE_LOBBY 2: SCENE_
 chrono::system_clock::time_point prev_time;
@@ -47,7 +54,7 @@ void PlayerThread(STOC_ServerPlayer arg) // only recv & update data
 	auto player = arg;
 	SOCKET clientSock = player.socket;
 	DWORD playerID = player.info.dwPlayerNum;
-	cout << playerID+1 << "번 클라 접속" << endl;
+	cout << playerID + 1 << "번 클라 접속" << endl;
 
 	ReadyCheck[playerID] = false;
 	if (playerID == 0) // 1번클라
@@ -123,6 +130,9 @@ void packetProcessing(STOC_ServerPlayer arg)
 	{
 		CTOS_keyInput* data = (CTOS_keyInput*)processing;
 		auto key = data->key;
+		unsigned char keyID = data->id;
+		gClients[data->id].setKeyInput(key);
+
 		dynamic_cast<PlayerFSM*>(gClients[data->id].GetUpperFSM())->SetDefaultKey(key);
 		dynamic_cast<PlayerFSM*>(gClients[data->id].GetRootFSM())->SetDefaultKey(key);
 
@@ -139,19 +149,25 @@ void packetProcessing(STOC_ServerPlayer arg)
 	{
 		CTOS_Ready* data = reinterpret_cast<CTOS_Ready*> (processing);
 		gClients[data->id].setReady(data->ready); // 레디 갱신
-		gClients[data->id].Lock();
 		ReadyCheck[data->id] = gClients[data->id].getReady(); // 레디 갱신
-		gClients[data->id].Unlock();
+		LoadingCheck[data->id] = gClients[data->id].getLoaddingEnd();
+		
 		bool Start = true;
 		for (auto it = ReadyCheck.begin(); it != ReadyCheck.end(); ++it) { // 전체 순회
 			if (it->second == false) { // 들어온 누구라도 false라면
 				Start = false; // 스타트 안할거고
 			}
 		}
+		for (auto it = LoadingCheck.begin(); it != LoadingCheck.end(); ++it) { // 전체 순회
+			if (it->second == false) { // 들어온 누구라도 false라면
+				Start = false; // 스타트 안할거고
+			}
+		}
+
 		if (Start && curScene == 1) // 시작이고 현재 씬이 Lobby이면
 		{
 			gClients[0].setPlayerInitPos(XMFLOAT3(20.f, 0.f, 10.f));
-			if(gClientNum > 1)
+			if (gClientNum > 1)
 				gClients[1].setPlayerInitPos(XMFLOAT3(20.f, 0.f, 15.f));
 			for (int i = 0; i < gClientNum; ++i)
 			{
@@ -159,8 +175,11 @@ void packetProcessing(STOC_ServerPlayer arg)
 			}
 
 			for (int i = 0; i < gClientNum; ++i) { // 전체 순회
+				gClients[i].Lock();
 				ReadyCheck[i] = false; // 한번만 타게 해주자 start를
+				gClients[i].Unlock();
 			}
+
 			// 전체 클라에 한번씩 send하는 정보
 			STOC_sceneChange sc;
 			sc.size = sizeof(sc);
@@ -182,7 +201,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 			for (int j = 0; j < gClientNum; ++j) {
 				STOC_startInfo sI;
 				sI.size = sizeof(sI);
-				sI.type = stoc_startInfo;
+				sI.type = stoc_startInfo;			
 				sI.dwPlayerNum = gClients[j].getInfo().info.dwPlayerNum;
 				sI.dwTeamNum = gClients[j].getInfo().info.dwTeamNum;
 				sI.xmfPosition = gClients[j].getInfo().info.xmfPosition;
@@ -196,10 +215,11 @@ void packetProcessing(STOC_ServerPlayer arg)
 						STOC_OtherstartInfo otherPlayerInfo;
 						otherPlayerInfo.size = sizeof(otherPlayerInfo);
 						otherPlayerInfo.type = stoc_OtherstartInfo;
+						
 						otherPlayerInfo.dwPlayerNum = gClients[i].getInfo().info.dwPlayerNum;
 						otherPlayerInfo.dwTeamNum = gClients[i].getInfo().info.dwTeamNum;
 						otherPlayerInfo.xmfPosition = gClients[i].getInfo().info.xmfPosition;
-
+						
 						gClients[j].sendPacket((void*)&otherPlayerInfo, otherPlayerInfo.size);
 					}
 				}
@@ -218,6 +238,13 @@ void packetProcessing(STOC_ServerPlayer arg)
 		//cout << "Upper_CurAni Type - " << (int)data->Upper_eAnimType << endl;
 
 		gClients[data->id].UpdatePlayerInfo(data);
+		break;
+	}
+	case ctos_LoadingEnd:
+	{
+		CTOS_LoadingEnd* data = reinterpret_cast<CTOS_LoadingEnd*> (processing);
+		gClients[playerID].setLoaddingEnd(data->bLoadingEnd);
+		if (data->bLoadingEnd) cout << "로딩이 끝났어" << endl;
 		break;
 	}
 	default:
@@ -239,18 +266,79 @@ void WorkThread() // send & physics & function
 		{
 			auto start_time = chrono::system_clock::now();
 			chrono::duration<float> frame_time = start_time - prev_time;
+			DWORD key[2];
+			unsigned char User[2];
+			unsigned char InstanceName[2];
+			Bullet temp{};
 			for (int i = 0; i < gClientNum; ++i)
 			{
 				gClients[i].Lock();
+				key[i] = gClients[i].getKey();
+				User[i] = gClients[i].getID();
+				InstanceName[i] = gClients[i].getInstanceName();
+
 				if (gClients[i].IsConnected()) // 연결 됐다면
 				{
 					gClients[i].Update(); // 플레이어들 Update 키입력에 따른 위치 변화
+
+					if (key[i] & 0x0020) { // 왼쪽 클릭
+						
+						temp.SetUser(User[i]);
+						temp.setInstanceName(InstanceName[i]);
+						temp.setScale(XMFLOAT3{ 1.f,1.f,1.f });
+						temp.setRotate(XMFLOAT3{ 0.f,0.f,0.f });
+						temp.setPosition(XMFLOAT3{ gClients[i].getWorld()._41,gClients[i].getWorld()._42,gClients[i].getWorld()._43 });
+						temp.setTotalLifeTime(5.f);
+						temp.setDirection(XMFLOAT3(gClients[i].getWorld()._21, gClients[i].getWorld()._22, gClients[i].getWorld()._23));
+						
+						gBullets.push_back(temp); // list에 담아
+						
+					}
 					// 충돌체크?
 					Physics_Collision(i);
 
 				}
 				gClients[i].Unlock();
 			}
+
+			gBullet_mutex.lock();
+			auto iter = gBullets.begin();
+			while(iter != gBullets.end())
+			{ // 총알 업데이트
+				int dead;
+				
+
+				dead = iter->Update(frame_time.count()); // TotalTime < lifeTime 삭제 (Dead)
+				iter->LateUpdate(frame_time.count());
+				
+				if (dead) {
+					
+					iter = gBullets.erase(iter);
+				}
+				else {
+					
+					iter++;
+				}
+				
+
+			}
+			int BulletsConut = gBullets.size();
+			STOC_Bullet* bullet_Packet = new STOC_Bullet[BulletsConut];
+			auto iter_packet = gBullets.begin();
+			int b_count = 0;
+			while (iter_packet != gBullets.end())
+			{
+				bullet_Packet[b_count].size = sizeof(bullet_Packet[b_count]);
+				bullet_Packet[b_count].type = stoc_bullet;
+				bullet_Packet[b_count].id = iter_packet->getUser();
+				bullet_Packet[b_count].InstanceName = iter_packet->getInstanceName();
+				bullet_Packet[b_count].lifeTime = iter_packet->getLifeTime();
+				bullet_Packet[b_count].matWorld = iter_packet->getWorld();
+				++iter_packet;
+				++b_count;
+			}
+			gBullet_mutex.unlock();
+
 			///PhysXUpdate
 			CPhysXMgr::GetInstance()->gScene->simulate(frame_time.count());
 			CPhysXMgr::GetInstance()->gScene->fetchResults(true);
@@ -268,19 +356,23 @@ void WorkThread() // send & physics & function
 			// send
 
 			for (int i = 0; i < gClientNum; ++i) {
+				//gClients[i].Lock();
 				for (auto it = g_PlayerInfoPacket.begin(); it != g_PlayerInfoPacket.end(); ++it) {
 					//cout << it->second.playerInfo.dwPlayerNum << " - ( " << it->second.matWorld._41 << ", " << it->second.matWorld._42 << ", " << it->second.matWorld._43 << " )" << endl;
 					gClients[i].sendPacket((void*)&it->second, sizeof(it->second)); // 모든 정보
-
-
 				}
+				for (int j = 0; j < BulletsConut; ++j) {
+					gClients[i].sendPacket((void*)&bullet_Packet[j], sizeof(bullet_Packet[j])); // 모든 정보
+				}
+				//gClients[i].sendPacket()
+				//gClients[i].Unlock();
 
 			}
 			// 다 보낸 후에는 workThread를 일시정지
+			//delete[] bullet_Packet;
 			auto end_time = chrono::system_clock::now();
 			prev_time = end_time;
 			auto elapsed_time = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
-
 			this_thread::sleep_for(8ms - elapsed_time);
 		}
 	}
@@ -299,7 +391,7 @@ void UpdatePlayerInfoPacket(int id, Player& _player)
 
 	g_PlayerInfoPacket[id].Root_eAnimType = _player.getRootAnimType();
 	g_PlayerInfoPacket[id].Upper_eAnimType = _player.getUpperAnimType();
-	
+
 	g_PlayerInfoPacket[id].matWorld = _player.getWorld();
 	g_PlayerInfoPacket[id].playerInfo = _player.getInfo().info;
 	g_PlayerInfoPacket[id].bAttackEnd = _player.IsAttackEnded();

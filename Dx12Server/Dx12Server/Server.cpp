@@ -16,6 +16,7 @@
 
 #include "PlayerThread.h"
 #include "Player.h"
+#include "Bullet.h"
 
 #include "include.h"
 #include "MeshMgr.h"
@@ -26,6 +27,7 @@ int gClientNum = 0;
 unsigned int WorkThreadCount = 0; // 1개만 만들어야지
 
 Player gClients[2];
+
 
 int recvn(SOCKET s, char* buf, int len, int flags);
 

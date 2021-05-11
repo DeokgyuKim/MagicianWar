@@ -163,6 +163,7 @@ struct CTOS_PlayerInfo
 	short size;
 	unsigned char type;
 	unsigned char id; // 내 ID
+	unsigned char InstanceName;
 	XMFLOAT4X4		matWorld;
 	PLAYER_STATE	ePlayerState;
 	bool bAttackEnd;
@@ -241,4 +242,19 @@ struct STOC_otherPlayerCount {
 	short size;
 	unsigned char type;
 	DWORD playerCount;
+};
+
+struct CTOS_LoadingEnd {
+	short size;
+	unsigned char type;
+	bool bLoadingEnd;
+};
+
+struct STOC_Bullet {
+	short size;
+	unsigned char type; 
+	unsigned char id; // 어떤 플레이어
+	unsigned char InstanceName; // 어떤 캐릭터가
+	XMFLOAT4X4 matWorld; // worldMatrix
+	float lifeTime; // 생존시간
 };

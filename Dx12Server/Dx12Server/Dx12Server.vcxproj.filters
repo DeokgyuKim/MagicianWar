@@ -22,6 +22,15 @@
     <Filter Include="소스 파일\FSM\PlayerFSM">
       <UniqueIdentifier>{731ee055-5427-4b5a-b50e-989aed16772a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Skill">
+      <UniqueIdentifier>{27ccff8e-69cb-4840-831c-0dfd5738616f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Skill\FireRing">
+      <UniqueIdentifier>{6cce36ff-7732-4ced-ba06-267175af784c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Bullet">
+      <UniqueIdentifier>{44353ca2-54d3-47e6-9e2d-e0aff2554d17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -43,6 +52,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="StaticMeshMgr.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -82,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="StaticMeshMgr.h">
       <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

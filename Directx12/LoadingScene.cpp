@@ -35,8 +35,9 @@ int LoadingScene::Update(const float& fTimeDelta)
 	{
 		if (!Core::GetInstance()->GetLoadingThreadExecute())
 		{
-			cout << "Loading End" << endl;
+			//cout << "Loading End" << endl;
 #ifdef NETWORK
+			Network::GetInstance()->SetLoadingEnd();
 			if (Network::GetInstance()->GetLobbyEnd())
 			{
 				delete m_pLoading;
@@ -65,7 +66,7 @@ void LoadingScene::Initialize()
 	Player* pPlayer = NULL;
 	Camera* pCamera = NULL;
 
-	
+
 	Core::GetInstance()->CmdLstReset();
 	pObj = new Camera(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	m_pCamera = pCamera = dynamic_cast<Camera*>(pObj);
@@ -77,7 +78,7 @@ void LoadingScene::Initialize()
 	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, WINCX, WINCY), "MainUi");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
-	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), 
+	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(1400.f, 700.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
 	m_pObjects[OBJ_UI].push_back(pObj);
 

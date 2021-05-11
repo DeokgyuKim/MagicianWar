@@ -55,7 +55,7 @@ void Player::Initialize(XMFLOAT3 pos)
 	BuildConstantBuffer();
 
 	Component* pComponent = new Transform(XMFLOAT3(0.01f, 0.01f, 0.01f), XMFLOAT3(0.f, 0.f, 0.f), pos);
-	//Component* pComponent = new Transform(XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	//Component* pComponent = new Transform(XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT3(0.f, 0.f, 0.f), pos);
 	m_mapComponent["Transform"] = pComponent;
 	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), CHARACTER_WIZARD_01);
 	m_mapComponent["Mesh"] = pComponent;
@@ -122,6 +122,8 @@ int Player::Update(const float& fTimeDelta)
 	m_UpperBody->Execute(fTimeDelta);
 	m_RootBody->Execute(fTimeDelta);
 #endif
+
+
 
 	return 0;
 }
