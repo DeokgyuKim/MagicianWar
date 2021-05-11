@@ -268,68 +268,67 @@ void Network::packetProcessing(char* _packetBuffer)
 	char packetType = _packetBuffer[2];
 	switch (packetType)
 	{
-	case stoc_startInfo: // 초기 recv 
-	{
-		cout << "초기 좌표 받기" << endl;
-		STOC_startInfo* data = reinterpret_cast<STOC_startInfo*>(_packetBuffer);
-		m_tMyInfo.dwPlayerNum = data->dwPlayerNum;
-		m_tMyInfo.dwTeamNum = data->dwTeamNum;
-		m_tMyInfo.xmfPosition = data->xmfPosition;
-		break;
-	}
-	case stoc_sceneChange: // IsMoveToMainGame
-	{
-		cout << "메인씬으로" << endl;
-		STOC_sceneChange* data = reinterpret_cast<STOC_sceneChange*>(_packetBuffer);
-		m_SceneChange = data->sceneNum; 
-		break;
-	}
-	case stoc_otherPlayerNum: // 다른 플레이어 인원수 받아오기
-	{
-		cout << "다른 플레이어 인원 수 받기" << endl;
-		STOC_otherPlayerCount* data = reinterpret_cast<STOC_otherPlayerCount*>(_packetBuffer);
-		m_iPlayerNum = data->playerCount + 1;
-		break;
-	}
-	case stoc_OtherstartInfo:
-	{
-		cout << "다른 플레이어 초기좌표" << endl;
-		STOC_OtherstartInfo* data = reinterpret_cast<STOC_OtherstartInfo*>(_packetBuffer);
-		m_mapOtherPlayerInfos[data->dwPlayerNum].dwPlayerNum = data->dwPlayerNum;
-		m_mapOtherPlayerInfos[data->dwPlayerNum].dwTeamNum = data->dwTeamNum;
-		m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition = data->xmfPosition;
-		m_mapRecvPlayerInfos[data->dwPlayerNum];
-		cout << m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.x << ", "
-			<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.y << ", "
-			<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.z << endl;
-		break;
-	}
-	case stoc_playerInfo:
-	{
-		//cout << "우리 플레이어 업데이트" << endl;
-		STOC_PlayerInfo* data = reinterpret_cast<STOC_PlayerInfo*>(_packetBuffer);
-		//cout << "플레이어 넘버 - " << data->playerInfo.dwPlayerNum << endl;
-		//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_eAnimBlendType = data->Root_eAnimBlendType;
-		//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_fAnimTime = data->Root_fAnimTime;
-		//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_fWeight = data->Root_fWeight;
-		
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_eAnimType = data->Root_eAnimType;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Upper_eAnimType = data->Upper_eAnimType;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].ePlayerState = data->ePlayerState;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].matWorld = data->matWorld;
+		case stoc_startInfo: // 초기 recv 
+		{
+			cout << "초기 좌표 받기" << endl;
+			STOC_startInfo* data = reinterpret_cast<STOC_startInfo*>(_packetBuffer);
+			m_tMyInfo.dwPlayerNum = data->dwPlayerNum;
+			m_tMyInfo.dwTeamNum = data->dwTeamNum;
+			m_tMyInfo.xmfPosition = data->xmfPosition;
+			break;
+		}
+		case stoc_sceneChange: // IsMoveToMainGame
+		{
+			cout << "메인씬으로" << endl;
+			STOC_sceneChange* data = reinterpret_cast<STOC_sceneChange*>(_packetBuffer);
+			m_SceneChange = data->sceneNum; 
+			break;
+		}
+		case stoc_otherPlayerNum: // 다른 플레이어 인원수 받아오기
+		{
+			cout << "다른 플레이어 인원 수 받기" << endl;
+			STOC_otherPlayerCount* data = reinterpret_cast<STOC_otherPlayerCount*>(_packetBuffer);
+			m_iPlayerNum = data->playerCount + 1;
+			break;
+		}
+		case stoc_OtherstartInfo:
+		{
+			cout << "다른 플레이어 초기좌표" << endl;
+			STOC_OtherstartInfo* data = reinterpret_cast<STOC_OtherstartInfo*>(_packetBuffer);
+			m_mapOtherPlayerInfos[data->dwPlayerNum].dwPlayerNum = data->dwPlayerNum;
+			m_mapOtherPlayerInfos[data->dwPlayerNum].dwTeamNum = data->dwTeamNum;
+			m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition = data->xmfPosition;
+			m_mapRecvPlayerInfos[data->dwPlayerNum];
+			cout << m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.x << ", "
+				<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.y << ", "
+				<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.z << endl;
+			break;
+		}
+		case stoc_playerInfo:
+		{
+			//cout << "우리 플레이어 업데이트" << endl;
+			STOC_PlayerInfo* data = reinterpret_cast<STOC_PlayerInfo*>(_packetBuffer);
+			//cout << "플레이어 넘버 - " << data->playerInfo.dwPlayerNum << endl;
+			//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_eAnimBlendType = data->Root_eAnimBlendType;
+			//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_fAnimTime = data->Root_fAnimTime;
+			//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_fWeight = data->Root_fWeight;
+			
+			m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_eAnimType = data->Root_eAnimType;
+			m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Upper_eAnimType = data->Upper_eAnimType;
+			m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].ePlayerState = data->ePlayerState;
+			m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].matWorld = data->matWorld;
 
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwPlayerNum = data->playerInfo.dwPlayerNum;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwTeamNum = data->playerInfo.dwTeamNum;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
+			m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwPlayerNum = data->playerInfo.dwPlayerNum;
+			m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwTeamNum = data->playerInfo.dwTeamNum;
+			m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
 
 
-		//XMFLOAT3 pos;
-		//memcpy(&pos, &m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].matWorld._41, sizeof(XMFLOAT3));
+			//XMFLOAT3 pos;
+			//memcpy(&pos, &m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].matWorld._41, sizeof(XMFLOAT3));
 
-		//cout << "( " << pos.x << ", " << pos.y << ", " << pos.z << endl;
-		break;
-	}
-
+			//cout << "( " << pos.x << ", " << pos.y << ", " << pos.z << endl;
+			break;
+		}
 	}
 }
 

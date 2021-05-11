@@ -4,48 +4,48 @@
 #include "Component.h"
 
 Object::Object(string _meshName)
-    :m_strMeshName(_meshName)
+    :m_strInstName(_meshName)
 {
-    if (InstanceMgr::GetInstnace()->m_InstanceObjects.find(m_strMeshName) != InstanceMgr::GetInstnace()->m_InstanceObjects.end())
+    if (InstanceMgr::GetInstnace()->m_InstanceObjects.find(m_strInstName) != InstanceMgr::GetInstnace()->m_InstanceObjects.end())
     { // 이미 있어
-        m_Index = InstanceMgr::GetInstnace()->m_InstanceObjects[m_strMeshName]->GetInstanceCount();
-        InstanceMgr::GetInstnace()->m_InstanceObjects[m_strMeshName]->AddInstance(m_strMeshName);
+        m_Index = InstanceMgr::GetInstnace()->m_InstanceObjects[m_strInstName]->GetInstanceCount();
+        InstanceMgr::GetInstnace()->m_InstanceObjects[m_strInstName]->AddInstance(m_strInstName);
     }
     else
     { // 첫생성이야
         m_Index = 0;
-        InstanceInfo* _inst = new InstanceInfo(m_strMeshName);
-        _inst->SetMeshName(m_strMeshName);
-        InstanceMgr::GetInstnace()->m_InstanceObjects[m_strMeshName] = _inst;
+        InstanceInfo* _inst = new InstanceInfo(m_strInstName);
+        _inst->SetMeshName(m_strInstName);
+        InstanceMgr::GetInstnace()->m_InstanceObjects[m_strInstName] = _inst;
     }
 }
 
 Object::Object(string _meshName, MESH_TYPE _meshType)
-    :m_strMeshName(_meshName), m_strMeshType(_meshType)
+    :m_strInstName(_meshName), m_strMeshType(_meshType)
 {
 
-    if (InstanceMgr::GetInstnace()->m_InstanceObjects.find(m_strMeshName) != InstanceMgr::GetInstnace()->m_InstanceObjects.end())
+    if (InstanceMgr::GetInstnace()->m_InstanceObjects.find(m_strInstName) != InstanceMgr::GetInstnace()->m_InstanceObjects.end())
     { // 이미 있어
-        m_Index = InstanceMgr::GetInstnace()->m_InstanceObjects[m_strMeshName]->GetInstanceCount();
-        InstanceMgr::GetInstnace()->m_InstanceObjects[m_strMeshName]->AddInstance(m_strMeshName);
+        m_Index = InstanceMgr::GetInstnace()->m_InstanceObjects[m_strInstName]->GetInstanceCount();
+        InstanceMgr::GetInstnace()->m_InstanceObjects[m_strInstName]->AddInstance(m_strInstName);
         if (_meshType == MESH_TYPE::CHARACTER)
         {
-            InstanceMgr::GetInstnace()->m_InstanceObjects[m_strMeshName]->SetMeshType(_meshType);
+            InstanceMgr::GetInstnace()->m_InstanceObjects[m_strInstName]->SetMeshType(_meshType);
         }
     }
     else
     { // 첫생성이야
         m_Index = 0;
-        InstanceInfo* _inst = new InstanceInfo(m_strMeshName);
+        InstanceInfo* _inst = new InstanceInfo(m_strInstName);
         
         if (_meshType == MESH_TYPE::CHARACTER)
         {
             _inst->SetMeshType(_meshType);
         }
         
-        _inst->SetMeshName(m_strMeshName);
+        _inst->SetMeshName(m_strInstName);
         
-        InstanceMgr::GetInstnace()->m_InstanceObjects[m_strMeshName] = _inst;
+        InstanceMgr::GetInstnace()->m_InstanceObjects[m_strInstName] = _inst;
     }
 }
 
@@ -72,6 +72,8 @@ void Object::LateUpdate(const float& fTimeDelta)
 
 void Object::Render(const float& fTimeDelta, int _instanceCount)
 {
+    if (m_bPooling && !m_bPoolRender)
+        return;
     for (auto iter = m_mapComponent.begin(); iter != m_mapComponent.end(); ++iter)
         (*iter).second->Render(fTimeDelta, _instanceCount);
 }

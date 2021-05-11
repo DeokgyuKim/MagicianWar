@@ -205,6 +205,9 @@
     <Filter Include="00.Game\02.Object\07.Weapon">
       <UniqueIdentifier>{8cffe812-078c-4511-88fd-598c486e83ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\99.Manager\07.PoolingMgr">
+      <UniqueIdentifier>{22e24fa4-c7c7-4d23-af17-1f47accf37e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -408,6 +411,9 @@
     <ClInclude Include="netHeader.h">
       <Filter>99.Default\00.Header</Filter>
     </ClInclude>
+    <ClInclude Include="PoolingMgr.h">
+      <Filter>01.Engine\99.Manager\07.PoolingMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -584,6 +590,9 @@
     <ClCompile Include="FireRing.cpp" />
     <ClCompile Include="FireRing_FireCylinder.cpp" />
     <ClCompile Include="FireShock_FireParticle.cpp" />
+    <ClCompile Include="PoolingMgr.cpp">
+      <Filter>01.Engine\99.Manager\07.PoolingMgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

@@ -34,7 +34,7 @@ void InstanceMgr::BuildInstanceBuffers()
 
 void InstanceMgr::UpdateInstanceBuffer(Object* _obj)
 {
-	if (_obj->GetMeshName() == "" || !_obj->GetIsInstancing()) { // 메시를 다루지 않는 것 - Camera
+	if (_obj->GetInstName() == "" || !_obj->GetIsInstancing()) { // 메시를 다루지 않는 것 - Camera
 		return;
 	}
 	ObjectCB data;
@@ -47,14 +47,14 @@ void InstanceMgr::UpdateInstanceBuffer(Object* _obj)
 	else
 		data.boolBone = 0;
 	
-	m_InstanceCBs[_obj->GetMeshName()]->CopyData(_obj->GetIndex(), data);
+	m_InstanceCBs[_obj->GetInstName()]->CopyData(_obj->GetIndex(), data);
 }
 
 
 
 void InstanceMgr::UpdateSkinnedBuffers(Object* _obj)
 {
-	if (_obj->GetMeshName() == "" || !_obj->GetIsInstancing() || _obj->GetMeshType() != MESH_TYPE::CHARACTER) { // 캐릭터 외에는 뼈가없어
+	if (_obj->GetInstName() == "" || !_obj->GetIsInstancing() || _obj->GetMeshType() != MESH_TYPE::CHARACTER) { // 캐릭터 외에는 뼈가없어
 		return;
 	}
 	SkinnedCB data;
@@ -109,7 +109,7 @@ void InstanceMgr::UpdateSkinnedBuffers(Object* _obj)
 
 
 
-	m_SkinnedCBs[_obj->GetMeshName()]->CopyData(_obj->GetIndex(), data);
+	m_SkinnedCBs[_obj->GetInstName()]->CopyData(_obj->GetIndex(), data);
 
 }
 
