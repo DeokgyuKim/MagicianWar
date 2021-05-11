@@ -151,7 +151,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 		gClients[data->id].setReady(data->ready); // 레디 갱신
 		ReadyCheck[data->id] = gClients[data->id].getReady(); // 레디 갱신
 		LoadingCheck[data->id] = gClients[data->id].getLoaddingEnd();
-		
+
 		bool Start = true;
 		for (auto it = ReadyCheck.begin(); it != ReadyCheck.end(); ++it) { // 전체 순회
 			if (it->second == false) { // 들어온 누구라도 false라면
@@ -201,12 +201,12 @@ void packetProcessing(STOC_ServerPlayer arg)
 			for (int j = 0; j < gClientNum; ++j) {
 				STOC_startInfo sI;
 				sI.size = sizeof(sI);
-				sI.type = stoc_startInfo;			
+				sI.type = stoc_startInfo;
 				sI.dwPlayerNum = gClients[j].getInfo().info.dwPlayerNum;
 				sI.dwTeamNum = gClients[j].getInfo().info.dwTeamNum;
 				sI.xmfPosition = gClients[j].getInfo().info.xmfPosition;
-				
-				gClients[j].sendPacket((void*)&sc, sc.size); // stoc_sceneChange
+
+
 				gClients[j].sendPacket((void*)&sI, sI.size); // 나 자신의 정보				
 				gClients[j].sendPacket((void*)&otherCount, otherCount.size); // 나 자신을 뺀 인원 수
 				for (int i = 0; i < gClientNum; ++i) {
@@ -215,13 +215,14 @@ void packetProcessing(STOC_ServerPlayer arg)
 						STOC_OtherstartInfo otherPlayerInfo;
 						otherPlayerInfo.size = sizeof(otherPlayerInfo);
 						otherPlayerInfo.type = stoc_OtherstartInfo;
-						
+
 						otherPlayerInfo.dwPlayerNum = gClients[i].getInfo().info.dwPlayerNum;
 						otherPlayerInfo.dwTeamNum = gClients[i].getInfo().info.dwTeamNum;
 						otherPlayerInfo.xmfPosition = gClients[i].getInfo().info.xmfPosition;
-						
+
 						gClients[j].sendPacket((void*)&otherPlayerInfo, otherPlayerInfo.size);
 					}
+					gClients[j].sendPacket((void*)&sc, sc.size); // stoc_sceneChange
 				}
 			}
 			curScene = 2; // 씬 전환 -> Stage
@@ -244,7 +245,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 	{
 		CTOS_LoadingEnd* data = reinterpret_cast<CTOS_LoadingEnd*> (processing);
 		gClients[playerID].setLoaddingEnd(data->bLoadingEnd);
-		if (data->bLoadingEnd) cout << "로딩이 끝났어" << endl;
+		//if (data->bLoadingEnd) cout << "로딩이 끝났어" << endl;
 		break;
 	}
 	default:
@@ -282,7 +283,7 @@ void WorkThread() // send & physics & function
 					gClients[i].Update(); // 플레이어들 Update 키입력에 따른 위치 변화
 
 					if (key[i] & 0x0020) { // 왼쪽 클릭
-						
+
 						temp.SetUser(User[i]);
 						temp.setInstanceName(InstanceName[i]);
 						temp.setScale(XMFLOAT3{ 1.f,1.f,1.f });
@@ -290,9 +291,9 @@ void WorkThread() // send & physics & function
 						temp.setPosition(XMFLOAT3{ gClients[i].getWorld()._41,gClients[i].getWorld()._42,gClients[i].getWorld()._43 });
 						temp.setTotalLifeTime(5.f);
 						temp.setDirection(XMFLOAT3(gClients[i].getWorld()._21, gClients[i].getWorld()._22, gClients[i].getWorld()._23));
-						
+
 						gBullets.push_back(temp); // list에 담아
-						
+
 					}
 					// 충돌체크?
 					Physics_Collision(i);
@@ -303,23 +304,23 @@ void WorkThread() // send & physics & function
 
 			gBullet_mutex.lock();
 			auto iter = gBullets.begin();
-			while(iter != gBullets.end())
+			while (iter != gBullets.end())
 			{ // 총알 업데이트
 				int dead;
-				
+
 
 				dead = iter->Update(frame_time.count()); // TotalTime < lifeTime 삭제 (Dead)
 				iter->LateUpdate(frame_time.count());
-				
+
 				if (dead) {
-					
+
 					iter = gBullets.erase(iter);
 				}
 				else {
-					
+
 					iter++;
 				}
-				
+
 
 			}
 			int BulletsConut = gBullets.size();
