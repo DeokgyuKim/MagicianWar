@@ -52,6 +52,8 @@ void AnimationMgr::BuildAnimation(string meshName, MESH_TYPE eMesh, ANIMATION_TY
 		break;
 	case ANIMATION_TYPE::JUMP:
 		m_strFilePath += "Jumping";
+	case ANIMATION_TYPE::HIT:
+		m_strFilePath += "Damaged";
 	case ANIMATION_TYPE::NONE:
 		break;
 	}
@@ -74,6 +76,7 @@ void AnimationMgr::BuildAnimations()
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_LEFT);
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_RIGHT);
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::JUMP);
+	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::HIT);
 }
 
 void AnimationMgr::SetSkinnedDatas(string meshName, unique_ptr<SkinnedData> _skinnedinfo)
