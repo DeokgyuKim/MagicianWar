@@ -25,6 +25,7 @@ extern vector<PxRigidStatic*> StaticObjects;
 
 list<Bullet> gBullets;
 mutex gBullet_mutex;
+bool gLateInit_MainScene = false;
 int iStaticObjectIdx = 0;
 
 
@@ -184,10 +185,6 @@ void packetProcessing(STOC_ServerPlayer arg)
 			}
 
 			// 전체 클라에 한번씩 send하는 정보
-			STOC_sceneChange sc;
-			sc.size = sizeof(sc);
-			sc.type = stoc_sceneChange;
-			sc.sceneNum = 2; // 이게 메인scene넘버
 
 
 
@@ -226,11 +223,11 @@ void packetProcessing(STOC_ServerPlayer arg)
 
 						gClients[j].sendPacket((void*)&otherPlayerInfo, otherPlayerInfo.size);
 					}
-					gClients[j].sendPacket((void*)&sc, sc.size); // stoc_sceneChange
 				}
 			}
 			curScene = 2; // 씬 전환 -> Stage
 			sendOneTime = true;
+			gLateInit_MainScene = false;
 		}
 		break;
 	}
@@ -269,6 +266,17 @@ void WorkThread() // send & physics & function
 		}
 		else if (curScene == 2) // Stage
 		{
+			if (!gLateInit_MainScene) {
+				STOC_sceneChange sc;
+				sc.size = sizeof(sc);
+				sc.type = stoc_sceneChange;
+				sc.sceneNum = 2; //
+				for (int i = 0; i < gClientNum; ++i)
+					gClients[i].sendPacket((void*)&sc, sc.size); // stoc_sceneChange
+
+				gLateInit_MainScene = true;
+			}
+
 			auto start_time = chrono::system_clock::now();
 			chrono::duration<float> frame_time = start_time - prev_time;
 
@@ -287,7 +295,7 @@ void WorkThread() // send & physics & function
 
 				if (gClients[i].IsConnected()) // 연결 됐다면
 				{
-					gClients[i].Update(); // 플레이어들 Update 키입력에 따른 위치 변화
+					gClients[i].Update(frame_time.count()); // 플레이어들 Update 키입력에 따른 위치 변화
 
 					if (key[i] & 0x0020) { // 왼쪽 클릭
 
@@ -300,7 +308,7 @@ void WorkThread() // send & physics & function
 						temp.setTotalLifeTime(5.f);
 						temp.setDirection(XMFLOAT3(-gClients[i].getWorld()._21, -gClients[i].getWorld()._22, -gClients[i].getWorld()._23));
 
-						if(gBullets.size() < 80)
+						if (gBullets.size() < 80)
 							gBullets.push_back(temp); // list에 담아
 
 					}
@@ -362,27 +370,31 @@ void WorkThread() // send & physics & function
 			for (int i = 0; i < 2; ++i)
 			{
 				//플레이어가 히또 상태면 체크 안하게
-				for (auto iter = gBullets.begin(); iter != gBullets.end();)
+				if (gClients[i].GetUpperFSM()->GetState() != PLAYER_STATE::HIT)
 				{
-					if (gClients[i].getInfo().info.dwPlayerNum == (DWORD)iter->getUser())
+					for (auto iter = gBullets.begin(); iter != gBullets.end();)
 					{
-						++iter;
-						continue;
-					}
-					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(gClients[i].GetPxCapsuleController()->getActor(), iter->GetRigidDynamic()))
-					{
-						iter = gBullets.erase(iter);
-						int iDamage = 0;
-						switch ((*iter).getInstanceName())
+						if (gClients[i].getInfo().info.dwPlayerNum == (DWORD)iter->getUser())
 						{
-						case WIZARD_FIRE:
-							iDamage = 10;
+							++iter;
+							continue;
 						}
-						gClients[i].setPlayerHp(gClients[i].getInfo().info.iHp - iDamage);
-						//FSM바꿔야되고
+						if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(gClients[i].GetPxCapsuleController()->getActor(), iter->GetRigidDynamic()))
+						{
+							iter = gBullets.erase(iter);
+							int iDamage = 0;
+							switch ((*iter).getInstanceName())
+							{
+							case WIZARD_FIRE:
+								iDamage = 10;
+							}
+							gClients[i].setPlayerHp(gClients[i].getInfo().info.iHp - iDamage);
+							gClients[i].GetUpperFSM()->ChangeState((int)PLAYER_STATE::HIT, (int)ANIMATION_TYPE::HIT);
+							//FSM바꿔야되고
+						}
+						else
+							++iter;
 					}
-					else
-						++iter;
 				}
 			}
 			
