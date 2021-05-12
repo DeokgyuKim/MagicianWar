@@ -281,6 +281,8 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_tMyInfo.dwPlayerNum = data->dwPlayerNum;
 		m_tMyInfo.dwTeamNum = data->dwTeamNum;
 		m_tMyInfo.xmfPosition = data->xmfPosition;
+		m_tMyInfo.iHp = data->iHp;
+		cout << m_tMyInfo.iHp << endl;
 		break;
 	}
 	case stoc_sceneChange: // IsMoveToMainGame
@@ -304,7 +306,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_mapOtherPlayerInfos[data->dwPlayerNum].dwPlayerNum = data->dwPlayerNum;
 		m_mapOtherPlayerInfos[data->dwPlayerNum].dwTeamNum = data->dwTeamNum;
 		m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition = data->xmfPosition;
-		m_mapRecvPlayerInfos[data->dwPlayerNum];
+		m_mapOtherPlayerInfos[data->dwPlayerNum].iHp = data->iHp;
 		cout << m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.x << ", "
 			<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.y << ", "
 			<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.z << endl;
@@ -327,6 +329,8 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwPlayerNum = data->playerInfo.dwPlayerNum;
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwTeamNum = data->playerInfo.dwTeamNum;
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
+		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.iHp = data->playerInfo.iHp;
+		//cout << data->playerInfo.iHp << endl;
 
 
 		//XMFLOAT3 pos;

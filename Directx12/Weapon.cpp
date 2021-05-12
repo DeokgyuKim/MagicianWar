@@ -62,7 +62,7 @@ int Weapon::Update(const float& fTimeDelta)
 
 void Weapon::LateUpdate(const float& fTimeDelta)
 {
-	Component* Anim = m_pParent->GetComponent("Root_Animation");
+	Component* Anim = m_pParent->GetComponent("Upper_Animation");
 	if (Anim != NULL)
 	{
 		// 21¹ø »À°¡ weapon

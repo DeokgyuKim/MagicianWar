@@ -10,6 +10,7 @@ struct PlayerInfo
 	DWORD		dwPlayerNum;
 	DWORD		dwTeamNum;
 	XMFLOAT3	xmfPosition;
+	UINT		iHp;
 };
 
 struct STOC_ServerPlayer
@@ -90,6 +91,7 @@ struct STOC_startInfo {
 	DWORD		dwPlayerNum;
 	DWORD		dwTeamNum;
 	XMFLOAT3	xmfPosition;
+	UINT		iHp;
 };
 
 struct STOC_OtherstartInfo {
@@ -98,6 +100,7 @@ struct STOC_OtherstartInfo {
 	DWORD		dwPlayerNum;
 	DWORD		dwTeamNum;
 	XMFLOAT3	xmfPosition;
+	UINT		iHp;
 };
 
 struct STOC_otherPlayerCount {
@@ -122,7 +125,7 @@ struct Bullet_Packet {
 struct STOC_Bullet {
 	short size;
 	unsigned char type;
-	float Bullet_Count;
+	UINT Bullet_Count;
 	Bullet_Packet bullets[100];
 };
 
@@ -138,6 +141,13 @@ struct STOC_Skill {
 	float shaderVariable2;
 	float shaderVariable3;
 	float shaderVariable4;
+};
+
+struct STOC_GameEnd {
+	short size;
+	unsigned char type;
+	bool bEnd;
+	unsigned char teamNum;
 };
 
 class Player;
