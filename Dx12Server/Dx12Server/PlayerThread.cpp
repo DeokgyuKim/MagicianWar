@@ -29,7 +29,8 @@ bool gLateInit_MainScene = false;
 int iStaticObjectIdx = 0;
 
 int gLiveTeamNum[2] = { 1, 1 };
-
+float gEndingTime = 0;
+bool gMaingameEnding = false;
 
 unsigned int curScene = 1; // 1: SCENE_LOBBY 2: SCENE_
 chrono::system_clock::time_point prev_time;
@@ -275,8 +276,9 @@ void WorkThread() // send & physics & function
 				sc.sceneNum = 2; //
 				for (int i = 0; i < gClientNum; ++i)
 					gClients[i].sendPacket((void*)&sc, sc.size); // stoc_sceneChange
-
+				gEndingTime = 0;
 				gLateInit_MainScene = true;
+				gMaingameEnding = false;
 			}
 
 			auto start_time = chrono::system_clock::now();
@@ -298,8 +300,8 @@ void WorkThread() // send & physics & function
 				if (gClients[i].IsConnected()) // 연결 됐다면
 				{
 					gClients[i].Update(frame_time.count()); // 플레이어들 Update 키입력에 따른 위치 변화
-
-					if (key[i] & 0x0020) { // 왼쪽 클릭
+					cout << "총알 갯수" << gClients[i].getCreateBullet() << endl;
+					if (gClients[i].getCreateBullet() == 1) { // 왼쪽 클릭
 
 						temp.SetUser(User[i]);
 						temp.setInstanceName(InstanceName[i]);
@@ -312,6 +314,7 @@ void WorkThread() // send & physics & function
 
 						if (gBullets.size() < 80)
 							gBullets.push_back(temp); // list에 담아
+						gClients[i].setCreateBullet(0);
 
 					}
 					// 충돌체크?
@@ -368,7 +371,11 @@ void WorkThread() // send & physics & function
 				InstBullets.Bullet_Count = gBullets.size();
 			}
 
-				//Collision
+			STOC_GameEnd gameEnd;
+			gameEnd.size = sizeof(gameEnd);
+			gameEnd.type = stoc_gameend;
+
+			//Collision
 			for (int i = 0; i < gClientNum; ++i)
 			{
 				//플레이어가 히또 상태면 체크 안하게
@@ -394,15 +401,33 @@ void WorkThread() // send & physics & function
 							{
 								//플레이어 SetFSM(DEAD)
 								///////////////////////
-
+								gClients[i].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
+								gClients[i].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
 								--gLiveTeamNum[gClients[i].getInfo().info.dwTeamNum];
 								if (gLiveTeamNum[gClients[i].getInfo().info.dwTeamNum] <= 0)
 								{
+
+									gameEnd.bEnd = true;
+									gMaingameEnding = true;
 									//해당팀이 진거
 									///////////////
+									if (gClients[i].getInfo().info.dwTeamNum == 0) {
+										// 0 번팀 패배
+										gClients[1].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
+										gClients[1].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
+										gameEnd.teamNum = 1;
+									}
+									else {
+										// 1 번팀 패배
+										gClients[0].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
+										gClients[0].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
+										gameEnd.teamNum = 0;
+									}
+
 								}
 							}
-							gClients[i].GetUpperFSM()->ChangeState((int)PLAYER_STATE::HIT, (int)ANIMATION_TYPE::HIT);
+							else
+								gClients[i].GetUpperFSM()->ChangeState((int)PLAYER_STATE::HIT, (int)ANIMATION_TYPE::HIT);
 							iter = gBullets.erase(iter);
 						}
 						else
@@ -410,10 +435,10 @@ void WorkThread() // send & physics & function
 					}
 				}
 			}
-			
+
 			//for (auto staticMesh : StaticObjects)
 			//{
-			for(int i = 0; i < 20; ++i)
+			for (int i = 0; i < 20; ++i)
 			{
 				if (iStaticObjectIdx + i >= StaticObjects.size())
 					break;
@@ -437,7 +462,7 @@ void WorkThread() // send & physics & function
 			CPhysXMgr::GetInstance()->gScene->simulate(frame_time.count());
 			CPhysXMgr::GetInstance()->gScene->fetchResults(true);
 
-			
+
 
 			for (int i = 0; i < gClientNum; ++i)
 			{
@@ -449,6 +474,9 @@ void WorkThread() // send & physics & function
 				}
 				gClients[i].Unlock();
 			}
+			if (gMaingameEnding) {
+				gEndingTime += frame_time.count();
+			}
 			// send
 
 			for (int i = 0; i < gClientNum; ++i) {
@@ -459,7 +487,16 @@ void WorkThread() // send & physics & function
 				}
 
 				gClients[i].sendPacket((void*)&InstBullets, sizeof(InstBullets));
-
+				gClients[i].sendPacket((void*)&gameEnd, sizeof(gameEnd));
+				if (gEndingTime >= 5.f) {
+					STOC_sceneChange scenePacket;
+					scenePacket.size = sizeof(scenePacket);
+					scenePacket.type = stoc_sceneChange;
+					scenePacket.sceneNum = 3; // 엔딩 씬
+					gClients[0].sendPacket((void*)&scenePacket, sizeof(scenePacket));
+					gClients[1].sendPacket((void*)&scenePacket, sizeof(scenePacket));
+					gMaingameEnding = false;
+				}
 
 				//gClients[i].Unlock();
 

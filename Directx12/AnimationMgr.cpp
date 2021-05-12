@@ -56,6 +56,12 @@ void AnimationMgr::BuildAnimation(string meshName, MESH_TYPE eMesh, ANIMATION_TY
 	case ANIMATION_TYPE::HIT:
 		m_strFilePath += "Damaged";
 		break;
+	case ANIMATION_TYPE::DANCE:
+		m_strFilePath += "Dance";
+		break;
+	case ANIMATION_TYPE::DEAD:
+		m_strFilePath += "Dead";
+		break;
 	case ANIMATION_TYPE::NONE:
 		break;
 	}
@@ -79,6 +85,8 @@ void AnimationMgr::BuildAnimations()
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_RIGHT);
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::JUMP);
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::HIT);
+	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::DEAD);
+	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::DANCE);
 }
 
 void AnimationMgr::SetSkinnedDatas(string meshName, unique_ptr<SkinnedData> _skinnedinfo)
