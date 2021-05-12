@@ -32,6 +32,7 @@ public:
 public:
 	// Get
 	XMFLOAT4X4 getWorld() { return matWorld; }
+	XMFLOAT4X4 getBulletStartWorld();
 	STOC_ServerPlayer getInfo() { return Info; }
 	SOCKET getSocket() { return Info.socket; }
 	PLAYER_STATE getState() { return ePlayerState; }
@@ -63,6 +64,7 @@ public:
 
 	// Set
 	void setPlayerInfo(PlayerInfo _info) { Info.info = _info; }
+	void setPlayerHp(UINT iHp) { Info.info.iHp = iHp; }
 	void setPacketStart_Ptr(char* _ptr) { packet_start_ptr = _ptr; }
 	void setRecvStart_Ptr(char* _ptr) { recv_start_ptr = _ptr; };
 	void resetPacket_Ptr() { packet_start_ptr = recv_start_ptr; }

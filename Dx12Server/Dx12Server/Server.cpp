@@ -27,7 +27,7 @@ int gClientNum = 0;
 unsigned int WorkThreadCount = 0; // 1개만 만들어야지
 
 Player gClients[2];
-
+vector<PxRigidStatic*> StaticObjects;
 
 int recvn(SOCKET s, char* buf, int len, int flags);
 
@@ -58,8 +58,9 @@ int main()
 
 		world = s * rx * ry * rz * t;
 
-		CPhysXMgr::GetInstance()->CreateTriangleStaticMesh(*(*iter).first, world);
+		StaticObjects.push_back(CPhysXMgr::GetInstance()->CreateTriangleStaticMesh(*(*iter).first, world));
 	}
+	cout << "StaticObjects Count is " << StaticObjects.size() << endl;
 	cout << "All Load Complete!" << endl;
 
 	int retval;

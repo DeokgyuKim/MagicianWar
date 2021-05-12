@@ -128,11 +128,11 @@ PxRigidDynamic* CPhysXMgr::CreateSphere(XMFLOAT3 Pos, float Radius, const PxVec3
 	//dynamic->setMass(1.f);
 	//gScene->addActor(*body);
 
-	MyPhysXGameObject str;
-	str.pRigidDynamic = body;
-	VecPGO.push_back(str);
+	//MyPhysXGameObject str;
+	//str.pRigidDynamic = body;
+	//VecPGO.push_back(str);
 
-	PDynamiclist.push_back(body);
+	//PDynamiclist.push_back(body);
 
 	body->setName("");
 

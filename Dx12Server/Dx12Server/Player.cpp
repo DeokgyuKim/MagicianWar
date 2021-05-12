@@ -214,6 +214,17 @@ int Player::sendPacket(void* _packet, int _size)
 	return send(Info.socket, (char*)(_packet), _size, 0);
 }
 
+XMFLOAT4X4 Player::getBulletStartWorld()
+{
+	XMMATRIX xmmWorld, xmmTrans;
+	xmmTrans = XMMatrixTranslation(0.f, 1.f, 0.f);
+	xmmWorld = XMLoadFloat4x4(&matWorld) * xmmTrans;
+	XMFLOAT4X4 xmfWorld;
+	XMStoreFloat4x4(&xmfWorld, xmmWorld);
+
+	return xmfWorld;
+}
+
 InterfaceFSM* Player::GetRootFSM()
 {
 	if (m_RootBody == nullptr)

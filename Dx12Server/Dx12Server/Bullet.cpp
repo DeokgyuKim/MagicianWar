@@ -27,6 +27,12 @@ Bullet::Bullet(const Bullet& rhs)
 	Initialize();
 }
 
+void Bullet::Release()
+{
+	if (m_pRigidDynamic != NULL)
+		m_pRigidDynamic->release();
+}
+
 void Bullet::Initialize()
 {
 	m_lifeTime = 0.f;

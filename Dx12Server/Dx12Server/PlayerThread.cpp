@@ -17,12 +17,15 @@ unordered_map<DWORD, bool> ReadyCheck;
 unordered_map<DWORD, bool> LoadingCheck;
 unordered_map<DWORD, STOC_PlayerInfo> g_PlayerInfoPacket;
 unordered_map<DWORD, DWORD> playerKeyInput;
+
 extern unordered_map<int, STOC_PlayerInfo*>	g_Clients;
 extern Player gClients[2];
 extern int gClientNum; // 접속한 Client들의 명수
+extern vector<PxRigidStatic*> StaticObjects;
 
 list<Bullet> gBullets;
 mutex gBullet_mutex;
+int iStaticObjectIdx = 0;
 
 
 unsigned int curScene = 1; // 1: SCENE_LOBBY 2: SCENE_
@@ -268,6 +271,9 @@ void WorkThread() // send & physics & function
 		{
 			auto start_time = chrono::system_clock::now();
 			chrono::duration<float> frame_time = start_time - prev_time;
+
+			cout << "Time: " << frame_time.count() << endl;
+
 			DWORD key[2];
 			unsigned char User[2];
 			unsigned char InstanceName[2];
@@ -287,10 +293,10 @@ void WorkThread() // send & physics & function
 
 						temp.SetUser(User[i]);
 						temp.setInstanceName(InstanceName[i]);
-						temp.setScale(XMFLOAT3{ 0.1f,0.1f,0.1f });
+						temp.setScale(XMFLOAT3{ 0.3f,0.3f,0.3f });
 						temp.setRotate(XMFLOAT3{ 0.f,0.f,0.f });
-						temp.setWorldMatrix(gClients[i].getWorld());
-						temp.setPosition(XMFLOAT3{ gClients[i].getWorld()._41,gClients[i].getWorld()._42,gClients[i].getWorld()._43 });
+						temp.setWorldMatrix(gClients[i].getBulletStartWorld());
+						temp.setPosition(XMFLOAT3{ gClients[i].getWorld()._41,gClients[i].getWorld()._42 + 1.f,gClients[i].getWorld()._43 });
 						temp.setTotalLifeTime(5.f);
 						temp.setDirection(XMFLOAT3(-gClients[i].getWorld()._21, -gClients[i].getWorld()._22, -gClients[i].getWorld()._23));
 
@@ -305,7 +311,7 @@ void WorkThread() // send & physics & function
 				gClients[i].Unlock();
 			}
 
-			gBullet_mutex.lock();
+			//gBullet_mutex.lock();
 			auto iter = gBullets.begin();
 			while (iter != gBullets.end())
 			{ // 총알 업데이트
@@ -349,14 +355,13 @@ void WorkThread() // send & physics & function
 					++b_count;
 				}
 				//InstBullets.bullets = bullet_Packet;
-
-				InstBullets.Bullet_Count = BulletsConut;
+				InstBullets.Bullet_Count = gBullets.size();
 			}
 
-
-			//Collision
+				//Collision
 			for (int i = 0; i < 2; ++i)
 			{
+				//플레이어가 히또 상태면 체크 안하게
 				for (auto iter = gBullets.begin(); iter != gBullets.end();)
 				{
 					if (gClients[i].getInfo().info.dwPlayerNum == (DWORD)iter->getUser())
@@ -367,12 +372,41 @@ void WorkThread() // send & physics & function
 					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(gClients[i].GetPxCapsuleController()->getActor(), iter->GetRigidDynamic()))
 					{
 						iter = gBullets.erase(iter);
+						int iDamage = 0;
+						switch ((*iter).getInstanceName())
+						{
+						case WIZARD_FIRE:
+							iDamage = 10;
+						}
+						gClients[i].setPlayerHp(gClients[i].getInfo().info.iHp - iDamage);
+						//FSM바꿔야되고
 					}
 					else
 						++iter;
 				}
 			}
-			gBullet_mutex.unlock();
+			
+			//for (auto staticMesh : StaticObjects)
+			//{
+			for(int i = 0; i < 20; ++i)
+			{
+				if (iStaticObjectIdx + i >= StaticObjects.size())
+					break;
+				for (auto iter = gBullets.begin(); iter != gBullets.end();)
+				{
+					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject((*iter).GetRigidDynamic(), StaticObjects[iStaticObjectIdx + i]))
+					{
+						iter = gBullets.erase(iter);
+					}
+					else
+						++iter;
+				}
+			}
+			iStaticObjectIdx = (iStaticObjectIdx + 20);
+			if (iStaticObjectIdx >= StaticObjects.size())
+				iStaticObjectIdx -= StaticObjects.size();
+			//}
+			//gBullet_mutex.unlock();
 
 			///PhysXUpdate
 			CPhysXMgr::GetInstance()->gScene->simulate(frame_time.count());
@@ -410,7 +444,7 @@ void WorkThread() // send & physics & function
 			auto end_time = chrono::system_clock::now();
 			prev_time = end_time;
 			auto elapsed_time = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
-			this_thread::sleep_for(8ms - elapsed_time);
+			this_thread::sleep_for(12ms - elapsed_time);
 		}
 	}
 }

@@ -8,7 +8,9 @@ class Bullet
 public:
 	Bullet();
 	Bullet(const Bullet& rhs);
-	~Bullet() {}
+	~Bullet() { Release(); }
+private:
+	void Release();
 public:
 	void Initialize();
 	int Update(const float gTime);
