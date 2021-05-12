@@ -159,6 +159,7 @@
     <ClInclude Include="InstanceInfo.h" />
     <ClInclude Include="InstanceMgr.h" />
     <ClInclude Include="netHeader.h" />
+    <ClInclude Include="Panel.h" />
     <ClInclude Include="PhysXMgr.h" />
     <ClInclude Include="PlayerFSM.h" />
     <ClInclude Include="AnimationMgr.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="Flames_FireEff.cpp" />
     <ClCompile Include="InstanceInfo.cpp" />
     <ClCompile Include="InstanceMgr.cpp" />
+    <ClCompile Include="Panel.cpp" />
     <ClCompile Include="PhysXMgr.cpp" />
     <ClCompile Include="PlayerFSM.cpp" />
     <ClCompile Include="AnimationMgr.cpp" />

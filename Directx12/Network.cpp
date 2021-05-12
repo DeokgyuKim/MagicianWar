@@ -144,6 +144,10 @@ void Network::Update()
 		//	dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->ChangeAnimation(SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Upper_eAnimType));
 		//}
 	}
+	else if (m_SceneChange == 3)
+	{
+
+	}
 
 }
 
@@ -341,6 +345,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		break;
 	}
 	case stoc_bullet:
+	{
 		m_pBullets = reinterpret_cast<STOC_Bullet*>(_packetBuffer);
 		//if (data->bullets != nullptr)
 		//	cout << "ÃÑ¾Ë Ã¹¹øÂ° Ä£±¸ ÁÂÇ¥ - (" << data->bullets[0].matWorld._41 << ", " << data->bullets[0].matWorld._42 << ", " << data->bullets[0].matWorld._43 << " )" << endl;
@@ -348,7 +353,16 @@ void Network::packetProcessing(char* _packetBuffer)
 		//cout << "InstanceName : " << data->InstanceName << endl;
 		//cout << "lifeTime : " << data->lifeTime << endl;
 		//cout << "ID : " << data->id << endl;
+		break;
 	}
+	
+	case stoc_gameend:
+	{
+		m_pGameEnd = reinterpret_cast<STOC_GameEnd*>(_packetBuffer);
+		break;
+	}
+	}
+
 }
 
 void Network::SendReadyState()
@@ -423,7 +437,7 @@ void Network::SendKeyInput()
 	{
 		dwKeyInput |= 0x0010;
 	}
-	if (KeyMgr::GetInstance()->KeyPressing(VK_LBUTTON))
+	if (KeyMgr::GetInstance()->KeyUp(VK_LBUTTON))
 	{
 		dwKeyInput |= 0x0020;
 	}

@@ -82,7 +82,7 @@ struct CTOS_keyInput {
 struct STOC_sceneChange {
 	short size;
 	unsigned char type;
-	DWORD sceneNum; // 0 : Logo, 1 : Lobby, 2 : mainScene
+	DWORD sceneNum; // 0 : Logo, 1 : Lobby, 2 : mainScene, 3 : GameEnd
 };
 
 struct STOC_startInfo {
@@ -188,6 +188,8 @@ public:
 	void		SetOtherPlayerInfo(list<Object*>* plstPlayer);
 	void		SetLoadingEnd() { LoadingEnd = true; }
 	STOC_Bullet* GetBullets() { return m_pBullets; }
+	STOC_GameEnd* GetGameEnd() { return m_pGameEnd; }
+	DWORD		GetCurScene() { return m_SceneChange; }
 private:
 	SOCKET	m_Sock;
 
@@ -201,6 +203,7 @@ private:
 	map<DWORD, PlayerInfo>		m_mapOtherPlayerInfos;
 	map<DWORD, STOC_PlayerInfo> m_mapRecvPlayerInfos;
 	STOC_Bullet*				m_pBullets;
+	STOC_GameEnd*				m_pGameEnd;
 	int		m_iPlayerNum;
 public:
 	//Function For LobbyThread Send

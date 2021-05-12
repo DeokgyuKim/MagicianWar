@@ -16,5 +16,6 @@ private:
 private:
     bool        ToolMode = false;
     Camera*     m_pCamera;
+    bool        GameEndForPanelCreate = false;
 };
 

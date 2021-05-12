@@ -12,6 +12,15 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Tree02", L"../Resources/Tree02.dds");
 	m_mapTextures["Tree02"] = pTexture;
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "Lose", L"../Resources/Lose.dds");
+	m_mapTextures["Lose"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Win", L"../Resources/Win.dds");
+	m_mapTextures["Win"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "CrossHair", L"../Resources/CrossHair.dds");
+	m_mapTextures["CrossHair"] = pTexture;
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "Noise", L"../Resources/Noise.dds", false, 12);
 	m_mapTextures["Noise"] = pTexture;
 

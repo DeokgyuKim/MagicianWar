@@ -20,6 +20,12 @@ Camera::~Camera()
 
 int Camera::Update(const float& fTimeDelta)
 {
+	//if (m_eCamMode == CAMERA_MODE::CAMERA_THIRD)
+	//	ShowCursor(FALSE);
+	//else
+	//	ShowCursor(TRUE);
+
+
 	m_fTime += fTimeDelta;
 	if (GetAsyncKeyState(VK_F1) & 0x0001)
 		m_eCamMode = CAMERA_MODE::CAMERA_NONE;
@@ -64,7 +70,8 @@ int Camera::Update(const float& fTimeDelta)
 		{
 			XMFLOAT3 xmfPlayerPos = m_pPlayer->GetPosition();
 			xmfPlayerPos.y += 1.f;
-			XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfLookVec) * m_fOffset);
+			XMFLOAT3 xmfOff = XMFLOAT3(0.f, 1.f, 0.f);
+			XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfLookVec) * m_fOffset + XMLoadFloat3(&xmfOff));
 		}
 		else
 		{
@@ -93,11 +100,11 @@ void Camera::LateUpdate(const float& fTimeDelta)
 
 	XMStoreFloat4x4(&m_xmmProj, proj);
 
-
 	XMStoreFloat3(&m_xmfTarget, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&m_xmfLookVec));
 
 	XMVECTOR pos = XMVectorSet(m_xmfPosition.x, m_xmfPosition.y, m_xmfPosition.z, 1.0f);
 	XMVECTOR target = XMVectorSet(m_xmfTarget.x, m_xmfTarget.y, m_xmfTarget.z, 1.0f); 
+	//XMVECTOR target = XMVectorSet(m_xmfLookVec.x, m_xmfLookVec.y, m_xmfLookVec.z, 1.0f);
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // XMVectorSet(m_xmfUpVec.x, m_xmfUpVec.y, m_xmfUpVec.z, 0.0f);
 
 	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
@@ -120,6 +127,15 @@ void Camera::LateUpdate(const float& fTimeDelta)
 void Camera::Render(const float& fTimeDelta, int _instanceCount)
 { // 카메라 설정
 	m_pCmdLst->SetGraphicsRootConstantBufferView(1, m_ObjectCB->Resource()->GetGPUVirtualAddress());
+}
+
+void Camera::SetMode(CAMERA_MODE eMode)
+{ 
+	m_eCamMode = eMode;
+	if (m_eCamMode == CAMERA_MODE::CAMERA_THIRD)
+		ShowCursor(FALSE);
+	else
+		ShowCursor(TRUE);
 }
 
 

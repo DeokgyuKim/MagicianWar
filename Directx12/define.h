@@ -61,6 +61,7 @@
 #define ctos_LoadingEnd 33
 #define stoc_SkillPacket 34
 #define stoc_bullet 35
+#define stoc_gameend 36
 
 // skill Type 51 ~ 59 
 #define FIRE_RING 51 

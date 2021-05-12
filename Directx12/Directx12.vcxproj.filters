@@ -208,6 +208,9 @@
     <Filter Include="01.Engine\99.Manager\07.PoolingMgr">
       <UniqueIdentifier>{22e24fa4-c7c7-4d23-af17-1f47accf37e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Game\02.Object\08.Panel">
+      <UniqueIdentifier>{0136ba21-13a3-4500-8a1f-9e7e5fef1cc7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -414,6 +417,9 @@
     <ClInclude Include="PoolingMgr.h">
       <Filter>01.Engine\99.Manager\07.PoolingMgr</Filter>
     </ClInclude>
+    <ClInclude Include="Panel.h">
+      <Filter>00.Game\02.Object\08.Panel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -592,6 +598,9 @@
     <ClCompile Include="FireShock_FireParticle.cpp" />
     <ClCompile Include="PoolingMgr.cpp">
       <Filter>01.Engine\99.Manager\07.PoolingMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel.cpp">
+      <Filter>00.Game\02.Object\08.Panel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
