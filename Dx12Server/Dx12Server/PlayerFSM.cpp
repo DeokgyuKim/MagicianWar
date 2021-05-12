@@ -6,6 +6,9 @@ PlayerFSM::PlayerFSM(Player* user, BoneType _bone)
 {
 	m_BoneType = _bone;
 	m_curState = PLAYER_STATE::IDLE;
+
+
+	m_fHitTime = 3.f;
 }
 
 void PlayerFSM::ChangeState(int _State, int _Ani)
@@ -25,6 +28,7 @@ void PlayerFSM::ChangeState(int _State, int _Ani)
 void PlayerFSM::Enter(int _State, int _Ani)
 {
 	dkey = 0;
+	m_AnimTime = 0.f;
 
 	if (m_BoneType == BoneType::UPPER_BONE)
 	{ // 상체 애니메이션을 갱신
@@ -52,21 +56,25 @@ void PlayerFSM::Enter(int _State, int _Ani)
 	}
 }
 
-void PlayerFSM::Execute()
+void PlayerFSM::Execute(float fTime)
 {
+	m_AnimTime += fTime;
 	switch (m_State)
 	{
 		case static_cast<int>(PLAYER_STATE::IDLE) :
-			Idle();
+			Idle(fTime);
 			break;
 		case SCint(PLAYER_STATE::MOVE):
-			Move();
+			Move(fTime);
 			break;
 		case SCint(PLAYER_STATE::ATTACK):
-			Attack();
+			Attack(fTime);
 			break;
 		case SCint(PLAYER_STATE::JUMP):
-			Jump();
+			Jump(fTime);
+			break;
+		case SCint(PLAYER_STATE::HIT):
+			Hit(fTime);
 			break;
 	}
 }
@@ -88,6 +96,9 @@ void PlayerFSM::Exit()
 		case SCint(PLAYER_STATE::JUMP):
 
 			break;
+		case SCint(PLAYER_STATE::HIT):
+
+			break;
 	}
 }
 
@@ -96,7 +107,7 @@ void PlayerFSM::SetDefaultKey(DWORD _key)
 	DefaultKey = _key;
 }
 
-void PlayerFSM::Idle()
+void PlayerFSM::Idle(float fTime)
 {
 	// 상체 냐 하체냐
 	if (m_BoneType == BoneType::UPPER_BONE)
@@ -159,7 +170,7 @@ void PlayerFSM::Idle()
 	}
 }
 
-void PlayerFSM::Move()
+void PlayerFSM::Move(float fTime)
 {
 	//
 	if (m_BoneType == BoneType::UPPER_BONE)
@@ -249,7 +260,7 @@ void PlayerFSM::Move()
 	}
 }
 
-void PlayerFSM::Attack()
+void PlayerFSM::Attack(float fTime)
 {
 	if (m_BoneType == BoneType::UPPER_BONE)
 	{ // 상체
@@ -290,7 +301,21 @@ void PlayerFSM::Attack()
 	}
 }
 
-void PlayerFSM::Jump()
+void PlayerFSM::Jump(float fTime)
 {
 	ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
+}
+
+void PlayerFSM::Hit(float fTime)
+{
+	if (m_BoneType == BoneType::UPPER_BONE)
+	{ // 상체
+		if(m_AnimTime >= m_fHitTime){ // 시간이 다되면
+			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
+		}
+	}
+	else if (m_BoneType == BoneType::ROOT_BONE)
+	{ // 하체
+		ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
+	}
 }

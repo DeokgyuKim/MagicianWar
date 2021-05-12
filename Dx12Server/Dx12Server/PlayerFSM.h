@@ -13,16 +13,17 @@ public:
 	// InterfaceCommand을(를) 통해 상속됨
 	virtual void ChangeState(int _State, int _Ani) override;
 	virtual void Enter(int _State, int _Ani) override;
-	virtual void Execute() override;
+	virtual void Execute(float fTime) override;
 	virtual void Exit() override;
 
 public:
 	void SetDefaultKey(DWORD _key);
 private:
-	void Idle();
-	void Move();
-	void Attack();
-	void Jump();
+	void Idle(float fTime);
+	void Move(float fTime);
+	void Attack(float fTime);
+	void Jump(float fTime);
+	void Hit(float fTime);
 
 private:
 	Player* m_User;
@@ -41,4 +42,7 @@ private:
 	bool m_beforejump;
 	float m_fJumpTime;
 	float m_fJumpDeltaTime;
+
+	float m_AnimTime;
+	float m_fHitTime;
 };

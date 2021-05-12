@@ -11,6 +11,6 @@ class Fire_Ring :
     void setDissolveC(float _variable) { m_DissolveC = _variable; }
 
 private:
-    float m_DissolveC;
+    float m_DissolveC; // shadervariable
 };
 

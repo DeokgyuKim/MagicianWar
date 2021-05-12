@@ -12,7 +12,7 @@ public:
 	~Player();
 
 	void Initialize(SOCKET& sock, int ID);
-	void Update();
+	void Update(float fTime);
 	void UpdatePlayerInfo(CTOS_PlayerInfo* pInfo);
 	void UpdatePosition();
 	void noTransWorldUpdate(XMFLOAT4X4 _world);
