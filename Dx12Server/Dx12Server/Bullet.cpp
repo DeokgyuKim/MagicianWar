@@ -7,7 +7,7 @@ Bullet::Bullet()
 	m_InstanceName = -1;
 	
 	m_TotalLifeTime = 0.f;
-	m_speed = 2.f;
+	m_speed = 10.f;
 
 	Initialize();
 }

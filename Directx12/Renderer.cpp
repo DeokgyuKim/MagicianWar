@@ -93,23 +93,6 @@ void Renderer::Render(const float& fTimeDelta)
 		}
 	}
 
-	m_mapShaders[RENDER_TYPE::RENDER_BULLET]->PreRender(m_pCmdLst);
-	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_BULLET])
-	{
-		if (m_InstanceCheck.find(pObject->GetInstName()) != m_InstanceCheck.end()) {
-			// ÀÌ¹Ì ÇÑ¹ø ·»´õ¸µ ÇÑ mesh¸é ·»´õ¸µ¾ÈÇÏ¸éµÊ
-		}
-		else
-		{
-			m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
-			if (pObject->GetTextureName() != "")
-				m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
-			m_pCmdLst->SetGraphicsRootShaderResourceView(0, InstanceMgr::GetInstnace()->m_InstanceCBs[pObject->GetInstName()]->Resource()->GetGPUVirtualAddress());	// obj
-			m_InstanceCheck[pObject->GetInstName()] = InstanceMgr::GetInstnace()->m_InstanceObjects[pObject->GetInstName()]->GetInstanceCount();
-			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetInstName()]);
-		}
-	}
-
 	m_mapShaders[RENDER_TYPE::RENDER_STATIC]->PreRender(m_pCmdLst);
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_STATIC])
 	{
@@ -140,6 +123,23 @@ void Renderer::Render(const float& fTimeDelta)
 			if (pObject->GetMeshType() != MESH_TYPE::COUNT) {
 				m_pCmdLst->SetGraphicsRootShaderResourceView(11, InstanceMgr::GetInstnace()->m_SkinnedCBs[pObject->GetInstName()]->Resource()->GetGPUVirtualAddress());
 			}
+			m_InstanceCheck[pObject->GetInstName()] = InstanceMgr::GetInstnace()->m_InstanceObjects[pObject->GetInstName()]->GetInstanceCount();
+			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetInstName()]);
+		}
+	}
+
+	m_mapShaders[RENDER_TYPE::RENDER_BULLET]->PreRender(m_pCmdLst);
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_BULLET])
+	{
+		if (m_InstanceCheck.find(pObject->GetInstName()) != m_InstanceCheck.end()) {
+			// ÀÌ¹Ì ÇÑ¹ø ·»´õ¸µ ÇÑ mesh¸é ·»´õ¸µ¾ÈÇÏ¸éµÊ
+		}
+		else
+		{
+			m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+			if (pObject->GetTextureName() != "")
+				m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+			m_pCmdLst->SetGraphicsRootShaderResourceView(0, InstanceMgr::GetInstnace()->m_InstanceCBs[pObject->GetInstName()]->Resource()->GetGPUVirtualAddress());	// obj
 			m_InstanceCheck[pObject->GetInstName()] = InstanceMgr::GetInstnace()->m_InstanceObjects[pObject->GetInstName()]->GetInstanceCount();
 			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetInstName()]);
 		}

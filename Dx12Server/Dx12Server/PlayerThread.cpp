@@ -286,7 +286,7 @@ void WorkThread() // send & physics & function
 
 						temp.SetUser(User[i]);
 						temp.setInstanceName(InstanceName[i]);
-						temp.setScale(XMFLOAT3{ 1.f,1.f,1.f });
+						temp.setScale(XMFLOAT3{ 0.1f,0.1f,0.1f });
 						temp.setRotate(XMFLOAT3{ 0.f,0.f,0.f });
 						temp.setWorldMatrix(gClients[i].getWorld());
 						temp.setPosition(XMFLOAT3{ gClients[i].getWorld()._41,gClients[i].getWorld()._42,gClients[i].getWorld()._43 });
@@ -352,17 +352,17 @@ void WorkThread() // send & physics & function
 				InstBullets.Bullet_Count = BulletsConut;
 			}
 
-			gBullet_mutex.unlock();
-
-			///PhysXUpdate
-			CPhysXMgr::GetInstance()->gScene->simulate(frame_time.count());
-			CPhysXMgr::GetInstance()->gScene->fetchResults(true);
 
 			//Collision
 			for (int i = 0; i < 2; ++i)
 			{
 				for (auto iter = gBullets.begin(); iter != gBullets.end();)
 				{
+					if (gClients[i].getInfo().info.dwPlayerNum == (DWORD)iter->getUser())
+					{
+						++iter;
+						continue;
+					}
 					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(gClients[i].GetPxCapsuleController()->getActor(), iter->GetRigidDynamic()))
 					{
 						iter = gBullets.erase(iter);
@@ -371,6 +371,13 @@ void WorkThread() // send & physics & function
 						++iter;
 				}
 			}
+			gBullet_mutex.unlock();
+
+			///PhysXUpdate
+			CPhysXMgr::GetInstance()->gScene->simulate(frame_time.count());
+			CPhysXMgr::GetInstance()->gScene->fetchResults(true);
+
+			
 
 			for (int i = 0; i < gClientNum; ++i)
 			{

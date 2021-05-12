@@ -126,7 +126,7 @@ PxRigidDynamic* CPhysXMgr::CreateSphere(XMFLOAT3 Pos, float Radius, const PxVec3
 	body->setLinearDamping(0.5f);
 	body->setLinearVelocity(velocity); //객체의 선형 속도
 	//dynamic->setMass(1.f);
-	gScene->addActor(*body);
+	//gScene->addActor(*body);
 
 	MyPhysXGameObject str;
 	str.pRigidDynamic = body;
@@ -925,7 +925,7 @@ bool CPhysXMgr::OverlapBetweenTwoObject(PxRigidActor* pBody0, PxRigidActor* pBod
 
 	XMFLOAT3 pos1 = XMFLOAT3(pBody0->getGlobalPose().p.x, pBody0->getGlobalPose().p.y, pBody0->getGlobalPose().p.z);
 	XMFLOAT3 pos2 = XMFLOAT3(pBody1->getGlobalPose().p.x, pBody1->getGlobalPose().p.y, pBody1->getGlobalPose().p.z);
-	cout << "Collision" << pos2.x << ", " << pos2.y << ", " << pos2.z << endl;
+	//cout << "Collision" << pos2.x << ", " << pos2.y << ", " << pos2.z << endl;
 
 	if (PxGeometryQuery::overlap(*Geometry[0], pBody0->getGlobalPose(), *Geometry[1], pBody1->getGlobalPose()))
 	{

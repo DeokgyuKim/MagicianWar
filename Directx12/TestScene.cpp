@@ -42,7 +42,8 @@ void TestScene::LateUpdate(const float& fTimeDelta)
 	}
 
 	PoolingMgr::GetInstance()->UpdatePoolingObject(Network::GetInstance()->GetBullets());
-#else
+#endif
+#ifdef PHYSX
 	if (CPhysXMgr::GetInstance()->PhysXStartTime > 10.f)
 	{
 		CPhysXMgr::GetInstance()->gScene->simulate(fTimeDelta);
