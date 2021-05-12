@@ -57,6 +57,12 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Skill.cpp">
+      <Filter>소스 파일\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="Fire_Ring.cpp">
+      <Filter>소스 파일\Skill\FireRing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PlayerThread.h">
@@ -97,6 +103,12 @@
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Skill.h">
+      <Filter>소스 파일\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="Fire_Ring.h">
+      <Filter>소스 파일\Skill\FireRing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

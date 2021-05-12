@@ -151,18 +151,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Fire_Ring.cpp" />
     <ClCompile Include="MeshMgr.cpp" />
     <ClCompile Include="PhysXMgr.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerFSM.cpp" />
     <ClCompile Include="PlayerThread.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="Skill.cpp" />
     <ClCompile Include="StaticMeshMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Directx12\define.h" />
     <ClInclude Include="..\..\Directx12\struct.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Fire_Ring.h" />
     <ClInclude Include="include.h" />
     <ClInclude Include="InterfaceFSM.h" />
     <ClInclude Include="MeshMgr.h" />
@@ -172,6 +175,7 @@
     <ClInclude Include="PlayerThread.h" />
     <ClInclude Include="serverDefine.h" />
     <ClInclude Include="serverStruct.h" />
+    <ClInclude Include="Skill.h" />
     <ClInclude Include="StaticMeshMgr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

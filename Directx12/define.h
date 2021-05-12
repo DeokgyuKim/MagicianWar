@@ -42,7 +42,7 @@
 #define NETWORK
 #define PHYS
 
-#define MAX_BUFFER 1024
+#define MAX_BUFFER 16384
 #define MIN_BUFFER 256
 
 // protocol
@@ -56,6 +56,8 @@
 #define stoc_OtherstartInfo 30
 #define stoc_playerInfo 31
 #define ctos_LoadingEnd 33
-#define stoc_Skill_FireRing 34
+#define stoc_SkillPacket 34
 #define stoc_bullet 35
-//#define stoc_ 34
+
+// skill Type 51 ~ 59 
+#define FIRE_RING 51 
