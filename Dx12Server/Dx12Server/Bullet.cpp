@@ -30,6 +30,7 @@ Bullet::Bullet(const Bullet& rhs)
 void Bullet::Initialize()
 {
 	m_lifeTime = 0.f;
+	m_pRigidDynamic = CPhysXMgr::GetInstance()->CreateSphere(m_xmfPosition, 1.f);
 }
 
 int Bullet::Update(const float gTime)
@@ -61,6 +62,9 @@ void Bullet::LateUpdate(const float gTime)
 
 	XMMATRIX world = scale * rotateX * rotateY * rotateZ * transform;
 	XMStoreFloat4x4(&m_matWorld, world);
+
+
+	m_pRigidDynamic->setGlobalPose(CPhysXMgr::GetInstance()->MakePxTransform(m_matWorld));
 }
 
 void Bullet::setWorldMatrix(XMFLOAT4X4 _matWorld)

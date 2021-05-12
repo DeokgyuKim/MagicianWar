@@ -38,6 +38,7 @@ public:
 	float getLifeTime() const { return m_lifeTime; }
 	float getTotalLifeTime() const { return m_TotalLifeTime; }
 	float getSpeed() const { return m_speed; }
+	PxRigidDynamic* GetRigidDynamic() { return m_pRigidDynamic; }
 	
 
 
@@ -56,6 +57,7 @@ private:
 	mutex m_mutex;
 
 	XMFLOAT3 m_dir;
+	PxRigidDynamic* m_pRigidDynamic = NULL;
 
 };
 

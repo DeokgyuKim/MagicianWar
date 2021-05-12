@@ -79,7 +79,7 @@ public:
 public:
 	bool Initialize();
 	
-	//PxRigidDynamic * CreateSphere(CPhysXObject* pObj, _vec3 Pos, float Radius, const PxVec3 & velocity = { 0,0,0 }, PxMaterial*	Material_ = nullptr);
+	PxRigidDynamic* CreateSphere(XMFLOAT3 Pos, float Radius, const PxVec3& velocity = { 0,0,0 }, PxMaterial* Material_ = nullptr);
 	//
 	//PxRigidDynamic * CreateBox(CPhysXObject* pObj, _vec3 Pos, PxReal x, PxReal y, PxReal z, PxMaterial*	Material_ = nullptr);
 	//
@@ -104,7 +104,7 @@ public:
 	
 
 
-	//bool OverlapBetweenTwoObject(PxRigidActor * pBody0, PxRigidActor * pBody1); // 겹쳐있는지 검사
+	bool OverlapBetweenTwoObject(PxRigidActor* pBody0, PxRigidActor* pBody1); // 겹쳐있는지 검사
 
 	//bool SweepBetweenTwoObject(PxRigidDynamic * pBody0, PxRigidDynamic * pBody1);
 
@@ -165,6 +165,9 @@ public:
 	bool BoxSphereCollisionCheck(PxRigidBody * pDynamic1, PxRigidBody * pDynamic2);
 
 	//bool 구충돌체크(_vec3 Pos1, float Radius1, _vec3 Pos2, float Radius2);
+
+	void ModifyPhysXPos(const float& fTimeDelta, PxRigidDynamic* pDynamic, XMFLOAT3 scale, XMFLOAT4X4 world, XMFLOAT4X4* outWorld, XMFLOAT3* outPos);
+	PxTransform MakePxTransform(XMFLOAT4X4 world);
 
 private:
 	//LPDIRECT3DDEVICE9 m_pGraphicDev = nullptr;

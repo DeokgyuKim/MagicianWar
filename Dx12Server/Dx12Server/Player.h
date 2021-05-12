@@ -82,7 +82,7 @@ public:
 	void ModifyPhysXPos(const float& fTimeDelta);
 	void GravityProgress(const float& fTimeDelta);
 	void MoveCapsuleController(XMFLOAT3 vSpeed, const float& fTimeDelta);
-
+	PxCapsuleController* GetPxCapsuleController() { return m_pCapsuleCon; }
 
 private: // 
 	// info

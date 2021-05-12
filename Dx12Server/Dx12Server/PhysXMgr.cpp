@@ -114,6 +114,31 @@ bool CPhysXMgr::Initialize()
 	return false;
 }
 
+PxRigidDynamic* CPhysXMgr::CreateSphere(XMFLOAT3 Pos, float Radius, const PxVec3& velocity, PxMaterial* Material_)
+{
+	const PxTransform& t = PxTransform(PxVec3(Pos.x, Pos.y, Pos.z));
+
+	if (Material_ == nullptr)
+		Material_ = gMaterial;
+
+	PxRigidDynamic* body = PxCreateDynamic(*gPhysics, t, PxSphereGeometry(Radius), *Material_, 5.0f);
+	body->setAngularDamping(0.5f);
+	body->setLinearDamping(0.5f);
+	body->setLinearVelocity(velocity); //객체의 선형 속도
+	//dynamic->setMass(1.f);
+	gScene->addActor(*body);
+
+	MyPhysXGameObject str;
+	str.pRigidDynamic = body;
+	VecPGO.push_back(str);
+
+	PDynamiclist.push_back(body);
+
+	body->setName("");
+
+	return body;
+}
+
 //PxRigidDynamic* CPhysXMgr::CreateSphere(CPhysXObject* pObj, _vec3 Pos, float Radius, const PxVec3& velocity, PxMaterial* Material_)
 //{	
 //	const PxTransform& t = PxTransform(PxVec3(Pos.x, Pos.y, Pos.z));
@@ -835,6 +860,80 @@ PxCapsuleController * CPhysXMgr::CreateCapsuleController(DWORD dwPlayerNum, XMFL
 //	}
 //	return false;
 //}
+
+bool CPhysXMgr::OverlapBetweenTwoObject(PxRigidActor* pBody0, PxRigidActor* pBody1)
+{
+	PxShape* Shape[2];
+	pBody0->getShapes(&Shape[0], 1);
+	pBody1->getShapes(&Shape[1], 1);
+	PxGeometry* Geometry[2];
+
+	if (Shape[0]->getGeometryType() == PxGeometryType::eBOX)
+	{
+		PxBoxGeometry boxgeom;
+		Shape[0]->getBoxGeometry(boxgeom);
+		Geometry[0] = &boxgeom;
+	}
+	else if (Shape[0]->getGeometryType() == PxGeometryType::eSPHERE)
+	{
+		PxSphereGeometry spheregeom;
+		Shape[0]->getSphereGeometry(spheregeom);
+		Geometry[0] = &spheregeom;
+	}
+	else if (Shape[0]->getGeometryType() == PxGeometryType::eCAPSULE)
+	{
+		PxCapsuleGeometry capgeom;
+		Shape[0]->getCapsuleGeometry(capgeom);
+		Geometry[0] = &capgeom;
+	}
+	else if (Shape[0]->getGeometryType() == PxGeometryType::eTRIANGLEMESH)
+	{
+		PxTriangleMeshGeometry trigeom;
+		Shape[0]->getTriangleMeshGeometry(trigeom);
+		Geometry[0] = &trigeom;
+	}
+	else
+		return false;
+
+
+	if (Shape[1]->getGeometryType() == PxGeometryType::eBOX)
+	{
+		PxBoxGeometry boxgeom;
+		Shape[1]->getBoxGeometry(boxgeom);
+		Geometry[1] = &boxgeom;
+	}
+	else if (Shape[1]->getGeometryType() == PxGeometryType::eSPHERE)
+	{
+		PxSphereGeometry spheregeom;
+		Shape[1]->getSphereGeometry(spheregeom);
+		Geometry[1] = &spheregeom;
+	}
+	else if (Shape[1]->getGeometryType() == PxGeometryType::eCAPSULE)
+	{
+		PxCapsuleGeometry capgeom;
+		Shape[1]->getCapsuleGeometry(capgeom);
+		Geometry[1] = &capgeom;
+	}
+	else if (Shape[1]->getGeometryType() == PxGeometryType::eTRIANGLEMESH)
+	{
+		PxTriangleMeshGeometry trigeom;
+		Shape[1]->getTriangleMeshGeometry(trigeom);
+		Geometry[1] = &trigeom;
+	}
+	else
+		return false;
+
+	XMFLOAT3 pos1 = XMFLOAT3(pBody0->getGlobalPose().p.x, pBody0->getGlobalPose().p.y, pBody0->getGlobalPose().p.z);
+	XMFLOAT3 pos2 = XMFLOAT3(pBody1->getGlobalPose().p.x, pBody1->getGlobalPose().p.y, pBody1->getGlobalPose().p.z);
+	cout << "Collision" << pos2.x << ", " << pos2.y << ", " << pos2.z << endl;
+
+	if (PxGeometryQuery::overlap(*Geometry[0], pBody0->getGlobalPose(), *Geometry[1], pBody1->getGlobalPose()))
+	{
+		return true;
+	}
+	else
+		return false;
+}
 
 bool CPhysXMgr::SweepBoxSphere(PxRigidDynamic * pBody0, PxRigidDynamic * pBody1)
 {
@@ -1654,6 +1753,62 @@ void CPhysXMgr::Clear_Terrain(void)
 		m_StaticTerrain->release();
 		m_StaticTerrain = nullptr;
 	}
+}
+
+void CPhysXMgr::ModifyPhysXPos(const float& fTimeDelta, PxRigidDynamic* pDynamic, XMFLOAT3 scale, XMFLOAT4X4 world, XMFLOAT4X4* outWorld, XMFLOAT3* outPos)
+{
+	XMMATRIX matScale, matTrans, matQuat, matWorld;
+	XMVECTOR vQuat;
+
+	XMVECTOR vecs, vect;
+	XMFLOAT3 xmfScale = scale;
+
+	PxRigidDynamic* pRigid = pDynamic;
+	PxTransform gp = pRigid->getGlobalPose();
+
+	PxMat44 m = PxMat44(gp);
+
+	matWorld = CPhysXMgr::GetInstance()->ToMatrix(m);
+
+	XMMatrixDecompose(&vecs, &vQuat, &vect, XMLoadFloat4x4(&world));
+	matQuat = XMMatrixRotationQuaternion(vQuat);
+
+	matScale = XMMatrixScalingFromVector(XMLoadFloat3(&xmfScale));
+
+	PxVec3 pxVecGp = m.getPosition();
+	matTrans = XMMatrixTranslation(pxVecGp.x, pxVecGp.y, pxVecGp.z);
+
+
+	XMFLOAT4X4 xmf4x4mat;
+	XMStoreFloat4x4(&xmf4x4mat, matScale * matQuat * matTrans);
+
+	*outWorld = xmf4x4mat;
+	*outPos = XMFLOAT3(pxVecGp.x, pxVecGp.y, pxVecGp.z);
+}
+
+PxTransform CPhysXMgr::MakePxTransform(XMFLOAT4X4 world)
+{
+	XMVECTOR vQuat;
+	XMVECTOR vecs, vect;
+	XMFLOAT4X4 matWorld;
+	XMFLOAT4 xmfQuat;
+
+	XMStoreFloat4x4(&matWorld, XMLoadFloat4x4(&world));
+
+	XMMatrixDecompose(&vecs, &vQuat, &vect, XMLoadFloat4x4(&world));
+	XMStoreFloat4(&xmfQuat, vQuat);
+
+	PxTransform px;
+	px.p.x = matWorld._41;
+	px.p.y = matWorld._42;
+	px.p.z = matWorld._43;
+
+	px.q.x = xmfQuat.x;
+	px.q.y = xmfQuat.y;
+	px.q.z = xmfQuat.z;
+	px.q.w = xmfQuat.w;
+
+	return px;
 }
 
 

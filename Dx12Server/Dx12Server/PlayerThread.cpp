@@ -358,6 +358,20 @@ void WorkThread() // send & physics & function
 			CPhysXMgr::GetInstance()->gScene->simulate(frame_time.count());
 			CPhysXMgr::GetInstance()->gScene->fetchResults(true);
 
+			//Collision
+			for (int i = 0; i < 2; ++i)
+			{
+				for (auto iter = gBullets.begin(); iter != gBullets.end();)
+				{
+					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(gClients[i].GetPxCapsuleController()->getActor(), iter->GetRigidDynamic()))
+					{
+						iter = gBullets.erase(iter);
+					}
+					else
+						++iter;
+				}
+			}
+
 			for (int i = 0; i < gClientNum; ++i)
 			{
 				gClients[i].Lock();
