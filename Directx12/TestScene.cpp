@@ -14,6 +14,7 @@
 
 #include "StaticMeshMgr.h"
 #include "InstanceMgr.h"
+#include "PoolingMgr.h"
 
 #include "Network.h"
 
@@ -208,12 +209,12 @@ void TestScene::Initialize()
 	//pObj = new FireShock(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
 
-	pObj = new FireRing(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
-	m_pObjects[OBJ_SKILL].push_back(pObj);
-
-	pObj = new Bullet(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), "FireBall",
-		XMFLOAT3(20.f, 1.f, 30.f), XMFLOAT3(0.f, 180.f, 0.f), 3.f);
-	m_pObjects[OBJ_BULLET].push_back(pObj);
+	//pObj = new FireRing(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
+	//
+	//pObj = new Bullet(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), "FireBall",
+	//	XMFLOAT3(20.f, 1.f, 30.f), XMFLOAT3(0.f, 180.f, 0.f), 3.f);
+	//m_pObjects[OBJ_BULLET].push_back(pObj);
 
 	//Core::GetInstance()->CmdLstReset();
 	//pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
@@ -223,6 +224,8 @@ void TestScene::Initialize()
 	//
 	//m_pObjects[OBJ_STATIC].push_back(pObj);
 	
+	PoolingMgr::GetInstance()->InitPoolingObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+
 	
 	BuildInstanceCBs();
 	BuildMaterialCBs();

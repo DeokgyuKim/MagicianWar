@@ -18,6 +18,7 @@ public:
 	// Set
 	void SetMeshName(string _name) { meshName = _name; }
 	void SetMeshType(MESH_TYPE _type) { meshType = _type; }
+	void SetInstanceCount(UINT iCount) { InstanceCount = iCount; }
 	
 private:
 	map<string, UINT> m_InstanceMap; // <meshName, Count>

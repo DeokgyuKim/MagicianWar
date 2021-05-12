@@ -23,11 +23,15 @@ private:
 	static PoolingMgr* m_pInstance;
 public:
 	void		InitPoolingObject(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* renderer);
-	Object*		CreatePoolObject(string instName);
-	void		DeletePoolObject(Object* obj);
+	void		UpdatePoolingObject(vector<STOC_Bullet> bullets);
+private:
+	//Object*		CreatePoolObject(string instName);
+	//void		DeletePoolObject(Object* obj);
+
 private:
 	void		Release();
 private:
-	unordered_map<string, list<Object*>> m_mapPoolObject;
+	unordered_map<string, int> m_mapInstCnt;
+	unordered_map<string, Object*> m_mapPoolObject;
 };
 

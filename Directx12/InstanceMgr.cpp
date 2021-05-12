@@ -41,16 +41,34 @@ void InstanceMgr::UpdateInstanceBuffer(Object* _obj)
 	data.MaterialIndex = 0;
 	XMStoreFloat4x4(&data.World, XMMatrixTranspose(dynamic_cast<Transform*>(_obj->GetTransController())->GetWorldMatrix()));
 	data.MaterialIndex = _obj->GetMaterialIndex();
-	
+
 	if (_obj->GetMeshType() == MESH_TYPE::CHARACTER)
 		data.boolBone = 1;
 	else
 		data.boolBone = 0;
-	
+
 	m_InstanceCBs[_obj->GetInstName()]->CopyData(_obj->GetIndex(), data);
 }
 
+void InstanceMgr::UpdateInstanceBuffer(UINT uiIdx, string instname, XMMATRIX world)
+{
+	if (instname == "") { // 메시를 다루지 않는 것 - Camera
+		return;
+	}
+	ObjectCB data;
+	XMStoreFloat4x4(&data.World, XMMatrixTranspose(world));
+	data.MaterialIndex = uiIdx;
+	
+	m_InstanceCBs[instname]->CopyData(uiIdx, data);
+}
 
+void InstanceMgr::SetInstaneCount(string instname, UINT iCnt)
+{
+	auto iter = m_InstanceObjects.find(instname);
+	if (iter == m_InstanceObjects.end())
+		return;
+	(*iter).second->SetInstanceCount(iCnt);
+}
 
 void InstanceMgr::UpdateSkinnedBuffers(Object* _obj)
 {

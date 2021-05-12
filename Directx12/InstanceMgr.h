@@ -30,6 +30,9 @@ public:
 	
 	void BuildInstanceBuffers();
 	void UpdateInstanceBuffer(Object* _obj);
+	void UpdateInstanceBuffer(UINT uiIdx, string instname, XMMATRIX world);
+
+	void SetInstaneCount(string instname, UINT iCnt);
 	
 
 	void UpdateSkinnedBuffers(Object* _obj);
