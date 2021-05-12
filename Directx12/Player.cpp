@@ -6,6 +6,7 @@
 #include "Geometry.h"
 #include "Camera.h"
 #include "Bullet.h"
+#include "Weapon.h"
 #include "Network.h"
 
 // Component
@@ -17,6 +18,7 @@
 
 // FSM
 #include "PlayerFSM.h"
+
 
 
 
@@ -36,7 +38,7 @@ Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer
 
 }
 
-Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName,MESH_TYPE meshType, XMFLOAT3 pos)
+Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName, MESH_TYPE meshType, XMFLOAT3 pos)
 	:Object(_meshName, meshType)
 {
 	m_pDevice = device;
@@ -77,6 +79,9 @@ void Player::Initialize(XMFLOAT3 pos)
 
 	m_strTextureName = "wizard_01";
 
+	m_pWeapon = new Weapon(m_pDevice, m_pCmdLst, m_pRenderer, "weapon", "weapon", this, 20, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+
+
 #ifdef PHYSX
 	CPhysXMgr::GetInstance()->m_PlayerController = m_pCapsuleCon = CPhysXMgr::GetInstance()->
 		CreateCapsuleController(this, pos, 0.4f, 1.f, true);
@@ -92,7 +97,7 @@ void Player::Release()
 HRESULT Player::BuildConstantBuffer()
 {
 	m_SkinnedCB = make_unique<UploadBuffer<SkinnedCB>>(m_pDevice, 1, true);
-	
+
 	return S_OK;
 }
 
@@ -123,7 +128,7 @@ int Player::Update(const float& fTimeDelta)
 	m_RootBody->Execute(fTimeDelta);
 #endif
 
-
+	m_pWeapon->Update(fTimeDelta);
 
 	return 0;
 }
@@ -143,15 +148,15 @@ void Player::LateUpdate(const float& fTimeDelta)
 	{
 		STOC_PlayerInfo info = Network::GetInstance()->GetRecvPlayerInfo(m_tNetInfo.dwPlayerNum);
 		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetWorld(info.matWorld);
-		
+
 		cout << "2번 클라의 Root - " << SCint(info.Root_eAnimType) << endl;
-		
+
 		dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(SCint(info.Upper_eAnimType));
 		dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->ChangeAnimation(SCint(info.Root_eAnimType));
 
 
-	}	
-
+	}
+	m_pWeapon->LateUpdate(fTimeDelta);
 }
 
 void Player::Render(const float& fTimeDelta, int _instanceCount)
@@ -159,9 +164,10 @@ void Player::Render(const float& fTimeDelta, int _instanceCount)
 
 	//m_pCmdLst->SetGraphicsRootShaderResourceView(0, InstanceMgr::GetInstnace()->m_InstanceCBs[m_strMeshName]->Resource()->GetGPUVirtualAddress());	// obj
 	//m_pCmdLst->SetGraphicsRootConstantBufferView(11, m_SkinnedCB->Resource()->GetGPUVirtualAddress());	// skinned
-	Object::Render(fTimeDelta, _instanceCount); 
+	Object::Render(fTimeDelta, _instanceCount);
 
-	
+	//m_pWeapon->Render(fTimeDelta, 1);
+
 }
 
 
@@ -275,7 +281,7 @@ void Player::ModifyPhysXPos(const float& fTimeDelta)
 	pxVecGp.z = float(GetPosition.z);
 	matTrans = XMMatrixTranslation(pxVecGp.x, pxVecGp.y, pxVecGp.z);
 
-	
+
 	XMFLOAT4X4 xmf4x4mat;
 	XMStoreFloat4x4(&xmf4x4mat, matScale * matQuat * matTrans);
 

@@ -42,8 +42,8 @@
 #define M_MoveBackward_Speed 0.03f
 
 
-#define NETWORK
-#define PHYS
+#define NETWOR
+#define PHYSX
 
 #define MAX_BUFFER 16384
 #define MIN_BUFFER 256

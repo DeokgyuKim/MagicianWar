@@ -6,6 +6,7 @@
 #include "Material.h"
 #include "InstanceMgr.h"
 #include "Animation.h"
+#include "InstanceMgr.h"
 
 Weapon::Weapon(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string meshName, string textureName,
 	Object* pParent, int socketIdx, XMFLOAT3 xmfScale, XMFLOAT3 xmfRotate, XMFLOAT3 xmfPos)
@@ -64,13 +65,15 @@ void Weapon::LateUpdate(const float& fTimeDelta)
 	Component* Anim = m_pParent->GetComponent("Root_Animation");
 	if (Anim != NULL)
 	{
+		// 21¹ø »À°¡ weapon
 		XMStoreFloat4x4(&m_xmf4x4ParentWorld, 
-			XMLoadFloat4x4(&dynamic_cast<AnimationCom*>(Anim)->GetSkinnedModellnst()->FinalTransforms[m_iSocketIdx]) *
+			XMMatrixTranspose(XMLoadFloat4x4(&dynamic_cast<AnimationCom*>(Anim)->GetSkinnedModellnst()->FinalTransforms[m_iSocketIdx])) *
 			XMLoadFloat4x4(dynamic_cast<Transform*>(m_pParent->GetTransController())->GetWorldMatrixPointer()));
 	}
 
 	Object::LateUpdate(fTimeDelta);
 
+	InstanceMgr::GetInstnace()->UpdateInstanceBuffer(this);
 
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_STATIC, this);
 }

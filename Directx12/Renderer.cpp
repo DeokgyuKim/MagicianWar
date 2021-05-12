@@ -326,7 +326,7 @@ void Renderer::BuildDescrpitorHeap()
 {
 	//Create SRV Heap
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 33;// 텍스처 개수 + blur skybox 등등
+	srvHeapDesc.NumDescriptors = 44;// 텍스처 개수 + blur skybox 등등
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	m_pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_ptrDescriptorHeap));
