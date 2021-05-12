@@ -23,6 +23,7 @@ Player::Player()
 	m_LoadingEnd = false;
 
 	m_keyInput = 0;
+	m_iHp = 100;
 }
 
 Player::~Player()
@@ -37,7 +38,8 @@ void Player::Initialize(SOCKET& sock, int ID) // sock 와 id를 받아서 초기화
 	Info.socket = sock;
 	Info.info.dwPlayerNum = ID;
 	Info.info.dwTeamNum = ID;
-
+	Info.info.iHp = 100;
+	
 	m_Ready = false; // 초기 unReady
 	m_isConnected = true; // 서버와의 연결
 

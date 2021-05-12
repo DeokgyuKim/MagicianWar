@@ -132,6 +132,7 @@ int main()
 			packet.dwTeamNum = gClients[gClientNum].getInfo().info.dwTeamNum;
 			packet.dwPlayerNum = gClients[gClientNum].getInfo().info.dwPlayerNum;
 			packet.xmfPosition = XMFLOAT3(20.f, 0.f, 20.f);
+			packet.iHp = 100;
 			// playernum 보내고 teamnum 보내고
 			gClients[gClientNum].sendPacket((void*)(&packet), sizeof(packet));			
 		}

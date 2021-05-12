@@ -46,6 +46,7 @@ public:
 	ANIMATION_TYPE getUpperAnimBlendType() { return Upper_eAnimBlendType; }
 	float getUpperAnimWeight() { return Upper_fWeight; }
 	DWORD getKey() const { return m_keyInput; }
+	int getHp() { return Info.info.iHp; }
 	
 	bool getReady() { return m_Ready; }
 	char* getBuffer() { return recvBuf; }
@@ -126,5 +127,7 @@ private: //
 
 	//PhysX
 	PxCapsuleController* m_pCapsuleCon = nullptr;
+
+	int m_iHp;
 };
 
