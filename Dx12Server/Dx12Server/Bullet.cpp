@@ -17,6 +17,10 @@ Bullet::Bullet(const Bullet& rhs)
 	m_User = rhs.getUser();
 	m_InstanceName = rhs.getInstanceName();
 	m_matWorld = rhs.getWorld();
+	m_dir = rhs.m_dir;
+	m_xmfScale = rhs.m_xmfScale;
+	m_xmfRotate = rhs.m_xmfRotate;
+	m_xmfPosition = rhs.m_xmfPosition;
 	m_TotalLifeTime = rhs.getTotalLifeTime();
 	m_speed = rhs.getSpeed();
 
@@ -38,7 +42,7 @@ int Bullet::Update(const float gTime)
 	memcpy(&m_xmfPosition, &m_matWorld._41, sizeof(XMFLOAT3));
 	XMFLOAT3 dir = m_dir;
 	XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&dir)));
-	XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) - XMLoadFloat3(&dir) * m_speed * gTime);
+	XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&dir) * m_speed * gTime);
 	
 	return 0;
 }

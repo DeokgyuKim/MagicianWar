@@ -24,7 +24,7 @@ private:
 	static PoolingMgr* m_pInstance;
 public:
 	void		InitPoolingObject(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* renderer);
-	void		UpdatePoolingObject(vector<Bullet_Packet> bullets);
+	void		UpdatePoolingObject(STOC_Bullet* bullets);
 private:
 	//Object*		CreatePoolObject(string instName);
 	//void		DeletePoolObject(Object* obj);

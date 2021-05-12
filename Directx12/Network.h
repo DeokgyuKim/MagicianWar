@@ -177,6 +177,7 @@ public:
 	void		SetMyPlayerInfo(Player* pPlayer);
 	void		SetOtherPlayerInfo(list<Object*>* plstPlayer);
 	void		SetLoadingEnd() { LoadingEnd = true; }
+	STOC_Bullet* GetBullets() { return m_pBullets; }
 private:
 	SOCKET	m_Sock;
 
@@ -187,8 +188,9 @@ private:
 	//각 씬 단계의 스레드가 끝났는 지 판별
 	bool	m_bLobbyEnd;
 private:
-	map<DWORD, PlayerInfo> m_mapOtherPlayerInfos;
+	map<DWORD, PlayerInfo>		m_mapOtherPlayerInfos;
 	map<DWORD, STOC_PlayerInfo> m_mapRecvPlayerInfos;
+	STOC_Bullet*				m_pBullets;
 	int		m_iPlayerNum;
 public:
 	//Function For LobbyThread Send

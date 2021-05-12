@@ -288,11 +288,13 @@ void WorkThread() // send & physics & function
 						temp.setInstanceName(InstanceName[i]);
 						temp.setScale(XMFLOAT3{ 1.f,1.f,1.f });
 						temp.setRotate(XMFLOAT3{ 0.f,0.f,0.f });
+						temp.setWorldMatrix(gClients[i].getWorld());
 						temp.setPosition(XMFLOAT3{ gClients[i].getWorld()._41,gClients[i].getWorld()._42,gClients[i].getWorld()._43 });
 						temp.setTotalLifeTime(5.f);
-						temp.setDirection(XMFLOAT3(gClients[i].getWorld()._21, gClients[i].getWorld()._22, gClients[i].getWorld()._23));
+						temp.setDirection(XMFLOAT3(-gClients[i].getWorld()._21, -gClients[i].getWorld()._22, -gClients[i].getWorld()._23));
 
-						gBullets.push_back(temp); // list에 담아
+						if(gBullets.size() < 100)
+							gBullets.push_back(temp); // list에 담아
 
 					}
 					// 충돌체크?
