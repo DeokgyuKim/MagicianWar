@@ -1,5 +1,6 @@
 #pragma once
 #include "framework.h"
+#include "Network.h"
 
 class Object;
 class Renderer;

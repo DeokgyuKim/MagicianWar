@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+#include "Network.h"
 
 class Geometry;
 class Camera;
