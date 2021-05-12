@@ -323,21 +323,33 @@ void WorkThread() // send & physics & function
 
 
 			}
+
 			int BulletsConut = gBullets.size();
-			STOC_Bullet* bullet_Packet = new STOC_Bullet[BulletsConut];
-			auto iter_packet = gBullets.begin();
-			int b_count = 0;
-			while (iter_packet != gBullets.end())
-			{
-				bullet_Packet[b_count].size = sizeof(bullet_Packet[b_count]);
-				bullet_Packet[b_count].type = stoc_bullet;
-				bullet_Packet[b_count].id = iter_packet->getUser();
-				bullet_Packet[b_count].InstanceName = iter_packet->getInstanceName();
-				bullet_Packet[b_count].lifeTime = iter_packet->getLifeTime();
-				bullet_Packet[b_count].matWorld = iter_packet->getWorld();
-				++iter_packet;
-				++b_count;
+			//Bullet_Packet* bullet_Packet = nullptr;
+			STOC_Bullet InstBullets;
+			InstBullets.size = sizeof(InstBullets);
+			InstBullets.type = stoc_bullet;
+			InstBullets.Bullet_Count = 0;
+			InstBullets.bullets[0].id = -1;
+			if (BulletsConut != 0)
+			{ // 총알이 있으면
+
+				auto iter_packet = gBullets.begin();
+				int b_count = 0;
+				while (iter_packet != gBullets.end())
+				{
+					InstBullets.bullets[b_count].id = iter_packet->getUser();
+					InstBullets.bullets[b_count].InstanceName = iter_packet->getInstanceName();
+					InstBullets.bullets[b_count].lifeTime = iter_packet->getLifeTime();
+					InstBullets.bullets[b_count].matWorld = iter_packet->getWorld();
+					++iter_packet;
+					++b_count;
+				}
+				//InstBullets.bullets = bullet_Packet;
+
+				InstBullets.Bullet_Count = BulletsConut;
 			}
+
 			gBullet_mutex.unlock();
 
 			///PhysXUpdate
@@ -362,15 +374,15 @@ void WorkThread() // send & physics & function
 					//cout << it->second.playerInfo.dwPlayerNum << " - ( " << it->second.matWorld._41 << ", " << it->second.matWorld._42 << ", " << it->second.matWorld._43 << " )" << endl;
 					gClients[i].sendPacket((void*)&it->second, sizeof(it->second)); // 모든 정보
 				}
-				for (int j = 0; j < BulletsConut; ++j) {
-					gClients[i].sendPacket((void*)&bullet_Packet[j], sizeof(bullet_Packet[j])); // 모든 정보
-				}
-				//gClients[i].sendPacket()
+
+				gClients[i].sendPacket((void*)&InstBullets, sizeof(InstBullets));
+
+
 				//gClients[i].Unlock();
 
 			}
 			// 다 보낸 후에는 workThread를 일시정지
-			//delete[] bullet_Packet;
+
 			auto end_time = chrono::system_clock::now();
 			prev_time = end_time;
 			auto elapsed_time = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);

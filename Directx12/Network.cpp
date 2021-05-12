@@ -337,6 +337,9 @@ void Network::packetProcessing(char* _packetBuffer)
 	}
 	case stoc_bullet:
 		STOC_Bullet* data = reinterpret_cast<STOC_Bullet*>(_packetBuffer);
+		cout << "ÃÑ¾Ë °¹¼ö - " << data->Bullet_Count << endl;
+		if (data->bullets != nullptr)
+			cout << "ÃÑ¾Ë Ã¹¹øÂ° Ä£±¸ ÁÂÇ¥ - (" << data->bullets[0].matWorld._41 << ", " << data->bullets[0].matWorld._42 << ", " << data->bullets[0].matWorld._43 << " )" << endl;
 		//cout << "ID : " << data->id << endl;
 		//cout << "InstanceName : " << data->InstanceName << endl;
 		//cout << "lifeTime : " << data->lifeTime << endl;
