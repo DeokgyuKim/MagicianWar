@@ -6,6 +6,7 @@ class Geometry;
 class Camera;
 class InterfaceFSM;
 class Component;
+class Weapon;
 
 class Player :
     public Object
@@ -68,5 +69,8 @@ protected:
 
     //PhysX
     PxCapsuleController* m_pCapsuleCon = nullptr;
+
+    Weapon* m_pWeapon;
+
 };
 

@@ -207,7 +207,7 @@ void MeshMgr::BuildModels()
 	BuildModel("wall_H10m_L50m", MESH_TYPE::TILE);
 	BuildModel("wagon", MESH_TYPE::TILE);
 	BuildModel("Sphere", MESH_TYPE::TILE);
-
+	BuildModel("weapon", MESH_TYPE::TILE);
 }
 
 void MeshMgr::BuildSkinnedModels()
