@@ -18,7 +18,7 @@ public:
 
 public:
 	void SetDefaultKey(DWORD _key);
-	bool GetAttackEnd() { return m_bAttack; }
+	//bool GetAttackEnd() { return m_bAttack; }
 private:
 	void Idle(float fTime);
 	void Move(float fTime);

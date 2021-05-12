@@ -74,8 +74,8 @@ public:
 	void setAttackEnd(bool _check) { m_bAttackEnd = _check; }
 	void setPlayerInitPos(XMFLOAT3 pos);
 	void setLoaddingEnd(bool _load);
-	void setCreateBullet(int count) { m_Bullet = count; }
-	int getCreateBullet() { return m_Bullet; }
+	//void setCreateBullet(int count) { m_Bullet = count; }
+	//int getCreateBullet() { return m_Bullet; }
 	void ChangeUpperAnimation(int _Ani);
 	void ChangeRootAnimation(int _Ani);
 
@@ -132,6 +132,6 @@ private: //
 
 	int m_iHp;
 
-	int m_Bullet;
+	//int m_Bullet;
 };
 

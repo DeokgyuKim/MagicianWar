@@ -7,7 +7,7 @@ PlayerFSM::PlayerFSM(Player* user, BoneType _bone)
 	m_BoneType = _bone;
 	m_curState = PLAYER_STATE::IDLE;
 
-	m_bAttack = false;
+	//m_bAttack = false;
 	m_fHitTime = 1.f;
 }
 
@@ -29,7 +29,7 @@ void PlayerFSM::Enter(int _State, int _Ani)
 {
 	dkey = 0;
 	m_AnimTime = 0.f;
-	m_bAttack = false;
+	//m_bAttack = false;
 
 	if (m_BoneType == BoneType::UPPER_BONE)
 	{ // 상체 애니메이션을 갱신
@@ -289,7 +289,7 @@ void PlayerFSM::Attack(float fTime)
 		if (m_User->IsAttackEnded()) {
 			//m_bAttack = true;
 			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
-			m_User->setCreateBullet(1);
+			//m_User->setCreateBullet(1);
 		}
 		else if (DefaultKey & 0x0010) // 점프
 		{
