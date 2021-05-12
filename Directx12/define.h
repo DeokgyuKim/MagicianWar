@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef DEFINE_H__
+#define DEFINE_H__
+
 // RootSignature
 #define ParameterCount 6
 
@@ -61,3 +64,5 @@
 
 // skill Type 51 ~ 59 
 #define FIRE_RING 51 
+
+#endif

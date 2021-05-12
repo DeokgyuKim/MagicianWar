@@ -112,13 +112,32 @@ struct CTOS_LoadingEnd {
 	bool bLoadingEnd;
 };
 
-struct STOC_Bullet {
-	short size;
-	unsigned char type;
+struct Bullet_Packet {
 	unsigned char id; // 어떤 플레이어
 	unsigned char InstanceName; // 어떤 캐릭터가
 	XMFLOAT4X4 matWorld; // worldMatrix
 	float lifeTime; // 생존시간
+};
+
+struct STOC_Bullet {
+	short size;
+	unsigned char type;
+	float Bullet_Count;
+	Bullet_Packet bullets[100];
+};
+
+struct STOC_Skill {
+	short size;
+	unsigned char type;
+	unsigned char id; // 어떤 플레이어
+	unsigned char InstanceName; // 어떤 캐릭터가
+	unsigned char skill_type; // 스킬 타입
+	XMFLOAT4X4 matWorld; // worldMatrix
+	float lifeTime; // 생존시간
+	float shaderVariable1; // 셰이더 변수
+	float shaderVariable2;
+	float shaderVariable3;
+	float shaderVariable4;
 };
 
 class Player;
