@@ -330,6 +330,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwTeamNum = data->playerInfo.dwTeamNum;
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.iHp = data->playerInfo.iHp;
+		cout << "HP: " << data->playerInfo.iHp << endl;
 		//cout << data->playerInfo.iHp << endl;
 
 

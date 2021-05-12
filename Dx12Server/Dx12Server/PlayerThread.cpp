@@ -28,6 +28,8 @@ mutex gBullet_mutex;
 bool gLateInit_MainScene = false;
 int iStaticObjectIdx = 0;
 
+int gLiveTeamNum[2] = { 1, 1 };
+
 
 unsigned int curScene = 1; // 1: SCENE_LOBBY 2: SCENE_
 chrono::system_clock::time_point prev_time;
@@ -388,6 +390,18 @@ void WorkThread() // send & physics & function
 								iDamage = 10;
 							}
 							gClients[i].setPlayerHp(gClients[i].getInfo().info.iHp - iDamage);
+							if (gClients[i].getInfo().info.iHp <= 0)
+							{
+								//플레이어 SetFSM(DEAD)
+								///////////////////////
+
+								--gLiveTeamNum[gClients[i].getInfo().info.dwTeamNum];
+								if (gLiveTeamNum[gClients[i].getInfo().info.dwTeamNum] <= 0)
+								{
+									//해당팀이 진거
+									///////////////
+								}
+							}
 							gClients[i].GetUpperFSM()->ChangeState((int)PLAYER_STATE::HIT, (int)ANIMATION_TYPE::HIT);
 							iter = gBullets.erase(iter);
 						}
