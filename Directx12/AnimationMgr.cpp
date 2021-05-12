@@ -52,8 +52,10 @@ void AnimationMgr::BuildAnimation(string meshName, MESH_TYPE eMesh, ANIMATION_TY
 		break;
 	case ANIMATION_TYPE::JUMP:
 		m_strFilePath += "Jumping";
+		break;
 	case ANIMATION_TYPE::HIT:
 		m_strFilePath += "Damaged";
+		break;
 	case ANIMATION_TYPE::NONE:
 		break;
 	}

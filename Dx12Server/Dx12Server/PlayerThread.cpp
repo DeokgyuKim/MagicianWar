@@ -280,7 +280,7 @@ void WorkThread() // send & physics & function
 			auto start_time = chrono::system_clock::now();
 			chrono::duration<float> frame_time = start_time - prev_time;
 
-			cout << "Time: " << frame_time.count() << endl;
+			//cout << "Time: " << frame_time.count() << endl;
 
 			DWORD key[2];
 			unsigned char User[2];
@@ -367,7 +367,7 @@ void WorkThread() // send & physics & function
 			}
 
 				//Collision
-			for (int i = 0; i < 2; ++i)
+			for (int i = 0; i < gClientNum; ++i)
 			{
 				//플레이어가 히또 상태면 체크 안하게
 				if (gClients[i].GetUpperFSM()->GetState() != PLAYER_STATE::HIT)
@@ -381,7 +381,6 @@ void WorkThread() // send & physics & function
 						}
 						if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(gClients[i].GetPxCapsuleController()->getActor(), iter->GetRigidDynamic()))
 						{
-							iter = gBullets.erase(iter);
 							int iDamage = 0;
 							switch ((*iter).getInstanceName())
 							{
@@ -390,7 +389,7 @@ void WorkThread() // send & physics & function
 							}
 							gClients[i].setPlayerHp(gClients[i].getInfo().info.iHp - iDamage);
 							gClients[i].GetUpperFSM()->ChangeState((int)PLAYER_STATE::HIT, (int)ANIMATION_TYPE::HIT);
-							//FSM바꿔야되고
+							iter = gBullets.erase(iter);
 						}
 						else
 							++iter;

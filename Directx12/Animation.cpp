@@ -52,6 +52,8 @@ void AnimationCom::DefaultAnimate(const float& fTimeDelta)
 		curAnimation->Time += fTimeDelta * 5.f;
 	else if (curAnimation->eType == ANIMATION_TYPE::JUMP)
 		curAnimation->Time += fTimeDelta * 3.f;
+	else if (curAnimation->eType == ANIMATION_TYPE::HIT)
+		curAnimation->Time += fTimeDelta;
 	else
 		curAnimation->Time += fTimeDelta * 5.f;
 
@@ -69,23 +71,40 @@ void AnimationCom::DefaultAnimate(const float& fTimeDelta)
 
 void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 {
-	curAnimation->Time += fTimeDelta;
-	keyAnimation->Time += fTimeDelta;
-
-	if (m_fBlendTime > m_fMaxBlendTime) { // 블렌딩이 끝나면
-		curAnimation->eType = keyAnimation->eType;
-		curAnimation->Time = 0.f;
-		m_bBlending = false;
+	if (curAnimation->eType == ANIMATION_TYPE::ATTACK)
+	{
+		curAnimation->Time += fTimeDelta * 5.f;
+		keyAnimation->Time += fTimeDelta * 5.f;
 	}
-	else {
-		m_fBlendTime += 60.f * fTimeDelta;
-		m_SkinnedModelInst->UpdateBlendAnimation(
-			curAnimation->eType, curAnimation->Time,
-			keyAnimation->eType, keyAnimation->Time,
-			(m_fBlendTime / m_fMaxBlendTime));
+	else if (curAnimation->eType == ANIMATION_TYPE::JUMP)
+	{
+		curAnimation->Time += fTimeDelta * 3.f;
+		keyAnimation->Time += fTimeDelta * 3.f;
+	}
+	else if (curAnimation->eType == ANIMATION_TYPE::HIT)
+	{
+		curAnimation->Time += fTimeDelta;
+		keyAnimation->Time += fTimeDelta;
+	}
+	else
+	{
+		curAnimation->Time += fTimeDelta * 5.f;
+		keyAnimation->Time += fTimeDelta * 5.f;
 	}
 
+	m_fBlendTime += 45.f * fTimeDelta;
+	m_fBlendTime = min(m_fBlendTime, m_fMaxBlendTime);
+	m_SkinnedModelInst->UpdateBlendAnimation(
+		curAnimation->eType, curAnimation->Time,
+		keyAnimation->eType, keyAnimation->Time,
+		(m_fBlendTime / m_fMaxBlendTime));
 
+	if (keyAnimation->Time * 1.4 > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(keyAnimation->eType)) {
+		m_bAttackEnd = true; // 일반 공격시 공격이 끝나면 Idle로 바꾸기 위한 bool 변수
+	}
+	if (keyAnimation->Time > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(keyAnimation->eType)) {
+		keyAnimation->Time = 0.f;
+	}
 }
 
 
@@ -93,6 +112,9 @@ void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 void AnimationCom::ChangeAnimation(int _Ani)
 {
 	ANIMATION_TYPE nextAni = static_cast<ANIMATION_TYPE>(_Ani);
+	if (keyAnimation->eType == nextAni)
+		return;
+	curAnimation->eType = keyAnimation->eType;
 	if (keyAnimation->eType != nextAni) { // 애니메이션이 바뀌면 Blending
 		m_bBlending = true;
 		keyAnimation->eType = nextAni;

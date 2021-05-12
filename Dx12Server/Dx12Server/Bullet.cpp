@@ -36,7 +36,7 @@ void Bullet::Release()
 void Bullet::Initialize()
 {
 	m_lifeTime = 0.f;
-	m_pRigidDynamic = CPhysXMgr::GetInstance()->CreateSphere(m_xmfPosition, 1.f);
+	m_pRigidDynamic = CPhysXMgr::GetInstance()->CreateSphere(m_xmfPosition, 0.25f);
 }
 
 int Bullet::Update(const float gTime)

@@ -207,7 +207,7 @@ void SkinnedData::GetBlendedFinalTransforms(
 	Transform1.resize(finalTransform.size());
 	Transform2.resize(finalTransform.size());
 
-	MathHelper::Clamp(_blendWeight, 0.0f, 1.f);
+	_blendWeight = MathHelper::Clamp(_blendWeight, 0.0f, 1.f);
 
 	XMFLOAT4X4 BlendTransform;
 
