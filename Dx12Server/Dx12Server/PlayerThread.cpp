@@ -23,6 +23,7 @@ extern int gClientNum; // 접속한 Client들의 명수
 
 list<Bullet> gBullets;
 mutex gBullet_mutex;
+bool gLateInit_MainScene = false;
 
 
 unsigned int curScene = 1; // 1: SCENE_LOBBY 2: SCENE_
@@ -181,10 +182,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 			}
 
 			// 전체 클라에 한번씩 send하는 정보
-			STOC_sceneChange sc;
-			sc.size = sizeof(sc);
-			sc.type = stoc_sceneChange;
-			sc.sceneNum = 2; // 이게 메인scene넘버
+
 
 
 
@@ -223,11 +221,12 @@ void packetProcessing(STOC_ServerPlayer arg)
 
 						gClients[j].sendPacket((void*)&otherPlayerInfo, otherPlayerInfo.size);
 					}
-					gClients[j].sendPacket((void*)&sc, sc.size); // stoc_sceneChange
+
 				}
 			}
 			curScene = 2; // 씬 전환 -> Stage
 			sendOneTime = true;
+			gLateInit_MainScene = false;
 		}
 		break;
 	}
@@ -266,6 +265,17 @@ void WorkThread() // send & physics & function
 		}
 		else if (curScene == 2) // Stage
 		{
+			if (!gLateInit_MainScene) {
+				STOC_sceneChange sc;
+				sc.size = sizeof(sc);
+				sc.type = stoc_sceneChange;
+				sc.sceneNum = 2; // 이게 메인scene넘버
+				for (int i = 0; i < gClientNum; ++i)
+					gClients[i].sendPacket((void*)&sc, sc.size); // stoc_sceneChange
+
+				gLateInit_MainScene = true;
+			}
+
 			auto start_time = chrono::system_clock::now();
 			chrono::duration<float> frame_time = start_time - prev_time;
 			DWORD key[2];
@@ -281,7 +291,7 @@ void WorkThread() // send & physics & function
 
 				if (gClients[i].IsConnected()) // 연결 됐다면
 				{
-					gClients[i].Update(); // 플레이어들 Update 키입력에 따른 위치 변화
+					gClients[i].Update(frame_time.count()); // 플레이어들 Update 키입력에 따른 위치 변화
 
 					if (key[i] & 0x0020) { // 왼쪽 클릭
 
@@ -294,7 +304,7 @@ void WorkThread() // send & physics & function
 						temp.setTotalLifeTime(5.f);
 						temp.setDirection(XMFLOAT3(-gClients[i].getWorld()._21, -gClients[i].getWorld()._22, -gClients[i].getWorld()._23));
 
-						if(gBullets.size() < 80)
+						if (gBullets.size() < 80)
 							gBullets.push_back(temp); // list에 담아
 
 					}
@@ -378,7 +388,7 @@ void WorkThread() // send & physics & function
 			CPhysXMgr::GetInstance()->gScene->simulate(frame_time.count());
 			CPhysXMgr::GetInstance()->gScene->fetchResults(true);
 
-			
+
 
 			for (int i = 0; i < gClientNum; ++i)
 			{

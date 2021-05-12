@@ -16,7 +16,7 @@ public:
 	// Get
 	PLAYER_STATE GetState() const { return static_cast<PLAYER_STATE>(m_State); }
 
-	virtual void Execute() = 0;
+	virtual void Execute(float fTime) = 0;
 protected:
 	int m_State;
 };

@@ -53,12 +53,13 @@ void Player::Initialize(SOCKET& sock, int ID) // sock 와 id를 받아서 초기화
 	
 }
 
-void Player::Update()
+void Player::Update(float fTime)
 {
 	// 여기서 이동에 관한 업데이트 하면 되겠지..
 	//UpdatePosition();
-	m_UpperBody->Execute();
-	m_RootBody->Execute();
+	
+	m_UpperBody->Execute(fTime);
+	m_RootBody->Execute(fTime);
 
 	ePlayerState = m_RootBody->GetState();
 }
@@ -129,6 +130,9 @@ void Player::noTransWorldUpdate(XMFLOAT4X4 _world)
 	matWorld._32 = _world._32;
 	matWorld._33 = _world._33;
 	matWorld._34 = _world._34;
+
+
+	matWorld._44 = _world._44;
 
 }
 
