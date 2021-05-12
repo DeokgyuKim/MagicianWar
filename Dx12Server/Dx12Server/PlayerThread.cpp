@@ -205,7 +205,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 				sI.dwPlayerNum = gClients[j].getInfo().info.dwPlayerNum;
 				sI.dwTeamNum = gClients[j].getInfo().info.dwTeamNum;
 				sI.xmfPosition = gClients[j].getInfo().info.xmfPosition;
-
+				sI.iHp = 100;
 
 				gClients[j].sendPacket((void*)&sI, sI.size); // 나 자신의 정보				
 				gClients[j].sendPacket((void*)&otherCount, otherCount.size); // 나 자신을 뺀 인원 수
@@ -219,6 +219,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 						otherPlayerInfo.dwPlayerNum = gClients[i].getInfo().info.dwPlayerNum;
 						otherPlayerInfo.dwTeamNum = gClients[i].getInfo().info.dwTeamNum;
 						otherPlayerInfo.xmfPosition = gClients[i].getInfo().info.xmfPosition;
+						otherPlayerInfo.iHp = 100;
 
 						gClients[j].sendPacket((void*)&otherPlayerInfo, otherPlayerInfo.size);
 					}
@@ -431,6 +432,7 @@ void UpdatePlayerInfoPacket(int id, Player& _player)
 	g_PlayerInfoPacket[id].matWorld = _player.getWorld();
 	g_PlayerInfoPacket[id].playerInfo = _player.getInfo().info;
 	g_PlayerInfoPacket[id].bAttackEnd = _player.IsAttackEnded();
+	g_PlayerInfoPacket[id].playerInfo.iHp = _player.getHp();
 	//g_PlayerInfoPacket[id].Root_eAnimBlendType = _player.getRootAnimBlendType();
 	//g_PlayerInfoPacket[id].Root_fAnimTime = _player.getRootAnimTime();
 	//g_PlayerInfoPacket[id].Root_fWeight = _player.getRootAnimWeight();
