@@ -18,12 +18,15 @@ public:
 
 public:
 	void SetDefaultKey(DWORD _key);
+	bool GetAttackEnd() { return m_bAttack; }
 private:
 	void Idle(float fTime);
 	void Move(float fTime);
 	void Attack(float fTime);
 	void Jump(float fTime);
 	void Hit(float fTime);
+	void Dance(float fTime);
+	void Dead(float fTime);
 
 private:
 	Player* m_User;

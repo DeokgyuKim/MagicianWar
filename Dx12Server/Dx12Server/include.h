@@ -175,3 +175,10 @@ struct STOC_Skill {
 	float shaderVariable3;
 	float shaderVariable4;
 };
+
+struct STOC_GameEnd {
+	short size;
+	unsigned char type;
+	bool bEnd;
+	unsigned char teamNum;
+};

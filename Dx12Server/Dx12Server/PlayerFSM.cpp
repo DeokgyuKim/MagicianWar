@@ -7,7 +7,7 @@ PlayerFSM::PlayerFSM(Player* user, BoneType _bone)
 	m_BoneType = _bone;
 	m_curState = PLAYER_STATE::IDLE;
 
-
+	m_bAttack = false;
 	m_fHitTime = 1.f;
 }
 
@@ -29,6 +29,7 @@ void PlayerFSM::Enter(int _State, int _Ani)
 {
 	dkey = 0;
 	m_AnimTime = 0.f;
+	m_bAttack = false;
 
 	if (m_BoneType == BoneType::UPPER_BONE)
 	{ // 상체 애니메이션을 갱신
@@ -48,10 +49,19 @@ void PlayerFSM::Enter(int _State, int _Ani)
 
 			break;
 		case SCint(PLAYER_STATE::ATTACK):
-
+			
 			break;
 		case SCint(PLAYER_STATE::JUMP):
 			m_beforejump = false;
+			break;
+		case SCint(PLAYER_STATE::HIT):
+			
+			break;
+		case SCint(PLAYER_STATE::DANCE):
+			
+			break;
+		case SCint(PLAYER_STATE::DEAD):
+			
 			break;
 	}
 }
@@ -76,6 +86,12 @@ void PlayerFSM::Execute(float fTime)
 		case SCint(PLAYER_STATE::HIT):
 			Hit(fTime);
 			break;
+		case SCint(PLAYER_STATE::DANCE):
+			Dance(fTime);
+			break;
+		case SCint(PLAYER_STATE::DEAD):
+			Dead(fTime);
+			break;
 	}
 }
 
@@ -91,13 +107,19 @@ void PlayerFSM::Exit()
 
 			break;
 		case SCint(PLAYER_STATE::ATTACK):
-
+			
 			break;
 		case SCint(PLAYER_STATE::JUMP):
 
 			break;
 		case SCint(PLAYER_STATE::HIT):
 
+			break;
+		case SCint(PLAYER_STATE::DANCE):
+			
+			break;
+		case SCint(PLAYER_STATE::DEAD):
+			
 			break;
 	}
 }
@@ -265,7 +287,9 @@ void PlayerFSM::Attack(float fTime)
 	if (m_BoneType == BoneType::UPPER_BONE)
 	{ // 상체
 		if (m_User->IsAttackEnded()) {
+			//m_bAttack = true;
 			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
+			m_User->setCreateBullet(1);
 		}
 		else if (DefaultKey & 0x0010) // 점프
 		{
@@ -312,10 +336,35 @@ void PlayerFSM::Hit(float fTime)
 	{ // 상체
 		if(m_AnimTime >= m_fHitTime){ // 시간이 다되면
 			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
+			
 		}
 	}
 	else if (m_BoneType == BoneType::ROOT_BONE)
 	{ // 하체
 		ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
+	}
+}
+
+void PlayerFSM::Dance(float fTime)
+{
+	if (m_BoneType == BoneType::UPPER_BONE)
+	{ // 상체
+
+	}
+	else if (m_BoneType == BoneType::ROOT_BONE)
+	{
+
+	}
+}
+
+void PlayerFSM::Dead(float fTime)
+{
+	if (m_BoneType == BoneType::UPPER_BONE)
+	{ // 상체
+
+	}
+	else if (m_BoneType == BoneType::ROOT_BONE)
+	{
+
 	}
 }

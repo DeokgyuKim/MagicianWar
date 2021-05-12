@@ -21,9 +21,11 @@ Player::Player()
 
 	m_isConnected = false;
 	m_LoadingEnd = false;
+	m_bAttackEnd = false;
 
 	m_keyInput = 0;
 	m_iHp = 100;
+	m_Bullet = 0;
 }
 
 Player::~Player()
