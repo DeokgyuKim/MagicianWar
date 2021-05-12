@@ -30,27 +30,30 @@ int TestScene::Update(const float& fTimeDelta)
 	Scene::Update(fTimeDelta);
 
 
-	//if (Network::GetInstance()->GetGameEnd()->bEnd)
-	//{
-	//	cout << "°ÔÀÓ ³¡³µ¾î!!!!!" << endl;
-	//	if (!GameEndForPanelCreate)
-	//	{
-	//		//Panel»ý¼º
-	//		if (Network::GetInstance()->GetMyInfo().dwTeamNum == Network::GetInstance()->GetGameEnd()->teamNum)
-	//		{
-	//			m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, 760.f, 200.f), "Win"));
-	//		}
-	//		else
-	//		{
-	//			m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, 760.f, 200.f), "Lose"));
-	//		}
-	//		GameEndForPanelCreate = true;
-	//	}
-	//	if (Network::GetInstance()->GetCurScene() == 3)
-	//	{
-	//		//´ÙÀ½ ¾À »ý¼º ÈÄ ¹Ù²ãÁÜ.
-	//	}
-	//}
+	if(Network::GetInstance()->GetGameEnd() != NULL)
+	{
+		if (Network::GetInstance()->GetGameEnd()->bEnd)
+		{
+			cout << "°ÔÀÓ ³¡³µ¾î!!!!!" << endl;
+			if (!GameEndForPanelCreate)
+			{
+				//Panel»ý¼º
+				if (Network::GetInstance()->GetMyInfo().dwTeamNum == Network::GetInstance()->GetGameEnd()->teamNum)
+				{
+					m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, 760.f, 200.f), "Win"));
+				}
+				else
+				{
+					m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, 760.f, 200.f), "Lose"));
+				}
+				GameEndForPanelCreate = true;
+			}
+			if (Network::GetInstance()->GetCurScene() == 3)
+			{
+				//´ÙÀ½ ¾À »ý¼º ÈÄ ¹Ù²ãÁÜ.
+			}
+		}
+	}
 
 	return 0;
 }
@@ -192,6 +195,7 @@ void TestScene::Initialize()
 	PoolingMgr::GetInstance()->InitPoolingObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	//m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), 
 	//	XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, WINCY * 0.5f - 200.f * 0.75f, 760.f * 1.5f, 200.f * 1.5f), "Win"));
+
 	m_pObjects[OBJ_UI].push_back(new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(WINCX * 0.5f - 20.f, WINCY * 0.5f - 20.f, 40.f, 40.f), "CrossHair"));
 	

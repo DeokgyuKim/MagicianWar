@@ -74,6 +74,8 @@ void LoadingScene::Initialize()
 	m_pObjects[OBJ_CAMERA].push_back(pObj);
 
 	TextureMgr::GetInstance()->BuildInitTextures(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance()->GetHeap());
+	Core::GetInstance()->CmdLstExecute();
+	Core::GetInstance()->WaitForGpuComplete();
 
 	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, WINCX, WINCY), "MainUi");
 	m_pObjects[OBJ_UI].push_back(pObj);
@@ -85,8 +87,6 @@ void LoadingScene::Initialize()
 	m_pButton = dynamic_cast<Button*>(pObj);
 	m_pButton->SetTag(0);
 
-	Core::GetInstance()->CmdLstExecute();
-	Core::GetInstance()->WaitForGpuComplete();
 
 	m_pLoading = new Loading(Core::GetInstance(), Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLstForLoading(), Renderer::GetInstance()->GetHeap());
 

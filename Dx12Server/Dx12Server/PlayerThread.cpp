@@ -300,8 +300,9 @@ void WorkThread() // send & physics & function
 				if (gClients[i].IsConnected()) // ¿¬°á µÆ´Ù¸é
 				{
 					gClients[i].Update(frame_time.count()); // ÇÃ·¹ÀÌ¾îµé Update Å°ÀÔ·Â¿¡ µû¸¥ À§Ä¡ º¯È­
-					cout << "ÃÑ¾Ë °¹¼ö" << gClients[i].getCreateBullet() << endl;
-					if (gClients[i].getCreateBullet() == 1) { // ¿ÞÂÊ Å¬¸¯
+					//cout << "ÃÑ¾Ë °¹¼ö" << gClients[i].getCreateBullet() << endl;
+					if (key[i] & 0x0020){
+					//if (gClients[i].getCreateBullet() == 1) { // ¿ÞÂÊ Å¬¸¯
 
 						temp.SetUser(User[i]);
 						temp.setInstanceName(InstanceName[i]);
@@ -479,6 +480,14 @@ void WorkThread() // send & physics & function
 			}
 			// send
 
+			STOC_sceneChange scenePacket;
+			scenePacket.size = sizeof(scenePacket);
+			scenePacket.type = stoc_sceneChange;
+			scenePacket.sceneNum = 2;
+			if (gEndingTime >= 5.f) {
+				scenePacket.sceneNum = 3; // ¿£µù ¾À
+				gMaingameEnding = false;
+			}
 			for (int i = 0; i < gClientNum; ++i) {
 				//gClients[i].Lock();
 				for (auto it = g_PlayerInfoPacket.begin(); it != g_PlayerInfoPacket.end(); ++it) {
@@ -488,15 +497,7 @@ void WorkThread() // send & physics & function
 
 				gClients[i].sendPacket((void*)&InstBullets, sizeof(InstBullets));
 				gClients[i].sendPacket((void*)&gameEnd, sizeof(gameEnd));
-				if (gEndingTime >= 5.f) {
-					STOC_sceneChange scenePacket;
-					scenePacket.size = sizeof(scenePacket);
-					scenePacket.type = stoc_sceneChange;
-					scenePacket.sceneNum = 3; // ¿£µù ¾À
-					gClients[0].sendPacket((void*)&scenePacket, sizeof(scenePacket));
-					gClients[1].sendPacket((void*)&scenePacket, sizeof(scenePacket));
-					gMaingameEnding = false;
-				}
+				gClients[i].sendPacket((void*)&scenePacket, sizeof(scenePacket));
 
 				//gClients[i].Unlock();
 

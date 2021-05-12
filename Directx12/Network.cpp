@@ -361,6 +361,9 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_pGameEnd = reinterpret_cast<STOC_GameEnd*>(_packetBuffer);
 		break;
 	}
+	default:
+		cout << "No Type Packet" << endl;
+		break;
 	}
 
 }
