@@ -293,7 +293,7 @@ void WorkThread() // send & physics & function
 						temp.setTotalLifeTime(5.f);
 						temp.setDirection(XMFLOAT3(-gClients[i].getWorld()._21, -gClients[i].getWorld()._22, -gClients[i].getWorld()._23));
 
-						if(gBullets.size() < 100)
+						if(gBullets.size() < 80)
 							gBullets.push_back(temp); // list¿¡ ´ã¾Æ
 
 					}

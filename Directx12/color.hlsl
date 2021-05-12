@@ -302,9 +302,9 @@ PSOut PS_FireBall(VertexOut_Default pin)
 	float4 color = Texture.Sample(gsamLinear, pin.TexC);
 	color *= saturate(pow(NoiseTex.Sample(gsamLinear, tex).x * 1.5f, 3.f));
 
-	vout.Diffuse = color * materialData.gDiffuse;
-	vout.Ambient = color * materialData.gAmbient;
-	vout.Specular = color * materialData.gSpecular;
+	vout.Diffuse = color ;//*  materialData.gDiffuse;
+	vout.Ambient = color ;//*  materialData.gAmbient;
+	vout.Specular = color;// * materialData.gSpecular;
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 

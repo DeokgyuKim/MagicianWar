@@ -24,7 +24,12 @@ void InstanceMgr::InitInstanceMgr(Core* _core, ID3D12Device* _device, ID3D12Grap
 void InstanceMgr::BuildInstanceBuffers()
 {
 	for (auto& iter : m_InstanceObjects) {
-		m_InstanceCBs[iter.second->GetmeshName()] = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, iter.second->GetInstanceCount(), false);
+		if (iter.second->GetmeshName() == "FireBall")
+		{
+			m_InstanceCBs[iter.second->GetmeshName()] = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 80, false);
+		}
+		else
+			m_InstanceCBs[iter.second->GetmeshName()] = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, iter.second->GetInstanceCount(), false);
 		if (iter.second->GetmeshType() == MESH_TYPE::CHARACTER) {  // 캐릭터는 뼈를 가지고 있다.
 			m_SkinnedCBs[iter.second->GetmeshName()] = make_unique< UploadBuffer<SkinnedCB>>(m_pDevice, iter.second->GetInstanceCount(), false);
 		}
