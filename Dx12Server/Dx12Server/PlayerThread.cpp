@@ -73,7 +73,7 @@ void PlayerThread(STOC_ServerPlayer arg) // only recv & update data
 	if (playerID == 0) // 1¹øÅ¬¶ó
 		player.info.xmfPosition = XMFLOAT3(20.f, 0.f, 10.f);
 	else
-		player.info.xmfPosition = XMFLOAT3(20.f, 0.f, 15.f);
+		player.info.xmfPosition = XMFLOAT3(30.f, 0.f, 90.f);
 
 	gClients[playerID].setPosition(player.info.xmfPosition);
 
@@ -181,7 +181,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 		{
 			gClients[0].setPlayerInitPos(XMFLOAT3(20.f, 0.f, 10.f));
 			if (gClientNum > 1)
-				gClients[1].setPlayerInitPos(XMFLOAT3(20.f, 0.f, 15.f));
+				gClients[1].setPlayerInitPos(XMFLOAT3(40.f, 0.f, 90.f));
 			for (int i = 0; i < gClientNum; ++i)
 			{
 				gClients[i].CreateCapsuleController();
