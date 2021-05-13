@@ -369,7 +369,7 @@ void Network::packetProcessing(char* _packetBuffer)
 	{
 		STOC_GameEnd* data = reinterpret_cast<STOC_GameEnd*>(_packetBuffer);
 		m_CLgameEnd.bEnd = data->bEnd;
-		m_CLgameEnd.teamNum = data->bEnd;
+		m_CLgameEnd.teamNum = data->teamNum;
 		if (m_CLgameEnd.bEnd) cout << "게임이 왜 끝나" << endl;
 		//else cout << "게임이 안끝났어" << endl;
 		break;
