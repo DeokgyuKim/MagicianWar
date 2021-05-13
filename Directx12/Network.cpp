@@ -334,7 +334,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwTeamNum = data->playerInfo.dwTeamNum;
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
 		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.iHp = data->playerInfo.iHp;
-		cout << "HP: " << data->playerInfo.iHp << endl;
+		//cout << "HP: " << data->playerInfo.iHp << endl;
 		//cout << data->playerInfo.iHp << endl;
 
 
@@ -346,7 +346,16 @@ void Network::packetProcessing(char* _packetBuffer)
 	}
 	case stoc_bullet:
 	{
-		m_pBullets = reinterpret_cast<STOC_Bullet*>(_packetBuffer);
+		STOC_Bullet* data = reinterpret_cast<STOC_Bullet*>(_packetBuffer);
+		m_vBullets.resize(data->Bullet_Count);
+		for (int i = 0; i < data->Bullet_Count; ++i) {
+			m_vBullets[i].id = data->bullets[i].id;
+			m_vBullets[i].InstanceName = data->bullets[i].InstanceName;
+			m_vBullets[i].lifeTime = data->bullets[i].lifeTime;
+			m_vBullets[i].matWorld = data->bullets[i].matWorld;
+		}
+		//m_pBullets = data;
+		//cout << "총알 개수 - " << (int)data->Bullet_Count << endl;
 		//if (data->bullets != nullptr)
 		//	cout << "총알 첫번째 친구 좌표 - (" << data->bullets[0].matWorld._41 << ", " << data->bullets[0].matWorld._42 << ", " << data->bullets[0].matWorld._43 << " )" << endl;
 		//cout << "ID : " << data->id << endl;
@@ -358,7 +367,11 @@ void Network::packetProcessing(char* _packetBuffer)
 	
 	case stoc_gameend:
 	{
-		m_pGameEnd = reinterpret_cast<STOC_GameEnd*>(_packetBuffer);
+		STOC_GameEnd* data = reinterpret_cast<STOC_GameEnd*>(_packetBuffer);
+		m_CLgameEnd.bEnd = data->bEnd;
+		m_CLgameEnd.teamNum = data->bEnd;
+		if (m_CLgameEnd.bEnd) cout << "게임이 왜 끝나" << endl;
+		//else cout << "게임이 안끝났어" << endl;
 		break;
 	}
 	default:
@@ -440,7 +453,7 @@ void Network::SendKeyInput()
 	{
 		dwKeyInput |= 0x0010;
 	}
-	if (KeyMgr::GetInstance()->KeyUp(VK_LBUTTON))
+	if (KeyMgr::GetInstance()->KeyPressing(VK_LBUTTON))
 	{
 		dwKeyInput |= 0x0020;
 	}

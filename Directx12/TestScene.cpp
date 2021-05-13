@@ -30,29 +30,27 @@ int TestScene::Update(const float& fTimeDelta)
 	Scene::Update(fTimeDelta);
 
 
-	if(Network::GetInstance()->GetGameEnd() != NULL)
+	if (Network::GetInstance()->GetGameEnd().bEnd)
 	{
-		if (Network::GetInstance()->GetGameEnd()->bEnd)
+		cout << "°ÔÀÓ ³¡³µ¾î!!!!!" << endl;
+		if (!GameEndForPanelCreate)
 		{
-			cout << "°ÔÀÓ ³¡³µ¾î!!!!!" << endl;
-			if (!GameEndForPanelCreate)
+			//Panel»ý¼º
+			if (Network::GetInstance()->GetMyInfo().dwTeamNum == Network::GetInstance()->GetGameEnd().teamNum)
 			{
-				//Panel»ý¼º
-				if (Network::GetInstance()->GetMyInfo().dwTeamNum == Network::GetInstance()->GetGameEnd()->teamNum)
-				{
-					m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, 760.f, 200.f), "Win"));
-				}
-				else
-				{
-					m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, 760.f, 200.f), "Lose"));
-				}
-				GameEndForPanelCreate = true;
+				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, 760.f, 200.f), "Win"));
 			}
-			if (Network::GetInstance()->GetCurScene() == 3)
+			else
 			{
-				//´ÙÀ½ ¾À »ý¼º ÈÄ ¹Ù²ãÁÜ.
+				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, 760.f, 200.f), "Lose"));
 			}
+			GameEndForPanelCreate = true;
 		}
+		if (Network::GetInstance()->GetCurScene() == 3)
+		{
+			//´ÙÀ½ ¾À »ý¼º ÈÄ ¹Ù²ãÁÜ.
+		}
+
 	}
 
 	return 0;
@@ -96,7 +94,7 @@ void TestScene::Initialize()
 #ifdef NETWORK
 	XMFLOAT3 pos = Network::GetInstance()->GetMyPlayerStartPos();
 	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		CHARACTER_WIZARD_01, pos, Network::GetInstance()->GetMyInfo(),MESH_TYPE::CHARACTER);
+		CHARACTER_WIZARD_01, pos, Network::GetInstance()->GetMyInfo(), MESH_TYPE::CHARACTER);
 	pPlayer = dynamic_cast<Player*>(pObj);
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
 	Core::GetInstance()->CmdLstExecute();
@@ -117,14 +115,14 @@ void TestScene::Initialize()
 
 #else
 	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		CHARACTER_WIZARD_01,MESH_TYPE::CHARACTER);
+		CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER);
 	pPlayer = dynamic_cast<Player*>(pObj);
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
 #endif
-	
-	
+
+
 	Core::GetInstance()->CmdLstReset();
 	pObj = new Camera(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	m_pCamera = pCamera = dynamic_cast<Camera*>(pObj);
@@ -191,14 +189,14 @@ void TestScene::Initialize()
 	//Core::GetInstance()->WaitForGpuComplete();
 	//
 	//m_pObjects[OBJ_STATIC].push_back(pObj);
-	
+
 	PoolingMgr::GetInstance()->InitPoolingObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	//m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), 
 	//	XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, WINCY * 0.5f - 200.f * 0.75f, 760.f * 1.5f, 200.f * 1.5f), "Win"));
 
 	m_pObjects[OBJ_UI].push_back(new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(WINCX * 0.5f - 20.f, WINCY * 0.5f - 20.f, 40.f, 40.f), "CrossHair"));
-	
+
 	BuildInstanceCBs();
 	BuildMaterialCBs();
 }

@@ -43,7 +43,7 @@ struct PlayerInfo
 	DWORD		dwPlayerNum;
 	DWORD		dwTeamNum;
 	XMFLOAT3	xmfPosition;
-	UINT		iHp;
+	int			iHp;
 };
 
 struct STOC_ServerPlayer
@@ -151,15 +151,15 @@ struct CTOS_LoadingEnd {
 struct Bullet_Packet {
 	unsigned char id; // 어떤 플레이어
 	unsigned char InstanceName; // 어떤 캐릭터가
-	XMFLOAT4X4 matWorld; // worldMatrix
 	float lifeTime; // 생존시간
+	XMFLOAT4X4 matWorld; // worldMatrix
 };
 
 struct STOC_Bullet {
 	short size;
 	unsigned char type;
-	UINT Bullet_Count;
-	Bullet_Packet bullets[100];
+	int Bullet_Count;
+	Bullet_Packet bullets[70];
 };
 
 struct STOC_Skill {
@@ -179,6 +179,6 @@ struct STOC_Skill {
 struct STOC_GameEnd {
 	short size;
 	unsigned char type;
+	int teamNum;
 	bool bEnd;
-	unsigned char teamNum;
 };

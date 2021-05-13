@@ -314,7 +314,7 @@ void WorkThread() // send & physics & function
 						temp.setTotalLifeTime(5.f);
 						temp.setDirection(XMFLOAT3(-gClients[i].getWorld()._21, -gClients[i].getWorld()._22, -gClients[i].getWorld()._23));
 
-						if (gBullets.size() < 80)
+						if (gBullets.size() < 70)
 							gBullets.push_back(temp); // list에 담아
 						//gClients[i].setCreateBullet(0);
 
@@ -373,10 +373,11 @@ void WorkThread() // send & physics & function
 				InstBullets.Bullet_Count = gBullets.size();
 			}
 
-			//STOC_GameEnd gameEnd;
-			//gameEnd.size = sizeof(gameEnd);
-			//gameEnd.type = stoc_gameend;
-
+			STOC_GameEnd gameEnd;
+			gameEnd.size = sizeof(gameEnd);
+			gameEnd.type = stoc_gameend;
+			gameEnd.bEnd = false;
+			gameEnd.teamNum = 0;
 			//Collision
 			for (int i = 0; i < gClientNum; ++i)
 			{
@@ -476,6 +477,8 @@ void WorkThread() // send & physics & function
 				}
 				gClients[i].Unlock();
 			}
+
+			InstBullets.size = sizeof(InstBullets) - (sizeof(Bullet_Packet) * (70 - InstBullets.Bullet_Count));
 			//if (gMaingameEnding) {
 			//	gEndingTime += frame_time.count();
 			//}
@@ -488,8 +491,8 @@ void WorkThread() // send & physics & function
 					gClients[i].sendPacket((void*)&it->second, sizeof(it->second)); // 모든 정보
 				}
 
-				gClients[i].sendPacket((void*)&InstBullets, sizeof(InstBullets));
-				//gClients[i].sendPacket((void*)&gameEnd, sizeof(gameEnd));
+				gClients[i].sendPacket((void*)&InstBullets, InstBullets.size);
+				gClients[i].sendPacket((void*)&gameEnd, sizeof(gameEnd));
 				//if (gEndingTime >= 5.f) {
 				//	STOC_sceneChange scenePacket;
 				//	scenePacket.size = sizeof(scenePacket);

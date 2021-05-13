@@ -10,7 +10,7 @@ struct PlayerInfo
 	DWORD		dwPlayerNum;
 	DWORD		dwTeamNum;
 	XMFLOAT3	xmfPosition;
-	UINT		iHp;
+	int			iHp;
 };
 
 struct STOC_ServerPlayer
@@ -118,15 +118,22 @@ struct CTOS_LoadingEnd {
 struct Bullet_Packet {
 	unsigned char id; // 어떤 플레이어
 	unsigned char InstanceName; // 어떤 캐릭터가
-	XMFLOAT4X4 matWorld; // worldMatrix
 	float lifeTime; // 생존시간
+	XMFLOAT4X4 matWorld; // worldMatrix
 };
 
 struct STOC_Bullet {
 	short size;
 	unsigned char type;
-	UINT Bullet_Count;
-	Bullet_Packet bullets[100];
+	int Bullet_Count;
+	Bullet_Packet bullets[70];
+};
+
+struct Client_Bullet {
+	unsigned char id; // 어떤 플레이어
+	unsigned char InstanceName; // 어떤 캐릭터가
+	float lifeTime; // 생존시간
+	XMFLOAT4X4 matWorld; // worldMatrix
 };
 
 struct STOC_Skill {
@@ -146,8 +153,12 @@ struct STOC_Skill {
 struct STOC_GameEnd {
 	short size;
 	unsigned char type;
+	int teamNum;
 	bool bEnd;
-	unsigned char teamNum;
+};
+struct Client_GameEnd {
+	int teamNum;
+	bool bEnd;
 };
 
 class Player;
@@ -187,8 +198,8 @@ public:
 	void		SetMyPlayerInfo(Player* pPlayer);
 	void		SetOtherPlayerInfo(list<Object*>* plstPlayer);
 	void		SetLoadingEnd() { LoadingEnd = true; }
-	STOC_Bullet* GetBullets() { return m_pBullets; }
-	STOC_GameEnd* GetGameEnd() { return m_pGameEnd; }
+	vector<Client_Bullet> GetBullets() { return m_vBullets; }
+	Client_GameEnd GetGameEnd() { return m_CLgameEnd; }
 	DWORD		GetCurScene() { return m_SceneChange; }
 private:
 	SOCKET	m_Sock;
@@ -202,8 +213,8 @@ private:
 private:
 	map<DWORD, PlayerInfo>		m_mapOtherPlayerInfos;
 	map<DWORD, STOC_PlayerInfo> m_mapRecvPlayerInfos;
-	STOC_Bullet*				m_pBullets;
-	STOC_GameEnd*				m_pGameEnd;
+	vector<Client_Bullet>		m_vBullets;
+	Client_GameEnd				m_CLgameEnd;
 	int		m_iPlayerNum;
 public:
 	//Function For LobbyThread Send

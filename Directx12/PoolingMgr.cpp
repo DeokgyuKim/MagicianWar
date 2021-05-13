@@ -41,20 +41,20 @@ void PoolingMgr::InitPoolingObject(ID3D12Device* device, ID3D12GraphicsCommandLi
 //	m_mapPoolObject[obj->GetInstName()].push_back(obj);
 //}
 
-void PoolingMgr::UpdatePoolingObject(STOC_Bullet* bullets)
+void PoolingMgr::UpdatePoolingObject(vector<Client_Bullet> m_vBullets)
 {
 	//매번 총알 인스턴스 개수를 0으로 초기화
 	InstanceMgr::GetInstnace()->SetInstaneCount("FireBall", 0);
 
-	if (bullets == NULL)
+	if (m_vBullets.size() == 0)
 		return;
 
-	for (int i = 0; i < bullets->Bullet_Count; ++i)
+	for (int i = 0; i < m_vBullets.size(); ++i)
 	{
 		//인스턴스 ObjectCB 업데이트
-		if (bullets->bullets[i].InstanceName == WIZARD_FIRE)
+		if (m_vBullets[i].InstanceName == WIZARD_FIRE)
 		{
-			InstanceMgr::GetInstnace()->UpdateInstanceBuffer(m_mapInstCnt["FireBall"], "FireBall", XMLoadFloat4x4(&bullets->bullets[i].matWorld));
+			InstanceMgr::GetInstnace()->UpdateInstanceBuffer(m_mapInstCnt["FireBall"], "FireBall", XMLoadFloat4x4(&m_vBullets[i].matWorld));
 			++m_mapInstCnt["FireBall"];
 		}
 	}
@@ -67,7 +67,7 @@ void PoolingMgr::UpdatePoolingObject(STOC_Bullet* bullets)
 	}
 	m_mapInstCnt.clear();
 
-	bullets = NULL;
+	m_vBullets.resize(0);
 }
 
 void PoolingMgr::Release()
