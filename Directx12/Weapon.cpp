@@ -65,27 +65,6 @@ void Weapon::LateUpdate(const float& fTimeDelta)
 {
 	Component* Anim = m_pParent->GetComponent("Upper_Animation");
 
-	XMFLOAT3 m_xmfPosition = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
-	if (KeyMgr::GetInstance()->KeyPressing('J')) {
-		m_xmfPosition.x += 1.f;
-	}
-	if (KeyMgr::GetInstance()->KeyPressing('L')) {
-		m_xmfPosition.x -= 1.f;
-	}
-	if (KeyMgr::GetInstance()->KeyPressing('I')) {
-		m_xmfPosition.z += 1.f;
-	}
-	if (KeyMgr::GetInstance()->KeyPressing('K')) {
-		m_xmfPosition.z -= 1.f;
-	}
-	if (KeyMgr::GetInstance()->KeyPressing('U')) {
-		m_xmfPosition.y += 1.f;
-	}
-	if (KeyMgr::GetInstance()->KeyPressing('O')) {
-		m_xmfPosition.y -= 1.f;
-	}
-	cout << "(" << m_xmfPosition.x << ", " << m_xmfPosition.y << ", " << m_xmfPosition.z << " )" << endl;
-	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetPosition(m_xmfPosition);
 	if (Anim != NULL)
 	{
 		// 21¹ø »À°¡ weapon

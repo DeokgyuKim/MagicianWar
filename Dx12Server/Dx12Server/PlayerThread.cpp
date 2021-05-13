@@ -293,8 +293,12 @@ void WorkThread() // send & physics & function
 				gEndingTime = 0;
 				gMaingameEnding = false;
 				gTotalTime = 0;
-				gClients[0].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::IDLE), static_cast<int>(ANIMATION_TYPE::IDLE));
-				gClients[0].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::IDLE), static_cast<int>(ANIMATION_TYPE::IDLE));
+				for(int i = 0; i < gClientNum; ++i)
+				{ 
+					gClients[i].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::IDLE), static_cast<int>(ANIMATION_TYPE::IDLE));
+					gClients[i].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::IDLE), static_cast<int>(ANIMATION_TYPE::IDLE));
+				}
+
 				gLateInit_MainScene = true;
 			}
 
@@ -309,20 +313,20 @@ void WorkThread() // send & physics & function
 			//cout << "Time: " << frame_time.count() << endl;
 			gTotalTime += frame_time.count();
 			
-			if (gTotalTime >= 2.f) {
-				gClients[0].setPlayerHp(gClients[0].getInfo().info.iHp - 10.f);
-				if (gClients[0].getInfo().info.iHp <= 0) { // 0¹øÆÀ ÆÐ¹è ½Ã¹Ä·¹ÀÌ¼Ç
-					gClients[0].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
-					gClients[0].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
-					gameEnd.bEnd = true;
-					gMaingameEnding = true;
-					gameEnd.teamNum = 1;
-					}
-				else {
-					gClients[0].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::HIT), static_cast<int>(ANIMATION_TYPE::HIT));					
-				}
-				gTotalTime = 0.f;
-			}
+			//if (gTotalTime >= 2.f) {
+			//	gClients[0].setPlayerHp(gClients[0].getInfo().info.iHp - 10.f);
+			//	if (gClients[0].getInfo().info.iHp <= 0) { // 0¹øÆÀ ÆÐ¹è ½Ã¹Ä·¹ÀÌ¼Ç
+			//		gClients[0].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
+			//		gClients[0].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
+			//		gameEnd.bEnd = true;
+			//		gMaingameEnding = true;
+			//		gameEnd.teamNum = 1;
+			//		}
+			//	else {
+			//		gClients[0].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::HIT), static_cast<int>(ANIMATION_TYPE::HIT));					
+			//	}
+			//	gTotalTime = 0.f;
+			//}
 			DWORD key[2];
 			unsigned char User[2];
 			unsigned char InstanceName[2];

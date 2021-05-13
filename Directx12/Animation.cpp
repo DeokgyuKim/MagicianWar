@@ -96,6 +96,11 @@ void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 		curAnimation->Time += fTimeDelta;
 		keyAnimation->Time += fTimeDelta;
 	}
+	else if (keyAnimation->eType == ANIMATION_TYPE::DANCE)
+	{
+		curAnimation->Time += fTimeDelta;
+		keyAnimation->Time += fTimeDelta;
+	}
 	else
 	{
 		curAnimation->Time += fTimeDelta * 5.f;
