@@ -300,10 +300,11 @@ void WorkThread() // send & physics & function
 				if (gClients[i].IsConnected()) // 연결 됐다면
 				{
 					gClients[i].Update(frame_time.count()); // 플레이어들 Update 키입력에 따른 위치 변화
-					if (key[i] & 0x0020) {
+					//if (key[i] & 0x0020) {
 
-					//cout << "총알 갯수" << gClients[i].getCreateBullet() << endl;
-					//if (gClients[i].getCreateBullet() == 1) { // 왼쪽 클릭
+						//cout << "총알 갯수" << gClients[i].getCreateBullet() << endl;
+						//if(key[i] & 0x)
+						if (gClients[i].getCreateBullet() == 1) { // 왼쪽 클릭
 
 						temp.SetUser(User[i]);
 						temp.setInstanceName(InstanceName[i]);
@@ -316,7 +317,7 @@ void WorkThread() // send & physics & function
 
 						if (gBullets.size() < 70)
 							gBullets.push_back(temp); // list에 담아
-						//gClients[i].setCreateBullet(0);
+						gClients[i].setCreateBullet(0);
 
 					}
 					// 충돌체크?
@@ -430,7 +431,7 @@ void WorkThread() // send & physics & function
 								}
 							}
 							//else
-								gClients[i].GetUpperFSM()->ChangeState((int)PLAYER_STATE::HIT, (int)ANIMATION_TYPE::HIT);
+							gClients[i].GetUpperFSM()->ChangeState((int)PLAYER_STATE::HIT, (int)ANIMATION_TYPE::HIT);
 							iter = gBullets.erase(iter);
 						}
 						else
@@ -515,6 +516,7 @@ void WorkThread() // send & physics & function
 		}
 	}
 }
+
 
 void Physics_Collision(int id)
 {

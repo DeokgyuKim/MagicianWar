@@ -25,7 +25,7 @@ Player::Player()
 
 	m_keyInput = 0;
 	m_iHp = 100;
-	//m_Bullet = 0;
+	m_Bullet = 0;
 }
 
 Player::~Player()

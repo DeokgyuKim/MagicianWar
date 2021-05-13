@@ -289,7 +289,7 @@ void PlayerFSM::Attack(float fTime)
 		if (m_User->IsAttackEnded()) {
 			//m_bAttack = true;
 			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
-			//m_User->setCreateBullet(1);
+			m_User->setCreateBullet(1);
 		}
 		else if (DefaultKey & 0x0010) // มกวม
 		{
