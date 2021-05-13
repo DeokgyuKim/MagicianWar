@@ -79,7 +79,7 @@ void Player::Initialize(XMFLOAT3 pos)
 
 	m_strTextureName = "wizard_01";
 
-	m_pWeapon = new Weapon(m_pDevice, m_pCmdLst, m_pRenderer, "weapon", "weapon", this, 20, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	m_pWeapon = new Weapon(m_pDevice, m_pCmdLst, m_pRenderer, "weapon", "weapon", this, 20, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(-157.f, 177.f, -101.f), XMFLOAT3(-50.f, -6.f, 44.f));
 
 
 #ifdef PHYSX

@@ -31,10 +31,13 @@ void Transform::LateUpdate(const float& fTimeDelta)
 	XMMATRIX scale, rotateX, rotateY, rotateZ, transform;
 
 	scale = XMMatrixScalingFromVector(XMLoadFloat3(&m_xmfScale));
-
+	
 	rotateX = XMMatrixRotationX(XMConvertToRadians(m_xmfRotate.x + m_xmfMeshRotate.x));
 	rotateY = XMMatrixRotationY(XMConvertToRadians(m_xmfRotate.y + m_xmfMeshRotate.y));
 	rotateZ = XMMatrixRotationZ(XMConvertToRadians(m_xmfRotate.z + m_xmfMeshRotate.z));
+
+	
+
 
 	transform = XMMatrixTranslationFromVector(XMLoadFloat3(&m_xmfPosition));
 
