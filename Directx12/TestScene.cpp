@@ -38,11 +38,13 @@ int TestScene::Update(const float& fTimeDelta)
 			//Panel»ý¼º
 			if (Network::GetInstance()->GetMyInfo().dwTeamNum == Network::GetInstance()->GetGameEnd().teamNum)
 			{
-				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, 760.f, 200.f), "Win"));
+				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), 
+					XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, 50.f, 760.f * 1.5f, 200.f * 1.5f), "Win"));
 			}
 			else
 			{
-				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, 760.f, 200.f), "Lose"));
+				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), 
+					XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, 50.f, 760.f * 1.5f, 200.f * 1.5f), "Lose"));
 			}
 			GameEndForPanelCreate = true;
 		}

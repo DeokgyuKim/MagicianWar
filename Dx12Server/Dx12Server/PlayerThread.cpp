@@ -467,8 +467,8 @@ void WorkThread() // send & physics & function
 
 								}
 							}
-							//else
-							gClients[i].GetUpperFSM()->ChangeState((int)PLAYER_STATE::HIT, (int)ANIMATION_TYPE::HIT);
+							else
+								gClients[i].GetUpperFSM()->ChangeState((int)PLAYER_STATE::HIT, (int)ANIMATION_TYPE::HIT);
 							iter = gBullets.erase(iter);
 						}
 						else
