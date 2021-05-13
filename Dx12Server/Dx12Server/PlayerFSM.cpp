@@ -8,7 +8,7 @@ PlayerFSM::PlayerFSM(Player* user, BoneType _bone)
 	m_curState = PLAYER_STATE::IDLE;
 
 	//m_bAttack = false;
-	m_fHitTime = 1.f;
+	m_fHitTime = 1.0f;
 }
 
 void PlayerFSM::ChangeState(int _State, int _Ani)

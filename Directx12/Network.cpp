@@ -146,7 +146,7 @@ void Network::Update()
 	}
 	else if (m_SceneChange == 3)
 	{
-
+		cout << "¿£µù¾ÀÀÎ°¡" << endl;
 	}
 
 }

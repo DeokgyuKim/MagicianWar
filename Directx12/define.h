@@ -48,6 +48,8 @@
 #define MAX_BUFFER 16384
 #define MIN_BUFFER 256
 
+#define BulletCB_Count 70
+
 // protocol
 #define packet_skill 21
 #define packet_keyInput 22

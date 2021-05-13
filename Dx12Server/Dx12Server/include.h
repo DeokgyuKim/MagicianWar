@@ -159,7 +159,7 @@ struct STOC_Bullet {
 	short size;
 	unsigned char type;
 	int Bullet_Count;
-	Bullet_Packet bullets[70];
+	Bullet_Packet bullets[BulletCB_Count];
 };
 
 struct STOC_Skill {

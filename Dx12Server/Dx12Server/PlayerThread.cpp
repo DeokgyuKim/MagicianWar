@@ -23,16 +23,22 @@ extern Player gClients[2];
 extern int gClientNum; // 접속한 Client들의 명수
 extern vector<PxRigidStatic*> StaticObjects;
 
+
+mutex global_mutex;
+
 list<Bullet> gBullets;
 mutex gBullet_mutex;
+bool gLateInit_LobbyScene = false;
 bool gLateInit_MainScene = false;
+bool gLateInit_EndingScene = false;
 int iStaticObjectIdx = 0;
 
 int gLiveTeamNum[2] = { 1, 1 };
-//float gEndingTime = 0;
-//bool gMaingameEnding = false;
+float gEndingTime = 0;
+bool gMaingameEnding = false;
+float gTotalTime = 0;
 
-unsigned int curScene = 1; // 1: SCENE_LOBBY 2: SCENE_
+int curScene = 1; // 1: SCENE_LOBBY 2: SCENE_
 chrono::system_clock::time_point prev_time;
 
 int recvn(SOCKET s, char* buf, int len, int flags)
@@ -263,29 +269,60 @@ void WorkThread() // send & physics & function
 	cout << "workThread connect" << endl;
 	while (true)
 	{
-		if (curScene == 1) // Lobby
+		if (curScene == 0) // Logo
 		{
 
+		}
+		else if (curScene == 1) // Lobby
+		{
+			if (!gLateInit_LobbyScene) {
+				cout << "여긴 로비" << endl;
+				gLateInit_LobbyScene = true;
+			}
 		}
 		else if (curScene == 2) // Stage
 		{
 			if (!gLateInit_MainScene) {
+				cout << "여긴 스테이지" << endl;
 				STOC_sceneChange sc;
 				sc.size = sizeof(sc);
 				sc.type = stoc_sceneChange;
 				sc.sceneNum = 2; //
 				for (int i = 0; i < gClientNum; ++i)
 					gClients[i].sendPacket((void*)&sc, sc.size); // stoc_sceneChange
-				//gEndingTime = 0;
+				gEndingTime = 0;
+				gMaingameEnding = false;
+				gTotalTime = 0;
+				gClients[0].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::IDLE), static_cast<int>(ANIMATION_TYPE::IDLE));
+				gClients[0].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::IDLE), static_cast<int>(ANIMATION_TYPE::IDLE));
 				gLateInit_MainScene = true;
-				//gMaingameEnding = false;
 			}
 
 			auto start_time = chrono::system_clock::now();
 			chrono::duration<float> frame_time = start_time - prev_time;
 
+			STOC_GameEnd gameEnd;
+			gameEnd.size = sizeof(gameEnd);
+			gameEnd.type = stoc_gameend;
+			gameEnd.bEnd = false;
+			gameEnd.teamNum = 0;
 			//cout << "Time: " << frame_time.count() << endl;
-
+			gTotalTime += frame_time.count();
+			
+			if (gTotalTime >= 2.f) {
+				gClients[0].setPlayerHp(gClients[0].getInfo().info.iHp - 10.f);
+				if (gClients[0].getInfo().info.iHp <= 0) { // 0번팀 패배 시뮬레이션
+					gClients[0].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
+					gClients[0].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
+					gameEnd.bEnd = true;
+					gMaingameEnding = true;
+					gameEnd.teamNum = 1;
+					}
+				else {
+					gClients[0].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::HIT), static_cast<int>(ANIMATION_TYPE::HIT));					
+				}
+				gTotalTime = 0.f;
+			}
 			DWORD key[2];
 			unsigned char User[2];
 			unsigned char InstanceName[2];
@@ -304,7 +341,7 @@ void WorkThread() // send & physics & function
 
 						//cout << "총알 갯수" << gClients[i].getCreateBullet() << endl;
 						//if(key[i] & 0x)
-						if (gClients[i].getCreateBullet() == 1) { // 왼쪽 클릭
+					if (gClients[i].getCreateBullet() == 1) { // 왼쪽 클릭
 
 						temp.SetUser(User[i]);
 						temp.setInstanceName(InstanceName[i]);
@@ -315,7 +352,7 @@ void WorkThread() // send & physics & function
 						temp.setTotalLifeTime(5.f);
 						temp.setDirection(XMFLOAT3(-gClients[i].getWorld()._21, -gClients[i].getWorld()._22, -gClients[i].getWorld()._23));
 
-						if (gBullets.size() < 70)
+						if (gBullets.size() < BulletCB_Count)
 							gBullets.push_back(temp); // list에 담아
 						gClients[i].setCreateBullet(0);
 
@@ -374,16 +411,12 @@ void WorkThread() // send & physics & function
 				InstBullets.Bullet_Count = gBullets.size();
 			}
 
-			STOC_GameEnd gameEnd;
-			gameEnd.size = sizeof(gameEnd);
-			gameEnd.type = stoc_gameend;
-			gameEnd.bEnd = false;
-			gameEnd.teamNum = 0;
+
 			//Collision
 			for (int i = 0; i < gClientNum; ++i)
 			{
 				//플레이어가 히또 상태면 체크 안하게
-				if (gClients[i].GetUpperFSM()->GetState() != PLAYER_STATE::HIT)
+				if (gClients[i].GetUpperFSM()->GetState() != PLAYER_STATE::HIT || gClients[i].GetUpperFSM()->GetState() != PLAYER_STATE::DANCE || gClients[i].GetUpperFSM()->GetState() != PLAYER_STATE::DEAD)
 				{
 					for (auto iter = gBullets.begin(); iter != gBullets.end();)
 					{
@@ -405,28 +438,28 @@ void WorkThread() // send & physics & function
 							{
 								//플레이어 SetFSM(DEAD)
 								///////////////////////
-								//gClients[i].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
-								//gClients[i].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
+								gClients[i].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
+								gClients[i].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
 								--gLiveTeamNum[gClients[i].getInfo().info.dwTeamNum];
 								if (gLiveTeamNum[gClients[i].getInfo().info.dwTeamNum] <= 0)
 								{
 
-									//gameEnd.bEnd = true;
-									//gMaingameEnding = true;
+									gameEnd.bEnd = true;
+									gMaingameEnding = true;
 									////해당팀이 진거
 									/////////////////
-									//if (gClients[i].getInfo().info.dwTeamNum == 0) {
-									//	// 0 번팀 패배
-									//	gClients[1].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
-									//	gClients[1].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
-									//	gameEnd.teamNum = 1;
-									//}
-									//else {
-									//	// 1 번팀 패배
-									//	gClients[0].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
-									//	gClients[0].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
-									//	gameEnd.teamNum = 0;
-									//}
+									if (gClients[i].getInfo().info.dwTeamNum == 0) {
+										// 0 번팀 패배
+										gClients[1].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
+										gClients[1].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
+										gameEnd.teamNum = 1;
+									}
+									else {
+										// 1 번팀 패배
+										gClients[0].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
+										gClients[0].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
+										gameEnd.teamNum = 0;
+									}
 
 								}
 							}
@@ -479,10 +512,10 @@ void WorkThread() // send & physics & function
 				gClients[i].Unlock();
 			}
 
-			InstBullets.size = sizeof(InstBullets) - (sizeof(Bullet_Packet) * (70 - InstBullets.Bullet_Count));
-			//if (gMaingameEnding) {
-			//	gEndingTime += frame_time.count();
-			//}
+			InstBullets.size = sizeof(InstBullets) - (sizeof(Bullet_Packet) * (BulletCB_Count - InstBullets.Bullet_Count));
+			if (gMaingameEnding) {
+				gEndingTime += frame_time.count();
+			}
 			// send
 
 			for (int i = 0; i < gClientNum; ++i) {
@@ -494,25 +527,64 @@ void WorkThread() // send & physics & function
 
 				gClients[i].sendPacket((void*)&InstBullets, InstBullets.size);
 				gClients[i].sendPacket((void*)&gameEnd, sizeof(gameEnd));
-				//if (gEndingTime >= 5.f) {
-				//	STOC_sceneChange scenePacket;
-				//	scenePacket.size = sizeof(scenePacket);
-				//	scenePacket.type = stoc_sceneChange;
-				//	scenePacket.sceneNum = 3; // 엔딩 씬
-				//	gClients[0].sendPacket((void*)&scenePacket, sizeof(scenePacket));
-				//	gClients[1].sendPacket((void*)&scenePacket, sizeof(scenePacket));
-				//	gMaingameEnding = false;
-				//}
 
+				if (gEndingTime >= 5.f) { // 춤 5초 추고 엔딩으로
+					STOC_sceneChange scenePacket;
+					scenePacket.size = sizeof(scenePacket);
+					scenePacket.type = stoc_sceneChange;
+					scenePacket.sceneNum = 3; // 엔딩 씬
+					gClients[i].sendPacket((void*)&scenePacket, scenePacket.size);
+					global_mutex.lock();
+					curScene = 3;
+					gLateInit_EndingScene = false;
+					global_mutex.unlock();
+					gMaingameEnding = false;
+				}
 				//gClients[i].Unlock();
 
 			}
+
 			// 다 보낸 후에는 workThread를 일시정지
 
 			auto end_time = chrono::system_clock::now();
 			prev_time = end_time;
 			auto elapsed_time = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
 			this_thread::sleep_for(12ms - elapsed_time);
+		}
+		else if (curScene == 3) { // 엔딩 씬
+			auto start_time = chrono::system_clock::now();
+			chrono::duration<float> frame_time = start_time - prev_time;
+
+			if (!gLateInit_EndingScene)
+			{
+				cout << "여긴 엔딩" << endl;
+				gEndingTime = 0;
+				gLateInit_EndingScene = true;
+			}
+
+			gEndingTime += frame_time.count();
+
+
+			if (gEndingTime >= 5.f) { // 엔딩씬 이후 5초가 지나면 Lobby로
+				global_mutex.lock();
+				curScene = 1;
+				gLateInit_LobbyScene = false;
+				global_mutex.unlock();
+				gEndingTime = 0;
+				STOC_sceneChange scenePacket;
+				scenePacket.size = sizeof(scenePacket);
+				scenePacket.type = stoc_sceneChange;
+				scenePacket.sceneNum = 1; // 로비 씬
+				for (int i = 0; i < gClientNum; ++i) {
+					gClients[i].sendPacket((void*)&scenePacket, scenePacket.size);
+				}
+			}
+
+			auto end_time = chrono::system_clock::now();
+			prev_time = end_time;
+			auto elapsed_time = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
+			this_thread::sleep_for(12ms - elapsed_time);
+
 		}
 	}
 }

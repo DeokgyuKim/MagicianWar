@@ -71,17 +71,27 @@ void AnimationCom::DefaultAnimate(const float& fTimeDelta)
 
 void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 {
-	if (curAnimation->eType == ANIMATION_TYPE::ATTACK)
+	if (keyAnimation->eType == ANIMATION_TYPE::ATTACK)
 	{
 		curAnimation->Time += fTimeDelta * 5.f;
 		keyAnimation->Time += fTimeDelta * 5.f;
 	}
-	else if (curAnimation->eType == ANIMATION_TYPE::JUMP)
+	else if (keyAnimation->eType == ANIMATION_TYPE::JUMP)
 	{
 		curAnimation->Time += fTimeDelta * 3.f;
 		keyAnimation->Time += fTimeDelta * 3.f;
 	}
-	else if (curAnimation->eType == ANIMATION_TYPE::HIT)
+	else if (keyAnimation->eType == ANIMATION_TYPE::HIT)
+	{
+		curAnimation->Time += fTimeDelta;
+		keyAnimation->Time += fTimeDelta;
+	}
+	else if (keyAnimation->eType == ANIMATION_TYPE::DEAD)
+	{
+		curAnimation->Time += fTimeDelta;
+		keyAnimation->Time += fTimeDelta;
+	}
+	else if (keyAnimation->eType == ANIMATION_TYPE::IDLE)
 	{
 		curAnimation->Time += fTimeDelta;
 		keyAnimation->Time += fTimeDelta;
@@ -91,6 +101,7 @@ void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 		curAnimation->Time += fTimeDelta * 5.f;
 		keyAnimation->Time += fTimeDelta * 5.f;
 	}
+
 
 	m_fBlendTime += 45.f * fTimeDelta;
 	m_fBlendTime = min(m_fBlendTime, m_fMaxBlendTime);
@@ -102,8 +113,15 @@ void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 	if (keyAnimation->Time * 1.4 > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(keyAnimation->eType)) {
 		m_bAttackEnd = true; // 일반 공격시 공격이 끝나면 Idle로 바꾸기 위한 bool 변수
 	}
-	if (keyAnimation->Time > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(keyAnimation->eType)) {
-		keyAnimation->Time = 0.f;
+	if (keyAnimation->eType != ANIMATION_TYPE::DEAD)
+	{
+		if (keyAnimation->Time > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(keyAnimation->eType)) {
+			keyAnimation->Time = 0.f;
+		}
+	}
+	else
+	{
+		cout << "현재 애니메이션은 DEAD" << endl;
 	}
 }
 

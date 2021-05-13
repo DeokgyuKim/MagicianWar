@@ -26,7 +26,7 @@ void InstanceMgr::BuildInstanceBuffers()
 	for (auto& iter : m_InstanceObjects) {
 		if (iter.second->GetmeshName() == "FireBall")
 		{
-			m_InstanceCBs[iter.second->GetmeshName()] = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, 70, false);
+			m_InstanceCBs[iter.second->GetmeshName()] = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, BulletCB_Count, false);
 		}
 		else
 			m_InstanceCBs[iter.second->GetmeshName()] = make_unique<UploadBuffer<ObjectCB>>(m_pDevice, iter.second->GetInstanceCount(), false);
