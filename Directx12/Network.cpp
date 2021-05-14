@@ -211,6 +211,21 @@ void Network::SetOtherPlayerInfo(list<Object*>* plstPlayer)
 
 }
 
+const char* Network::LoadServerIPtxt(string filePath)
+{
+	ifstream readFile;
+	readFile.open(filePath, ios_base::in);
+
+	if (!readFile.is_open())
+		return "";
+
+	string ServerIp;
+	getline(readFile, ServerIp);
+
+	readFile.close();
+	return ServerIp.c_str();
+}
+
 bool Network::IsMoveToMainGame()
 {
 	bool isNext = false;
