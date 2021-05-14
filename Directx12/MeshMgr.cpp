@@ -208,11 +208,14 @@ void MeshMgr::BuildModels()
 	BuildModel("wagon", MESH_TYPE::TILE);
 	BuildModel("Sphere", MESH_TYPE::TILE);
 	BuildModel("weapon", MESH_TYPE::TILE);
+
+	cout << "Load Model Complete!" << endl;
 }
 
 void MeshMgr::BuildSkinnedModels()
 {
 	BuildSkinnedModel(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER);
+	cout << "Load SkinnedModel Complete!" << endl;
 }
 
 bool MeshMgr::LoadMeshFile(vector<SkinnedVertex>& outVertex, vector<UINT>& outIndex, vector<Material>* outMaterial, string path)

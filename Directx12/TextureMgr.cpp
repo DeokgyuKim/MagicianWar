@@ -68,6 +68,8 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["Lava"] = pTexture;
 	pTexture = new DDSTexture(device, cmdLst, heap, "weapon", L"../Resources/Models/Textures/weapon.dds");
 	m_mapTextures["weapon"] = pTexture;
+
+	cout << "Load Texture Complete!" << endl;
 }
 
 void TextureMgr::BuildInitTextures(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap)

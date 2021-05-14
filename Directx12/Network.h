@@ -202,7 +202,7 @@ public:
 	Client_GameEnd GetGameEnd() { return m_CLgameEnd; }
 	DWORD		GetCurScene() { return m_SceneChange; }
 
-	const char*	LoadServerIPtxt(string filePath);
+	string	LoadServerIPtxt(string filePath);
 private:
 	SOCKET	m_Sock;
 
