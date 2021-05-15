@@ -214,7 +214,11 @@ void MeshMgr::BuildModels()
 
 void MeshMgr::BuildSkinnedModels()
 {
-	BuildSkinnedModel(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER);
+	BuildSkinnedModel(CHARACTER_WIZARD_FIRE, MESH_TYPE::CHARACTER);
+	//cout << "Load SkinnedModel Complete!" << endl;
+	BuildSkinnedModel(CHARACTER_WIZARD_COLD, MESH_TYPE::CHARACTER);
+	BuildSkinnedModel(CHARACTER_WIZARD_BLACK, MESH_TYPE::CHARACTER);
+	BuildSkinnedModel(CHARACTER_WIZARD_DARKNESS, MESH_TYPE::CHARACTER);
 	cout << "Load SkinnedModel Complete!" << endl;
 }
 

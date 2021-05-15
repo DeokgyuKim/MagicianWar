@@ -10,8 +10,14 @@
 
 // Model
 	// Character
-#define CHARACTER_WIZARD_01 "wizard_01"
+#define CHARACTER_WIZARD_FIRE "wizard_Fire"
 #define WIZARD_FIRE 99
+#define CHARACTER_WIZARD_COLD "wizard_Cold"
+#define WIZARD_COLD 98
+#define CHARACTER_WIZARD_BLACK "wizard_Black"
+#define WIZARD_BLACK 97
+#define CHARACTER_WIZARD_DARKNESS "wizard_Darkness"
+#define WIZARD_DARKNESS 96
 	// Tree
 #define TREE_01 "Tree_01"
 	// Rock
@@ -42,7 +48,7 @@
 #define M_MoveBackward_Speed 0.03f
 
 
-#define NETWORK
+#define NETWOR
 #define PHYS
 
 #define MAX_BUFFER 16384
