@@ -207,8 +207,8 @@ void TestScene::Initialize()
 	//	XMFLOAT3(10.f, 1.f, 5.f));
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
 	//
-	pObj = new FireShock(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
-	m_pObjects[OBJ_SKILL].push_back(pObj);
+	//pObj = new FireShock(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
 
 	//pObj = new FireRing(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
