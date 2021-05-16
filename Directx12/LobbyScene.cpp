@@ -54,7 +54,6 @@ int LobbyScene::Update(const float& fTimeDelta)
 
 void LobbyScene::Initialize(bool bRetry)
 {
-	ShowCursor(TRUE);
 
 	m_eSceneType = LOBBY;
 	Object* pObj = NULL;
@@ -122,5 +121,6 @@ void LobbyScene::Initialize(bool bRetry)
 		Network::GetInstance()->Init(Network::GetInstance()->LoadServerIPtxt("../Data/ServerIP.txt"));
 #endif
 
+	ShowCursor(TRUE);
 }
 
