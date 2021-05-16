@@ -9,6 +9,8 @@
 #include "Animation.h"
 #include "KeyMgr.h"
 
+#include "RadioButton.h"
+
 
 Network* Network::m_pInstance = NULL;
 
@@ -414,7 +416,14 @@ void Network::SendReadyState()
 			break;
 		}
 	}
-	Ready_packet.CharacterType = WIZARD_COLD; // 여따가 내가 고른 캐릭터 넣어주면 됨
+
+	if (dynamic_cast<RadioButton*>(MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_FIRE))->GetButtonState() == BUTTON_STATE::ON)
+		Ready_packet.CharacterType = WIZARD_FIRE;
+	else if (dynamic_cast<RadioButton*>(MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_COLD))->GetButtonState() == BUTTON_STATE::ON)
+		Ready_packet.CharacterType = WIZARD_COLD;
+	else if (dynamic_cast<RadioButton*>(MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_DARKNESS))->GetButtonState() == BUTTON_STATE::ON)
+		Ready_packet.CharacterType = WIZARD_DARKNESS;
+
 	retval = send(m_Sock, (char*)&Ready_packet, Ready_packet.size, 0);
 }
 

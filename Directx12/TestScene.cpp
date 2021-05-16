@@ -101,8 +101,21 @@ void TestScene::Initialize()
 
 #ifdef NETWORK
 	XMFLOAT3 pos = Network::GetInstance()->GetMyPlayerStartPos();
-	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		CHARACTER_WIZARD_FIRE, pos, Network::GetInstance()->GetMyInfo(), MESH_TYPE::CHARACTER);
+	switch (Network::GetInstance()->GetMyInfo().CharacterType)
+	{
+	case WIZARD_FIRE:
+		pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+			CHARACTER_WIZARD_FIRE, pos, Network::GetInstance()->GetMyInfo(), MESH_TYPE::CHARACTER);
+		break;
+	case WIZARD_COLD:
+		pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+			CHARACTER_WIZARD_COLD, pos, Network::GetInstance()->GetMyInfo(), MESH_TYPE::CHARACTER);
+		break;
+	case WIZARD_DARKNESS:
+		pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+			CHARACTER_WIZARD_DARKNESS, pos, Network::GetInstance()->GetMyInfo(), MESH_TYPE::CHARACTER);
+		break;
+	}
 	pPlayer = dynamic_cast<Player*>(pObj);
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
 	Core::GetInstance()->CmdLstExecute();
@@ -113,8 +126,21 @@ void TestScene::Initialize()
 	{
 		Core::GetInstance()->CmdLstReset();
 		pos = (*iter).second.xmfPosition;
-		pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-			CHARACTER_WIZARD_FIRE, pos, (*iter).second, MESH_TYPE::CHARACTER);
+		switch ((*iter).second.CharacterType)
+		{
+		case WIZARD_FIRE:
+			pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+				CHARACTER_WIZARD_FIRE, pos, (*iter).second, MESH_TYPE::CHARACTER);
+			break;
+		case WIZARD_COLD:
+			pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+				CHARACTER_WIZARD_COLD, pos, (*iter).second, MESH_TYPE::CHARACTER);
+			break;
+		case WIZARD_DARKNESS:
+			pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+				CHARACTER_WIZARD_DARKNESS, pos, (*iter).second, MESH_TYPE::CHARACTER);
+			break;
+		}
 		Core::GetInstance()->CmdLstExecute();
 		Core::GetInstance()->WaitForGpuComplete();
 		m_pObjects[OBJ_PLAYER].push_back(pObj);
