@@ -65,7 +65,7 @@ bool Network::Init(const string& strServerIP)
 
 	packet_size = 0;
 	savedPacket_size = 0;
-	m_SceneChange = LOADING_Scene; // 처음엔 로딩씬으로 가야지
+	m_SceneChange = LOBBY_Scene; // 처음엔 로딩씬으로 가야지
 	mainSceneLateInit = false;
 
 

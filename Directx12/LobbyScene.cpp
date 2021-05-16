@@ -29,11 +29,20 @@ LobbyScene::LobbyScene()
 int LobbyScene::Update(const float& fTimeDelta)
 {
 	Scene::Update(fTimeDelta);
+
+	if (Network::GetInstance()->GetCurScene() == STAGE_Scene)
+	{
+		TestScene* Scene = new TestScene();
+		MainApp::GetInstance()->ChangeScene(Scene);
+		return -1;
+	}
+
 	return 0;
 }
 
 void LobbyScene::Initialize()
 {
+	m_eSceneType = LOBBY;
 	Object* pObj = NULL;
 	Player* pPlayer = NULL;
 	Camera* pCamera = NULL;

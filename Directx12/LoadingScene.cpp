@@ -34,7 +34,7 @@ int LoadingScene::Update(const float& fTimeDelta)
 	if (m_pLoading != NULL)
 	{
 		m_pLoadingBar->SetRatio(XMFLOAT2(m_pLoading->GetCount() / 96.f, 1.f));
-		cout << m_pLoading->GetCount()<< endl;
+		//cout << m_pLoading->GetCount()<< endl;
 	}
 
 	bool CheckThread = m_pLoading->GetFinish();
@@ -55,6 +55,8 @@ int LoadingScene::Update(const float& fTimeDelta)
 
 void LoadingScene::Initialize()
 {
+	m_eSceneType = LOADING;
+
 	Object* pObj = NULL;
 	Player* pPlayer = NULL;
 	Camera* pCamera = NULL;

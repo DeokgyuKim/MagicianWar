@@ -86,6 +86,7 @@ void TestScene::LateUpdate(const float& fTimeDelta)
 
 void TestScene::Initialize()
 {
+	m_eSceneType = MAIN;
 	Object* pObj = NULL;
 	Player* pPlayer = NULL;
 	Camera* pCamera = NULL;

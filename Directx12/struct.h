@@ -10,6 +10,7 @@ enum class PLAYER_STATE : int	{ IDLE = 0, MOVE, ATTACK, JUMP, HIT, DEAD, DANCE, 
 enum class BoneType : int		{ UPPER_BONE = 0, ROOT_BONE, NONE };
 enum BoneIndex					{ WIZARD = 0, COUNT };
 enum BUTTON_STATE				{ NONE, MOUSEON, ON };
+enum SCENE_TYPE					{ LOADING, LOBBY, MAIN };
 
 
 

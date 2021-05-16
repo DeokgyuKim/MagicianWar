@@ -18,8 +18,9 @@ public:
 	void	PushObject(Object* pobj, OBJ_TYPE eType) { m_pObjects[eType].push_back(pobj); }
 	Object* GetUIForTag(int iTag);
 	Object* GetPlayer(); 
+	SCENE_TYPE GetSceneType() { return m_eSceneType; }
 protected:
 	list<Object*> m_pObjects[OBJ_TYPE::OBJ_END]; // Object 데이터들
-	
+	SCENE_TYPE m_eSceneType;
 };
 
