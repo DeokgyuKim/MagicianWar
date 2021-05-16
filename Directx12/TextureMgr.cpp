@@ -64,8 +64,20 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["Flames_FireEff"] = pTexture;
 	pLoading->AddCount();
 
-	pTexture = new DDSTexture(device, cmdLst, heap, "wizard_01", L"../Resources/Models/Characters/wizard_01/wizard_01.dds");
-	m_mapTextures["wizard_01"] = pTexture;
+	pTexture = new DDSTexture(device, cmdLst, heap, "wizard_Fire", L"../Resources/Models/Characters/wizard_Fire/wizard_Fire.dds");
+	m_mapTextures["wizard_Fire"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "wizard_Fire", L"../Resources/Models/Characters/wizard_Darkness/wizard_Darkness.dds");
+	m_mapTextures["wizard_Darkness"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "wizard_Fire", L"../Resources/Models/Characters/wizard_Black/wizard_Black.dds");
+	m_mapTextures["wizard_Black"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "wizard_Fire", L"../Resources/Models/Characters/wizard_Cold/wizard_Cold.dds");
+	m_mapTextures["wizard_Cold"] = pTexture;
 	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "SkyBox", L"../Resources/SkyBox/SkyBox_0.dds", true, 10);
