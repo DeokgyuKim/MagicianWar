@@ -14,7 +14,7 @@
 #include "Bullet.h"
 
 unordered_map<DWORD, bool> ReadyCheck;
-unordered_map<DWORD, bool> LoadingCheck;
+
 unordered_map<DWORD, STOC_PlayerInfo> g_PlayerInfoPacket;
 unordered_map<DWORD, DWORD> playerKeyInput;
 
@@ -127,7 +127,7 @@ void PlayerThread(STOC_ServerPlayer arg) // only recv & update data
 // recv 한 패킷들 처리
 void packetProcessing(STOC_ServerPlayer arg)
 {
-	bool sendOneTime = false;
+
 	auto player = arg;
 	SOCKET clientSock = player.socket;
 	DWORD playerID = player.info.dwPlayerNum;
@@ -163,7 +163,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 		CTOS_Ready* data = reinterpret_cast<CTOS_Ready*> (processing);
 		gClients[data->id].setReady(data->ready); // 레디 갱신
 		ReadyCheck[data->id] = gClients[data->id].getReady(); // 레디 갱신
-		LoadingCheck[data->id] = gClients[data->id].getLoaddingEnd();
+		gClients[data->id].setCharacterType(data->CharacterType);
 
 		bool Start = true;
 		for (auto it = ReadyCheck.begin(); it != ReadyCheck.end(); ++it) { // 전체 순회
@@ -172,13 +172,8 @@ void packetProcessing(STOC_ServerPlayer arg)
 			}
 		}
 		
-		for (auto it = LoadingCheck.begin(); it != LoadingCheck.end(); ++it) { // 전체 순회
-			if (it->second == false) { // 들어온 누구라도 false라면
-				Start = false; // 스타트 안할거고
-			}
-		}
 
-		if (Start && curScene == 1) // 시작이고 현재 씬이 Lobby이면
+		if (Start && curScene == LOBBY_Scene) // 시작이고 현재 씬이 Lobby이면
 		{
 			gClients[0].setPlayerInitPos(XMFLOAT3(20.f, 0.f, 10.f));
 			if (gClientNum > 1)
@@ -215,6 +210,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 				sI.dwPlayerNum = gClients[j].getInfo().info.dwPlayerNum;
 				sI.dwTeamNum = gClients[j].getInfo().info.dwTeamNum;
 				sI.xmfPosition = gClients[j].getInfo().info.xmfPosition;
+				sI.CharacterType = gClients[j].getCharacterType();
 				sI.iHp = 100;
 
 				gClients[j].sendPacket((void*)&sI, sI.size); // 나 자신의 정보				
@@ -225,7 +221,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 						STOC_OtherstartInfo otherPlayerInfo;
 						otherPlayerInfo.size = sizeof(otherPlayerInfo);
 						otherPlayerInfo.type = stoc_OtherstartInfo;
-
+						otherPlayerInfo.CharacterType = gClients[i].getCharacterType();
 						otherPlayerInfo.dwPlayerNum = gClients[i].getInfo().info.dwPlayerNum;
 						otherPlayerInfo.dwTeamNum = gClients[i].getInfo().info.dwTeamNum;
 						otherPlayerInfo.xmfPosition = gClients[i].getInfo().info.xmfPosition;
@@ -236,8 +232,8 @@ void packetProcessing(STOC_ServerPlayer arg)
 				}
 			}
 			curScene = STAGE_Scene; // 씬 전환 -> Stage
-			sendOneTime = true;
 			gLateInit_MainScene = false;
+
 		}
 		break;
 	}
@@ -252,23 +248,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 		gClients[data->id].UpdatePlayerInfo(data);
 		break;
 	}
-	case ctos_LoadingEnd:
-	{
-		CTOS_LoadingEnd* data = reinterpret_cast<CTOS_LoadingEnd*> (processing);
-		gClients[playerID].setLoaddingEnd(data->bLoadingEnd);
-		LoadingCheck[data->id] = gClients[data->id].getLoaddingEnd();
-		bool Start = true;
-		for (auto it = LoadingCheck.begin(); it != LoadingCheck.end(); ++it) { // 전체 순회
-			if (it->second == false) { // 들어온 누구라도 false라면
-				Start = false; // 스타트 안할거고
-			}
-		}
-		if (Start) {
-			curScene = LOBBY_Scene; // LobbyScene으로
-		}
-		//if (data->bLoadingEnd) cout << "로딩이 끝났어" << endl;
-		break;
-	}
+
 	default:
 		cout << "NoType Packet" << endl;
 		break;
@@ -280,25 +260,25 @@ void WorkThread() // send & physics & function
 	cout << "workThread connect" << endl;
 	while (true)
 	{
-		if (curScene == 0) // Logo
+		if (curScene == LOADING_Scene) // Logo
 		{
 
 		}
-		else if (curScene == 1) // Lobby
+		else if (curScene == LOBBY_Scene) // Lobby
 		{
 			if (!gLateInit_LobbyScene) {
 				cout << "여긴 로비" << endl;
 				gLateInit_LobbyScene = true;
 			}
 		}
-		else if (curScene == 2) // Stage
+		else if (curScene == STAGE_Scene) // Stage
 		{
 			if (!gLateInit_MainScene) {
 				cout << "여긴 스테이지" << endl;
 				STOC_sceneChange sc;
 				sc.size = sizeof(sc);
 				sc.type = stoc_sceneChange;
-				sc.sceneNum = 2; //
+				sc.sceneNum = STAGE_Scene; //
 				for (int i = 0; i < gClientNum; ++i)
 					gClients[i].sendPacket((void*)&sc, sc.size); // stoc_sceneChange
 				gEndingTime = 0;
@@ -547,10 +527,10 @@ void WorkThread() // send & physics & function
 					STOC_sceneChange scenePacket;
 					scenePacket.size = sizeof(scenePacket);
 					scenePacket.type = stoc_sceneChange;
-					scenePacket.sceneNum = 3; // 엔딩 씬
+					scenePacket.sceneNum = ENDING_Scene; // 엔딩 씬
 					gClients[i].sendPacket((void*)&scenePacket, scenePacket.size);
 					global_mutex.lock();
-					curScene = 3;
+					curScene = ENDING_Scene;
 					gLateInit_EndingScene = false;
 					global_mutex.unlock();
 					gMaingameEnding = false;
@@ -566,7 +546,7 @@ void WorkThread() // send & physics & function
 			auto elapsed_time = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
 			this_thread::sleep_for(12ms - elapsed_time);
 		}
-		else if (curScene == 3) { // 엔딩 씬
+		else if (curScene == ENDING_Scene) { // 엔딩 씬
 			auto start_time = chrono::system_clock::now();
 			chrono::duration<float> frame_time = start_time - prev_time;
 
@@ -582,16 +562,22 @@ void WorkThread() // send & physics & function
 
 			if (gEndingTime >= 5.f) { // 엔딩씬 이후 5초가 지나면 Lobby로
 				global_mutex.lock();
-				curScene = 1;
+				curScene = LOBBY_Scene;
 				gLateInit_LobbyScene = false;
 				global_mutex.unlock();
 				gEndingTime = 0;
 				STOC_sceneChange scenePacket;
 				scenePacket.size = sizeof(scenePacket);
 				scenePacket.type = stoc_sceneChange;
-				scenePacket.sceneNum = 1; // 로비 씬
+				scenePacket.sceneNum = LOBBY_Scene; // 로비 씬
+				STOC_GameEnd gameEnd;
+				gameEnd.size = sizeof(gameEnd);
+				gameEnd.type = stoc_gameend;
+				gameEnd.bEnd = false;
+				gameEnd.teamNum = -1;
 				for (int i = 0; i < gClientNum; ++i) {
-					gClients[i].sendPacket((void*)&scenePacket, scenePacket.size);
+					gClients[i].sendPacket((void*)&scenePacket, scenePacket.size); // 로비씬으로 넘어가라
+					gClients[i].sendPacket((void*)&gameEnd, gameEnd.size);
 				}
 			}
 

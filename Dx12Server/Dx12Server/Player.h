@@ -41,6 +41,7 @@ public:
 	STOC_ServerPlayer getInfo() { return Info; }
 	SOCKET getSocket() { return Info.socket; }
 	PLAYER_STATE getState() { return ePlayerState; }
+	unsigned char getCharacterType() { return m_CharacterType; }
 
 	ANIMATION_TYPE getRootAnimType() { return Root_eAnimType; }
 	float getRootAnimTime() { return Root_fAnimTime; }
@@ -60,7 +61,7 @@ public:
 	char* getRecvStart_Ptr() { return recv_start_ptr; }
 	bool IsConnected() { return m_isConnected; }
 	bool IsAttackEnded() { return m_bAttackEnd; }
-	bool getLoaddingEnd() { return m_LoadingEnd; }
+
 	unsigned char getInstanceName() { return m_InstanceName; }
 	unsigned char getID() { return m_ID; }
 
@@ -78,12 +79,13 @@ public:
 	void setPosition(XMFLOAT3 pos);
 	void setAttackEnd(bool _check) { m_bAttackEnd = _check; }
 	void setPlayerInitPos(XMFLOAT3 pos);
-	void setLoaddingEnd(bool _load);
+
 	void setCreateBullet(int count) { m_Bullet = count; }
 	int getCreateBullet() { return m_Bullet; }
 	void ChangeUpperAnimation(int _Ani);
 	void ChangeRootAnimation(int _Ani);
 	void setJump(bool bJump);
+	void setCharacterType(unsigned char _type);
 
 public:
 	//PhysX
@@ -99,6 +101,7 @@ private: //
 	XMFLOAT4X4		matWorld;
 	XMFLOAT4X4		m_matRealWorld;
 	PLAYER_STATE	ePlayerState;
+	unsigned char   m_CharacterType;
 
 	ANIMATION_TYPE	Root_eAnimType;
 	float			Root_fAnimTime;
@@ -113,7 +116,7 @@ private: //
 
 	mutex m_mutex;
 	bool m_Ready; // ready
-	bool m_LoadingEnd;
+
 	bool m_isConnected;
 
 

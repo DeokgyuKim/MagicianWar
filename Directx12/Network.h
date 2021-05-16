@@ -10,6 +10,7 @@ struct PlayerInfo
 	DWORD		dwPlayerNum;
 	DWORD		dwTeamNum;
 	XMFLOAT3	xmfPosition;
+	unsigned char CharacterType; // 캐릭터 타입
 	int			iHp;
 };
 
@@ -60,6 +61,7 @@ struct CTOS_Ready {
 	short size;
 	unsigned char type;
 	unsigned char id;
+	unsigned char CharacterType; // 캐릭터 타입
 	DWORD ready;
 };
 
@@ -88,6 +90,7 @@ struct STOC_sceneChange {
 struct STOC_startInfo {
 	short size;
 	unsigned char type;
+	unsigned char CharacterType; // 캐릭터 타입
 	DWORD		dwPlayerNum;
 	DWORD		dwTeamNum;
 	XMFLOAT3	xmfPosition;
@@ -97,6 +100,7 @@ struct STOC_startInfo {
 struct STOC_OtherstartInfo {
 	short size;
 	unsigned char type;
+	unsigned char CharacterType;
 	DWORD		dwPlayerNum;
 	DWORD		dwTeamNum;
 	XMFLOAT3	xmfPosition;
