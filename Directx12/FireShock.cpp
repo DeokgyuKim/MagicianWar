@@ -26,8 +26,8 @@ void FireShock::BuildSkillEffects()
 {
 	SkillEff* pEff = new FireShock_FireCylinder(m_pDevice, m_pCmdLst, m_pRenderer, this);
 	m_vecSkillEff.push_back(pEff);
-	pEff = new FireShock_FireParticle(m_pDevice, m_pCmdLst, m_pRenderer, this);
-	m_vecSkillEff.push_back(pEff);
+	//pEff = new FireShock_FireParticle(m_pDevice, m_pCmdLst, m_pRenderer, this);
+	//m_vecSkillEff.push_back(pEff);
 }
 
 int FireShock::Update(const float& fTimeDelta)

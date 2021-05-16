@@ -429,7 +429,7 @@ void Network::SendMyPlayerInfo()
 		tInfo_packet.matWorld = pPlayer->GetWorld();
 		//tInfo_packet.ePlayerState = pPlayer->GetRootFSM()->GetState();
 		tInfo_packet.bAttackEnd = dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->GetAttackEnd();
-		if (pPlayer->GetInstName() == CHARACTER_WIZARD_01)
+		if (pPlayer->GetInstName() == CHARACTER_WIZARD_FIRE)
 			tInfo_packet.InstanceName = WIZARD_FIRE; // 01번 캐릭터 메쉬를 사용한 친구임
 	}
 	else

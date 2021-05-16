@@ -96,7 +96,7 @@ void TestScene::Initialize()
 #ifdef NETWORK
 	XMFLOAT3 pos = Network::GetInstance()->GetMyPlayerStartPos();
 	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		CHARACTER_WIZARD_01, pos, Network::GetInstance()->GetMyInfo(), MESH_TYPE::CHARACTER);
+		CHARACTER_WIZARD_FIRE, pos, Network::GetInstance()->GetMyInfo(), MESH_TYPE::CHARACTER);
 	pPlayer = dynamic_cast<Player*>(pObj);
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
 	Core::GetInstance()->CmdLstExecute();
@@ -108,7 +108,7 @@ void TestScene::Initialize()
 		Core::GetInstance()->CmdLstReset();
 		pos = (*iter).second.xmfPosition;
 		pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-			CHARACTER_WIZARD_01, pos, (*iter).second, MESH_TYPE::CHARACTER);
+			CHARACTER_WIZARD_FIRE, pos, (*iter).second, MESH_TYPE::CHARACTER);
 		Core::GetInstance()->CmdLstExecute();
 		Core::GetInstance()->WaitForGpuComplete();
 		m_pObjects[OBJ_PLAYER].push_back(pObj);
@@ -117,7 +117,7 @@ void TestScene::Initialize()
 
 #else
 	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER);
+		CHARACTER_WIZARD_COLD, MESH_TYPE::CHARACTER);
 	pPlayer = dynamic_cast<Player*>(pObj);
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
@@ -174,8 +174,8 @@ void TestScene::Initialize()
 	//	XMFLOAT3(10.f, 1.f, 5.f));
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
 	//
-	//pObj = new FireShock(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
-	//m_pObjects[OBJ_SKILL].push_back(pObj);
+	pObj = new FireShock(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	m_pObjects[OBJ_SKILL].push_back(pObj);
 
 	//pObj = new FireRing(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	//m_pObjects[OBJ_SKILL].push_back(pObj);

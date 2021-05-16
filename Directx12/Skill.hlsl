@@ -34,6 +34,7 @@ Out_Skill VS_Flames_FireEff(In_Skill vin)
 	vout.TexC = vin.TexC;
 	vout.Normal = normalize(mul(float4(vin.Normal, 0.f), gWorldNoInstanced));
 
+
 	return vout;
 }
 
@@ -119,8 +120,9 @@ Out_Skill_Static VS_FireShock_FireCylinder(In_Skill_Static vin)
 	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)gWorldNoInstanced));
 	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)gWorldNoInstanced));
 
-	vout.TexC = vin.TexC;
+	//vout.TexC = vin.TexC;
 
+	vout.TexC = vin.TexC + float2(gSkillTime * pow(4,gSkillTime*0.1f), gSkillTime * 1.f);
 	return vout;
 }
 
@@ -131,12 +133,12 @@ PSOut_Skill PS_FireShock_FireCylinder(Out_Skill_Static pin)
 	float3 diff1 = SkillEffTex1.Sample(gsamLinear, pin.TexC).rgb;
 	float3 diff2 = SkillEffTex2.Sample(gsamLinear, pin.TexC).rgb;
 
-	/*
-	float multi2_time = gSkillTime % 1.f;
+	
+	float multi2_time = gDissolveC % 1.f;
 	clamp(multi2_time, 0.5f, 1.f);
 
-	float multi1 = ((diff2.r * sin(0.5005f)) * 2.8);
-	float multi2 = diff2.r * sin(multi2_time);
+	float multi1 = ((diff2.r * sin(gDissolveC)) * 2.8);
+	float multi2 = diff2.r * sin(gDissolveC);
 
 	float b = saturate(pow(multi1 + multi2, 20));
 
@@ -145,20 +147,24 @@ PSOut_Skill PS_FireShock_FireCylinder(Out_Skill_Static pin)
 	float3 Ke;
 
 	if (0.9f >= b)
-		Ke = float3(100.f, 1.f, 1.f);
+		Ke = float3(1.f, 100.f, 1.f);
 	else
 		Ke = float3(0.f, 0.f, 0.f);
 
 	
 
 	float3 diffuse = (Ke * float3(0.f, 1.f, 0.f) + diff1);
-	//diffuse.r = 0.5 + diffuse.r * sin(gSkillTime);
-	vout.Diffuse = float4(diff1, 1);
+	diffuse.r = 0.5 + diffuse.r * sin(gDissolveC);
+	diffuse.g = 0.5 + diffuse.g * sin(gDissolveC);
+	
+
+	vout.Diffuse = float4(diffuse, c);
+	//vout.Diffuse = float4(diff1, 1);
 
 	//vout.Diffuse = float4(diff2.rgb, diff2.r);
-	*/
+	
 
-	vout.Diffuse = float4(diff1.rgb, diff2.r);
+	//vout.Diffuse = float4(diff1.rgb, diff2.r);
 
 	return vout;
 }

@@ -64,7 +64,7 @@ HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* Ro
 		psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-	psoDesc.BlendState.AlphaToCoverageEnable = false;
+	psoDesc.BlendState.AlphaToCoverageEnable = true;
 	psoDesc.BlendState.IndependentBlendEnable = false;
 	psoDesc.BlendState.RenderTarget[0].BlendEnable = true;
 	psoDesc.BlendState.RenderTarget[0].LogicOpEnable = false;

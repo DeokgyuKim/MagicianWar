@@ -59,13 +59,13 @@ void Player::Initialize(XMFLOAT3 pos)
 	Component* pComponent = new Transform(XMFLOAT3(0.01f, 0.01f, 0.01f), XMFLOAT3(0.f, 0.f, 0.f), pos);
 	//Component* pComponent = new Transform(XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT3(0.f, 0.f, 0.f), pos);
 	m_mapComponent["Transform"] = pComponent;
-	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), CHARACTER_WIZARD_01);
+	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), m_strInstName);
 	m_mapComponent["Mesh"] = pComponent;
-	pComponent = new MaterialCom(CHARACTER_WIZARD_01);
+	pComponent = new MaterialCom(m_strInstName);
 	m_mapComponent["Material"] = pComponent;
-	pComponent = new AnimationCom(CHARACTER_WIZARD_01);
+	pComponent = new AnimationCom(m_strInstName);
 	m_mapComponent["Upper_Animation"] = pComponent;
-	pComponent = new AnimationCom(CHARACTER_WIZARD_01);
+	pComponent = new AnimationCom(m_strInstName);
 	m_mapComponent["Root_Animation"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetMeshRotate(XMFLOAT3(-90.f, 0.f, 0.f));
@@ -77,7 +77,7 @@ void Player::Initialize(XMFLOAT3 pos)
 	m_RootBody = make_unique<PlayerFSM>(this, BoneType::ROOT_BONE);
 #endif
 
-	m_strTextureName = "wizard_01";
+	m_strTextureName = m_strInstName;
 
 	m_pWeapon = new Weapon(m_pDevice, m_pCmdLst, m_pRenderer, "weapon", "weapon", this, 20, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(-157.f, 177.f, -101.f), XMFLOAT3(-50.f, -6.f, 44.f));
 

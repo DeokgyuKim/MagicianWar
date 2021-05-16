@@ -11,6 +11,8 @@ FireShock_FireCylinder::FireShock_FireCylinder(ID3D12Device* device, ID3D12Graph
 	: SkillEff(device, cmdLst, pRenderer, pParent)
 {
 	Initialize();
+	m_DissolveTime = 6.5f;
+	m_Time1 = 0;
 }
 
 FireShock_FireCylinder::~FireShock_FireCylinder()
@@ -64,13 +66,28 @@ int FireShock_FireCylinder::Update(const float& fTimeDelta)
 	m_fTime += fTimeDelta;
 	XMFLOAT3 Scale = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetScale();
 	XMFLOAT3 Rotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
-	
+
+	if (m_DissolveTime < 7.8f) { // 디졸브 생성
+		m_Time1 += 0.01;
+		m_DissolveTime += (pow(10, m_Time1) * 0.1f) * fTimeDelta;
+	}
+	else if (m_DissolveTime <= 9.f) {
+		m_Time1 -= 0.01;
+		m_DissolveTime += (pow(10, m_Time1) * 0.1f) * fTimeDelta;
+	}
+	else if (m_DissolveTime >= 9.f) {
+		m_DissolveTime = 6.5f;
+		m_Time1 = 0;
+		m_fTime = 0.f;
+	}
+	//6.5 에서 7.6
+	//cout << "현재 시간 - " << m_fTime << endl;
 	//Scale.z += fTimeDelta;
 	//if (Scale.z >= 1.f) {
 	//	Scale.z = 0.f;
 	//}
 	//Rotate.z += 180.f*fTimeDelta;
-	
+
 	//cout << "( " << Rotate.x << ", " << Rotate.y << ", " << Rotate.z << " )" << endl;
 	//if (Rotate.y >= 1.f) {
 	//	//Rotate.y = 0.f;
@@ -94,6 +111,7 @@ void FireShock_FireCylinder::LateUpdate(const float& fTimeDelta)
 
 	SkillCB skillcb;
 	skillcb.fTime = m_fTime;
+	skillcb.DissolveC = m_DissolveTime;
 	m_SkillCB->CopyData(0, skillcb);
 
 }
