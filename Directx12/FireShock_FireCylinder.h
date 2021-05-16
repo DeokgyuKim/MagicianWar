@@ -18,5 +18,9 @@ public:
     virtual int Update(const float& fTimeDelta) override;
     virtual void LateUpdate(const float& fTimeDelta) override;
     virtual void Render(const float& fTimeDelta, int _instanceCount = 1) override;
+
+private:
+    float m_DissolveTime;
+    float m_Time1;
 };
 

@@ -55,9 +55,6 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	pTexture = new DDSTexture(device, cmdLst, heap, "wizard_Fire", L"../Resources/Models/Characters/wizard_Darkness/wizard_Darkness.dds");
 	m_mapTextures["wizard_Darkness"] = pTexture;
 
-	pTexture = new DDSTexture(device, cmdLst, heap, "wizard_Fire", L"../Resources/Models/Characters/wizard_Black/wizard_Black.dds");
-	m_mapTextures["wizard_Black"] = pTexture;
-
 	pTexture = new DDSTexture(device, cmdLst, heap, "wizard_Fire", L"../Resources/Models/Characters/wizard_Cold/wizard_Cold.dds");
 	m_mapTextures["wizard_Cold"] = pTexture;
 

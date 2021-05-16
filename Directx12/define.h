@@ -14,8 +14,6 @@
 #define WIZARD_FIRE 99
 #define CHARACTER_WIZARD_COLD "wizard_Cold"
 #define WIZARD_COLD 98
-#define CHARACTER_WIZARD_BLACK "wizard_Black"
-#define WIZARD_BLACK 97
 #define CHARACTER_WIZARD_DARKNESS "wizard_Darkness"
 #define WIZARD_DARKNESS 96
 	// Tree
