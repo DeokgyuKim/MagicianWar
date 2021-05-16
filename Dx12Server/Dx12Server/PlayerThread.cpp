@@ -409,6 +409,7 @@ void WorkThread() // send & physics & function
 
 
 			//Collision
+
 			for (int i = 0; i < gClientNum; ++i)
 			{
 				//플레이어가 히또 상태면 체크 안하게
@@ -436,6 +437,7 @@ void WorkThread() // send & physics & function
 							gClients[i].setPlayerHp(gClients[i].getInfo().info.iHp - iDamage);
 							if (gClients[i].getInfo().info.iHp <= 0)
 							{
+								
 								//플레이어 SetFSM(DEAD)
 								///////////////////////
 								gClients[i].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DEAD), static_cast<int>(ANIMATION_TYPE::DEAD));
@@ -460,7 +462,7 @@ void WorkThread() // send & physics & function
 										gClients[0].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::DANCE), static_cast<int>(ANIMATION_TYPE::DANCE));
 										gameEnd.teamNum = 0;
 									}
-
+									break;
 								}
 							}
 							else
