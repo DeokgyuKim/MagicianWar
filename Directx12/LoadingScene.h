@@ -4,6 +4,7 @@
 class Loading;
 class Camera;
 class Button;
+class Bar;
 class LoadingScene :
     public Scene
 {
@@ -19,5 +20,6 @@ private:
     bool        ToolMode = false;
     Camera*     m_pCamera;
     Button*     m_pButton;
+    Bar*        m_pLoadingBar;
 };
 

@@ -3,7 +3,7 @@
 #include "SkinnedModelInstance.h"
 
 class Core;
-
+class Loading;
 class AnimationMgr
 {
 private:
@@ -29,7 +29,7 @@ private:
 public:
 	void InitAnimationMgr(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCmdLst);
 	void BuildAnimation(string meshName, MESH_TYPE eMesh, ANIMATION_TYPE eAnimation);
-	void BuildAnimations();
+	void BuildAnimations(Loading* pLoading);
 	void SetSkinnedDatas(string meshName, unique_ptr<SkinnedData> _skinnedinfo);
 public:
 	SkinnedModelInstance* GetAnimations(const string& ObjectName) { return m_SkinnedModelInsts[ObjectName].get(); }
@@ -47,4 +47,3 @@ private:
 	
 	string m_strFilePath;
 };
-

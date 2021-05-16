@@ -6,6 +6,7 @@
 class Core;
 class MaterialMgr;
 class AnimationMgr;
+class Loading;
 
 class MeshMgr
 {
@@ -32,8 +33,8 @@ public:
 	void InitMeshMgr(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCmdLst);
 	void BuildSkinnedModel(string meshName, MESH_TYPE etype);
 	void BuildModel(string meshName, MESH_TYPE etype, bool bCollisionModel = false);
-	void BuildModels();
-	void BuildSkinnedModels();
+	void BuildModels(Loading* pLoading);
+	void BuildSkinnedModels(Loading* pLoading);
 	//void Build
 
 private: // mesh, skeleton Load

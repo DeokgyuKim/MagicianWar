@@ -267,7 +267,7 @@ void Renderer::BuildRootSignature()
 	srvTable[12].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 12);	// Skill Effect Texture5
 
 
-	const size_t rootSize = 20;
+	const size_t rootSize = 21;
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[rootSize];
 
@@ -292,7 +292,7 @@ void Renderer::BuildRootSignature()
 	slotRootParameter[17].InitAsDescriptorTable(1, &srvTable[12], D3D12_SHADER_VISIBILITY_PIXEL);	// Skill Effect Texture5
 	slotRootParameter[18].InitAsConstantBufferView(5);	//Skill Constant Buffer
 	slotRootParameter[19].InitAsConstantBufferView(6);	//Not Instanced Object Constant Buffer
-
+	slotRootParameter[20].InitAsConstantBufferView(7);	//UiCB
 
 	auto staticSamplers = GetStaticSamplers();
 

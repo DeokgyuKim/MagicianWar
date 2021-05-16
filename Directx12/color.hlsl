@@ -211,7 +211,13 @@ PS_SHADE_OUT PS_UI(Shade_Out pin)
 {
 	PS_SHADE_OUT pOut;
 	
-	pOut.Shade = Texture.Sample(gsamLinear, pin.UV);
+	float4 color = Texture.Sample(gsamLinear, pin.UV);
+	float2 alpha;
+	alpha.x = floor((1 - pin.UV.x) + ratio.x);
+	alpha.y = floor((1 - pin.UV.y) + ratio.y);
+	float resultalpha = min(alpha.x, alpha.y);
+
+	pOut.Shade = float4(color.xyz, resultalpha * color.w);
 
 	return pOut;
 }

@@ -3,6 +3,8 @@
 #include <mutex>
 #include "include.h"
 
+extern vector<PxRigidStatic*> StaticObjects;
+
 class InterfaceFSM;
 
 class Player
@@ -21,6 +23,8 @@ public:
 	void MoveLeft(float speed);
 	void MoveRight(float speed);
 
+	bool Jump(float fTime);
+
 	// recv & send
 	int recvPacket();
 	int sendPacket(void* _packet, int _size);
@@ -31,6 +35,7 @@ public:
 
 public:
 	// Get
+	XMFLOAT3 getPosition() { return XMFLOAT3(m_matRealWorld._41, m_matRealWorld._42, m_matRealWorld._43); }
 	XMFLOAT4X4 getWorld() { return matWorld; }
 	XMFLOAT4X4 getBulletStartWorld();
 	STOC_ServerPlayer getInfo() { return Info; }
@@ -78,6 +83,7 @@ public:
 	int getCreateBullet() { return m_Bullet; }
 	void ChangeUpperAnimation(int _Ani);
 	void ChangeRootAnimation(int _Ani);
+	void setJump(bool bJump);
 
 public:
 	//PhysX
@@ -133,5 +139,10 @@ private: //
 	int m_iHp;
 
 	int m_Bullet;
+
+	//Jump
+	bool m_bJump = false;
+	float m_fJumpSpeedY = 0.f;
+	float m_fAccTime = 0.f;
 };
 

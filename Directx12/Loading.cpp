@@ -22,22 +22,23 @@ void Loading::Initialize()
 void Loading::LoadingTextures()
 {
 	//m_pCore->CmdLstForLoadingReset();
-	TextureMgr::GetInstance()->BuildTextures(m_pDevice, m_pCmdLst, m_pHeap);
+	TextureMgr::GetInstance()->BuildTextures(m_pDevice, m_pCmdLst, m_pHeap, this);
+	Sleep(1000);
 }
 
 void Loading::LoadingModels()
 {
-	MeshMgr::GetInstnace()->BuildModels();
+	MeshMgr::GetInstnace()->BuildModels(this);
 }
 
 void Loading::LoadingSkinnedModels()
 {
-	MeshMgr::GetInstnace()->BuildSkinnedModels();
+	MeshMgr::GetInstnace()->BuildSkinnedModels(this);
 }
 
 void Loading::LoadingAnimations()
 {
-	AnimationMgr::GetInstance()->BuildAnimations();
+	AnimationMgr::GetInstance()->BuildAnimations(this);
 	m_pCore->CmdLstForLoadingClose();
 	m_bFinish = true;
 }

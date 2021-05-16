@@ -17,6 +17,8 @@ private:
 public:
 	CRITICAL_SECTION*	GetCrt() { return &m_Crt; }
 	bool GetFinish() { return m_bFinish; }
+	void AddCount() { ++m_iCnt; Sleep(10); }
+	int GetCount() { return m_iCnt; }
 
 	static unsigned int APIENTRY ThreadMain(void* pArg);
 private:
@@ -28,5 +30,7 @@ private:
 	HANDLE m_hThread;
 	CRITICAL_SECTION m_Crt;
 	bool m_bFinish;
+
+	int m_iCnt = 0;
 };
 

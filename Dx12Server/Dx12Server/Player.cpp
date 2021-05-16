@@ -64,6 +64,9 @@ void Player::Update(float fTime)
 	m_RootBody->Execute(fTime);
 
 	ePlayerState = m_RootBody->GetState();
+
+
+	//cout << m_matRealWorld._42 << endl;
 }
 
 void Player::UpdatePlayerInfo(CTOS_PlayerInfo* pInfo)
@@ -210,6 +213,31 @@ void Player::MoveRight(float speed)
 	//matWorld._43 = pos.z;
 }
 
+bool Player::Jump(float fTime)
+{
+	m_fAccTime += fTime;
+	float fY = m_fJumpSpeedY * fTime;
+
+	m_fJumpSpeedY -= fTime;
+	m_fJumpSpeedY = max(0.f, m_fJumpSpeedY);
+
+
+	XMFLOAT3 up;
+	XMFLOAT3 pos = { matWorld._41 ,matWorld._42 ,matWorld._43 };
+	memcpy(&up, &matWorld._31, sizeof(XMFLOAT3));
+	XMStoreFloat3(&up, XMVector3Normalize(XMLoadFloat3(&up)));
+	//XMStoreFloat3(&look, XMVector3TransformNormal(XMLoadFloat3(&look), XMMatrixRotationX(XMConvertToRadians(90.f))));
+
+	XMFLOAT3 vSpeed;
+	XMStoreFloat3(&vSpeed, XMLoadFloat3(&up) * m_fJumpSpeedY);
+	MoveCapsuleController(vSpeed, 1.f);
+
+	for (auto obj : StaticObjects)
+		if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(m_pCapsuleCon->getActor(), obj))
+			return true;
+	return false;
+}
+
 int Player::recvPacket()
 {
 	return recv(Info.socket, recv_start_ptr, MAX_BUFFER, 0);
@@ -297,6 +325,13 @@ void Player::ChangeRootAnimation(int _Ani)
 		Root_eAnimType = nextAni;
 }
 
+void Player::setJump(bool bJump)
+{ 
+	m_bJump = bJump;
+	float m_fJumpSpeedY = 2.f;
+	float m_fAccTime = 0.f;
+}
+
 void Player::CreateCapsuleController()
 {
 	m_mutex.lock();
@@ -338,7 +373,7 @@ void Player::ModifyPhysXPos(const float& fTimeDelta)
 	pxVecGp.z = float(GetPosition.z);
 	matTrans = XMMatrixTranslation(pxVecGp.x, pxVecGp.y, pxVecGp.z);
 
-	matOffset = XMMatrixTranslation(0.f, -0.75f, 0.f);
+	matOffset = XMMatrixTranslation(0.f, -0.85f, 0.f);
 
 	
 	XMStoreFloat4x4(&m_matRealWorld, matScale * matQuat * matTrans);

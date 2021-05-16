@@ -14,6 +14,7 @@
 #include "Bullet.h"
 #include "UI.h"
 #include "Button.h"
+#include "Bar.h"
 
 #include "StaticMeshMgr.h"
 #include "TextureMgr.h"
@@ -28,6 +29,12 @@ LoadingScene::LoadingScene()
 int LoadingScene::Update(const float& fTimeDelta)
 {
 	Scene::Update(fTimeDelta);
+
+	if (m_pLoading != NULL)
+	{
+		m_pLoadingBar->SetRatio(XMFLOAT2(m_pLoading->GetCount() / 64.f, 1.f));
+		//cout << m_pLoading->GetCount() / 64.f << endl;
+	}
 
 	bool CheckThread = m_pLoading->GetFinish();
 
@@ -77,7 +84,7 @@ void LoadingScene::Initialize()
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 
-	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, WINCX, WINCY), "MainUi");
+	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, WINCX, WINCY), "MainLogo");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
@@ -87,7 +94,12 @@ void LoadingScene::Initialize()
 	m_pButton = dynamic_cast<Button*>(pObj);
 	m_pButton->SetTag(0);
 
+	pObj = new Bar(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(15.f, WINCY - 75.f, WINCX - 30.f, 60.f), "LoadingBar");
+	m_pObjects[OBJ_UI].push_back(pObj);
 
+	m_pLoadingBar = dynamic_cast<Bar*>(pObj);
+	m_pLoadingBar->SetTag(1);
+	
 	m_pLoading = new Loading(Core::GetInstance(), Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLstForLoading(), Renderer::GetInstance()->GetHeap());
 
 #ifdef NETWORK

@@ -19,10 +19,14 @@ public:
 public:
     int         GetTag() { return m_iTag; }
     void        SetTag(const int& iTag) { m_iTag = iTag; }
-private:
+public:
+    void    SetRatio(XMFLOAT2 xmfRatio) { m_xmfRatio = xmfRatio; }
+protected:
     ID3D12Device*               m_pDevice;
     ID3D12GraphicsCommandList*  m_pCmdLst;
     Renderer*                   m_pRenderer;
     int                         m_iTag = -1;
+    unique_ptr<UploadBuffer<UiCB>>	        m_UiCB;
+    XMFLOAT2 m_xmfRatio = XMFLOAT2(1.f, 1.f);
 };
 

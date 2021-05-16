@@ -27,6 +27,9 @@ void UI::Initialize(XMFLOAT4 xmfInfo)
 
 	pComponent = new UIPlane(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), xmfInfo.x, xmfInfo.y, xmfInfo.z, xmfInfo.w);
 	m_mapComponent["Mesh"] = pComponent;
+
+	m_UiCB = make_unique<UploadBuffer<UiCB>>(m_pDevice, 1, true);
+
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 }
@@ -41,9 +44,13 @@ void UI::LateUpdate(const float& fTimeDelta)
 {
 	Object::LateUpdate(fTimeDelta);
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_UI, this);
+	UiCB uicb;
+	uicb.ratio = m_xmfRatio;
+	m_UiCB->CopyData(0, uicb);
 }
 
 void UI::Render(const float& fTimeDelta, int _instanceCount)
 {
+	m_pCmdLst->SetGraphicsRootConstantBufferView(20, m_UiCB->Resource()->GetGPUVirtualAddress());
 	Object::Render(fTimeDelta);
 }

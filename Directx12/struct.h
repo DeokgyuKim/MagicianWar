@@ -89,7 +89,12 @@ struct SkillCB
 	float fTime = 0.f;
 	UINT  SkillIdx = 0;
 	float DissolveC = 0.f;
-	
+};
+
+
+struct UiCB
+{
+	XMFLOAT2 ratio = XMFLOAT2(1.f, 1.f);
 };
 
 

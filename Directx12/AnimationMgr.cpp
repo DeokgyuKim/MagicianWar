@@ -1,5 +1,7 @@
 #include "AnimationMgr.h"
 #include <fstream>
+#include "Loading.h"
+
 AnimationMgr* AnimationMgr::m_pInstance = nullptr;
 
 void AnimationMgr::InitAnimationMgr(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCmdLst)
@@ -75,18 +77,28 @@ void AnimationMgr::BuildAnimation(string meshName, MESH_TYPE eMesh, ANIMATION_TY
 
 }
 
-void AnimationMgr::BuildAnimations()
+void AnimationMgr::BuildAnimations(Loading* pLoading)
 {
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::IDLE);
+	pLoading->AddCount();
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::ATTACK);
+	pLoading->AddCount();
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_FOWARD);
+	pLoading->AddCount();
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_BACK);
+	pLoading->AddCount();
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_LEFT);
+	pLoading->AddCount();
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::WALK_RIGHT);
+	pLoading->AddCount();
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::JUMP);
+	pLoading->AddCount();
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::HIT);
+	pLoading->AddCount();
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::DEAD);
+	pLoading->AddCount();
 	BuildAnimation(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER, ANIMATION_TYPE::DANCE);
+	pLoading->AddCount();
 
 	cout << "Load Animation Complete!" << endl;
 }

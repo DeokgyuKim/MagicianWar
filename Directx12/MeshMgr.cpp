@@ -2,6 +2,8 @@
 #include "MaterialMgr.h"
 #include "AnimationMgr.h"
 #include <fstream>
+#include "Loading.h"
+
 MeshMgr* MeshMgr::m_pInstance = nullptr;
 
 void MeshMgr::InitMeshMgr(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCmdLst)
@@ -174,47 +176,80 @@ void MeshMgr::BuildModel(string meshName, MESH_TYPE etype, bool bCollisionModel)
 		MaterialLoader->BuildMaterial(meshName, materials.front());
 }
 
-void MeshMgr::BuildModels()
+void MeshMgr::BuildModels(Loading* pLoading)
 {
 	BuildModel(ROCK_02, MESH_TYPE::ROCK);
+	pLoading->AddCount();
 	BuildModel(TREE_01, MESH_TYPE::TREE);
+	pLoading->AddCount();
 	BuildModel(HOUSE_02, MESH_TYPE::HOUSE);
+	pLoading->AddCount();
 	BuildModel(TILE_01, MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("Cylinder", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("barrel_group", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("box", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("castle_door_1", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("castle_tower_octagon", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("castle_tower_round", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("citadel_base_a", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("city_tower_a", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("civilian_house_18_a", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("civilian_house_18_b", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("civilian_house_36_c", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("civilian_house_37_e", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("civilian_house_37_h", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("civilian_house_46", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("civilian_house_ruin_e", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("fountain_a", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("overhang_building_a", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("roof_building_4", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("roof_building_5", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("roof_building_11", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("roof_building_12", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("street_gate", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("tower_gates", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("wall_H10m_L15m", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("wall_H10m_L50m", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("wagon", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("Sphere", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("weapon", MESH_TYPE::TILE);
+	pLoading->AddCount();
 
 	cout << "Load Model Complete!" << endl;
 }
 
-void MeshMgr::BuildSkinnedModels()
+void MeshMgr::BuildSkinnedModels(Loading* pLoading)
 {
 	BuildSkinnedModel(CHARACTER_WIZARD_01, MESH_TYPE::CHARACTER);
+	pLoading->AddCount();
 	cout << "Load SkinnedModel Complete!" << endl;
 }
 

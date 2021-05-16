@@ -211,6 +211,9 @@
     <Filter Include="00.Game\02.Object\08.Panel">
       <UniqueIdentifier>{0136ba21-13a3-4500-8a1f-9e7e5fef1cc7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\02.Object\00.UI\01.Bar">
+      <UniqueIdentifier>{9db63625-57d3-448d-9689-f8a486817176}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -420,6 +423,9 @@
     <ClInclude Include="Panel.h">
       <Filter>00.Game\02.Object\08.Panel</Filter>
     </ClInclude>
+    <ClInclude Include="Bar.h">
+      <Filter>01.Engine\02.Object\00.UI\01.Bar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -601,6 +607,9 @@
     </ClCompile>
     <ClCompile Include="Panel.cpp">
       <Filter>00.Game\02.Object\08.Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="Bar.cpp">
+      <Filter>01.Engine\02.Object\00.UI\01.Bar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

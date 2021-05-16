@@ -53,6 +53,7 @@ void PlayerFSM::Enter(int _State, int _Ani)
 			break;
 		case SCint(PLAYER_STATE::JUMP):
 			m_beforejump = false;
+			m_User->setJump(true);
 			break;
 		case SCint(PLAYER_STATE::HIT):
 			
@@ -110,7 +111,7 @@ void PlayerFSM::Exit()
 			
 			break;
 		case SCint(PLAYER_STATE::JUMP):
-
+			m_User->setJump(false);
 			break;
 		case SCint(PLAYER_STATE::HIT):
 
@@ -137,6 +138,7 @@ void PlayerFSM::Idle(float fTime)
 		if (DefaultKey & 0x0010) // 점프
 		{
 			ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
+			dkey = DefaultKey;
 		}
 		else if (DefaultKey & 0x0020) // 마우스 왼쪽 공격
 		{
@@ -166,6 +168,7 @@ void PlayerFSM::Idle(float fTime)
 		if (DefaultKey & 0x0010) // 점프
 		{
 			ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
+			dkey = DefaultKey;
 		}
 		else if (DefaultKey & 0x0020) // 마우스 왼쪽 공격
 		{
@@ -200,6 +203,7 @@ void PlayerFSM::Move(float fTime)
 		if (DefaultKey & 0x0010) // 점프
 		{
 			ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
+			dkey = DefaultKey;
 		}
 		else if (DefaultKey & 0x0020) // 마우스 왼쪽 공격
 		{
@@ -232,6 +236,7 @@ void PlayerFSM::Move(float fTime)
 		if (DefaultKey & 0x0010) // 점프
 		{
 			ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
+			dkey = DefaultKey;
 		}
 		else { // 이동중에 공격이면 하체는 안바꿔도됨
 			if (DefaultKey & 0x0001) // w
@@ -327,7 +332,65 @@ void PlayerFSM::Attack(float fTime)
 
 void PlayerFSM::Jump(float fTime)
 {
-	ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
+	if (m_BoneType == BoneType::UPPER_BONE)
+	{ 
+		if (m_User->getPosition().y <= 0.f) {
+			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
+		}
+
+	}
+	else if (m_BoneType == BoneType::ROOT_BONE)
+	{
+		if (dkey & 0x0001) // w
+		{ // 위쪽
+			if (dkey & 0x0002) { // a
+				// 왼쪽
+				m_User->MoveForward(M_MoveForward_Speed / sqrtf(2.f));
+				m_User->MoveLeft(M_MoveLeft_Speed / sqrtf(2.f));
+			}
+			else if (dkey & 0x0008) { // d
+				// 오른쪽
+				m_User->MoveForward(M_MoveForward_Speed / sqrtf(2.f));
+				m_User->MoveRight(M_MoveRight_Speed / sqrtf(2.f));
+			}
+			else {
+				m_User->MoveForward(M_MoveForward_Speed);
+			}
+			m_User->ChangeRootAnimation(SCint(ANIMATION_TYPE::WALK_FOWARD));
+		}
+		else if (dkey & 0x0004) { // s
+			// 아래쪽
+			if (dkey & 0x0002) { // a
+				// 왼쪽
+				m_User->MoveBackward(M_MoveBackward_Speed / sqrtf(2.f));
+				m_User->MoveLeft(M_MoveLeft_Speed / sqrtf(2.f));
+			}
+			else if (dkey & 0x0008) { // d
+				// 오른쪽
+				m_User->MoveBackward(M_MoveBackward_Speed / sqrtf(2.f));
+				m_User->MoveRight(M_MoveRight_Speed / sqrtf(2.f));
+			}
+			else {
+				m_User->MoveBackward(M_MoveBackward_Speed);
+			}
+			m_User->ChangeRootAnimation(SCint(ANIMATION_TYPE::WALK_BACK));
+		}
+		else if (dkey & 0x0002) { // a
+			m_User->ChangeRootAnimation(SCint(ANIMATION_TYPE::WALK_LEFT));
+			m_User->MoveLeft(M_MoveLeft_Speed);
+		}
+		else if (dkey & 0x0008) { // d
+			m_User->ChangeRootAnimation(SCint(ANIMATION_TYPE::WALK_RIGHT));
+			m_User->MoveRight(M_MoveRight_Speed);
+		}
+
+		if(m_User->Jump(fTime))
+			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
+
+		if (m_User->getPosition().y <= 0.f) {
+			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
+		}
+	}
 }
 
 void PlayerFSM::Hit(float fTime)

@@ -1,73 +1,96 @@
 #include "TextureMgr.h"
 #include "DDSTexture.h"
+#include "Loading.h"
 
 TextureMgr* TextureMgr::m_pInstance = NULL;
-void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap)
+void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap, Loading* pLoading)
 {
 	DDSTexture* pTexture = NULL;
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Stone01", L"../Resources/Stone01.dds");
 	m_mapTextures["Stone01"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Tree02", L"../Resources/Tree02.dds");
 	m_mapTextures["Tree02"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Lose", L"../Resources/Lose.dds");
 	m_mapTextures["Lose"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Win", L"../Resources/Win.dds");
 	m_mapTextures["Win"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "CrossHair", L"../Resources/CrossHair.dds");
 	m_mapTextures["CrossHair"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Noise", L"../Resources/Noise.dds", false, 12);
 	m_mapTextures["Noise"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Noise2", L"../Resources/Noise2.dds", false, 12);
 	m_mapTextures["Noise2"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Noise3", L"../Resources/Noise3.dds", false, 12);
 	m_mapTextures["Noise3"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Noise4", L"../Resources/Noise4.dds", false, 12);
 	m_mapTextures["Noise4"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "BoomParticle", L"../Resources/BoomParticle.dds", false, 12);
 	m_mapTextures["BoomParticle"] = pTexture;
+	pLoading->AddCount();
 	
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall", L"../Resources/FireBall.dds");
 	m_mapTextures["FireBall"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall3", L"../Resources/FireBall3.dds");
 	m_mapTextures["FireBall3"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall2", L"../Resources/FireBall2.dds");
 	m_mapTextures["FireBall2"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall2", L"../Resources/Flames_FireEff.dds");
 	m_mapTextures["Flames_FireEff"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "wizard_01", L"../Resources/Models/Characters/wizard_01/wizard_01.dds");
 	m_mapTextures["wizard_01"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "SkyBox", L"../Resources/SkyBox/SkyBox_0.dds", true, 10);
 	m_mapTextures["SkyBox"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Texture_01", L"../Resources/Models/Textures/Texture_01.dds");
 	m_mapTextures["StaticMesh"] = pTexture;
+	pLoading->AddCount();
 	
 	pTexture = new DDSTexture(device, cmdLst, heap, "StaticTexture", L"../Resources/Models/Textures/StaticTexture.dds");
 	m_mapTextures["StaticTexture"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "StaticTexturePow", L"../Resources/Models/Textures/StaticTexturePow.dds");
 	m_mapTextures["StaticTexturePow"] = pTexture;
+	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Lava", L"../Resources/Lava.dds");
 	m_mapTextures["Lava"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "weapon", L"../Resources/Models/Textures/weapon.dds");
 	m_mapTextures["weapon"] = pTexture;
+	pLoading->AddCount();
 
 	cout << "Load Texture Complete!" << endl;
 }
@@ -76,9 +99,12 @@ void TextureMgr::BuildInitTextures(ID3D12Device* device, ID3D12GraphicsCommandLi
 {
 	DDSTexture* pTexture = NULL;
 
-	pTexture = new DDSTexture(device, cmdLst, heap, "MainUi", L"../Resources/UI/Loading/MagicianWar.dds");
-	m_mapTextures["MainUi"] = pTexture;
+	pTexture = new DDSTexture(device, cmdLst, heap, "MainLogo", L"../Resources/UI/Loading/MainLogo.dds");
+	m_mapTextures["MainLogo"] = pTexture;
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "LoadingBar", L"../Resources/UI/Loading/LoadingBar.dds");
+	m_mapTextures["LoadingBar"] = pTexture;
+	
 	pTexture = new DDSTexture(device, cmdLst, heap, "ButtonBase", L"../Resources/UI/Button/ButtonBase.dds");
 	m_mapTextures["ButtonBase"] = pTexture;
 	pTexture = new DDSTexture(device, cmdLst, heap, "ButtonMouseOn", L"../Resources/UI/Button/ButtonMouseOn.dds");
