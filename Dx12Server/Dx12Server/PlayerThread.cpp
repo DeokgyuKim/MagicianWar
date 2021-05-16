@@ -428,6 +428,10 @@ void WorkThread() // send & physics & function
 							{
 							case WIZARD_FIRE:
 								iDamage = 10;
+							case WIZARD_COLD:
+								iDamage = 10;
+							case WIZARD_DARKNESS:
+								iDamage = 10;
 							}
 							gClients[i].setPlayerHp(gClients[i].getInfo().info.iHp - iDamage);
 							if (gClients[i].getInfo().info.iHp <= 0)
