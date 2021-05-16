@@ -171,7 +171,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 				Start = false; // 스타트 안할거고
 			}
 		}
-		
+
 
 		if (Start && curScene == LOBBY_Scene) // 시작이고 현재 씬이 Lobby이면
 		{
@@ -284,8 +284,8 @@ void WorkThread() // send & physics & function
 				gEndingTime = 0;
 				gMaingameEnding = false;
 				gTotalTime = 0;
-				for(int i = 0; i < gClientNum; ++i)
-				{ 
+				for (int i = 0; i < gClientNum; ++i)
+				{
 					gClients[i].GetUpperFSM()->ChangeState(static_cast<int>(PLAYER_STATE::IDLE), static_cast<int>(ANIMATION_TYPE::IDLE));
 					gClients[i].GetRootFSM()->ChangeState(static_cast<int>(PLAYER_STATE::IDLE), static_cast<int>(ANIMATION_TYPE::IDLE));
 				}
@@ -303,7 +303,7 @@ void WorkThread() // send & physics & function
 			gameEnd.teamNum = 0;
 			//cout << "Time: " << frame_time.count() << endl;
 			gTotalTime += frame_time.count();
-			
+
 			//if (gTotalTime >= 2.f) {
 			//	gClients[0].setPlayerHp(gClients[0].getInfo().info.iHp - 10.f);
 			//	if (gClients[0].getInfo().info.iHp <= 0) { // 0번팀 패배 시뮬레이션
@@ -539,20 +539,29 @@ void WorkThread() // send & physics & function
 				gClients[i].sendPacket((void*)&InstBullets, InstBullets.size);
 				gClients[i].sendPacket((void*)&gameEnd, sizeof(gameEnd));
 
-				if (gEndingTime >= 5.f) { // 춤 5초 추고 엔딩으로
-					STOC_sceneChange scenePacket;
-					scenePacket.size = sizeof(scenePacket);
-					scenePacket.type = stoc_sceneChange;
-					scenePacket.sceneNum = ENDING_Scene; // 엔딩 씬
-					gClients[i].sendPacket((void*)&scenePacket, scenePacket.size);
-					global_mutex.lock();
-					curScene = ENDING_Scene;
-					gLateInit_EndingScene = false;
-					global_mutex.unlock();
-					gMaingameEnding = false;
-				}
 				//gClients[i].Unlock();
 
+			}
+			if (gEndingTime >= 5.f) { // 춤 5초 추고 엔딩으로
+				STOC_sceneChange scenePacket;
+				scenePacket.size = sizeof(scenePacket);
+				scenePacket.type = stoc_sceneChange;
+				scenePacket.sceneNum = LOBBY_Scene; // 엔딩 씬
+				STOC_GameEnd gameEnd;
+				gameEnd.size = sizeof(gameEnd);
+				gameEnd.type = stoc_gameend;
+				gameEnd.bEnd = false;
+				gameEnd.teamNum = -1;
+				for (int i = 0; i < gClientNum; ++i) {
+					gClients[i].ReInit();
+					gClients[i].sendPacket((void*)&scenePacket, scenePacket.size);
+					gClients[i].sendPacket((void*)&gameEnd, gameEnd.size);
+				}
+				global_mutex.lock();
+				curScene = LOBBY_Scene;
+				gLateInit_LobbyScene = false;
+				gMaingameEnding = false;
+				global_mutex.unlock();
 			}
 
 			// 다 보낸 후에는 workThread를 일시정지
@@ -571,22 +580,20 @@ void WorkThread() // send & physics & function
 			auto start_time = chrono::system_clock::now();
 			chrono::duration<float> frame_time = start_time - prev_time;
 
-			if (!gLateInit_EndingScene)
-			{
-				cout << "여긴 엔딩" << endl;
-				gEndingTime = 0;
-				gLateInit_EndingScene = true;
-			}
+			//if (!gLateInit_EndingScene)
+			//{
+			//	cout << "여긴 엔딩" << endl;
+			//	gEndingTime = 0;
+			//	gLateInit_EndingScene = true;
+			//}
 
-			gEndingTime += frame_time.count();
+			//gEndingTime += frame_time.count();
 
 
-			if (gEndingTime >= 5.f) { // 엔딩씬 이후 5초가 지나면 Lobby로
+			if (gEndingTime >= 1.f) { // 엔딩씬 이후 5초가 지나면 Lobby로
 				global_mutex.lock();
-				curScene = LOBBY_Scene;
 				gLateInit_LobbyScene = false;
 				global_mutex.unlock();
-				gEndingTime = 0;
 				STOC_sceneChange scenePacket;
 				scenePacket.size = sizeof(scenePacket);
 				scenePacket.type = stoc_sceneChange;
@@ -597,9 +604,12 @@ void WorkThread() // send & physics & function
 				gameEnd.bEnd = false;
 				gameEnd.teamNum = -1;
 				for (int i = 0; i < gClientNum; ++i) {
+					gClients[i].ReInit();
 					gClients[i].sendPacket((void*)&scenePacket, scenePacket.size); // 로비씬으로 넘어가라
 					gClients[i].sendPacket((void*)&gameEnd, gameEnd.size);
 				}
+				gEndingTime = 0;
+				curScene = LOBBY_Scene;
 			}
 
 			auto end_time = chrono::system_clock::now();

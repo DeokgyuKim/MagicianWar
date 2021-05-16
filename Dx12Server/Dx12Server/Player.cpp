@@ -55,6 +55,35 @@ void Player::Initialize(SOCKET& sock, int ID) // sock 와 id를 받아서 초기화
 	
 }
 
+void Player::ReInit()
+{
+
+	ePlayerState = PLAYER_STATE::IDLE;
+
+	Root_eAnimType = ANIMATION_TYPE::IDLE;
+	Root_fAnimTime = 0.f;
+	Root_eAnimBlendType = ANIMATION_TYPE::IDLE;
+	Root_fWeight = 0.f;
+
+	Upper_eAnimType = ANIMATION_TYPE::IDLE;
+	Upper_fAnimTime = 0.f;
+	Upper_eAnimBlendType = ANIMATION_TYPE::IDLE;
+	Upper_fWeight = 0.f;
+
+	//m_isConnected = false;
+
+	//m_bAttackEnd = false;
+
+	m_keyInput = 0;
+	m_iHp = 100;
+	m_Bullet = 0;
+
+	Info.info.iHp = 100;
+
+	m_Ready = false; // 초기 unReady
+	
+}
+
 void Player::Update(float fTime)
 {
 	// 여기서 이동에 관한 업데이트 하면 되겠지..
