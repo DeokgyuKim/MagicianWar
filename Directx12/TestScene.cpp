@@ -91,6 +91,7 @@ void TestScene::LateUpdate(const float& fTimeDelta)
 
 void TestScene::Initialize()
 {
+	ShowCursor(FALSE);
 	m_eSceneType = MAIN;
 	Object* pObj = NULL;
 	Player* pPlayer = NULL;

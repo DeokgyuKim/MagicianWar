@@ -52,7 +52,18 @@ void Player::Initialize(SOCKET& sock, int ID) // sock 와 id를 받아서 초기화
 	// FSM 만들기
 	m_UpperBody = make_unique<PlayerFSM>(this, BoneType::UPPER_BONE); // ( player , BoneType )
 	m_RootBody = make_unique<PlayerFSM>(this, BoneType::ROOT_BONE);
-	
+
+	ePlayerState = PLAYER_STATE::IDLE;
+
+	Root_eAnimType = ANIMATION_TYPE::IDLE;
+	Root_fAnimTime = 0.f;
+	Root_eAnimBlendType = ANIMATION_TYPE::IDLE;
+	Root_fWeight = 0.f;
+
+	Upper_eAnimType = ANIMATION_TYPE::IDLE;
+	Upper_fAnimTime = 0.f;
+	Upper_eAnimBlendType = ANIMATION_TYPE::IDLE;
+	Upper_fWeight = 0.f;
 }
 
 void Player::ReInit()
@@ -369,6 +380,13 @@ void Player::CreateCapsuleController()
 
 	m_mutex.lock();
 
+	if (m_pCapsuleCon != NULL)
+	{
+		CPhysXMgr::GetInstance()->gScene->removeActor(*m_pCapsuleCon->getActor());
+		m_pCapsuleCon->release();
+	}
+
+
 	CPhysXMgr::GetInstance()->m_PlayerController = m_pCapsuleCon = CPhysXMgr::GetInstance()->
 		CreateCapsuleController(Info.info.dwPlayerNum, xmfpos, 0.5f, 0.5f, true);
 	m_pCapsuleCon->getActor()->setName("Player");
@@ -408,15 +426,15 @@ void Player::ModifyPhysXPos(const float& fTimeDelta)
 	pxVecGp.z = float(GetPosition.z);
 	matTrans = XMMatrixTranslation(pxVecGp.x, pxVecGp.y, pxVecGp.z);
 
-	matOffset = XMMatrixTranslation(0.f, -0.85f, 0.f);
+	if(m_InstanceName != WIZARD_DARKNESS)
+		matOffset = XMMatrixTranslation(0.f, -0.85f, 0.f);
+	else
+		matOffset = XMMatrixTranslation(0.f, -0.45f, 0.f);
 
 	
 	XMStoreFloat4x4(&m_matRealWorld, matScale * matQuat * matTrans);
 
-	if(m_InstanceName != WIZARD_DARKNESS)
-		XMStoreFloat4x4(&matWorld, matScale * matQuat * matTrans * matOffset);
-	else
-		XMStoreFloat4x4(&matWorld, matScale * matQuat * matTrans);
+	XMStoreFloat4x4(&matWorld, matScale * matQuat * matTrans * matOffset);
 }
 
 void Player::GravityProgress(const float& fTimeDelta)

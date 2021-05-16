@@ -54,6 +54,8 @@ int LobbyScene::Update(const float& fTimeDelta)
 
 void LobbyScene::Initialize(bool bRetry)
 {
+	ShowCursor(TRUE);
+
 	m_eSceneType = LOBBY;
 	Object* pObj = NULL;
 	Player* pPlayer = NULL;

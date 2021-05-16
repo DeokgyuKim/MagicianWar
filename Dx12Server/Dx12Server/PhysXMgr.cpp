@@ -588,6 +588,8 @@ PxCapsuleController * CPhysXMgr::CreateCapsuleController(DWORD dwPlayerNum, XMFL
 
 	actor->setName("");
 
+	//gScene->addActor(*actor);
+
 	return ctrl;
 
 }

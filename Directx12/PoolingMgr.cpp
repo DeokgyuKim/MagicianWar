@@ -53,7 +53,7 @@ void PoolingMgr::UpdatePoolingObject(vector<Client_Bullet> m_vBullets)
 	for (int i = 0; i < m_vBullets.size(); ++i)
 	{
 		//인스턴스 ObjectCB 업데이트
-		if (m_vBullets[i].InstanceName == WIZARD_FIRE)
+		//if (m_vBullets[i].InstanceName == WIZARD_FIRE)
 		{
 			InstanceMgr::GetInstnace()->UpdateInstanceBuffer(m_mapInstCnt["FireBall"], "FireBall", XMLoadFloat4x4(&m_vBullets[i].matWorld));
 			++m_mapInstCnt["FireBall"];
