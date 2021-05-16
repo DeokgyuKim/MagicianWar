@@ -44,6 +44,7 @@ void PoolingMgr::InitPoolingObject(ID3D12Device* device, ID3D12GraphicsCommandLi
 void PoolingMgr::UpdatePoolingObject(vector<Client_Bullet> m_vBullets)
 {
 	//매번 총알 인스턴스 개수를 0으로 초기화
+	//cout << m_vBullets.size() << endl;
 	InstanceMgr::GetInstnace()->SetInstaneCount("FireBall", 0);
 
 	if (m_vBullets.size() == 0)

@@ -22,26 +22,37 @@
 
 #include "Loading.h"
 
-LobbyScene::LobbyScene()
+LobbyScene::LobbyScene(bool bRetry)
 {
-	Initialize();
+	Initialize(bRetry);
 }
 
 int LobbyScene::Update(const float& fTimeDelta)
 {
 	Scene::Update(fTimeDelta);
 
+#ifdef NETWORK
 	if (Network::GetInstance()->GetCurScene() == STAGE_Scene)
 	{
 		TestScene* Scene = new TestScene();
 		MainApp::GetInstance()->ChangeScene(Scene);
 		return -1;
 	}
+#else
+	if (m_pButton->GetButtonState() == BUTTON_STATE::ON)
+	{
+		TestScene* Scene = new TestScene();
+		MainApp::GetInstance()->ChangeScene(Scene);
+		return -1;
+	}
+#endif // NETWORK
+	
+
 
 	return 0;
 }
 
-void LobbyScene::Initialize()
+void LobbyScene::Initialize(bool bRetry)
 {
 	m_eSceneType = LOBBY;
 	Object* pObj = NULL;
@@ -103,8 +114,10 @@ void LobbyScene::Initialize()
 		XMFLOAT4(1170.f, 510.f, 180.f, 180.f), "Ui_Char_Darkness");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
+
 #ifdef NETWORK
-	Network::GetInstance()->Init(Network::GetInstance()->LoadServerIPtxt("../Data/ServerIP.txt"));
+	if(!bRetry)
+		Network::GetInstance()->Init(Network::GetInstance()->LoadServerIPtxt("../Data/ServerIP.txt"));
 #endif
 
 }

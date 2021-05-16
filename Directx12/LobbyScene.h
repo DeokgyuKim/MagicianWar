@@ -10,13 +10,13 @@ class LobbyScene :
     public Scene
 {
 public:
-    LobbyScene();
+    LobbyScene(bool bRetry = false);
     
     virtual ~LobbyScene() {}
 public:
     virtual int		Update(const float& fTimeDelta);
 private:
-    void Initialize();
+    void Initialize(bool bRetry);
 private:
     Camera*         m_pCamera;
     Button*         m_pButton;

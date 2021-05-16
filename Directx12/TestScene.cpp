@@ -55,7 +55,7 @@ int TestScene::Update(const float& fTimeDelta)
 	if (Network::GetInstance()->GetCurScene() == LOBBY_Scene)
 	{
 		//´ÙÀ½ ¾À »ý¼º ÈÄ ¹Ù²ãÁÜ.
-		LobbyScene* lobbyScene = new LobbyScene();
+		LobbyScene* lobbyScene = new LobbyScene(true);
 		MainApp::GetInstance()->ChangeScene(lobbyScene);
 		return -1;
 	}
