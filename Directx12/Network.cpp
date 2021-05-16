@@ -309,6 +309,9 @@ void Network::packetProcessing(char* _packetBuffer)
 		cout << "씬 전환" << endl;
 		STOC_sceneChange* data = reinterpret_cast<STOC_sceneChange*>(_packetBuffer);
 		m_SceneChange = data->sceneNum;
+		if (m_SceneChange == LOBBY_Scene) {
+			cout << "로비 씬으로" << endl;
+		}
 		break;
 	}
 	case stoc_otherPlayerNum: // 다른 플레이어 인원수 받아오기

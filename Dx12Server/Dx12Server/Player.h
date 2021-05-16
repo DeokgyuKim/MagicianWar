@@ -14,6 +14,7 @@ public:
 	~Player();
 
 	void Initialize(SOCKET& sock, int ID);
+	void ReInit();
 	void Update(float fTime);
 	void UpdatePlayerInfo(CTOS_PlayerInfo* pInfo);
 	void UpdatePosition();
