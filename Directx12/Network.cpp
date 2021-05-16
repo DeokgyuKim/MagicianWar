@@ -417,11 +417,16 @@ void Network::SendReadyState()
 		}
 	}
 
-	if (dynamic_cast<RadioButton*>(MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_FIRE))->GetButtonState() == BUTTON_STATE::ON)
+	Object* pButton[3] = { MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_FIRE),
+		MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_COLD),
+		MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_DARKNESS)
+	};
+
+	if (pButton[0] != NULL && dynamic_cast<RadioButton*>(pButton[0])->GetButtonState() == BUTTON_STATE::ON)
 		Ready_packet.CharacterType = WIZARD_FIRE;
-	else if (dynamic_cast<RadioButton*>(MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_COLD))->GetButtonState() == BUTTON_STATE::ON)
+	else if (pButton[1] != NULL && dynamic_cast<RadioButton*>(pButton[1])->GetButtonState() == BUTTON_STATE::ON)
 		Ready_packet.CharacterType = WIZARD_COLD;
-	else if (dynamic_cast<RadioButton*>(MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_DARKNESS))->GetButtonState() == BUTTON_STATE::ON)
+	else if (pButton[2] != NULL && dynamic_cast<RadioButton*>(pButton[2])->GetButtonState() == BUTTON_STATE::ON)
 		Ready_packet.CharacterType = WIZARD_DARKNESS;
 
 	retval = send(m_Sock, (char*)&Ready_packet, Ready_packet.size, 0);

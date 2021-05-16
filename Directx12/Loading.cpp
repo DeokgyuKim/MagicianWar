@@ -23,7 +23,6 @@ void Loading::LoadingTextures()
 {
 	//m_pCore->CmdLstForLoadingReset();
 	TextureMgr::GetInstance()->BuildTextures(m_pDevice, m_pCmdLst, m_pHeap, this);
-	Sleep(1000);
 }
 
 void Loading::LoadingModels()

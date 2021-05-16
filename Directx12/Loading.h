@@ -17,7 +17,7 @@ private:
 public:
 	CRITICAL_SECTION*	GetCrt() { return &m_Crt; }
 	bool GetFinish() { return m_bFinish; }
-	void AddCount() { ++m_iCnt; Sleep(10); }
+	void AddCount() { ++m_iCnt; /*Sleep(10);*/ }
 	int GetCount() { return m_iCnt; }
 
 	static unsigned int APIENTRY ThreadMain(void* pArg);
