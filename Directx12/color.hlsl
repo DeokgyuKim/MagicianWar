@@ -164,8 +164,8 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	position.z = depth.x * ViewZ;
 	position.w = ViewZ;
 
-	position = mul(position, gInvView);
 	position = mul(position, gInvProj);
+	position = mul(position, gInvView);
 
 	float3 camdir = normalize(position.xyz - gCamPosition.xyz);
 
@@ -187,11 +187,56 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	float4 ambient = AmbiTex.Sample(gsamLinear, pin.UV);
 	float4 specular = SpecTex.Sample(gsamLinear, pin.UV);
 
-	float3 color = (diffuse.xyz * diffuseValue) + (ambient.xyz) + (specular.xyz * specularValue);
+	float3 color = (diffuse.xyz * diffuseValue) + (ambient.xyz);// +(specular.xyz * specularValue);
 	color = pow(color, 1.f / 2.2f);
 
 	pOut.Shade = float4(color.xyz, 1.f);
-	
+
+	/////RIMLIGHT
+	//{
+	//	float3 vCameraPos;
+	//	vCameraPos.x = gCamPosition.x;
+	//	vCameraPos.y = gCamPosition.y;
+	//	vCameraPos.z = gCamPosition.z;
+	//
+	//	float3 vCamDir = normalize(vCameraPos - position.xyz);
+	//	float RimLightColor = smoothstep(0.5f, 0.9f, 1 - max(0, dot(Normal.xyz, vCamDir)));
+	//
+	//	pOut.Shade = float4(color.xyz, 1.f) + float4(RimLightColor, RimLightColor, RimLightColor, 0.f) * 0.1f;
+	//}
+	//pOut.Shade = pow(pOut.Shade, 1.f / 2.2f);
+	//pOut.Shade.a = 1.f;
+
+	for (int i = -1; i <= 1; ++i)
+	{
+		for (int j = -1; j <= 1; ++j)
+		{
+			float2 adjacencyUV = pin.UV + float2(j * 0.0005f, i * 0.0009f);
+			adjacencyUV = saturate(adjacencyUV);
+
+			float4 adjacencydepth = DepthTex.Sample(gsamLinear, adjacencyUV);
+			float adjacencyViewZ = adjacencydepth.y * 1000.f;
+
+			float4 adjacencyposition;
+
+
+			adjacencyposition.x = (adjacencyUV.x * 2.f - 1.f) * adjacencyViewZ;
+			adjacencyposition.y = (adjacencyUV.y * -2.f + 1.f) * adjacencyViewZ;
+			adjacencyposition.z = adjacencydepth.x * adjacencyViewZ;
+			adjacencyposition.w = adjacencyViewZ;
+
+			adjacencyposition = mul(adjacencyposition, gInvProj);
+			adjacencyposition = mul(adjacencyposition, gInvView);
+
+			float4 adjacencyNormal = NormalTex.Sample(gsamLinear, adjacencyUV);
+			adjacencyNormal = adjacencyNormal * 2.f - 1.f;
+			adjacencyNormal.w = 0.f;
+
+			if (abs(depth.y - adjacencydepth.y) >= 0.004f || dot(adjacencyNormal, Normal) <= 0.3f)
+			//if (dot(adjacencyNormal, Normal) <= 0.3f)
+				pOut.Shade = float4(0.f, 0.f, 0.f, 1.f);
+		}
+	}
 
 
 	return pOut;
