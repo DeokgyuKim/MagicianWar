@@ -19,6 +19,8 @@
 #include "Network.h"
 
 #include "Panel.h"
+#include "LobbyScene.h"
+#include "MainApp.h"
 
 TestScene::TestScene()
 {
@@ -38,21 +40,24 @@ int TestScene::Update(const float& fTimeDelta)
 			//Panel»ý¼º
 			if (Network::GetInstance()->GetMyInfo().dwTeamNum == Network::GetInstance()->GetGameEnd().teamNum)
 			{
-				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), 
+				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 					XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, 50.f, 760.f * 1.5f, 200.f * 1.5f), "Win"));
 			}
 			else
 			{
-				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), 
+				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 					XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, 50.f, 760.f * 1.5f, 200.f * 1.5f), "Lose"));
 			}
 			GameEndForPanelCreate = true;
 		}
-		if (Network::GetInstance()->GetCurScene() == 3)
-		{
-			//´ÙÀ½ ¾À »ý¼º ÈÄ ¹Ù²ãÁÜ.
-		}
 
+	}
+	if (Network::GetInstance()->GetCurScene() == LOBBY_Scene)
+	{
+		//´ÙÀ½ ¾À »ý¼º ÈÄ ¹Ù²ãÁÜ.
+		LobbyScene* lobbyScene = new LobbyScene();
+		MainApp::GetInstance()->ChangeScene(lobbyScene);
+		return -1;
 	}
 
 	return 0;

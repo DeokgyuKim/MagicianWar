@@ -91,6 +91,7 @@ void Network::packetInit()
 			Ready_packet.size = sizeof(Ready_packet);
 			Ready_packet.type = packet_ready;
 			Ready_packet.id = m_tMyInfo.dwPlayerNum;
+			Ready_packet.CharacterType = WIZARD_FIRE;
 			Ready_packet.ready = 0;
 		}
 		{ // ctos_LoadingEnd
@@ -130,23 +131,19 @@ void Network::Update()
 			RecvOtherPlayerInfo();
 			mainSceneLateInit = true;
 		}
+
 		//Send
 		//내 플레이어정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
 		SendMyPlayerInfo();
 		//키입력정보(w, a, s, d, 스킬12, 점프, 마우스클릭)
 		SendKeyInput();
-		//RecvPlayerInfo();
+		
 
-		//Object* pObj = MainApp::GetInstance()->GetScene()->GetPlayer();
-		//if (pObj != nullptr) {
-		//	Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
-		//	dynamic_cast<AnimationCom*>(pPlayer->GetRootAniController())->ChangeAnimation(SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Root_eAnimType));
-		//	dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->ChangeAnimation(SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Upper_eAnimType));
-		//}
+		
 	}
 	else if (m_SceneChange == ENDING_Scene)
 	{
-		cout << "엔딩씬인가" << endl;
+		//cout << "엔딩씬인가" << endl;
 	}
 
 }
@@ -301,6 +298,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_tMyInfo.dwTeamNum = data->dwTeamNum;
 		m_tMyInfo.xmfPosition = data->xmfPosition;
 		m_tMyInfo.iHp = data->iHp;
+		m_tMyInfo.CharacterType = data->CharacterType;
 		cout << m_tMyInfo.iHp << endl;
 		break;
 	}
@@ -326,9 +324,10 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_mapOtherPlayerInfos[data->dwPlayerNum].dwTeamNum = data->dwTeamNum;
 		m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition = data->xmfPosition;
 		m_mapOtherPlayerInfos[data->dwPlayerNum].iHp = data->iHp;
-		cout << m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.x << ", "
-			<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.y << ", "
-			<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.z << endl;
+		m_mapOtherPlayerInfos[data->dwPlayerNum].CharacterType = data->CharacterType;
+		//cout << m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.x << ", "
+		//	<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.y << ", "
+		//	<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.z << endl;
 		break;
 	}
 	case stoc_playerInfo:
@@ -415,6 +414,7 @@ void Network::SendReadyState()
 			break;
 		}
 	}
+	Ready_packet.CharacterType = WIZARD_COLD; // 여따가 내가 고른 캐릭터 넣어주면 됨
 	retval = send(m_Sock, (char*)&Ready_packet, Ready_packet.size, 0);
 }
 

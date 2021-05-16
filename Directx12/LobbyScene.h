@@ -11,6 +11,7 @@ class LobbyScene :
 {
 public:
     LobbyScene();
+    
     virtual ~LobbyScene() {}
 public:
     virtual int		Update(const float& fTimeDelta);

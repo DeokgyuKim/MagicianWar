@@ -20,7 +20,7 @@ Player::Player()
 	Upper_fWeight = 0.f;
 
 	m_isConnected = false;
-	m_LoadingEnd = false;
+
 	//m_bAttackEnd = false;
 
 	m_keyInput = 0;
@@ -304,12 +304,6 @@ void Player::setPlayerInitPos(XMFLOAT3 pos)
 	m_mutex.unlock();
 }
 
-void Player::setLoaddingEnd(bool _load)
-{
-	m_mutex.lock();
-	m_LoadingEnd = _load;
-	m_mutex.unlock();
-}
 
 void Player::ChangeUpperAnimation(int _Ani)
 {
@@ -330,6 +324,13 @@ void Player::setJump(bool bJump)
 	m_bJump = bJump;
 	float m_fJumpSpeedY = 2.f;
 	float m_fAccTime = 0.f;
+}
+
+void Player::setCharacterType(unsigned char _type)
+{
+	m_mutex.lock();
+	m_CharacterType = _type;
+	m_mutex.unlock();
 }
 
 void Player::CreateCapsuleController()
