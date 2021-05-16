@@ -145,6 +145,7 @@ struct STOC_otherPlayerCount {
 struct CTOS_LoadingEnd {
 	short size;
 	unsigned char type;
+	unsigned char id; // 어떤 플레이어
 	bool bLoadingEnd;
 };
 

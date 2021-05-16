@@ -44,7 +44,7 @@ int LoadingScene::Update(const float& fTimeDelta)
 		{
 			//cout << "Loading End" << endl;
 #ifdef NETWORK
-			Network::GetInstance()->SetLoadingEnd();
+			Network::GetInstance()->SetLoadingEnd(); // 로딩이 다 끝나면 LobbyScene으로 바꿔줘
 			if (Network::GetInstance()->GetLobbyEnd())
 			{
 				delete m_pLoading;

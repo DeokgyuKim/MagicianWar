@@ -3,6 +3,12 @@
 #ifndef DEFINE_H__
 #define DEFINE_H__
 
+//Scene
+#define LOADING_Scene	0
+#define LOBBY_Scene		1
+#define STAGE_Scene		2
+#define ENDING_Scene	3
+
 // RootSignature
 #define ParameterCount 6
 
