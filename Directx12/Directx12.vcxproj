@@ -160,6 +160,7 @@
     <ClInclude Include="Flames_FireEff.h" />
     <ClInclude Include="InstanceInfo.h" />
     <ClInclude Include="InstanceMgr.h" />
+    <ClInclude Include="LobbyScene.h" />
     <ClInclude Include="netHeader.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="PhysXMgr.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PoolingMgr.h" />
+    <ClInclude Include="RadioButton.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="RenderTargetMgr.h" />
@@ -234,6 +236,7 @@
     <ClCompile Include="Flames_FireEff.cpp" />
     <ClCompile Include="InstanceInfo.cpp" />
     <ClCompile Include="InstanceMgr.cpp" />
+    <ClCompile Include="LobbyScene.cpp" />
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="PhysXMgr.cpp" />
     <ClCompile Include="PlayerFSM.cpp" />
@@ -266,6 +269,7 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PoolingMgr.cpp" />
+    <ClCompile Include="RadioButton.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="RenderTargetMgr.cpp" />

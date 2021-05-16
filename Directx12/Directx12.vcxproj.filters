@@ -214,6 +214,12 @@
     <Filter Include="01.Engine\02.Object\00.UI\01.Bar">
       <UniqueIdentifier>{9db63625-57d3-448d-9689-f8a486817176}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\02.Object\00.UI\00.Button\00.Radio">
+      <UniqueIdentifier>{557b8454-bd30-4858-ad72-9b60742fe526}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\01.Scene\01.LobbyScene">
+      <UniqueIdentifier>{3a5ad5a7-7359-467b-81e6-cb7d6311799b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -426,6 +432,12 @@
     <ClInclude Include="Bar.h">
       <Filter>01.Engine\02.Object\00.UI\01.Bar</Filter>
     </ClInclude>
+    <ClInclude Include="RadioButton.h">
+      <Filter>01.Engine\02.Object\00.UI\00.Button\00.Radio</Filter>
+    </ClInclude>
+    <ClInclude Include="LobbyScene.h">
+      <Filter>00.Game\01.Scene\01.LobbyScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -610,6 +622,12 @@
     </ClCompile>
     <ClCompile Include="Bar.cpp">
       <Filter>01.Engine\02.Object\00.UI\01.Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="RadioButton.cpp">
+      <Filter>01.Engine\02.Object\00.UI\00.Button\00.Radio</Filter>
+    </ClCompile>
+    <ClCompile Include="LobbyScene.cpp">
+      <Filter>00.Game\01.Scene\01.LobbyScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

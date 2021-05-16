@@ -27,6 +27,34 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["CrossHair"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "Darkness", L"../Resources/UI/Character/Darkness.dds");
+	m_mapTextures[CHARACTER_WIZARD_DARKNESS] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Ice", L"../Resources/UI/Character/Ice.dds");
+	m_mapTextures[CHARACTER_WIZARD_COLD] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Fire", L"../Resources/UI/Character/Fire.dds");
+	m_mapTextures[CHARACTER_WIZARD_FIRE] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Base", L"../Resources/UI/Button/Button/Base.dds");
+	m_mapTextures["Ui_Char_Base"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Click", L"../Resources/UI/Button/Button/Click.dds");
+	m_mapTextures["Ui_Char_Click"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Mouse", L"../Resources/UI/Button/Button/Mouse.dds");
+	m_mapTextures["Ui_Char_Mouse"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Lobby", L"../Resources/UI/Lobby/Lobby.dds");
+	m_mapTextures["Lobby"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "Noise", L"../Resources/Noise.dds", false, 12);
 	m_mapTextures["Noise"] = pTexture;
 	pLoading->AddCount();

@@ -14,7 +14,7 @@ public:
     virtual void Render(const float& fTimeDelta, int _instanceCount = 1) override;
     virtual string	GetTextureName() override;
     BUTTON_STATE GetButtonState() { return m_eButtonState; }
-private:
+protected:
     string          m_strMouseOnTextureName;
     string          m_strActiveTextureName;
     RECT            m_Rect;

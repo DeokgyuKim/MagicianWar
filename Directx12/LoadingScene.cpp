@@ -1,5 +1,6 @@
 #include "LoadingScene.h"
 #include "TestScene.h"
+#include "LobbyScene.h"
 
 #include "MainApp.h"
 #include "Network.h"
@@ -32,8 +33,8 @@ int LoadingScene::Update(const float& fTimeDelta)
 
 	if (m_pLoading != NULL)
 	{
-		m_pLoadingBar->SetRatio(XMFLOAT2(m_pLoading->GetCount() / 64.f, 1.f));
-		//cout << m_pLoading->GetCount() / 64.f << endl;
+		m_pLoadingBar->SetRatio(XMFLOAT2(m_pLoading->GetCount() / 96.f, 1.f));
+		cout << m_pLoading->GetCount()<< endl;
 	}
 
 	bool CheckThread = m_pLoading->GetFinish();
@@ -42,25 +43,10 @@ int LoadingScene::Update(const float& fTimeDelta)
 	{
 		if (!Core::GetInstance()->GetLoadingThreadExecute())
 		{
-			//cout << "Loading End" << endl;
-#ifdef NETWORK
-			Network::GetInstance()->SetLoadingEnd();
-			if (Network::GetInstance()->GetLobbyEnd())
-			{
-				delete m_pLoading;
-				TestScene* pTestScene = new TestScene();
-				MainApp::GetInstance()->ChangeScene(pTestScene);
-				return -1;
-			}
-#else
-			if (m_pButton->GetButtonState() == BUTTON_STATE::ON)
-			{
-				delete m_pLoading;
-				TestScene* pTestScene = new TestScene();
-				MainApp::GetInstance()->ChangeScene(pTestScene);
-				return -1;
-			}
-#endif
+			delete m_pLoading;
+			LobbyScene* lobbyScene = new LobbyScene();
+			MainApp::GetInstance()->ChangeScene(lobbyScene);
+			return -1;
 		}
 	}
 
@@ -87,13 +73,6 @@ void LoadingScene::Initialize()
 	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, WINCX, WINCY), "MainLogo");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
-	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(1400.f, 700.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
-	m_pObjects[OBJ_UI].push_back(pObj);
-
-	m_pButton = dynamic_cast<Button*>(pObj);
-	m_pButton->SetTag(0);
-
 	pObj = new Bar(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(15.f, WINCY - 75.f, WINCX - 30.f, 60.f), "LoadingBar");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
@@ -101,9 +80,5 @@ void LoadingScene::Initialize()
 	m_pLoadingBar->SetTag(1);
 	
 	m_pLoading = new Loading(Core::GetInstance(), Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLstForLoading(), Renderer::GetInstance()->GetHeap());
-
-#ifdef NETWORK
-	Network::GetInstance()->Init(Network::GetInstance()->LoadServerIPtxt("../Data/ServerIP.txt"));
-#endif
 }
 
