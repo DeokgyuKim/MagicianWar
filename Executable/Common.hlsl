@@ -36,6 +36,11 @@ cbuffer cbObject : register(b6)
 	uint		MaterialIndexNoInstanced;
 };
 
+cbuffer cbUi : register(b7)
+{
+	float2	ratio;
+}
+
 
 Texture2D Texture : register(t0);
 SamplerState gsamLinear  : register(s0);
