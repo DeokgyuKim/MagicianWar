@@ -65,7 +65,7 @@ bool Network::Init(const string& strServerIP)
 
 	packet_size = 0;
 	savedPacket_size = 0;
-	m_SceneChange = 1; // 첨부터 Lobby로 일단
+	m_SceneChange = LOADING_Scene; // 처음엔 로딩씬으로 가야지
 	mainSceneLateInit = false;
 
 
@@ -96,8 +96,8 @@ void Network::packetInit()
 		{ // ctos_LoadingEnd
 			LoadingEnd_packet.size = sizeof(LoadingEnd_packet);
 			LoadingEnd_packet.type = ctos_LoadingEnd;
+			LoadingEnd_packet.id = m_tMyInfo.dwPlayerNum;
 			LoadingEnd_packet.bLoadingEnd = false;
-
 		}
 	}
 }
@@ -114,15 +114,15 @@ void Network::Update()
 	// 이제 여기서 돌릴거
 	recvUpdate();
 
-	if (m_SceneChange == 0)  // Logo
+	if (m_SceneChange == LOADING_Scene)  // Logo
 	{
+		//SendLoadingEnd();
 	}
-	else if (m_SceneChange == 1) // Lobby
+	else if (m_SceneChange == LOBBY_Scene) // Lobby
 	{
 		SendReadyState(); // lobby에서는 ready만 보냄
-		SendLoadingEnd();
 	}
-	else if (m_SceneChange == 2) // mainScene
+	else if (m_SceneChange == STAGE_Scene) // mainScene
 	{
 		if (!mainSceneLateInit)
 		{
@@ -144,7 +144,7 @@ void Network::Update()
 		//	dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->ChangeAnimation(SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Upper_eAnimType));
 		//}
 	}
-	else if (m_SceneChange == 3)
+	else if (m_SceneChange == ENDING_Scene)
 	{
 		cout << "엔딩씬인가" << endl;
 	}
@@ -306,7 +306,7 @@ void Network::packetProcessing(char* _packetBuffer)
 	}
 	case stoc_sceneChange: // IsMoveToMainGame
 	{
-		cout << "메인씬으로" << endl;
+		cout << "씬 전환" << endl;
 		STOC_sceneChange* data = reinterpret_cast<STOC_sceneChange*>(_packetBuffer);
 		m_SceneChange = data->sceneNum;
 		break;

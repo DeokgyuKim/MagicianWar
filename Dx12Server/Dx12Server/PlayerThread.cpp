@@ -38,7 +38,7 @@ float gEndingTime = 0;
 bool gMaingameEnding = false;
 float gTotalTime = 0;
 
-int curScene = 1; // 1: SCENE_LOBBY 2: SCENE_
+int curScene = LOBBY_Scene; // 0: SCENE_LOGO 1: SCENE_LOBBY 2: SCENE_STAGE
 chrono::system_clock::time_point prev_time;
 
 int recvn(SOCKET s, char* buf, int len, int flags)
@@ -171,6 +171,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 				Start = false; // 스타트 안할거고
 			}
 		}
+		
 		for (auto it = LoadingCheck.begin(); it != LoadingCheck.end(); ++it) { // 전체 순회
 			if (it->second == false) { // 들어온 누구라도 false라면
 				Start = false; // 스타트 안할거고
@@ -234,7 +235,7 @@ void packetProcessing(STOC_ServerPlayer arg)
 					}
 				}
 			}
-			curScene = 2; // 씬 전환 -> Stage
+			curScene = STAGE_Scene; // 씬 전환 -> Stage
 			sendOneTime = true;
 			gLateInit_MainScene = false;
 		}
@@ -255,6 +256,16 @@ void packetProcessing(STOC_ServerPlayer arg)
 	{
 		CTOS_LoadingEnd* data = reinterpret_cast<CTOS_LoadingEnd*> (processing);
 		gClients[playerID].setLoaddingEnd(data->bLoadingEnd);
+		LoadingCheck[data->id] = gClients[data->id].getLoaddingEnd();
+		bool Start = true;
+		for (auto it = LoadingCheck.begin(); it != LoadingCheck.end(); ++it) { // 전체 순회
+			if (it->second == false) { // 들어온 누구라도 false라면
+				Start = false; // 스타트 안할거고
+			}
+		}
+		if (Start) {
+			curScene = LOBBY_Scene; // LobbyScene으로
+		}
 		//if (data->bLoadingEnd) cout << "로딩이 끝났어" << endl;
 		break;
 	}
