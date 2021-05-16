@@ -13,7 +13,7 @@ public:
     virtual int Update(const float& fTimeDelta) override;
     virtual void LateUpdate(const float& fTimeDelta) override;
     virtual void Render(const float& fTimeDelta, int _instanceCount = 1) override;
-private:
+public:
     void SetButtonState(BUTTON_STATE eState);
 public:
     void SetOthers(RadioButton* pRadio) { m_lstOthers.push_back(pRadio); }

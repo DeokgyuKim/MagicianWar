@@ -28,15 +28,15 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Darkness", L"../Resources/UI/Character/Darkness.dds");
-	m_mapTextures[CHARACTER_WIZARD_DARKNESS] = pTexture;
+	m_mapTextures["Ui_Char_Darkness"] = pTexture;
 	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Ice", L"../Resources/UI/Character/Ice.dds");
-	m_mapTextures[CHARACTER_WIZARD_COLD] = pTexture;
+	m_mapTextures["Ui_Char_Cold"] = pTexture;
 	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Fire", L"../Resources/UI/Character/Fire.dds");
-	m_mapTextures[CHARACTER_WIZARD_FIRE] = pTexture;
+	m_mapTextures["Ui_Char_Fire"] = pTexture;
 	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Base", L"../Resources/UI/Button/Button/Base.dds");
