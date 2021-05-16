@@ -208,6 +208,7 @@ public:
 	DWORD		GetCurScene() { return m_SceneChange; }
 
 	string	LoadServerIPtxt(string filePath);
+	void ClearNetworkForNext();
 private:
 	SOCKET	m_Sock;
 

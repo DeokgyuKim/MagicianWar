@@ -225,6 +225,12 @@ string Network::LoadServerIPtxt(string filePath)
 	return ServerIp;
 }
 
+void Network::ClearNetworkForNext()
+{
+	Ready_packet.ready = 0;
+	m_SceneChange = LOBBY_Scene;
+}
+
 bool Network::IsMoveToMainGame()
 {
 	bool isNext = false;
@@ -309,6 +315,10 @@ void Network::packetProcessing(char* _packetBuffer)
 		cout << "씬 전환" << endl;
 		STOC_sceneChange* data = reinterpret_cast<STOC_sceneChange*>(_packetBuffer);
 		m_SceneChange = data->sceneNum;
+		if (m_SceneChange == LOBBY_Scene)
+		{
+			ClearNetworkForNext();
+		}
 		break;
 	}
 	case stoc_otherPlayerNum: // 다른 플레이어 인원수 받아오기
@@ -445,6 +455,10 @@ void Network::SendMyPlayerInfo()
 		tInfo_packet.bAttackEnd = dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->GetAttackEnd();
 		if (pPlayer->GetInstName() == CHARACTER_WIZARD_FIRE)
 			tInfo_packet.InstanceName = WIZARD_FIRE; // 01번 캐릭터 메쉬를 사용한 친구임
+		else if (pPlayer->GetInstName() == CHARACTER_WIZARD_COLD)
+			tInfo_packet.InstanceName = WIZARD_COLD;
+		else if (pPlayer->GetInstName() == CHARACTER_WIZARD_DARKNESS)
+			tInfo_packet.InstanceName = WIZARD_DARKNESS;
 	}
 	else
 	{

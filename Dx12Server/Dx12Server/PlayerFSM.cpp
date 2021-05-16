@@ -135,12 +135,14 @@ void PlayerFSM::Idle(float fTime)
 	// 상체 냐 하체냐
 	if (m_BoneType == BoneType::UPPER_BONE)
 	{ // 상체
-		if (DefaultKey & 0x0010) // 점프
-		{
-			ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
-			dkey = DefaultKey;
-		}
-		else if (DefaultKey & 0x0020) // 마우스 왼쪽 공격
+		//NoJump
+		//if (DefaultKey & 0x0010) // 점프
+		//{
+		//	ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
+		//	dkey = DefaultKey;
+		//}
+		//else
+		if (DefaultKey & 0x0020) // 마우스 왼쪽 공격
 		{
 			ChangeState(static_cast<int>(PLAYER_STATE::ATTACK), SCint(ANIMATION_TYPE::ATTACK));
 		}
@@ -165,12 +167,14 @@ void PlayerFSM::Idle(float fTime)
 	}
 	else if (m_BoneType == BoneType::ROOT_BONE)
 	{ // 하체
-		if (DefaultKey & 0x0010) // 점프
-		{
-			ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
-			dkey = DefaultKey;
-		}
-		else if (DefaultKey & 0x0020) // 마우스 왼쪽 공격
+		//NoJump
+		//if (DefaultKey & 0x0010) // 점프
+		//{
+		//	ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
+		//	dkey = DefaultKey;
+		//}
+		//else
+		if (DefaultKey & 0x0020) // 마우스 왼쪽 공격
 		{
 			ChangeState(static_cast<int>(PLAYER_STATE::ATTACK), SCint(ANIMATION_TYPE::ATTACK));
 		}
@@ -200,12 +204,14 @@ void PlayerFSM::Move(float fTime)
 	//
 	if (m_BoneType == BoneType::UPPER_BONE)
 	{ // 상체
-		if (DefaultKey & 0x0010) // 점프
-		{
-			ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
-			dkey = DefaultKey;
-		}
-		else if (DefaultKey & 0x0020) // 마우스 왼쪽 공격
+		//NoJump
+		//if (DefaultKey & 0x0010) // 점프
+		//{
+		//	ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
+		//	dkey = DefaultKey;
+		//}
+		//else
+		if (DefaultKey & 0x0020) // 마우스 왼쪽 공격
 		{
 			ChangeState(static_cast<int>(PLAYER_STATE::ATTACK), SCint(ANIMATION_TYPE::ATTACK));
 		}
@@ -233,12 +239,14 @@ void PlayerFSM::Move(float fTime)
 	}
 	else if (m_BoneType == BoneType::ROOT_BONE)
 	{ // 하체
-		if (DefaultKey & 0x0010) // 점프
-		{
-			ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
-			dkey = DefaultKey;
-		}
-		else { // 이동중에 공격이면 하체는 안바꿔도됨
+		//NoJump
+		//if (DefaultKey & 0x0010) // 점프
+		//{
+		//	ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
+		//	dkey = DefaultKey;
+		//}
+		//else
+		{ // 이동중에 공격이면 하체는 안바꿔도됨
 			if (DefaultKey & 0x0001) // w
 			{ // 위쪽
 				if (DefaultKey & 0x0002) { // a
@@ -296,10 +304,11 @@ void PlayerFSM::Attack(float fTime)
 			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
 			m_User->setCreateBullet(1);
 		}
-		else if (DefaultKey & 0x0010) // 점프
-		{
-			ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
-		}
+		//NoJump
+		//else if (DefaultKey & 0x0010) // 점프
+		//{
+		//	ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
+		//}
 	}
 	else if (m_BoneType == BoneType::ROOT_BONE)
 	{ // 하체
@@ -307,11 +316,13 @@ void PlayerFSM::Attack(float fTime)
 			ChangeState(static_cast<int>(PLAYER_STATE::IDLE), SCint(ANIMATION_TYPE::IDLE));
 		}
 		else {
-			if (DefaultKey & 0x0010) // 점프
-			{
-				ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
-			}
-			else { // 이동중에 공격이면 하체는 안바꿔도됨
+			//NoJump
+			//if (DefaultKey & 0x0010) // 점프
+			//{
+			//	ChangeState(static_cast<int>(PLAYER_STATE::JUMP), SCint(ANIMATION_TYPE::JUMP));
+			//}
+			//else 
+			{ // 이동중에 공격이면 하체는 안바꿔도됨
 				if (DefaultKey & 0x0001) // w
 				{ // 위쪽
 					ChangeState(static_cast<int>(PLAYER_STATE::MOVE), SCint(ANIMATION_TYPE::WALK_FOWARD));

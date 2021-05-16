@@ -411,7 +411,7 @@ void WorkThread() // send & physics & function
 			for (int i = 0; i < gClientNum; ++i)
 			{
 				//플레이어가 히또 상태면 체크 안하게
-				if (gClients[i].GetUpperFSM()->GetState() != PLAYER_STATE::HIT || gClients[i].GetUpperFSM()->GetState() != PLAYER_STATE::DANCE || gClients[i].GetUpperFSM()->GetState() != PLAYER_STATE::DEAD)
+				if (!(gClients[i].GetUpperFSM()->GetState() == PLAYER_STATE::HIT && gClients[i].GetUpperFSM()->GetState() == PLAYER_STATE::DANCE && gClients[i].GetUpperFSM()->GetState() == PLAYER_STATE::DEAD))
 				{
 					for (auto iter = gBullets.begin(); iter != gBullets.end();)
 					{
@@ -470,6 +470,8 @@ void WorkThread() // send & physics & function
 
 			//for (auto staticMesh : StaticObjects)
 			//{
+
+#ifdef _DEBUG
 			for (int i = 0; i < 20; ++i)
 			{
 				if (iStaticObjectIdx + i >= StaticObjects.size())
@@ -487,6 +489,20 @@ void WorkThread() // send & physics & function
 			iStaticObjectIdx = (iStaticObjectIdx + 20);
 			if (iStaticObjectIdx >= StaticObjects.size())
 				iStaticObjectIdx -= StaticObjects.size();
+#else
+			for (auto object : StaticObjects)
+			{
+				for (auto iter = gBullets.begin(); iter != gBullets.end();)
+				{
+					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject((*iter).GetRigidDynamic(), object))
+					{
+						iter = gBullets.erase(iter);
+					}
+					else
+						++iter;
+				}
+			}
+#endif
 			//}
 			//gBullet_mutex.unlock();
 
@@ -544,7 +560,12 @@ void WorkThread() // send & physics & function
 			auto end_time = chrono::system_clock::now();
 			prev_time = end_time;
 			auto elapsed_time = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
+#ifdef _DEBUG
 			this_thread::sleep_for(12ms - elapsed_time);
+#else
+			this_thread::sleep_for(8ms - elapsed_time);
+#endif // _DEBUG
+
 		}
 		else if (curScene == ENDING_Scene) { // 엔딩 씬
 			auto start_time = chrono::system_clock::now();

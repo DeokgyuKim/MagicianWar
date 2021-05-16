@@ -335,11 +335,16 @@ void Player::setCharacterType(unsigned char _type)
 
 void Player::CreateCapsuleController()
 {
+	XMFLOAT3 xmfpos = XMFLOAT3(0.f, 0.85f, 0.f);
+	XMStoreFloat3(&xmfpos, XMLoadFloat3(&xmfpos) + XMLoadFloat3(&Info.info.xmfPosition));
+
 	m_mutex.lock();
+
 	CPhysXMgr::GetInstance()->m_PlayerController = m_pCapsuleCon = CPhysXMgr::GetInstance()->
-		CreateCapsuleController(Info.info.dwPlayerNum, Info.info.xmfPosition, 0.5f, 0.5f, true);
+		CreateCapsuleController(Info.info.dwPlayerNum, xmfpos, 0.5f, 0.5f, true);
 	m_pCapsuleCon->getActor()->setName("Player");
 	m_pCapsuleCon->getActor()->setMass(20.f);
+
 	m_mutex.unlock();
 }
 
@@ -378,7 +383,11 @@ void Player::ModifyPhysXPos(const float& fTimeDelta)
 
 	
 	XMStoreFloat4x4(&m_matRealWorld, matScale * matQuat * matTrans);
-	XMStoreFloat4x4(&matWorld, matScale * matQuat * matTrans * matOffset);
+
+	if(m_InstanceName != WIZARD_DARKNESS)
+		XMStoreFloat4x4(&matWorld, matScale * matQuat * matTrans * matOffset);
+	else
+		XMStoreFloat4x4(&matWorld, matScale * matQuat * matTrans);
 }
 
 void Player::GravityProgress(const float& fTimeDelta)

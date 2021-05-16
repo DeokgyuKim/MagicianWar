@@ -126,7 +126,7 @@ void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 	}
 	else
 	{
-		cout << "현재 애니메이션은 DEAD" << endl;
+		//cout << "현재 애니메이션은 DEAD" << endl;
 	}
 }
 
