@@ -135,7 +135,7 @@ Shade_Out VS_Shade(Shade_In pin)
 	Shade_Out vOut;
 	//vOut.PosH = mul(mul(float4(pin.PosL, 1.0f), gView), gProj);
 	float4 depth = DepthTex.SampleLevel(gsamLinear, pin.UV, 0);
-	vOut.PosH = float4(pin.PosL.x, pin.PosL.y, depth.x, 1.f);
+	vOut.PosH = float4(pin.PosL.x, pin.PosL.y, 0.f, 1.f);
 	vOut.UV = pin.UV;
 
 	return vOut;

@@ -98,7 +98,7 @@ void TestScene::Initialize()
 	Camera* pCamera = NULL;
 
 
-	Core::GetInstance()->CmdLstReset();
+
 
 #ifdef NETWORK
 	XMFLOAT3 pos = Network::GetInstance()->GetMyPlayerStartPos();
@@ -152,8 +152,6 @@ void TestScene::Initialize()
 	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		CHARACTER_WIZARD_COLD, MESH_TYPE::CHARACTER);
 	pPlayer = dynamic_cast<Player*>(pObj);
-	Core::GetInstance()->CmdLstExecute();
-	Core::GetInstance()->WaitForGpuComplete();
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
 #endif
 

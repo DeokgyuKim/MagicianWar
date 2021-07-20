@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "MainApp.h"
+#include "Core.h"
 #include "Scene.h"
 #include "Renderer.h"
 #include "Geometry.h"
@@ -54,6 +55,8 @@ Player::~Player()
 
 void Player::Initialize(XMFLOAT3 pos)
 {
+
+	Core::GetInstance()->CmdLstReset();
 	BuildConstantBuffer();
 
 	Component* pComponent = new Transform(XMFLOAT3(0.01f, 0.01f, 0.01f), XMFLOAT3(0.f, 0.f, 0.f), pos);
@@ -78,6 +81,9 @@ void Player::Initialize(XMFLOAT3 pos)
 #endif
 
 	m_strTextureName = m_strInstName;
+
+	Core::GetInstance()->CmdLstExecute();
+	Core::GetInstance()->WaitForGpuComplete();
 
 	m_pWeapon = new Weapon(m_pDevice, m_pCmdLst, m_pRenderer, "weapon", "weapon", this, 20, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(-157.f, 177.f, -101.f), XMFLOAT3(-50.f, -6.f, 44.f));
 
