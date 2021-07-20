@@ -343,7 +343,7 @@ void Renderer::BuildShader()
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 28, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS", L"color.hlsl", "PS", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5, true, true, false, 4);
 	m_mapShaders[RENDER_TYPE::RENDER_COLOR] = pShader;
 
 	pShader = new Shader;
@@ -353,7 +353,7 @@ void Renderer::BuildShader()
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Main", L"color.hlsl", "PS_Main", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5, true, true, false, 4);
 	m_mapShaders[RENDER_TYPE::RENDER_NOBLEND] = pShader;
 
 	pShader = new Shader;
@@ -384,7 +384,7 @@ void Renderer::BuildShader()
 		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Static", L"color.hlsl", "PS_Static", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5, true, true, false, 4);
 	m_mapShaders[RENDER_TYPE::RENDER_STATIC] = pShader;
 
 	// Skinned Model
@@ -399,7 +399,7 @@ void Renderer::BuildShader()
 		{ "BONEINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, 68, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Movable", L"color.hlsl", "PS_Movable", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5, true, true, false, 4);
 	m_mapShaders[RENDER_TYPE::RENDER_DYNAMIC] = pShader;
 
 	// SkyBox
@@ -424,7 +424,7 @@ void Renderer::BuildShader()
 		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_FireBall", L"color.hlsl", "PS_FireBall", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5, true, true, false, 4);
 	m_mapShaders[RENDER_TYPE::RENDER_BULLET] = pShader;
 }
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()

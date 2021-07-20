@@ -18,7 +18,7 @@ HRESULT Shader::BuildShadersAndInputLayout(const TCHAR* vsName, const char* vsFu
 }
 
 HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* RootSignature, int numRt,
-	bool ClockWise, bool DepthStencil, bool CullNone)
+	bool ClockWise, bool DepthStencil, bool CullNone, int depthidx)
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -95,8 +95,12 @@ HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* Ro
 	psoDesc.SampleMask = UINT_MAX;
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	psoDesc.NumRenderTargets = numRt;
-	for(int i = 0; i < numRt; ++i)
+	for (int i = 0; i < numRt; ++i)
+	{
 		psoDesc.RTVFormats[i] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		if (depthidx == i)
+			psoDesc.RTVFormats[i] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	}
 	psoDesc.SampleDesc.Count = 1;
 
 	HRESULT a = (device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PipelineState)));

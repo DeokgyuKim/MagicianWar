@@ -232,7 +232,7 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 			adjacencyNormal = adjacencyNormal * 2.f - 1.f;
 			adjacencyNormal.w = 0.f;
 
-			if (abs(depth.y - adjacencydepth.y) >= 0.004f || dot(adjacencyNormal, Normal) <= 0.3f)
+			if (abs(depth.y - adjacencydepth.y) >= 0.001f || dot(adjacencyNormal, Normal) <= 0.3f)
 			//if (dot(adjacencyNormal, Normal) <= 0.3f)
 				pOut.Shade = float4(0.f, 0.f, 0.f, 1.f);
 		}
