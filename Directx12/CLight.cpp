@@ -39,6 +39,17 @@ void CLight::BuildConstantBuffer()
 {
 	int boxCBufIndex = 0;
 
+	XMMATRIX proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(90.f), (float)WINCX / (float)WINCY, 0.1f, 1000.0f);
+
+
+	XMVECTOR pos = XMVectorSet(m_xmfPosition.x, m_xmfPosition.y, m_xmfPosition.z, 1.0f);
+	XMVECTOR target = XMVectorSet(m_xmfPosition.x + m_xmfDirection.x, m_xmfPosition.y + m_xmfDirection.y, m_xmfPosition.z + m_xmfDirection.z, 1.0f);
+	//XMVECTOR target = XMVectorSet(m_xmfLookVec.x, m_xmfLookVec.y, m_xmfLookVec.z, 1.0f);
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // XMVectorSet(m_xmfUpVec.x, m_xmfUpVec.y, m_xmfUpVec.z, 0.0f);
+
+	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
+
+
 	///Diffuse
 	m_LightCB = make_unique<UploadBuffer<LightCB>>(m_pDevice, 1, true);
 
@@ -48,6 +59,8 @@ void CLight::BuildConstantBuffer()
 	XMStoreFloat4(&lightcb.Specular, XMLoadFloat4(&m_xmfSpecular));
 	XMStoreFloat4(&lightcb.Position, XMLoadFloat4(&m_xmfPosition));
 	XMStoreFloat4(&lightcb.Direction, XMLoadFloat4(&m_xmfDirection));
+	XMStoreFloat4x4(&lightcb.LightProj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&lightcb.LightView, XMMatrixTranspose(view));
 	m_LightCB->CopyData(0, lightcb);
 
 }

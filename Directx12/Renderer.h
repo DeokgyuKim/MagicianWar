@@ -28,6 +28,9 @@ public:
 	void	InitRenderer(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCmdLst);
 	void	Render(const float& fTimeDelta);
 	void	DrawObject(InstanceInfo* _inst, list<Object*> _Objects);
+
+	void	Render_Albedo(const float& fTimeDelta);
+	void	Render_Shadow(const float& fTimeDelta);
 public:
 	void	PushObject(RENDER_TYPE eType, Object* pObject);
 public:
@@ -50,11 +53,13 @@ private:
 	ID3D12Device*						m_pDevice = NULL;
 	ID3D12GraphicsCommandList*			m_pCmdLst = NULL;
 	unordered_map<RENDER_TYPE, Shader*>	m_mapShaders;
+	unordered_map<RENDER_TYPE, Shader*> m_mapShadersForShadow;
 	ComPtr<ID3D12RootSignature>			m_ptrRootSignature;
 	ComPtr<ID3D12DescriptorHeap>		m_ptrDescriptorHeap;
 
 	list<Object*>						m_lstObjects[RENDER_TYPE::RENDER_END];
 	map<string, UINT>					m_InstanceCheck;
+	map<string, UINT>					m_InstanceCheckForShadow;
 
 	int									m_iCountView = 0;
 

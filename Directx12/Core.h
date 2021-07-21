@@ -45,6 +45,7 @@ public:
 	ID3D12GraphicsCommandList*	GetCmdLstForLoading() { return m_ptrCmdLstForLoading.Get(); }
 	D3D12_CPU_DESCRIPTOR_HANDLE	GetDSVCpuHandle() { return m_DsvCPUHandles; }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVForShadeCpuHandle() {	return m_DsvForShadeCPUHandles;	}
+	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVForShadowCpuHandle() { return m_DsvForShadowCPUHandles; }
 private:
 	ComPtr<IDXGIFactory4>				m_ptrDxgiFactory;
 	ComPtr<IDXGISwapChain3>				m_ptrDxgiSwapChain;
@@ -65,10 +66,12 @@ private:
 	ComPtr<ID3D12Resource>				m_ptrSwapChainBackBuffers[2];
 	ComPtr<ID3D12Resource>				m_ptrDsv;
 	ComPtr<ID3D12Resource>				m_ptrDsvForShade;
+	ComPtr<ID3D12Resource>				m_ptrDsvForShadow;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE			m_SwapChainBackBufferRTVCPUHandles[2];
 	D3D12_CPU_DESCRIPTOR_HANDLE			m_DsvCPUHandles;
 	D3D12_CPU_DESCRIPTOR_HANDLE			m_DsvForShadeCPUHandles;
+	D3D12_CPU_DESCRIPTOR_HANDLE			m_DsvForShadowCPUHandles;
 
 	D3D12_VIEWPORT						m_Viewport;
 	D3D12_RECT							m_ScissorRect;

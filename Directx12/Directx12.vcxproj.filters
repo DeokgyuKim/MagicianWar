@@ -645,7 +645,7 @@
     <None Include="Common.hlsl">
       <Filter>01.Engine\03.Shader\00.HLSL</Filter>
     </None>
-    <None Include="Default.hlsl">
+    <None Include="Shadow.hlsl">
       <Filter>01.Engine\03.Shader\00.HLSL</Filter>
     </None>
     <None Include="Skill.hlsl">

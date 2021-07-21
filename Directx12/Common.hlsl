@@ -16,6 +16,8 @@ cbuffer cbLight : register(b3)
 	float4 gLightSpecular;
 	float4 gLightPosition;
 	float4 gLightDirection;
+	float4x4 gLightView;
+	float4x4 gLightProj;
 };
 
 //cbuffer cbSkinned : register(b4)
@@ -52,6 +54,7 @@ Texture2D AmbiTex : register(t2);
 Texture2D SpecTex : register(t3);
 Texture2D NormalTex : register(t4);
 Texture2D DepthTex : register(t5);
+Texture2D LightDepthTex : register(t13);
 
 TextureCube CubeMapTex : register(t6);
 Texture2D NoiseTex : register(t7);

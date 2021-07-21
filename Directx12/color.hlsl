@@ -6,22 +6,6 @@
 
 #include "Common.hlsl"
 
-struct VertexIn
-{
-	float3 PosL  : POSITION;
-    float4 Color : COLOR;
-	float3 Normal : NORMAL;
-};
-
-struct VertexOut
-{
-	float4 PosH  : SV_POSITION;
-    float4 Color : COLOR;
-	float4 Normal : NORMAL;
-
-	nointerpolation uint MaterialIndex : MATINDEX;
-};
-
 struct PSOut
 {
 	float4 Diffuse : SV_TARGET0;
@@ -30,41 +14,6 @@ struct PSOut
 	float4 Normal : SV_TARGET3;
 	float4 Depth : SV_TARGET4;
 };
-
-VertexOut VS(VertexIn vin, uint instanceID : SV_InstanceID)
-{
-	VertexOut vout;
-	// 인스턴싱
-	InstanceObject instObjData = gInstanceData[instanceID];
-	float4x4 world = instObjData.gWorld;
-	uint matIndex = instObjData.MaterialIndex;
-	uint boolBone = instObjData.gboolBone;
-	vout.MaterialIndex = matIndex;
-
-	//SkinnedData instSkinned = gSkinnedData[instanceID];
-
-	// Transform to homogeneous clip space.
-	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), world), gView), gProj);
-	
-	// Just pass vertex color into the pixel shader.
-    vout.Color = vin.Color;
-	vout.Normal = normalize(mul(float4(vin.Normal, 0.f), world));
-    
-    return vout;
-}
-
-PSOut PS(VertexOut pin)
-{
-	PSOut vout;
-	MaterialData materialData = gMaterialData[pin.MaterialIndex];
-	vout.Diffuse = pin.Color * materialData.gDiffuse;
-	vout.Ambient = pin.Color * materialData.gAmbient;
-	vout.Specular = pin.Color * materialData.gSpecular;
-	vout.Normal = float4(pin.Normal.xyz * 0.5f + 0.5f, 1.f);
-	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
-
-	return vout;
-}
 
 
 struct In
@@ -83,6 +32,7 @@ struct Out
 	nointerpolation uint MaterialIndex : MATINDEX;
 };
 
+//NOBLEND
 Out VS_Main(In vin, uint instanceID : SV_InstanceID)
 {
 	Out vout;
@@ -101,7 +51,6 @@ Out VS_Main(In vin, uint instanceID : SV_InstanceID)
 
 	return vout;
 }
-
 PSOut PS_Main(Out pin)
 {
 	PSOut vout;
@@ -117,6 +66,7 @@ PSOut PS_Main(Out pin)
 
 	return vout;
 }
+//NOBLEND
 
 struct Shade_In
 {
@@ -140,12 +90,10 @@ Shade_Out VS_Shade(Shade_In pin)
 
 	return vOut;
 }
-
 struct PS_SHADE_OUT
 {
 	float4 Shade : SV_TARGET0;
 };
-
 PS_SHADE_OUT PS_Shade(Shade_Out pin)
 {
 	PS_SHADE_OUT pOut;
@@ -239,6 +187,9 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	}
 
 
+	//float4 lightdepth = LightDepthTex.Sample(gsamLinear, pin.UV);
+	//pOut.Shade = lightdepth;
+
 	return pOut;
 }
 
@@ -275,8 +226,6 @@ struct VertexIn_Static
 	float3 TangentL : TANGENT;
 	float3 BinormalL : BINORMAL;
 };
-
-
 struct VertexIn_Movable
 {   // 움직이는 객체
 	float3 PosL    : POSITION;
@@ -288,7 +237,6 @@ struct VertexIn_Movable
 	uint4 BoneIndices  : BONEINDICES;
 
 };
-
 struct VertexOut_Default
 {   // 기본 
 	float4 PosH    : SV_POSITION;
@@ -386,7 +334,6 @@ VertexOut_Default VS_Static(VertexIn_Static vin, uint instanceID : SV_InstanceID
 
 	return vout;
 }
-
 PSOut PS_Static(VertexOut_Default pin)
 {
 	MaterialData materialData = gMaterialData[pin.MaterialIndex];
