@@ -114,15 +114,15 @@ void Camera::LateUpdate(const float& fTimeDelta)
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // XMVectorSet(m_xmfUpVec.x, m_xmfUpVec.y, m_xmfUpVec.z, 0.0f);
 
 	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
-
 	XMStoreFloat4x4(&m_xmmView, view);
 
 	CameraCB camCB;
 	XMStoreFloat4x4(&camCB.View, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmView)));
 	XMStoreFloat4x4(&camCB.Proj, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmProj)));
-	XMStoreFloat4x4(&camCB.InvView, XMMatrixTranspose(XMMatrixInverse(NULL, XMLoadFloat4x4(&m_xmmView))));
-	XMStoreFloat4x4(&camCB.InvProj, XMMatrixTranspose(XMMatrixInverse(NULL, XMLoadFloat4x4(&m_xmmProj))));
-	XMFLOAT4 position = XMFLOAT4(m_xmfPosition.x, m_xmfPosition.y, m_xmfPosition.z, 0.f);
+	XMStoreFloat4x4(&camCB.InvView, XMMatrixInverse(NULL, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmView)))); 
+	XMStoreFloat4x4(&camCB.InvProj, XMMatrixInverse(NULL, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmProj))));
+	XMFLOAT4 position = XMFLOAT4(m_xmfPosition.x, m_xmfPosition.y, m_xmfPosition.z, 1.f);
+	//cout << position.x << "\t" << position.y << "\t" << position.z << endl;
 	XMStoreFloat4(&camCB.Position, XMLoadFloat4(&position));
 	camCB.Time = m_fTime;
 

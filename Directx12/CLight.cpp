@@ -59,8 +59,8 @@ void CLight::BuildConstantBuffer()
 	XMStoreFloat4(&lightcb.Specular, XMLoadFloat4(&m_xmfSpecular));
 	XMStoreFloat4(&lightcb.Position, XMLoadFloat4(&m_xmfPosition));
 	XMStoreFloat4(&lightcb.Direction, XMLoadFloat4(&m_xmfDirection));
-	XMStoreFloat4x4(&lightcb.LightProj, XMMatrixTranspose(proj));
 	XMStoreFloat4x4(&lightcb.LightView, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&lightcb.LightProj, XMMatrixTranspose(proj));
 	m_LightCB->CopyData(0, lightcb);
 
 }

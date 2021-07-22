@@ -651,6 +651,9 @@
     <None Include="Skill.hlsl">
       <Filter>01.Engine\03.Shader\00.HLSL</Filter>
     </None>
+    <None Include="Blend.hlsl">
+      <Filter>01.Engine\03.Shader\00.HLSL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Directx12.rc">

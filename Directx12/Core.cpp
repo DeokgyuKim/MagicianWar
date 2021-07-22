@@ -261,7 +261,7 @@ HRESULT Core::CreateSwapchain()
 HRESULT Core::CreateDescriptorHeap()
 {
     D3D12_DESCRIPTOR_HEAP_DESC rtvDesc = {};
-    rtvDesc.NumDescriptors = 9;
+    rtvDesc.NumDescriptors = 13;
     rtvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
     rtvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
     rtvDesc.NodeMask = 0;

@@ -12,6 +12,7 @@
 #include "InstanceInfo.h"
 #include "MaterialMgr.h"
 #include "InstanceMgr.h"
+#include "LightGeo.h"
 
 Renderer* Renderer::m_pInstance = NULL;
 Renderer* Renderer::GetInstance()
@@ -44,6 +45,11 @@ void Renderer::InitRenderer(Core* pCore, ID3D12Device* pDevice, ID3D12GraphicsCo
 	m_pLight = new CLight(m_pDevice, m_pCmdLst, m_ptrDescriptorHeap.Get(), this,
 		XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(-10.f, 50.f, -10.f, 1.f)
 		, XMFLOAT4(1.f, -2.f, 1.f, 0.f));
+
+	Core::GetInstance()->CmdLstReset();
+	m_pBlendGeo = new LightGeo(m_pDevice, m_pCmdLst, m_ptrDescriptorHeap.Get(), WINCX, WINCY);
+	Core::GetInstance()->CmdLstExecute();
+	Core::GetInstance()->WaitForGpuComplete();
 	InitializeCriticalSection(&m_Crt);
 	//BuildTextures();
 }
@@ -94,14 +100,19 @@ void Renderer::Render(const float& fTimeDelta)
 
 	m_pLight->RenderLight();
 
-
 	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Shadow");
 	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Shadow", m_pCore->GetDSVForShadowCpuHandle());
 	Render_Shadow(fTimeDelta);
 
+	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Blend");
+	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Blend", m_pCore->GetDSVForShadeCpuHandle());
+	m_mapShaders[RENDER_TYPE::RENDER_BLEND]->PreRender(m_pCmdLst);
+	m_pRTMgr->GetRenderTarget("Specular")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 22);
+	m_pBlendGeo->Render(fTimeDelta);
 
 
-	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Shade", m_pCore->GetDSVCpuHandle());
+
+	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Blend", m_pCore->GetDSVCpuHandle());
 	m_mapShaders[RENDER_TYPE::RENDER_SKYBOX]->PreRender(m_pCmdLst);
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_SKYBOX])
 	{
@@ -312,7 +323,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE Renderer::CreateUnorderedAccessView(ID3D12Resource* 
 
 void Renderer::BuildRootSignature()
 {
-	CD3DX12_DESCRIPTOR_RANGE srvTable[14];
+	CD3DX12_DESCRIPTOR_RANGE srvTable[15];
 	srvTable[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // DDStexture
 	srvTable[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1); // Diff Texture
 	srvTable[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2); // Ambi Texture
@@ -327,9 +338,10 @@ void Renderer::BuildRootSignature()
 	srvTable[11].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 11);	// Skill Effect Texture4
 	srvTable[12].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 12);	// Skill Effect Texture5
 	srvTable[13].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 13);	// LightDepth Texture
+	srvTable[14].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 14);	// Shade Texture
 
 
-	const size_t rootSize = 22;
+	const size_t rootSize = 23;
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[rootSize];
 
@@ -356,6 +368,7 @@ void Renderer::BuildRootSignature()
 	slotRootParameter[19].InitAsConstantBufferView(6);	//Not Instanced Object Constant Buffer
 	slotRootParameter[20].InitAsConstantBufferView(7);	//UiCB
 	slotRootParameter[21].InitAsDescriptorTable(1, &srvTable[13], D3D12_SHADER_VISIBILITY_PIXEL);	// LightDepth Texture
+	slotRootParameter[22].InitAsDescriptorTable(1, &srvTable[14], D3D12_SHADER_VISIBILITY_PIXEL);	// Shade Texture
 
 	auto staticSamplers = GetStaticSamplers();
 
@@ -468,21 +481,13 @@ void Renderer::BuildShader()
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, false);
 	m_mapShaders[RENDER_TYPE::RENDER_SKYBOX] = pShader;
 
-	layout = {
-	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
-	};
-	pShader = new Shader;
-	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Shade", L"color.hlsl", "PS_Shade", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
-	m_mapShaders[RENDER_TYPE::RENDER_SHADE] = pShader;
 
 	layout = {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 	pShader = new Shader;
-	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_UI", L"color.hlsl", "PS_UI", layout);
+	pShader->BuildShadersAndInputLayout(L"Blend.hlsl", "VS_UI", L"Blend.hlsl", "PS_UI", layout);
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
 	m_mapShaders[RENDER_TYPE::RENDER_UI] = pShader;
 
@@ -498,6 +503,20 @@ void Renderer::BuildShader()
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_FireBall", L"color.hlsl", "PS_FireBall", layout);
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 5, true, true, false, 4);
 	m_mapShaders[RENDER_TYPE::RENDER_BULLET] = pShader;
+
+	layout = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pShader = new Shader;
+	pShader->BuildShadersAndInputLayout(L"Blend.hlsl", "VS_Shade", L"Blend.hlsl", "PS_Shade", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 4, true, false);
+	m_mapShaders[RENDER_TYPE::RENDER_SHADE] = pShader;
+
+	pShader = new Shader;
+	pShader->BuildShadersAndInputLayout(L"Blend.hlsl", "VS_BLEND", L"Blend.hlsl", "PS_BLEND", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
+	m_mapShaders[RENDER_TYPE::RENDER_BLEND] = pShader;
 }
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 {
@@ -570,4 +589,6 @@ void Renderer::DebugKeyInput()
 		DebugInput = "Normal";
 	if (GetAsyncKeyState(VK_F9) & 0x8000)
 		DebugInput = "Depth";
+	if (GetAsyncKeyState(VK_F10) & 0x8000)
+		DebugInput = "Blend";
 }

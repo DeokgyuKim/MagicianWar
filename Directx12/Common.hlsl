@@ -55,6 +55,7 @@ Texture2D SpecTex : register(t3);
 Texture2D NormalTex : register(t4);
 Texture2D DepthTex : register(t5);
 Texture2D LightDepthTex : register(t13);
+Texture2D ShadeTex : register(t14);
 
 TextureCube CubeMapTex : register(t6);
 Texture2D NoiseTex : register(t7);

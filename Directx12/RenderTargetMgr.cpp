@@ -45,13 +45,43 @@ void RenderTargetMgr::BuildRenderTarget(ID3D12Device* device, Renderer* pRendere
 	m_mapRenderTarget["LightDepth"] = Rt;
 	m_mapMRT["Shadow"].push_back(Rt);
 	clear.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	
-	clear.Color[2] = 1.f;
+
+	clear.Color[0] = 0.f;
+	clear.Color[1] = 0.f;
+	clear.Color[2] = 0.f;
 	clear.Color[3] = 1.f;
 
 	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
 	m_mapRenderTarget["Shade"] = Rt;
 	m_mapMRT["Shade"].push_back(Rt);
+
+	clear.Color[0] = 0.f;
+	clear.Color[1] = 0.f;
+	clear.Color[2] = 0.f;
+	clear.Color[3] = 1.f;
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
+	m_mapRenderTarget["Specular"] = Rt;
+	m_mapMRT["Shade"].push_back(Rt);
+	
+	clear.Color[0] = 0.f;
+	clear.Color[1] = 0.f;
+	clear.Color[2] = 0.f;
+	clear.Color[3] = 1.f;
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
+	m_mapRenderTarget["RimLight"] = Rt;
+	m_mapMRT["Shade"].push_back(Rt);
+	
+	clear.Color[0] = 0.f;
+	clear.Color[1] = 0.f;
+	clear.Color[2] = 0.f;
+	clear.Color[3] = 1.f;
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
+	m_mapRenderTarget["OutLine"] = Rt;
+	m_mapMRT["Shade"].push_back(Rt);
+
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
+	m_mapRenderTarget["Blend"] = Rt;
+	m_mapMRT["Blend"].push_back(Rt);
 }
 
 void RenderTargetMgr::SetMultiRenderTarget(ID3D12GraphicsCommandList* cmdLst, string tagMRT, D3D12_CPU_DESCRIPTOR_HANDLE DsvHandle)

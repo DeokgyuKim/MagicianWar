@@ -12,6 +12,7 @@ class RenderTargetMgr;
 class CLight;
 class Skybox;
 class InstanceInfo;
+class LightGeo;
 
 class Renderer
 {
@@ -47,7 +48,7 @@ private:
 	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
 
 	void	DebugKeyInput();
-	string	DebugInput = "Shade";
+	string	DebugInput = "Blend";
 private:
 	Core*								m_pCore = NULL;
 	ID3D12Device*						m_pDevice = NULL;
@@ -70,5 +71,6 @@ private:
 	RenderTargetMgr*					m_pRTMgr;
 	CRITICAL_SECTION					m_Crt;
 	
+	LightGeo*							m_pBlendGeo;
 };
 
