@@ -20,7 +20,7 @@ public:
 	void AddCount() { 
 		++m_iCnt; 
 #ifdef _DEBUG
-#elif
+#else
 		Sleep(10); 
 #endif // _DEBUG
 

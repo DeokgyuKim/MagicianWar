@@ -180,7 +180,18 @@ PS_BLEND_OUT PS_BLEND(Blend_Out pin)
 	PS_BLEND_OUT pOut;
 	//pOut.Shade = float4(1.f, 1.f, 1.f, 1.f);
 
-	pOut.Blend = ShadeTex.Sample(gsamLinear, pin.UV);
+	float4 shade = DiffTex.Sample(gsamLinear, pin.UV);
+	float4 specular = AmbiTex.Sample(gsamLinear, pin.UV);
+	float4 rimlight = SpecTex.Sample(gsamLinear, pin.UV);
+	float4 outline = NormalTex.Sample(gsamLinear, pin.UV);
+	float4 lightdepth = DepthTex.Sample(gsamLinear, pin.UV);
+
+	float4 color = shade + specular + rimlight;
+	color = color * (1 - outline);
+	color.a = 1.f;
+
+
+	pOut.Blend = color;
 	pOut.Blend = pow(pOut.Blend, 1.f / 2.2f);
 	pOut.Blend.a = 1.f;
 

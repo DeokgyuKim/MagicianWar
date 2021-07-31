@@ -107,7 +107,11 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Blend");
 	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Blend", m_pCore->GetDSVForShadeCpuHandle());
 	m_mapShaders[RENDER_TYPE::RENDER_BLEND]->PreRender(m_pCmdLst);
-	m_pRTMgr->GetRenderTarget("Specular")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 22);
+	m_pRTMgr->GetRenderTarget("Shade")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 5);
+	m_pRTMgr->GetRenderTarget("Specular")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 6);
+	m_pRTMgr->GetRenderTarget("RimLight")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 7);
+	m_pRTMgr->GetRenderTarget("OutLine")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 8);
+	m_pRTMgr->GetRenderTarget("LightDepth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 9);
 	m_pBlendGeo->Render(fTimeDelta);
 
 
