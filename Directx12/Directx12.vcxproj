@@ -78,12 +78,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>./;./PhysX/include/;$(IncludePath)</IncludePath>
+    <IncludePath>./;./PhysX/include/;../protocol/;$(IncludePath)</IncludePath>
     <LibraryPath>./PhysX/lib/;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>./;./PhysX/include/;$(IncludePath)</IncludePath>
+    <IncludePath>./;./PhysX/include/;../protocol/;$(IncludePath)</IncludePath>
     <LibraryPath>./PhysX/lib/;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -203,6 +203,7 @@
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="RenderTargetMgr.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="RoomScene.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skill.h" />
@@ -273,6 +274,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="RenderTargetMgr.cpp" />
+    <ClCompile Include="RoomScene.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skill.cpp" />

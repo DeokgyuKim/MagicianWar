@@ -19,5 +19,7 @@ protected:
     string          m_strActiveTextureName;
     RECT            m_Rect;
     BUTTON_STATE    m_eButtonState;
+    BUTTON_STATE    m_prevButtonState;
+    
 };
 

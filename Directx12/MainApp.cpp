@@ -16,6 +16,8 @@ MainApp* MainApp::m_pInstance = NULL;
 
 void MainApp::Initialize()
 {
+	std::wcout.imbue(std::locale("korean"));
+
 	m_pCore = Core::GetInstance();
 	m_pCore->InitDevice();
 	

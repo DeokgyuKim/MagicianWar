@@ -2,6 +2,9 @@
 
 #include "MainApp.h"
 #include "Scene.h"
+#include "LobbyScene.h"
+#include "RoomScene.h"
+#include "TestScene.h"
 #include "UI.h"
 #include "Button.h"
 #include "Player.h"
@@ -19,7 +22,7 @@ Network* Network::m_pInstance = NULL;
 bool Network::Init(const string& strServerIP)
 {
 	m_bLobbyEnd = false;
-	LoadingEnd = false;
+
 	int retval;
 
 	WSADATA wsa;
@@ -52,22 +55,30 @@ bool Network::Init(const string& strServerIP)
 		return false;
 	}
 
-	retval = recv(m_Sock, recvBuffer, MAX_BUFFER, 0);
-	if (retval > 0) recvProcessing(retval);
-
 	// nonBlocking
 	unsigned long nonBlocking = 1;
 	ioctlsocket(m_Sock, FIONBIO, &nonBlocking);
 
-	cout << m_tMyInfo.dwPlayerNum << ", " << m_tMyInfo.dwTeamNum << endl;
 
+	CallEvent(EVENT_CTOS_CONNECT_OK, 0);
+
+	/////////////////////////////////////////////
+
+
+	// initData
+
+	m_tMyInfo.xmfPosition = XMFLOAT3(0.f, 0.f, 0.f);
+	m_tMyInfo.iHp = 100;
+	m_tMyInfo.CharacterType = WIZARD_FIRE;
+
+	m_LateInit = false;
 	{ // packet 초기화
 		packetInit();
 	}
 
 	packet_size = 0;
 	savedPacket_size = 0;
-	m_SceneChange = LOBBY_Scene; // 처음엔 로딩씬으로 가야지
+	m_SceneChange = LOADING_SCENE; // 처음엔 로딩씬
 	mainSceneLateInit = false;
 
 
@@ -80,28 +91,23 @@ void Network::packetInit()
 		{ // packet_keyInput
 			KEY_packet.size = sizeof(KEY_packet);
 			KEY_packet.type = packet_keyInput;
-			KEY_packet.id = m_tMyInfo.dwPlayerNum;
+			KEY_packet.id = m_tMyInfo.Client_Num;
 		}
 		{ // ctos_playerInfo
 			tInfo_packet.size = sizeof(tInfo_packet);
 			tInfo_packet.type = ctos_playerInfo;
-			tInfo_packet.ePlayerState = PLAYER_STATE::IDLE;
+			tInfo_packet.ePlayerState = static_cast<int>(PLAYER_STATE::IDLE);
 			tInfo_packet.bAttackEnd = false;
 
 		}
 		{// packet_ready
 			Ready_packet.size = sizeof(Ready_packet);
 			Ready_packet.type = packet_ready;
-			Ready_packet.id = m_tMyInfo.dwPlayerNum;
+			Ready_packet.id = m_tMyInfo.Client_Num;
 			Ready_packet.CharacterType = WIZARD_FIRE;
 			Ready_packet.ready = 0;
 		}
-		{ // ctos_LoadingEnd
-			LoadingEnd_packet.size = sizeof(LoadingEnd_packet);
-			LoadingEnd_packet.type = ctos_LoadingEnd;
-			LoadingEnd_packet.id = m_tMyInfo.dwPlayerNum;
-			LoadingEnd_packet.bLoadingEnd = false;
-		}
+
 	}
 }
 
@@ -116,32 +122,58 @@ void Network::Update()
 {
 	// 이제 여기서 돌릴거
 	recvUpdate();
-
-	if (m_SceneChange == LOADING_Scene)  // Logo
-	{
-		//SendLoadingEnd();
+	if (!m_LateInit) {
+		packetInit();
+		m_LateInit = true;
 	}
-	else if (m_SceneChange == LOBBY_Scene) // Lobby
+	switch (m_SceneChange)
 	{
-		SendReadyState(); // lobby에서는 ready만 보냄
+	case LOADING_SCENE:
+		break;
+	case TITLE_SCENE:
+		break;
+	case LOBBY_SCENE:
+		break;
+	case ROOM_SCENE:
+		break;
+	case STAGE_SCENE:
+		break;
+	case RESULT_SCENE:
+		break;
+	default:
+		cout << "SCENE ERROR\n";
+		break;
 	}
-	else if (m_SceneChange == STAGE_Scene) // mainScene
+
+	if (m_SceneChange == LOADING_SCENE)  // Logo
 	{
-		if (!mainSceneLateInit)
-		{
-			//상대의 플레이어 정보 받아오기
-			RecvOtherPlayerInfo();
-			mainSceneLateInit = true;
-		}
 
-		//Send
-		//내 플레이어정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
-		SendMyPlayerInfo();
-		//키입력정보(w, a, s, d, 스킬12, 점프, 마우스클릭)
-		SendKeyInput();
-		
+	}
+	else if (m_SceneChange == LOBBY_SCENE) // Lobby
+	{
+		//SendReadyState(); // lobby에서는 ready만 보냄
+	}
+	else if (m_SceneChange == ROOM_SCENE)
+	{
 
-		
+	}
+	else if (m_SceneChange == STAGE_SCENE) // mainScene
+	{
+		//if (!mainSceneLateInit)
+		//{
+		//	//상대의 플레이어 정보 받아오기
+		//	RecvOtherPlayerInfo();
+		//	mainSceneLateInit = true;
+		//}
+
+		////Send
+		////내 플레이어정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
+		//SendMyPlayerInfo();
+		////키입력정보(w, a, s, d, 스킬12, 점프, 마우스클릭)
+		//SendKeyInput();
+
+
+
 	}
 	else if (m_SceneChange == ENDING_Scene)
 	{
@@ -185,10 +217,10 @@ void Network::SetMyPlayerInfo(Player* pPlayer)
 	int Root_Ani = 0;
 	int Upper_Ani = 0;
 
-	memcpy(&pos, &m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld._41, sizeof(XMFLOAT3));
+	memcpy(&pos, &m_mapRecvPlayerInfos[m_tMyInfo.Client_Num].matWorld._41, sizeof(XMFLOAT3));
 	//cout << pos.x << ", " << pos.y << ", " << pos.z << endl;
-	Root_Ani = SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Root_eAnimType);
-	Upper_Ani = SCint(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].Upper_eAnimType);
+	Root_Ani = SCint(m_mapRecvPlayerInfos[m_tMyInfo.Client_Num].Root_eAnimType);
+	Upper_Ani = SCint(m_mapRecvPlayerInfos[m_tMyInfo.Client_Num].Upper_eAnimType);
 	//cout << "1번 클라의 Root - " << Root_Ani << endl;
 	//cout << "1번 클라의 Upper - " << Root_Ani << endl;
 
@@ -204,7 +236,7 @@ void Network::SetOtherPlayerInfo(list<Object*>* plstPlayer)
 	for (auto iter = plstPlayer->begin(); iter != plstPlayer->end(); ++iter)
 	{
 		Player* pPlayer = dynamic_cast<Player*>(*iter);
-		pPlayer->SetWorld(m_mapRecvPlayerInfos[pPlayer->GetNetworkInfo().dwPlayerNum].matWorld);
+		pPlayer->SetWorld(m_mapRecvPlayerInfos[pPlayer->GetNetworkInfo().Client_Num].matWorld);
 	}
 
 
@@ -228,7 +260,94 @@ string Network::LoadServerIPtxt(string filePath)
 void Network::ClearNetworkForNext()
 {
 	Ready_packet.ready = 0;
-	m_SceneChange = LOBBY_Scene;
+	m_SceneChange = LOBBY_SCENE;
+}
+
+void Network::CallEvent(int EventType, int args, ...)
+{
+	switch (EventType)
+	{
+	case EVENT_SCENE_CHANGE:
+	{
+		int scene;
+		va_list vl;
+		va_start(vl, args);
+		scene = va_arg(vl, int);
+		va_end(vl);
+		if (scene == TITLE_SCENE) {
+
+		}
+		else if (scene == LOBBY_SCENE) {
+			LobbyScene* lobbyScene = new LobbyScene();
+			MainApp::GetInstance()->ChangeScene(lobbyScene);
+		}
+		else if (scene == ROOM_SCENE) {
+			RoomScene* Scene = new RoomScene();
+			MainApp::GetInstance()->ChangeScene(Scene);
+		}
+		else if (scene == STAGE_SCENE) {
+			TestScene* Scene = new TestScene();
+			MainApp::GetInstance()->ChangeScene(Scene);
+		}
+		else if (scene == RESULT_SCENE) {
+
+		}
+		else if (scene == ENDING_SCENE) {
+
+		}
+	}
+	// LOADING 
+	case EVENT_LOADING_LOADINGEND:
+	{
+		SendLoadingEnd();
+	}
+	break;
+	case EVENT_CTOS_CONNECT_OK:
+	{
+		SendConnectOK();
+	}
+	break;
+
+	// TITLE
+	case EVENT_TITLE_LOGIN:
+		break;
+
+		// LOBBY
+	case EVENT_LOBBY_ROOMLIST_SHOW:
+		break;
+	case EVENT_LOBBY_ROOM_MAKE_REQUEST:
+		SendRoomMake_Request();
+		break;
+	case EVENT_LOBBY_ROOM_JOIN_REQUEST:
+		break;
+
+		// ROOM
+	case EVENT_ROOM_PLAYER_ENTER:
+		break;
+	case EVENT_ROOM_PLAYER_READY_ON:
+		break;
+	case EVENT_ROOM_PLAYER_READY_OFF:
+		break;
+	case EVENT_ROOM_PLAYER_SELECT_CHARACTER:
+		break;
+	case EVENT_ROOM_PLAYER_EXIT:
+		break;
+
+		// STAGE
+	case EVENT_STAGE_GAME_START:
+		break;
+	case EVENT_STAGE_INPUT_MOVE:
+		break;
+	case EVENT_STAGE_INPUT_BASIC_ATTACK:
+		break;
+	case EVENT_STAGE_PLAYER_INFO:
+		break;
+	case EVENT_STAGE_PLAYER_ANIMATE:
+		break;
+
+	default:
+		break;
+	}
 }
 
 bool Network::IsMoveToMainGame()
@@ -298,16 +417,12 @@ void Network::packetProcessing(char* _packetBuffer)
 	char packetType = _packetBuffer[2];
 	switch (packetType)
 	{
-	case stoc_startInfo: // 초기 recv 
+	case stoc_Accept_OK: // Accept 완료
 	{
-		cout << "초기 좌표 받기" << endl;
-		STOC_startInfo* data = reinterpret_cast<STOC_startInfo*>(_packetBuffer);
-		m_tMyInfo.dwPlayerNum = data->dwPlayerNum;
-		m_tMyInfo.dwTeamNum = data->dwTeamNum;
-		m_tMyInfo.xmfPosition = data->xmfPosition;
-		m_tMyInfo.iHp = data->iHp;
-		m_tMyInfo.CharacterType = data->CharacterType;
-		cout << m_tMyInfo.iHp << endl;
+		cout << "Server Accept OK" << endl;
+		STOC_Accept_OK* data = reinterpret_cast<STOC_Accept_OK*>(_packetBuffer);
+		m_tMyInfo.Client_Num = data->id;
+		m_tMyInfo.dwTeamNum = TEAM_NONE;
 		break;
 	}
 	case stoc_sceneChange: // IsMoveToMainGame
@@ -332,7 +447,7 @@ void Network::packetProcessing(char* _packetBuffer)
 	{
 		cout << "다른 플레이어 초기좌표" << endl;
 		STOC_OtherstartInfo* data = reinterpret_cast<STOC_OtherstartInfo*>(_packetBuffer);
-		m_mapOtherPlayerInfos[data->dwPlayerNum].dwPlayerNum = data->dwPlayerNum;
+		m_mapOtherPlayerInfos[data->dwPlayerNum].Client_Num = data->dwPlayerNum;
 		m_mapOtherPlayerInfos[data->dwPlayerNum].dwTeamNum = data->dwTeamNum;
 		m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition = data->xmfPosition;
 		m_mapOtherPlayerInfos[data->dwPlayerNum].iHp = data->iHp;
@@ -351,15 +466,15 @@ void Network::packetProcessing(char* _packetBuffer)
 		//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_fAnimTime = data->Root_fAnimTime;
 		//m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_fWeight = data->Root_fWeight;
 
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Root_eAnimType = data->Root_eAnimType;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].Upper_eAnimType = data->Upper_eAnimType;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].ePlayerState = data->ePlayerState;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].matWorld = data->matWorld;
+		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].Root_eAnimType = data->Root_eAnimType;
+		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].Upper_eAnimType = data->Upper_eAnimType;
+		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].ePlayerState = data->ePlayerState;
+		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].matWorld = data->matWorld;
 
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwPlayerNum = data->playerInfo.dwPlayerNum;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.dwTeamNum = data->playerInfo.dwTeamNum;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
-		m_mapRecvPlayerInfos[data->playerInfo.dwPlayerNum].playerInfo.iHp = data->playerInfo.iHp;
+		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.Client_Num = data->playerInfo.Client_Num;
+		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.dwTeamNum = data->playerInfo.dwTeamNum;
+		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
+		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.iHp = data->playerInfo.iHp;
 		//cout << "HP: " << data->playerInfo.iHp << endl;
 		//cout << data->playerInfo.iHp << endl;
 
@@ -390,7 +505,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		//cout << "ID : " << data->id << endl;
 		break;
 	}
-	
+
 	case stoc_gameend:
 	{
 		STOC_GameEnd* data = reinterpret_cast<STOC_GameEnd*>(_packetBuffer);
@@ -407,7 +522,15 @@ void Network::packetProcessing(char* _packetBuffer)
 
 }
 
-void Network::SendReadyState()
+void Network::SendRoomMake_Request()
+{
+}
+
+void Network::SendRoomJoin_Request()
+{
+}
+
+void Network::SendReadyState(int ReadyState)
 {
 	int retval;
 
@@ -466,7 +589,7 @@ void Network::SendMyPlayerInfo()
 		//tInfo_packet.matWorld = MathHelper::Identity4x4();
 	}
 
-	tInfo_packet.id = m_tMyInfo.dwPlayerNum;
+	tInfo_packet.id = m_tMyInfo.Client_Num;
 
 	int retval;
 	retval = send(m_Sock, (char*)&tInfo_packet, tInfo_packet.size, 0);
@@ -478,31 +601,31 @@ void Network::SendKeyInput()
 
 	if (KeyMgr::GetInstance()->KeyPressing('W'))
 	{
-		dwKeyInput |= 0x0001;
+		dwKeyInput |= ctos_KEY_W;
 	}
 	if (KeyMgr::GetInstance()->KeyPressing('A'))
 	{
-		dwKeyInput |= 0x0002;
+		dwKeyInput |= ctos_KEY_A;
 	}
 	if (KeyMgr::GetInstance()->KeyPressing('S'))
 	{
-		dwKeyInput |= 0x0004;
+		dwKeyInput |= ctos_KEY_S;
 	}
 	if (KeyMgr::GetInstance()->KeyPressing('D'))
 	{
-		dwKeyInput |= 0x0008;
+		dwKeyInput |= ctos_KEY_D;
 	}
 	if (KeyMgr::GetInstance()->KeyPressing(VK_SPACE))
 	{
-		dwKeyInput |= 0x0010;
+		dwKeyInput |= ctos_KEY_SPACE;
 	}
 	if (KeyMgr::GetInstance()->KeyPressing(VK_LBUTTON))
 	{
-		dwKeyInput |= 0x0020;
+		dwKeyInput |= ctos_KEY_LBUTTON;
 	}
 	if (KeyMgr::GetInstance()->KeyPressing('E')) // FireRing
 	{
-		dwKeyInput |= 0x0040;
+		dwKeyInput |= ctos_KEY_E;
 	}
 
 	KEY_packet.key = dwKeyInput;
@@ -514,8 +637,53 @@ void Network::SendKeyInput()
 
 void Network::SendLoadingEnd()
 {
-	LoadingEnd_packet.bLoadingEnd = LoadingEnd;
-	int retval;
-	retval = send(m_Sock, (char*)&LoadingEnd_packet, LoadingEnd_packet.size, 0);
+	CTOS_LoadingEnd packet;
+	packet.size = sizeof(CTOS_LoadingEnd);
+	packet.type = ctos_LoadingEnd;
+	packet.id = m_tMyInfo.Client_Num;
+
+	if (!SendPacket(&packet)) {
+		cout << "SendLoadingEnd() Failed \n";
+	}
+
+}
+
+void Network::SendConnectOK()
+{
+	CTOS_Connect_OK packet;
+	packet.size = sizeof(CTOS_Connect_OK);
+	packet.type = ctos_Connect_OK;
+	if (!SendPacket(&packet)) {
+		cout << "SendConnectOK() Failed \n";
+	}
+}
+
+bool Network::SendPacket(void* buffer)
+{
+	char* packet = reinterpret_cast<char*>(buffer);
+	int packetSize = (short)packet[0];
+	int ret = send(m_Sock, packet, packetSize, 0);
+	if (ret == SOCKET_ERROR)
+	{
+		int err_no = WSAGetLastError();
+		error_display("SendPacket() - ", err_no);
+		return false;
+	}
+	return true;
+}
+
+void Network::error_display(const char* msg, int err_no)
+{
+	WCHAR* lpMsgBuf;
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL, err_no,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR)&lpMsgBuf, 0, NULL);
+	std::cout << msg;
+	std::wcout << L"에러 - " << err_no << lpMsgBuf << std::endl;
+
+	LocalFree(lpMsgBuf);
 }
 

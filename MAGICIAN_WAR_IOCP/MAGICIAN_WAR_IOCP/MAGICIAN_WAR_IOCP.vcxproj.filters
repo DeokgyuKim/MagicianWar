@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="99.Mgr">
+      <UniqueIdentifier>{04697862-26c3-4bb3-b338-3469984c308d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Mgr\01.MeshMgr">
+      <UniqueIdentifier>{8e90b095-c7a7-47bd-8f88-5df1a55e268e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Mgr\02.StaticMeshMgr">
+      <UniqueIdentifier>{923677b9-689d-4931-92f8-7b79c7ba525f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Mgr\03.PhysXMgr">
+      <UniqueIdentifier>{2cf3d22a-5119-43bf-9b8d-9147dbe67b64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Server">
+      <UniqueIdentifier>{05aec282-a908-47fc-89dd-d4d739ed8df2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Thread">
+      <UniqueIdentifier>{e26c86d2-dfbc-40d3-95f7-0376708f9c70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Mgr\04.ThreadMgr">
+      <UniqueIdentifier>{c4537bce-d85f-4cfd-9666-a559f5bcc333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Object">
+      <UniqueIdentifier>{b7d3e6bb-0703-4b58-8ff5-3f4a4b46d66b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Object\01.Player">
+      <UniqueIdentifier>{ba9647cd-3c71-494c-917f-a9fe92331556}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Object\02.Bullet">
+      <UniqueIdentifier>{cf667a02-4006-4755-8159-09ce92d56bbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Object\04.Room">
+      <UniqueIdentifier>{7db93002-3b57-4b6a-b10c-b019993050c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Object\03.Skill">
+      <UniqueIdentifier>{60381d90-49fa-4dcf-a2fc-be814c2c5513}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Object\01.Player\PlayerFSM">
+      <UniqueIdentifier>{fdbc5d81-f127-4f83-a575-30e1dca0138d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Interface">
+      <UniqueIdentifier>{6e898100-ee97-4f6a-9bf2-dc0534ce6886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Thread\02.TimeThread">
+      <UniqueIdentifier>{9aaac263-dc1b-4b96-9b51-ab65844e9461}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Thread\01.WorkThread">
+      <UniqueIdentifier>{4acc64bf-385b-4f2d-84fa-5c9f27d0f0f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Interface\01.Interface_FSM">
+      <UniqueIdentifier>{50b70f34-f5e9-40c3-b538-0685ea7ef5b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Interface\00.Interface_Thread">
+      <UniqueIdentifier>{b9057fbe-f83d-44fa-bba4-496e0f236fc2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysXMgr.cpp">
+      <Filter>99.Mgr\03.PhysXMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshMgr.cpp">
+      <Filter>99.Mgr\01.MeshMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMeshMgr.cpp">
+      <Filter>99.Mgr\02.StaticMeshMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>00.Server</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadMgr.cpp">
+      <Filter>99.Mgr\04.ThreadMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadInterface.cpp">
+      <Filter>98.Interface\00.Interface_Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="WorkThread.cpp">
+      <Filter>01.Thread\01.WorkThread</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeThread.cpp">
+      <Filter>01.Thread\02.TimeThread</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>02.Object\04.Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>02.Object\01.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerFSM.cpp">
+      <Filter>02.Object\01.Player\PlayerFSM</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysXMgr.h">
+      <Filter>99.Mgr\03.PhysXMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshMgr.h">
+      <Filter>99.Mgr\01.MeshMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMeshMgr.h">
+      <Filter>99.Mgr\02.StaticMeshMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="extern.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h">
+      <Filter>00.Server</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadMgr.h">
+      <Filter>99.Mgr\04.ThreadMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadInterface.h">
+      <Filter>98.Interface\00.Interface_Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkThread.h">
+      <Filter>01.Thread\01.WorkThread</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeThread.h">
+      <Filter>01.Thread\02.TimeThread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\protocol\protocol.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>02.Object\04.Room</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>02.Object\01.Player</Filter>
+    </ClInclude>
+    <ClInclude Include="InterfaceFSM.h">
+      <Filter>98.Interface\01.Interface_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerFSM.h">
+      <Filter>02.Object\01.Player\PlayerFSM</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
