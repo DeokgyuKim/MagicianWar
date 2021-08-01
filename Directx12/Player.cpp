@@ -152,7 +152,7 @@ void Player::LateUpdate(const float& fTimeDelta)
 
 	if (m_pCamera == NULL)
 	{
-		STOC_PlayerInfo info = Network::GetInstance()->GetRecvPlayerInfo(m_tNetInfo.dwPlayerNum);
+		STOC_PlayerInfo info = Network::GetInstance()->GetRecvPlayerInfo(m_tNetInfo.Client_Num);
 		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetWorld(info.matWorld);
 
 		dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(SCint(info.Upper_eAnimType));

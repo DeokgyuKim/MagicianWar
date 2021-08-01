@@ -1,6 +1,6 @@
 #include "LoadingScene.h"
 #include "TestScene.h"
-#include "LobbyScene.h"
+
 
 #include "MainApp.h"
 #include "Network.h"
@@ -44,8 +44,8 @@ int LoadingScene::Update(const float& fTimeDelta)
 		if (!Core::GetInstance()->GetLoadingThreadExecute())
 		{
 			delete m_pLoading;
-			LobbyScene* lobbyScene = new LobbyScene();
-			MainApp::GetInstance()->ChangeScene(lobbyScene);
+			Network::GetInstance()->CallEvent(EVENT_LOADING_LOADINGEND, 0);
+			Network::GetInstance()->CallEvent(EVENT_SCENE_CHANGE, 1, LOBBY_SCENE);
 			return -1;
 		}
 	}
@@ -80,7 +80,7 @@ void LoadingScene::Initialize()
 
 	m_pLoadingBar = dynamic_cast<Bar*>(pObj);
 	m_pLoadingBar->SetTag(1);
-	
+
 	m_pLoading = new Loading(Core::GetInstance(), Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLstForLoading(), Renderer::GetInstance()->GetHeap());
 }
 

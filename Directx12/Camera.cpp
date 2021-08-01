@@ -38,8 +38,8 @@ int Camera::Update(const float& fTimeDelta)
 
 	if ((m_eCamMode == CAMERA_MODE::CAMERA_FREE || m_eCamMode == CAMERA_MODE::CAMERA_THIRD))
 	{
-		if (!(Network::GetInstance()->GetRecvPlayerInfo(Network::GetInstance()->GetMyInfo().dwPlayerNum).ePlayerState == PLAYER_STATE::DANCE
-			&& Network::GetInstance()->GetRecvPlayerInfo(Network::GetInstance()->GetMyInfo().dwPlayerNum).ePlayerState == PLAYER_STATE::DEAD))
+		if (!(Network::GetInstance()->GetRecvPlayerInfo(Network::GetInstance()->GetMyInfo().Client_Num).ePlayerState == static_cast<int>(PLAYER_STATE::DANCE)
+			&& Network::GetInstance()->GetRecvPlayerInfo(Network::GetInstance()->GetMyInfo().Client_Num).ePlayerState == static_cast<int>(PLAYER_STATE::DEAD)))
 		{
 			///Rotate
 			GetCursorPos(&m_ptCur);
