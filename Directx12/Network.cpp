@@ -102,10 +102,10 @@ void Network::packetInit()
 		}
 		{// packet_ready
 			Ready_packet.size = sizeof(Ready_packet);
-			Ready_packet.type = packet_ready;
-			Ready_packet.id = m_tMyInfo.Client_Num;
-			Ready_packet.CharacterType = WIZARD_FIRE;
-			Ready_packet.ready = 0;
+			//Ready_packet.type = packet_ready;
+			//Ready_packet.id = m_tMyInfo.Client_Num;
+			//Ready_packet.CharacterType = WIZARD_FIRE;
+			//Ready_packet.ready = 0;
 		}
 
 	}
@@ -259,7 +259,7 @@ string Network::LoadServerIPtxt(string filePath)
 
 void Network::ClearNetworkForNext()
 {
-	Ready_packet.ready = 0;
+	//Ready_packet.ready = 0;
 	m_SceneChange = LOBBY_SCENE;
 }
 
@@ -542,10 +542,10 @@ void Network::SendReadyState(int ReadyState)
 		{
 		case BUTTON_STATE::MOUSEON:
 		case BUTTON_STATE::NONE:
-			Ready_packet.ready = 0;
+			//Ready_packet.ready = 0;
 			break;
 		case BUTTON_STATE::ON:
-			Ready_packet.ready = 1;
+			//Ready_packet.ready = 1;
 			break;
 		}
 	}
@@ -555,12 +555,12 @@ void Network::SendReadyState(int ReadyState)
 		MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_DARKNESS)
 	};
 
-	if (pButton[0] != NULL && dynamic_cast<RadioButton*>(pButton[0])->GetButtonState() == BUTTON_STATE::ON)
-		Ready_packet.CharacterType = WIZARD_FIRE;
-	else if (pButton[1] != NULL && dynamic_cast<RadioButton*>(pButton[1])->GetButtonState() == BUTTON_STATE::ON)
-		Ready_packet.CharacterType = WIZARD_COLD;
-	else if (pButton[2] != NULL && dynamic_cast<RadioButton*>(pButton[2])->GetButtonState() == BUTTON_STATE::ON)
-		Ready_packet.CharacterType = WIZARD_DARKNESS;
+	//if (pButton[0] != NULL && dynamic_cast<RadioButton*>(pButton[0])->GetButtonState() == BUTTON_STATE::ON)
+	//	Ready_packet.CharacterType = WIZARD_FIRE;
+	//else if (pButton[1] != NULL && dynamic_cast<RadioButton*>(pButton[1])->GetButtonState() == BUTTON_STATE::ON)
+	//	Ready_packet.CharacterType = WIZARD_COLD;
+	//else if (pButton[2] != NULL && dynamic_cast<RadioButton*>(pButton[2])->GetButtonState() == BUTTON_STATE::ON)
+	//	Ready_packet.CharacterType = WIZARD_DARKNESS;
 
 	retval = send(m_Sock, (char*)&Ready_packet, Ready_packet.size, 0);
 }

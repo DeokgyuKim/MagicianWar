@@ -41,8 +41,7 @@ int LobbyScene::Update(const float& fTimeDelta)
 #else
 	if (m_pButton->GetButtonState() == BUTTON_STATE::ON)
 	{
-		TestScene* Scene = new TestScene();
-		MainApp::GetInstance()->ChangeScene(Scene);
+		Network::GetInstance()->CallEvent(EVENT_SCENE_CHANGE, 1, STAGE_SCENE);
 		return -1;
 	}
 #endif // NETWORK
