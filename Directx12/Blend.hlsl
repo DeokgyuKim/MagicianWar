@@ -28,9 +28,6 @@ struct Blend_Out
 struct PS_BLEND_OUT
 {
 	float4 Blend : SV_TARGET0;
-	//float4 Specular : SV_TARGET1;
-	//float4 RimLight : SV_TARGET2;
-	//float4 OutLine : SV_TARGET3;
 };
 
 Shade_Out VS_Shade(Shade_In pin)
@@ -73,6 +70,8 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 
 	//pOut.Shade = float4(diffuseValue.xxx, 1.f);
 
+
+	///Specular//////////////////////////////////////////////////////////////////////////////////////
 	float4 depth = DepthTex.Sample(gsamLinear, pin.UV);
 	float ViewZ = depth.y * 1000.f;
 
@@ -95,7 +94,7 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	//pOut.Specular.a = 0.f;
 
 
-
+	///OutLine//////////////////////////////////////////////////////////////////////////////////////
 	for (int i = -1; i <= 1; ++i)
 	{
 		for (int j = -1; j <= 1; ++j)
@@ -130,9 +129,10 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 		}
 	}
 
-
-	//float4 lightdepth = LightDepthTex.Sample(gsamLinear, pin.UV);
-	//pOut.Shade = lightdepth;
+	/////RimLight//////////////////////////////////////////////////////////////////////////////////////
+	float fresnel = 1.f - abs(dot(Normal, -vLook));
+	float RimLightValue = max(0.f, -dot(-gLightDirection.xyz, -vLook.xyz));
+	pOut.RimLight = float4(1.f, 1.f, 1.f, 1.f) * RimLightValue * fresnel;
 
 	return pOut;
 }
@@ -184,15 +184,45 @@ PS_BLEND_OUT PS_BLEND(Blend_Out pin)
 	float4 specular = AmbiTex.Sample(gsamLinear, pin.UV);
 	float4 rimlight = SpecTex.Sample(gsamLinear, pin.UV);
 	float4 outline = NormalTex.Sample(gsamLinear, pin.UV);
-	float4 lightdepth = DepthTex.Sample(gsamLinear, pin.UV);
+	float4 depth = DepthTex.Sample(gsamLinear, pin.UV);
+	
 
 	float4 color = shade + specular + rimlight;
 	color = color * (1 - outline);
+	color = pow(color, 1.f / 2.2f);
 	color.a = 1.f;
+
+	//Find Position
+	float ViewZ = depth.y * 1000.f;
+	float4 position;
+	position.x = (pin.UV.x * 2.f - 1.f) * ViewZ;
+	position.y = (pin.UV.y * -2.f + 1.f) * ViewZ;
+	position.z = depth.x * ViewZ;
+	position.w = ViewZ;
+	position = mul(position, gInvProj);
+	position = mul(position, gInvView);
+
+	float4 shadowpos = mul(position, gLightView);
+	float4 uvpos = mul(shadowpos, gLightProj);
+	float2 newuv;
+
+	newuv.x = (uvpos.x / uvpos.w) * 0.5f + 0.5f;
+	newuv.y = (uvpos.y / uvpos.w) * -0.5f + 0.5f;
+	//color = LightDepthTex.Sample(gsamLinear, saturate(newuv));
+	if (saturate(newuv.x) == newuv.x && saturate(newuv.y) == newuv.y)
+	{
+		float4 lightdepth = LightDepthTex.Sample(gsamLinear, newuv);
+	
+		if (shadowpos.z - 0.1f > lightdepth.r * 1000.f)
+		{
+			color *= 0.5f;
+			color.a = 1.f;
+		}
+	}
+
 
 
 	pOut.Blend = color;
-	pOut.Blend = pow(pOut.Blend, 1.f / 2.2f);
 	pOut.Blend.a = 1.f;
 
 	return pOut;

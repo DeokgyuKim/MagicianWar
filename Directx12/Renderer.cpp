@@ -111,7 +111,8 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pRTMgr->GetRenderTarget("Specular")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 6);
 	m_pRTMgr->GetRenderTarget("RimLight")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 7);
 	m_pRTMgr->GetRenderTarget("OutLine")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 8);
-	m_pRTMgr->GetRenderTarget("LightDepth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 9);
+	m_pRTMgr->GetRenderTarget("Depth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 9);
+	m_pRTMgr->GetRenderTarget("LightDepth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 21);
 	m_pBlendGeo->Render(fTimeDelta);
 
 
