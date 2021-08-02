@@ -70,7 +70,7 @@ bool Network::Init(const string& strServerIP)
 	m_tMyInfo.xmfPosition = XMFLOAT3(0.f, 0.f, 0.f);
 	m_tMyInfo.iHp = 100;
 	m_tMyInfo.CharacterType = WIZARD_FIRE;
-
+	m_tMyInfo.Room_Num = -1;
 	m_LateInit = false;
 	{ // packet 초기화
 		packetInit();
@@ -296,6 +296,7 @@ void Network::CallEvent(int EventType, int args, ...)
 
 		}
 	}
+	break;
 	// LOADING 
 	case EVENT_LOADING_LOADINGEND:
 	{
@@ -424,6 +425,39 @@ void Network::packetProcessing(char* _packetBuffer)
 		STOC_Accept_OK* data = reinterpret_cast<STOC_Accept_OK*>(_packetBuffer);
 		m_tMyInfo.Client_Num = data->id;
 		m_tMyInfo.dwTeamNum = TEAM_NONE;
+		m_tMyInfo.isRoom_Host = false;
+		break;
+	}
+	//// Lobby
+	case stoc_Room_Make_OK:
+	{
+		cout << " Room Make OK \n";
+		STOC_ROOM_MAKE_OK* data = reinterpret_cast<STOC_ROOM_MAKE_OK*>(_packetBuffer);
+		if (m_tMyInfo.Client_Num == data->Host_num) { // 방장이면 넘어가야지
+			m_tMyInfo.Room_Num = data->room_num;
+			m_tMyInfo.dwTeamNum = TEAM_RED;
+			m_tMyInfo.CharacterType = ELEMENT_FIRE;
+			m_tMyInfo.isRoom_Host = true; // 방장이고
+			CallEvent(EVENT_SCENE_CHANGE, 1, ROOM_SCENE); 
+		}
+		else { // 방장이 아니고 로비에 있는 플레이어면
+
+		}
+		break;
+	}
+	case stoc_Room_Make_Deny:
+	{
+		cout << " Room Make Deny \n";
+		break;
+	}
+	case stoc_Room_Join_OK:
+	{
+		cout << " Room Make Deny \n";
+		break;
+	}
+	case stoc_Room_Join_Deny:
+	{
+		cout << " Room Make Deny \n";
 		break;
 	}
 	case stoc_sceneChange: // IsMoveToMainGame
@@ -527,11 +561,21 @@ void Network::SendRoomMake_Request()
 {
 	CTOS_ROOM_MAKE_REQUEST packet;
 	packet.size = sizeof(packet);
-	//packet.type = .
+	packet.type = ctos_Room_Make_Request;
+	if (!SendPacket(&packet)) {
+		cout << "SendRoomMake_Request() Failed \n";
+	}
 }
 
 void Network::SendRoomJoin_Request()
 {
+	CTOS_ROOM_JOIN_REQUEST packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_Room_Join_Request;
+	packet.room_num = 0; // 일단 방 1개 만들어졌다 가정
+	if (!SendPacket(&packet)) {
+		cout << "SendRoomJoin_Request() Failed \n";
+	}
 }
 
 void Network::SendReadyState(int ReadyState)

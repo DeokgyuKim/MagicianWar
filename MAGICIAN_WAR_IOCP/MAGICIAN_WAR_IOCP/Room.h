@@ -7,17 +7,17 @@ class Player;
 class Room
 {
 public:
-	Room(int room_num);
+	Room(int room_num, int host);
 	~Room();
 
 public:
-	void Initalize(int room_num);
+	void Initalize(int room_num,int host);
 	void ReInit();
 	void Update();
 	void Physics_Collision();
 
 public:
-	bool EnterRoom(int id, int playerNum);
+	bool EnterRoom(int id);
 	void ExitRoom(int id);
 	bool BreakRoom();
 
@@ -34,6 +34,7 @@ public:
 public:
 	// Get
 	bool isGameStart() { return m_isGameStart; }
+	bool isEnterable() { return m_istEnterable; }
 	int Get_Room_Num() { return m_Info.Room_Num; }
 	
 private:
@@ -54,9 +55,11 @@ private:
 	chrono::duration<float>				m_elapsedTime;
 
 	bool m_isGameStart;
+	bool m_istEnterable;
 
 	int	m_BlueTeam_Count;
 	int m_RedTeam_Count;
+	int m_curPlayer_Count;
 
 };
 

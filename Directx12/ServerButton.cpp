@@ -22,19 +22,19 @@ int ServerButton::Update(const float& fTimeDelta)
 		m_prevButtonState = BUTTON_STATE::ON;
 		if (m_iTag == BUTTON_ROOM_MAKE)
 		{   // Room 만들기 키
-			dynamic_cast<Com_Network*>(m_mapComponent["Com_Network"])->CallEvent(EVENT_LOBBY_ROOM_MAKE_REQUEST, 0);
+			dynamic_cast<Com_Network*>(m_mapComponent["Com_Network"])->CallEvent(EVENT_LOBBY_ROOM_MAKE_REQUEST);
 		}
 		else if (m_iTag == BUTTON_ROOM_JOIN)
 		{ // Room 들어가기 키
-			dynamic_cast<Com_Network*>(m_mapComponent["Com_Network"])->CallEvent(EVENT_LOBBY_ROOM_JOIN_REQUEST, 0);
+			dynamic_cast<Com_Network*>(m_mapComponent["Com_Network"])->CallEvent(EVENT_LOBBY_ROOM_JOIN_REQUEST);
 		}
 		else if (m_iTag == BUTTON_GAME_READY)
 		{ // 게임 시작 키
-			dynamic_cast<Com_Network*>(m_mapComponent["Com_Network"])->CallEvent(EVENT_ROOM_PLAYER_READY_ON, 0);
+			dynamic_cast<Com_Network*>(m_mapComponent["Com_Network"])->CallEvent(EVENT_ROOM_PLAYER_READY_ON);
 		}
 		else if (m_iTag == BUTTON_ROOM_EXIT)
 		{ // 방 나가기
-			dynamic_cast<Com_Network*>(m_mapComponent["Com_Network"])->CallEvent(EVENT_ROOM_PLAYER_EXIT, 0);
+			dynamic_cast<Com_Network*>(m_mapComponent["Com_Network"])->CallEvent(EVENT_ROOM_PLAYER_EXIT);
 		}
 	}
 	else if (m_prevButtonState == BUTTON_STATE::ON && m_eButtonState == BUTTON_STATE::NONE)
@@ -50,7 +50,7 @@ int ServerButton::Update(const float& fTimeDelta)
 		}
 		else if (m_iTag == BUTTON_GAME_READY)
 		{ // 게임 레디 키
-			dynamic_cast<Com_Network*>(m_mapComponent["Com_Network"])->CallEvent(EVENT_ROOM_PLAYER_READY_OFF, 0);
+			dynamic_cast<Com_Network*>(m_mapComponent["Com_Network"])->CallEvent(EVENT_ROOM_PLAYER_READY_OFF);
 		}
 	}
 

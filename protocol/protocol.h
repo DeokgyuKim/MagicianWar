@@ -35,8 +35,8 @@
 // Lobby	Scene	91 ~ 120
 #define stoc_Room_Make_OK 91
 #define stoc_Room_Make_Deny 92
-#define stoc_Room_Join_OK 91
-#define stoc_Room_Join_Deny 92
+#define stoc_Room_Join_OK 93
+#define stoc_Room_Join_Deny 94
 
 // Room		Scene	121 ~ 150
 #define stoc_Game_Start	121
@@ -129,6 +129,7 @@ struct PlayerInfo
 {
 	int					Client_Num;
 	int					Room_Num;
+	bool				isRoom_Host;
 	char				dwTeamNum;
 	XMFLOAT4X4			matWorld;
 	XMFLOAT3			xmfPosition;
@@ -140,6 +141,7 @@ struct RoomInfo
 {
 	int					Room_Num;
 	string				Room_Name;
+	int					HostPlayer;
 };
 
 struct Client_State { // 
@@ -169,10 +171,16 @@ struct STOC_Accept_OK {
 	int id;
 };
 
-struct STOC_ROOM_MAKE {
+struct STOC_ROOM_MAKE_OK {
 	short size;
 	unsigned char type;
-	
+	int Host_num;
+	int room_num;
+};
+
+struct STOC_ROOM_MAKE_DENY {
+	short size;
+	unsigned char type;
 };
 
 struct STOC_ROOM_JOIN {

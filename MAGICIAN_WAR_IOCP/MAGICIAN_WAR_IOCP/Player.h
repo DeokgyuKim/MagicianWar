@@ -83,6 +83,7 @@ private: //
 	// info
 	PlayerInfo m_Info;
 	bool m_Ready;
+	bool m_Room_JoinState;
 
 	XMFLOAT4X4		m_matRealWorld;
 

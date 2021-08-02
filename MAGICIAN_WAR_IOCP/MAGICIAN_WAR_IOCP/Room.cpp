@@ -2,26 +2,28 @@
 #include "Player.h"
 #include "Server.h"
 
-Room::Room(int room_num)
+Room::Room(int room_num, int host)
 {
-	Initalize(room_num);
+	Initalize(room_num, host);
 }
 
 Room::~Room()
 {
 }
 
-void Room::Initalize(int room_num)
+void Room::Initalize(int room_num, int host)
 {
 	m_Info.Room_Name = "";
 	m_Info.Room_Num = room_num;
+	m_Info.HostPlayer = host;
 	m_BlueTeam_Count = 0;
 	m_RedTeam_Count = 0;
+	m_curPlayer_Count = 0;
 	m_isGameStart = false;
+	m_istEnterable = true; // 들어올 수 있음
 	m_prev_time = chrono::system_clock::now();
 
-
-	for (int i = 0; i < MAX_PLAYER; ++i) {
+	for (int i = 0; i < MAX_PLAYER; ++i) { // 총 8명 입장가능
 		m_players[i] = new Player;
 	}
 
@@ -30,6 +32,9 @@ void Room::Initalize(int room_num)
 void Room::ReInit()
 {
 	m_isGameStart = false;
+	if (m_curPlayer_Count != MAX_PLAYER) { // 게임 끝났으니 꽉찬거 아니면 더 받자
+		m_istEnterable = true;
+	}
 	m_prev_time = chrono::system_clock::now();
 	for (int i = 0; i < MAX_PLAYER; ++i) {
 		m_players[i]->ReInit(); // 재설정
@@ -71,9 +76,15 @@ void Room::Physics_Collision()
 {
 }
 
-bool Room::EnterRoom(int id, int playerNum)
+bool Room::EnterRoom(int id)
 {
-	return false;
+	if (m_curPlayer_Count == MAX_PLAYER)
+		return false;
+
+	//for (int playerNum = 0; playerNum < MAX_PLAYER; ++playerNum) {
+
+	//}
+	//	m_players[id]
 }
 
 void Room::ExitRoom(int id)
@@ -152,7 +163,7 @@ void Room::Send_RoomInfo_Packet()
 	m_send_mutex.lock();
 
 	queue<Send_Packet_RoomInfo> sendEventQueue_Copied = m_sendEventQueue;
-	while (!m_sendEventQueue.empty()) 
+	while (!m_sendEventQueue.empty())
 	{
 		m_sendEventQueue.pop();
 	}

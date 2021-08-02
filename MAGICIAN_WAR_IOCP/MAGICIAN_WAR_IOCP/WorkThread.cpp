@@ -157,11 +157,12 @@ void WorkThread::Disconnect_Client(int client_Num, SOCKET client)
 
 	}
 
-	g_Clients[client_Num]->Client_mutex.lock();
+	g_Client_mutex.lock();
 	ZeroMemory(g_Clients[client_Num], sizeof(CLIENT_INFO));
 	g_Clients[client_Num]->IsConnected = false;
 	g_Clients[client_Num]->Socket = NULL;
-	g_Clients[client_Num]->Client_mutex.unlock();
+	g_ConnectedClients_Number.erase(client_Num);
+	g_Client_mutex.unlock();
 }
 
 ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
@@ -181,15 +182,42 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 		cout << id << " Client Connect OK\n";
 		Server::GetInstance()->SendAcceptOK(id);
 		break;
+		// Lobby
 	case ctos_Room_Make_Request:
 	{
-		cout << id << " - Client가 방 파기 요청을 했습니다.\n";
+		cout << id << " - Client가 방 생성 요청을 했습니다.\n";
 		int room_num = NO_ROOM;
 		for (int i = 0; i < MAX_ROOMS; ++i) {
+			if (g_Rooms[i] == nullptr) { // i번방이 없으면 i번방 생성
+				g_Rooms[i] = new Room(i,id);
+				g_Rooms[i]->EnterRoom(id);
+				Server::GetInstance()->SendRoomMake_OK_Packet(id, i);
+				break;
+			}
+			room_num = i + 1;
+		}
+		if (room_num >= MAX_ROOMS) { // 최대 방 개수 초과
+			Server::GetInstance()->SendRoomMake_Deny_Packet(id);
+		}
+
+	}
+	break;
+	case ctos_Room_Join_Request:
+	{
+		cout << id << " - Client가 방 들어가기 요청을 했습니다.\n";
+		CTOS_ROOM_JOIN_REQUEST* data = reinterpret_cast<CTOS_ROOM_JOIN_REQUEST*>(buffer);
+		int room_num = NO_ROOM;
+		if (g_Rooms[data->room_num] != nullptr) { // 방이 존재
+			if (g_Rooms[data->room_num]->isEnterable()) { // 입장가능?
+
+			}
 
 		}
+		else { // 방 못들어감 졸려..
+			Server::GetInstance()->SendRoomJoin_Deny_Packet(id);
+		}
+
 	}
-		break;
 	default:
 		break;
 	}

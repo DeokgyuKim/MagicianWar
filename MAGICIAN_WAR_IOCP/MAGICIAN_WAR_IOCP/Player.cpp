@@ -21,6 +21,7 @@ void Player::Initialize()
     m_keyInput = 0;
     m_Ready = false;
     m_Bullet = 0;
+    m_Room_JoinState = false;
 
     m_UpperBody = make_unique<PlayerFSM>(this, BONE_UPPER); // ( player , BoneType )
     m_RootBody = make_unique<PlayerFSM>(this, BONE_ROOT);

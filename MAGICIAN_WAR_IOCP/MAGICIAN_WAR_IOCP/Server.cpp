@@ -117,6 +117,10 @@ void Server::MainThread_Run()
 		}
 
 		cout << user_num << " - Accept Success\n";
+		g_Accept_mutex.lock();
+		g_ConnectedClients_Number.insert({ user_num ,user_num });
+		g_Accept_mutex.unlock();
+		
 
 		clientSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
 		ZeroMemory(&Accept_over.Over, sizeof(Accept_over.Over));
@@ -176,6 +180,42 @@ void Server::SendAcceptOK(int id)
 		cout << "SendAcceptOK() Failed \n";
 	};
 }
+
+void Server::SendRoomMake_OK_Packet(int host_num, int room_num)
+{
+	STOC_ROOM_MAKE_OK packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_Room_Make_OK;
+	packet.Host_num = host_num;
+	packet.room_num = room_num;
+
+	for (auto iter = g_ConnectedClients_Number.begin(); iter != g_ConnectedClients_Number.end(); ++iter) {
+		if (!SendPacket(iter->second, &packet)) {
+			cout << "SendRoomMake_OK_Packet() Failed \n";
+		};
+	}
+
+}
+
+void Server::SendRoomMake_Deny_Packet(int id)
+{
+	STOC_ROOM_MAKE_DENY packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_Room_Make_Deny;
+
+	if (!SendPacket(id, &packet)) {
+		cout << "SendRoomMake_Deny_Packet() Failed \n";
+	};
+}
+
+void Server::SendRoomJoin_OK_Packet(int id)
+{
+}
+
+void Server::SendRoomJoin_Deny_Packet(int id)
+{
+}
+
 
 bool Server::WinSock_Init()
 {
