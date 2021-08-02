@@ -1,5 +1,6 @@
 #pragma once
 //#include <ctype.h>
+#include "framework.h"
 #include "PxPhysicsAPI.h"
 
 using namespace physx;
