@@ -4,6 +4,7 @@
 #include "StaticMeshMgr.h"
 #include "Server.h"
 #include "Room.h"
+#include "PhysXMgr.h"
 
 // extern
 //vector<PxRigidStatic*> g_StaticObjects;
@@ -17,6 +18,7 @@ array<CLIENT_INFO*, MAX_CLIENTS> g_Clients; // 최대 동접만큼 수용
 map<int, Room*> g_Rooms;
 
 HANDLE g_IOCP; // IOCP 핸들
+vector<PxRigidStatic*> StaticObjects;
 
 
 void CreatePlayerSocket(int _size);
@@ -26,7 +28,7 @@ int main()
 	// 사전에 오버헤드 많이 드는 작업들은 다 해놔야함
 	StaticMeshMgr::GetInstance()->LoadMeshInfo("../../Data/Map1Data.txt");
 	MeshMgr::GetInstnace()->BuildModels();
-	//CPhysXMgr::GetInstance()->Initalize();
+	CPhysXMgr::GetInstance()->Initialize();
 
 	multimap<string*, TransformStruct> vtxs = StaticMeshMgr::GetInstance()->GetMapMeshInfo();
 	for (auto iter = vtxs.begin(); iter != vtxs.end(); ++iter)
@@ -44,7 +46,7 @@ int main()
 
 		world = s * rx * ry * rz * t;
 
-		//StaticObjects.push_back(CPhysXMgr::GetInstance()->CreateTriangleStaticMesh(*(*iter).first, world));
+		StaticObjects.push_back(CPhysXMgr::GetInstance()->CreateTriangleStaticMesh(*(*iter).first, world));
 	}
 	//cout << "StaticObjects Count is " << StaticObjects.size() << endl;
 	cout << "All Load Complete!" << endl;

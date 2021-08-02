@@ -1,6 +1,6 @@
 //#include "framework.h"
-//#include "PhysXMgr.h"
-//#include "MeshMgr.h"
+#include "PhysXMgr.h"
+#include "MeshMgr.h"
 
 CPhysXMgr* CPhysXMgr::m_pInstance = NULL;
 
