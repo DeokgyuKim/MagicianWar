@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Bar.h" />
+    <ClInclude Include="Com_Network.h" />
     <ClInclude Include="FireRing.h" />
     <ClInclude Include="FireRing_FireCylinder.h" />
     <ClInclude Include="FireShock.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RoomScene.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="ServerButton.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="SkillEff.h" />
@@ -228,6 +230,7 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Bar.cpp" />
+    <ClCompile Include="Com_Network.cpp" />
     <ClCompile Include="FireRing.cpp" />
     <ClCompile Include="FireRing_FireCylinder.cpp" />
     <ClCompile Include="FireShock.cpp" />
@@ -276,6 +279,7 @@
     <ClCompile Include="RenderTargetMgr.cpp" />
     <ClCompile Include="RoomScene.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="ServerButton.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="SkillEff.cpp" />

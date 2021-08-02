@@ -56,45 +56,6 @@ int Button::Update(const float& fTimeDelta)
 		break;
 	}
 
-	if (m_prevButtonState == BUTTON_STATE::NONE && m_eButtonState == BUTTON_STATE::ON)
-	{	// 버튼 활성화
-		m_prevButtonState = BUTTON_STATE::ON;
-		if (m_iTag == BUTTON_ROOM_MAKE)
-		{   // Room 만들기 키
-			Network::GetInstance()->CallEvent(EVENT_LOBBY_ROOM_MAKE_REQUEST,0);
-		}
-		else if (m_iTag == BUTTON_ROOM_JOIN)
-		{ // Room 들어가기 키
-			Network::GetInstance()->CallEvent(EVENT_LOBBY_ROOM_JOIN_REQUEST,0);
-		}
-		else if (m_iTag == BUTTON_GAME_READY)
-		{ // 게임 시작 키
-			Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_READY_ON, 0);
-		}
-		else if (m_iTag == BUTTON_ROOM_EXIT)
-		{ // 방 나가기
-			Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_EXIT, 0);
-		}
-	}
-	else if (m_prevButtonState == BUTTON_STATE::ON && m_eButtonState == BUTTON_STATE::NONE)
-	{	// 버튼 비활성화
-		m_prevButtonState = BUTTON_STATE::NONE;
-		if (m_iTag == BUTTON_ROOM_MAKE)
-		{   // Room 만들기 키
-
-		}
-		else if (m_iTag == BUTTON_ROOM_JOIN)
-		{ // Room 들어가기 키
-
-		}
-		else if (m_iTag == BUTTON_GAME_READY)
-		{ // 게임 레디 키
-			Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_READY_OFF, 0);
-		}
-	}
-
-
-
 	return 0;
 }
 

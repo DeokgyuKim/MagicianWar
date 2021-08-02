@@ -14,6 +14,7 @@
 #include "Bullet.h"
 #include "UI.h"
 #include "Button.h"
+#include "ServerButton.h"
 #include "Bar.h"
 #include "RadioButton.h"
 
@@ -31,21 +32,13 @@ int LobbyScene::Update(const float& fTimeDelta)
 {
 	Scene::Update(fTimeDelta);
 
-#ifdef NETWORK
-	//if (Network::GetInstance()->GetCurScene() == STAGE_Scene)
-	//{
-	//	TestScene* Scene = new TestScene();
-	//	MainApp::GetInstance()->ChangeScene(Scene);
-	//	return -1;
-	//}
-#else
+#ifndef NETWORK
 	if (m_pButton->GetButtonState() == BUTTON_STATE::ON)
 	{
 		Network::GetInstance()->CallEvent(EVENT_SCENE_CHANGE, 1, STAGE_SCENE);
 		return -1;
 	}
 #endif // NETWORK
-	
 
 
 	return 0;
@@ -71,7 +64,19 @@ void LobbyScene::Initialize(bool bRetry)
 	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, WINCX, WINCY), "Lobby");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
+#ifdef NETWORK
+	pObj = new ServerButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT4(WINCX * 0.5f + 400.f, 150.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+	dynamic_cast<ServerButton*>(pObj)->SetTag(BUTTON_ROOM_MAKE, EVENT_LOBBY_ROOM_MAKE_REQUEST);
+	m_pObjects[OBJ_UI].push_back(pObj);
 
+
+	pObj = new ServerButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT4(WINCX * 0.5f + 400.f, 350.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+	dynamic_cast<ServerButton*>(pObj)->SetTag(BUTTON_ROOM_JOIN, EVENT_LOBBY_ROOM_JOIN_REQUEST);
+	m_pObjects[OBJ_UI].push_back(pObj);
+
+#else
 	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(WINCX * 0.5f + 400.f, 150.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
 	m_pObjects[OBJ_UI].push_back(pObj);
@@ -85,6 +90,8 @@ void LobbyScene::Initialize(bool bRetry)
 
 	m_pButton = dynamic_cast<Button*>(pObj);
 	m_pButton->SetTag(BUTTON_ROOM_JOIN);
+
+#endif // !NETWORK
 
 	/////Radio
 	//pObj = m_pRadio[0] = new RadioButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
