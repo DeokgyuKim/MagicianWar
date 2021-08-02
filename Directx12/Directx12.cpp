@@ -12,6 +12,7 @@
 UINT gnCbvSrvUavDescriptorIncrementSize = 0;
 UINT gnRtvDescriptorIncrementSize = 0;
 UINT gnDsvDescriptorIncrementSize = 0;
+MainApp* mainApp;
 
 HINSTANCE   g_hInst;                                    // 현재 인스턴스입니다.
 HWND        g_hWnd;
@@ -49,7 +50,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
-    MainApp* mainApp = MainApp::GetInstance();
+    mainApp = MainApp::GetInstance();
     mainApp->Initialize();
     GameTimer::GetInstance()->Reset();
     // 기본 메시지 루프입니다.
@@ -185,6 +186,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         }
         break;
+        break;
+    case WM_MOUSEWHEEL: //마우스 휠동작 메시지
+        if ((SHORT)HIWORD(wParam) > 0) //마우스휠을 올릴 경우
+        {
+            //MessageBox(g_hWnd, L"마우스 휠 올림", L"메시지 박스 제목", NULL);
+            mainApp->ProcessWheelEvent(-1, 30.f);
+        }
+        else  //마우스휠을 내릴 경우
+        {
+            //MessageBox(g_hWnd, L"마우스 휠 내림", L"메시지 박스 제목", NULL);
+            mainApp->ProcessWheelEvent(1, 30.f);
+        }
         break;
     case WM_DESTROY:
         PostQuitMessage(0);

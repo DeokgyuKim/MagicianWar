@@ -13,6 +13,7 @@
 #include "MaterialMgr.h"
 #include "InstanceMgr.h"
 #include "LightGeo.h"
+#include "UI.h"
 
 Renderer* Renderer::m_pInstance = NULL;
 Renderer* Renderer::GetInstance()
@@ -146,6 +147,24 @@ void Renderer::Render(const float& fTimeDelta)
 	{
 		if (pObject->GetTextureName() != "")
 			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+		if (dynamic_cast<UI*>(pObject)->GetTextTextureName() != "")
+			m_pTextureMgr->GetTexture(dynamic_cast<UI*>(pObject)->GetTextTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get(), 5);
+		else
+			m_pTextureMgr->GetTexture("Ui_Text_No")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get(), 5);
+
+		pObject->Render(fTimeDelta);
+	}
+
+	m_mapShaders[RENDER_TYPE::RENDER_UI_ROOMS]->PreRender(m_pCmdLst);
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_UI_ROOMS])
+	{
+		if (pObject->GetTextureName() != "")
+			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+		if (dynamic_cast<UI*>(pObject)->GetTextTextureName() != "")
+			m_pTextureMgr->GetTexture(dynamic_cast<UI*>(pObject)->GetTextTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get(), 5);
+		else
+			m_pTextureMgr->GetTexture("Ui_Text_No")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get(), 5);
+
 		pObject->Render(fTimeDelta);
 	}
 
@@ -407,7 +426,7 @@ void Renderer::BuildDescrpitorHeap()
 {
 	//Create SRV Heap
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 70;// 텍스처 개수 + blur skybox 등등
+	srvHeapDesc.NumDescriptors = 100;// 텍스처 개수 + blur skybox 등등
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	m_pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_ptrDescriptorHeap));
@@ -495,6 +514,15 @@ void Renderer::BuildShader()
 	pShader->BuildShadersAndInputLayout(L"Blend.hlsl", "VS_UI", L"Blend.hlsl", "PS_UI", layout);
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
 	m_mapShaders[RENDER_TYPE::RENDER_UI] = pShader;
+
+	layout = {
+	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pShader = new Shader;
+	pShader->BuildShadersAndInputLayout(L"Blend.hlsl", "VS_UI_ROOMS", L"Blend.hlsl", "PS_UI_ROOMS", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
+	m_mapShaders[RENDER_TYPE::RENDER_UI_ROOMS] = pShader;
 
 	// Bullet
 	layout = {

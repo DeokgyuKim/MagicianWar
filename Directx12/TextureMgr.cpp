@@ -51,8 +51,48 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["Ui_Char_Mouse"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "BlueTeam", L"../Resources/UI/Text/BlueTeam.dds");
+	m_mapTextures["Ui_Text_BlueTeam"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "JoinRoom", L"../Resources/UI/Text/JoinRoom.dds");
+	m_mapTextures["Ui_Text_JoinRoom"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "MakeRoom", L"../Resources/UI/Text/MakeRoom.dds");
+	m_mapTextures["Ui_Text_MakeRoom"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Ready", L"../Resources/UI/Text/Ready.dds");
+	m_mapTextures["Ui_Text_Ready"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "RedTeam", L"../Resources/UI/Text/RedTeam.dds");
+	m_mapTextures["Ui_Text_RedTeam"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Start", L"../Resources/UI/Text/Start.dds");
+	m_mapTextures["Ui_Text_Start"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "Lobby", L"../Resources/UI/Lobby/Lobby.dds");
 	m_mapTextures["Lobby"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Lobby", L"../Resources/UI/Lobby/Lobby.dds");
+	m_mapTextures["Lobby"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Room", L"../Resources/UI/Lobby/Room.dds");
+	m_mapTextures["Room"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "RoomSelect", L"../Resources/UI/Lobby/RoomSelect.dds");
+	m_mapTextures["RoomSelect"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "RoomBase", L"../Resources/UI/Lobby/RoomBase.dds");
+	m_mapTextures["RoomBase"] = pTexture;
 	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Noise", L"../Resources/Noise.dds", false, 12);
@@ -151,6 +191,8 @@ void TextureMgr::BuildInitTextures(ID3D12Device* device, ID3D12GraphicsCommandLi
 	m_mapTextures["ButtonMouseOn"] = pTexture;
 	pTexture = new DDSTexture(device, cmdLst, heap, "ButtonOn", L"../Resources/UI/Button/ButtonOn.dds");
 	m_mapTextures["ButtonOn"] = pTexture;
+	pTexture = new DDSTexture(device, cmdLst, heap, "No", L"../Resources/UI/Text/No.dds");
+	m_mapTextures["Ui_Text_No"] = pTexture;
 }
 
 DDSTexture* TextureMgr::GetTexture(string textureName)

@@ -17,6 +17,8 @@
 #include "ServerButton.h"
 #include "Bar.h"
 #include "RadioButton.h"
+#include "RoomRadio.h"
+#include "RoomRadioController.h"
 
 #include "StaticMeshMgr.h"
 #include "TextureMgr.h"
@@ -40,6 +42,11 @@ int LobbyScene::Update(const float& fTimeDelta)
 	}
 #endif // NETWORK
 
+	if (GetAsyncKeyState(VK_NUMPAD0) & 0x0001)
+		m_rbController->AddRoom(this, iTag++);
+
+	if (GetAsyncKeyState(VK_NUMPAD1) & 0x0001)
+		m_rbController->RemoveRoom(this, --iTag);
 
 	return 0;
 }
@@ -78,19 +85,27 @@ void LobbyScene::Initialize(bool bRetry)
 
 #else
 	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(WINCX * 0.5f + 400.f, 150.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+		XMFLOAT4(WINCX * 0.5f + 400.f, 650.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	m_pButton = dynamic_cast<Button*>(pObj);
 	m_pButton->SetTag(BUTTON_ROOM_MAKE);
+	m_pButton->SetTextTextureName("Ui_Text_MakeRoom");
 
 	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(WINCX * 0.5f + 400.f, 350.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+		XMFLOAT4(WINCX * 0.5f + 400.f, 850.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	m_pButton = dynamic_cast<Button*>(pObj);
 	m_pButton->SetTag(BUTTON_ROOM_JOIN);
+	m_pButton->SetTextTextureName("Ui_Text_JoinRoom");
 
+	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(150.f, 250.f, 1080.f, 800.f), "RoomBase");
+	m_pObjects[OBJ_UI].push_back(pObj);
+
+	m_rbController = new RoomRadioController(XMFLOAT4(150.f, 250.f, 1080.f, 800.f));
+	m_rbController->AddRoom(this, iTag++);
+	m_rbController->AddRoom(this, iTag++);
 #endif // !NETWORK
 
 	/////Radio

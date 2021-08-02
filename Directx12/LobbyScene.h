@@ -21,5 +21,6 @@ private:
     Camera*         m_pCamera;
     Button*         m_pButton;
     RadioButton*    m_pRadio[3];
+    int iTag = BUTTON_ROOM_END;
 };
 

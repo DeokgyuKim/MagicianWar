@@ -200,10 +200,13 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PoolingMgr.h" />
     <ClInclude Include="RadioButton.h" />
+    <ClInclude Include="RadioButtonController.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="RenderTargetMgr.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="RoomRadio.h" />
+    <ClInclude Include="RoomRadioController.h" />
     <ClInclude Include="RoomScene.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ServerButton.h" />
@@ -274,9 +277,12 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PoolingMgr.cpp" />
     <ClCompile Include="RadioButton.cpp" />
+    <ClCompile Include="RadioButtonController.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="RenderTargetMgr.cpp" />
+    <ClCompile Include="RoomRadio.cpp" />
+    <ClCompile Include="RoomRadioController.cpp" />
     <ClCompile Include="RoomScene.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ServerButton.cpp" />

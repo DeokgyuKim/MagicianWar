@@ -38,6 +38,7 @@ public:
 	void ChangeScene(Scene* pScene);
 public:
 	Scene* GetScene() { return m_pScene; }
+	void ProcessWheelEvent(int zDir, float speed);
 private:
 	void BuildMaterial();
 private:

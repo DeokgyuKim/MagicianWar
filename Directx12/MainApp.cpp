@@ -11,6 +11,9 @@
 #include "InstanceMgr.h"
 #include "Network.h"
 
+#include "LobbyScene.h"
+#include "RoomRadioController.h"
+
 MainApp* MainApp::m_pInstance = NULL;
 
 
@@ -73,6 +76,14 @@ void MainApp::ChangeScene(Scene* pScene)
 {
 	delete m_pScene;
 	m_pScene = pScene;
+}
+
+
+void MainApp::ProcessWheelEvent(int zDir, float speed)
+{
+	if (m_pScene->GetSceneType() != SCENE_TYPE::LOBBY)
+		return;
+	dynamic_cast<LobbyScene*>(m_pScene)->GetRadioButtonConteroller()->SetScrollPos(zDir, speed);
 }
 
 void MainApp::BuildMaterial()

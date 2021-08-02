@@ -13,6 +13,13 @@ struct Shade_Out
 	float2 UV : TEXCOORD;
 };
 
+struct Shade_Out_UI_Room
+{
+	float4 PosH  : SV_POSITION;
+	float2 UV : TEXCOORD0;
+	float4 Pos : TEXCOORD1;
+};
+
 struct Blend_In
 {
 	float3 PosL  : POSITION;
@@ -137,30 +144,7 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	return pOut;
 }
 
-Shade_Out VS_UI(Shade_In pin)
-{
-	Shade_Out vOut;
-	//vOut.PosH = mul(mul(float4(pin.PosL, 1.0f), gView), gProj);
-	float4 depth = DepthTex.SampleLevel(gsamLinear, pin.UV, 0);
-	vOut.PosH = float4(pin.PosL.x, pin.PosL.y, depth.x, 1.f);
-	vOut.UV = pin.UV;
 
-	return vOut;
-}
-PS_BLEND_OUT PS_UI(Shade_Out pin)
-{
-	PS_BLEND_OUT pOut;
-
-	float4 color = Texture.Sample(gsamLinear, pin.UV);
-	float2 alpha;
-	alpha.x = floor((1 - pin.UV.x) + ratio.x);
-	alpha.y = floor((1 - pin.UV.y) + ratio.y);
-	float resultalpha = min(alpha.x, alpha.y);
-
-	pOut.Blend = float4(color.xyz, resultalpha * color.w);
-
-	return pOut;
-}
 
 
 
@@ -224,6 +208,68 @@ PS_BLEND_OUT PS_BLEND(Blend_Out pin)
 
 	pOut.Blend = color;
 	pOut.Blend.a = 1.f;
+
+	return pOut;
+}
+
+
+Shade_Out VS_UI(Shade_In pin)
+{
+	Shade_Out vOut;
+	//vOut.PosH = mul(mul(float4(pin.PosL, 1.0f), gView), gProj);
+	float4 depth = DepthTex.SampleLevel(gsamLinear, pin.UV, 0);
+	vOut.PosH = float4(pin.PosL.x, pin.PosL.y, depth.x, 1.f);
+	vOut.UV = pin.UV;
+
+	return vOut;
+}
+PS_BLEND_OUT PS_UI(Shade_Out pin)
+{
+	PS_BLEND_OUT pOut;
+
+	float4 text = DiffTex.Sample(gsamLinear, pin.UV);
+	float4 ui = Texture.Sample(gsamLinear, pin.UV);
+	float value = text.a;
+
+	float4 color = text * value + ui * (1.f - value);
+	float2 alpha;
+	alpha.x = floor((1 - pin.UV.x) + ratio.x);
+	alpha.y = floor((1 - pin.UV.y) + ratio.y);
+	float resultalpha = min(alpha.x, alpha.y);
+
+	pOut.Blend = float4(color.xyz, resultalpha * color.w);
+
+	return pOut;
+}
+Shade_Out_UI_Room VS_UI_ROOMS(Shade_In pin)
+{
+	Shade_Out_UI_Room vOut;
+	//vOut.PosH = mul(mul(float4(pin.PosL, 1.0f), gView), gProj);
+	float4 depth = DepthTex.SampleLevel(gsamLinear, pin.UV, 0);
+	vOut.PosH = float4(pin.PosL.x, pin.PosL.y + ratio.y, depth.x, 1.f);
+	vOut.UV = pin.UV;
+	vOut.Pos = vOut.PosH;
+
+	return vOut;
+}
+PS_BLEND_OUT PS_UI_ROOMS(Shade_Out_UI_Room pin)
+{
+	PS_BLEND_OUT pOut;
+
+	float4 text = DiffTex.Sample(gsamLinear, pin.UV);
+	float4 ui = Texture.Sample(gsamLinear, pin.UV);
+	float value = text.a;
+
+	float4 color = text * value + ui * (1.f - value);
+	pOut.Blend = color;
+
+	//((250.f / (1080.f / 2.f)) - 1.f) * -1.f;
+	//(800.f / 1080.f) * 2.f
+
+	pOut.Blend.a = 0.f;
+	if (pin.Pos.y > ((270.f / (1080.f / 2.f)) - 1.f) * -1.f - (760.f / 1080.f) * 2.f
+		&& pin.Pos.y < ((270.f / (1080.f / 2.f)) - 1.f) * -1.f)
+		pOut.Blend.a = 1.f;
 
 	return pOut;
 }

@@ -42,7 +42,7 @@ int RoomScene::Update(const float& fTimeDelta)
 
 void RoomScene::Initialize()
 {
-	m_eSceneType = LOBBY;
+	m_eSceneType = ROOM;
 	Object* pObj = NULL;
 	Player* pPlayer = NULL;
 	Camera* pCamera = NULL;
