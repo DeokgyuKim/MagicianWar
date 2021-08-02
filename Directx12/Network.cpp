@@ -319,6 +319,7 @@ void Network::CallEvent(int EventType, int args, ...)
 		SendRoomMake_Request();
 		break;
 	case EVENT_LOBBY_ROOM_JOIN_REQUEST:
+		SendRoomJoin_Request();
 		break;
 
 		// ROOM
@@ -524,6 +525,9 @@ void Network::packetProcessing(char* _packetBuffer)
 
 void Network::SendRoomMake_Request()
 {
+	CTOS_ROOM_MAKE_REQUEST packet;
+	packet.size = sizeof(packet);
+	//packet.type = .
 }
 
 void Network::SendRoomJoin_Request()
