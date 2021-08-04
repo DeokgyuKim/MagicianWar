@@ -75,6 +75,10 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["Ui_Text_Start"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "Exit", L"../Resources/UI/Text/Exit.dds");
+	m_mapTextures["Ui_Text_Exit"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "Lobby", L"../Resources/UI/Lobby/Lobby.dds");
 	m_mapTextures["Lobby"] = pTexture;
 	pLoading->AddCount();
@@ -93,6 +97,18 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "RoomBase", L"../Resources/UI/Lobby/RoomBase.dds");
 	m_mapTextures["RoomBase"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "RoomScene", L"../Resources/UI/Room/RoomScene.dds");
+	m_mapTextures["RoomScene"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Char", L"../Resources/UI/Room/Char.dds");
+	m_mapTextures["Char"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "MyChar", L"../Resources/UI/Room/MyChar.dds");
+	m_mapTextures["MyChar"] = pTexture;
 	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Noise", L"../Resources/Noise.dds", false, 12);

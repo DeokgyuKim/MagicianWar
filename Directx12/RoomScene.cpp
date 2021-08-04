@@ -53,40 +53,43 @@ void RoomScene::Initialize()
 	m_pCamera = pCamera = dynamic_cast<Camera*>(pObj);
 	Renderer::GetInstance()->SetCamera(dynamic_cast<Camera*>(pObj));
 	m_pObjects[OBJ_CAMERA].push_back(pObj);
+	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 
-	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, WINCX, WINCY), "Lobby");
+	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, WINCX, WINCY), "RoomScene");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 
 	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(WINCX * 0.5f - 200.f, 850.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+		XMFLOAT4(WINCX * 0.5f - 200.f, 600.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	m_pButton = dynamic_cast<Button*>(pObj);
+	m_pButton->SetTextTextureName("Ui_Text_Ready");
 	m_pButton->SetTag(BUTTON_GAME_READY);
 
 	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(WINCX * 0.5f + 400.f, 150.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+		XMFLOAT4(WINCX * 0.5f - 200.f, 760.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	m_pButton = dynamic_cast<Button*>(pObj);
+	m_pButton->SetTextTextureName("Ui_Text_Exit"); 
 	m_pButton->SetTag(BUTTON_ROOM_EXIT);
 
 
 	///Radio
 	pObj = m_pRadio[0] = new RadioButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(560.f, 500.f, 200.f, 200.f), "Ui_Char_Base", "Ui_Char_Mouse", "Ui_Char_Click");
+		XMFLOAT4(685.f, 270.f, 150.f, 150.f), "Ui_Char_Base", "Ui_Char_Mouse", "Ui_Char_Click");
 	m_pObjects[OBJ_UI].push_back(pObj);
 	m_pRadio[0]->SetTag(WIZARD_FIRE);
 
 	pObj = m_pRadio[1] = new RadioButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(860.f, 500.f, 200.f, 200.f), "Ui_Char_Base", "Ui_Char_Mouse", "Ui_Char_Click");
+		XMFLOAT4(885.f, 270.f, 150.f, 150.f), "Ui_Char_Base", "Ui_Char_Mouse", "Ui_Char_Click");
 	m_pObjects[OBJ_UI].push_back(pObj);
 	m_pRadio[1]->SetTag(WIZARD_COLD);
 
 	pObj = m_pRadio[2] = new RadioButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(1160.f, 500.f, 200.f, 200.f), "Ui_Char_Base", "Ui_Char_Mouse", "Ui_Char_Click");
+		XMFLOAT4(1085.f, 270.f, 150.f, 150.f), "Ui_Char_Base", "Ui_Char_Mouse", "Ui_Char_Click");
 	m_pObjects[OBJ_UI].push_back(pObj);
 	m_pRadio[2]->SetTag(WIZARD_DARKNESS);
 
@@ -96,17 +99,31 @@ void RoomScene::Initialize()
 
 	m_pRadio[0]->SetButtonState(BUTTON_STATE::ON);
 
+	pObj = m_pRadioTeam[0] = new RadioButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT4(0.f, 100.f, 512.f, 180.f), "Ui_Text_RedTeam", "Ui_Text_RedTeam", "Ui_Text_RedTeam");
+	m_pObjects[OBJ_UI].push_back(pObj);
+	m_pRadioTeam[0]->SetTag(BUTTON_TAG::BUTTON_ROOM_END);
+
+
+	pObj = m_pRadioTeam[1] = new RadioButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT4(1408.f, 100.f, 512.f, 180.f), "Ui_Text_BlueTeam", "Ui_Text_BlueTeam", "Ui_Text_BlueTeam");
+	m_pObjects[OBJ_UI].push_back(pObj);
+
+	m_pRadioTeam[1]->SetTag(BUTTON_TAG::BUTTON_ROOM_END + 1);
+	m_pRadioTeam[0]->SetOthers(m_pRadioTeam[1]);
+	m_pRadioTeam[1]->SetOthers(m_pRadioTeam[0]);
+
 	//RadioImage
 	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(570.f, 510.f, 180.f, 180.f), "Ui_Char_Fire");
+		XMFLOAT4(690.f, 275.f, 140.f, 140.f), "Ui_Char_Fire");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(870.f, 510.f, 180.f, 180.f), "Ui_Char_Cold");
+		XMFLOAT4(890.f, 275.f, 140.f, 140.f), "Ui_Char_Cold");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(1170.f, 510.f, 180.f, 180.f), "Ui_Char_Darkness");
+		XMFLOAT4(1090.f, 275.f, 140.f, 140.f), "Ui_Char_Darkness");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 }

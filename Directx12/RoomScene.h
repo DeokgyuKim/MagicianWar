@@ -19,5 +19,6 @@ private:
     Camera* m_pCamera;
     Button* m_pButton;
     RadioButton* m_pRadio[3];
+    RadioButton* m_pRadioTeam[2];
 };
 
