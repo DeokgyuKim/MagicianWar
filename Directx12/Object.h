@@ -29,6 +29,7 @@ public: // Get
 	Component* GetComponent(string strCom);
 public:
 	void		SetPoolingValue(bool bPool, bool bPoolRender) { m_bPooling = bPool; m_bPoolRender = bPoolRender; }
+	void		SetTextureName(string strTexture) { m_strTextureName = strTexture; }
 
 protected:
 	Renderer*							m_pRenderer;

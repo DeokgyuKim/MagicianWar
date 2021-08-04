@@ -79,6 +79,14 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["Ui_Text_Exit"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "CharReady", L"../Resources/UI/Text/CharReady.dds");
+	m_mapTextures["Ui_Text_CharReady"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "CharHost", L"../Resources/UI/Text/CharHost.dds");
+	m_mapTextures["Ui_Text_CharHost"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "Lobby", L"../Resources/UI/Lobby/Lobby.dds");
 	m_mapTextures["Lobby"] = pTexture;
 	pLoading->AddCount();

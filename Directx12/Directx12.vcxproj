@@ -151,6 +151,8 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Bar.h" />
+    <ClInclude Include="CharInfo.h" />
+    <ClInclude Include="CharInfoController.h" />
     <ClInclude Include="Com_Network.h" />
     <ClInclude Include="FireRing.h" />
     <ClInclude Include="FireRing_FireCylinder.h" />
@@ -233,6 +235,8 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Bar.cpp" />
+    <ClCompile Include="CharInfo.cpp" />
+    <ClCompile Include="CharInfoController.cpp" />
     <ClCompile Include="Com_Network.cpp" />
     <ClCompile Include="FireRing.cpp" />
     <ClCompile Include="FireRing_FireCylinder.cpp" />

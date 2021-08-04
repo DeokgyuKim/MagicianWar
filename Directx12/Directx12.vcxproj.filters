@@ -238,8 +238,14 @@
     <Filter Include="00.Game\02.Object\09.UI\00.RoomRadio">
       <UniqueIdentifier>{f73cabaa-162d-4a0a-9b80-f8d8d54a46ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.Game\02.Object\09.UI\01.RoomRadioController">
+    <Filter Include="00.Game\02.Object\09.UI\00.RoomRadio\01.RoomRadioController">
       <UniqueIdentifier>{fcfe7c7b-1b6f-49bd-a18d-8908f41a797f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\09.UI\01.CharInfo">
+      <UniqueIdentifier>{f6f6b7d4-fc2b-4353-b1d4-2193012d0878}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\09.UI\01.CharInfo\01.CharInfoController">
+      <UniqueIdentifier>{c0937d00-e98e-4a2e-bc81-fba8f038a242}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -471,7 +477,13 @@
       <Filter>00.Game\02.Object\09.UI\00.RoomRadio</Filter>
     </ClInclude>
     <ClInclude Include="RoomRadioController.h">
-      <Filter>00.Game\02.Object\09.UI\01.RoomRadioController</Filter>
+      <Filter>00.Game\02.Object\09.UI\00.RoomRadio\01.RoomRadioController</Filter>
+    </ClInclude>
+    <ClInclude Include="CharInfo.h">
+      <Filter>00.Game\02.Object\09.UI\01.CharInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="CharInfoController.h">
+      <Filter>00.Game\02.Object\09.UI\01.CharInfo\01.CharInfoController</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -676,7 +688,13 @@
       <Filter>00.Game\02.Object\09.UI\00.RoomRadio</Filter>
     </ClCompile>
     <ClCompile Include="RoomRadioController.cpp">
-      <Filter>00.Game\02.Object\09.UI\01.RoomRadioController</Filter>
+      <Filter>00.Game\02.Object\09.UI\00.RoomRadio\01.RoomRadioController</Filter>
+    </ClCompile>
+    <ClCompile Include="CharInfo.cpp">
+      <Filter>00.Game\02.Object\09.UI\01.CharInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="CharInfoController.cpp">
+      <Filter>00.Game\02.Object\09.UI\01.CharInfo\01.CharInfoController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

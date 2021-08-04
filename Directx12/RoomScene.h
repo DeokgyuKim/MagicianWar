@@ -4,6 +4,7 @@
 class Camera;
 class Button;
 class RadioButton;
+class CharInfoController;
 class RoomScene :
     public Scene
 {
@@ -20,5 +21,8 @@ private:
     Button* m_pButton;
     RadioButton* m_pRadio[3];
     RadioButton* m_pRadioTeam[2];
+    CharInfoController* m_pCharInfoCtrl;
+
+    Ui_Roomplayer m_RoomPlayer[8];
 };
 
