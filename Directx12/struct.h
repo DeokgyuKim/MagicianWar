@@ -151,3 +151,11 @@ struct TransformStruct
 	XMFLOAT3 xmfRotate;
 	XMFLOAT3 xmfScale;
 };
+
+struct Ui_Roomplayer
+{
+	bool used;
+	bool host;
+	char chartype;
+	bool readystate;
+};
