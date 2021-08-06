@@ -8,11 +8,11 @@ class InterfaceFSM;
 class Player
 {
 public:
-	Player();
+	Player(int client_num, int room_num);
 	~Player();
 
 public:
-	void Initialize();
+	void Initialize(int client_num, int room_num);
 	void ReInit();
 	void Update(float fTime);
 	void UpdatePlayerInfo(PlayerInfo* pInfo);
@@ -27,7 +27,7 @@ public:
 
 public:
 	// Get
-	XMFLOAT3 getPosition() { return XMFLOAT3(m_matRealWorld._41, m_matRealWorld._42, m_matRealWorld._43); }
+	XMFLOAT3 getPosition() { return m_Info.xmfPosition; }
 	XMFLOAT4X4 getWorld() { return m_Info.matWorld; }
 	XMFLOAT4X4 getBulletStartWorld();
 	PlayerInfo getInfo() { return m_Info; }
@@ -49,15 +49,20 @@ public:
 
 	bool IsAttackEnded() { return m_bAttackEnd; }
 	int getID() { return m_Info.Client_Num; }
+	bool getHost() { return m_Info.isRoom_Host; }
 	bool getReady() { return m_Ready; }
+	char getTeam() { return m_Info.TeamType; }
 
 	InterfaceFSM* GetRootFSM();
 	InterfaceFSM* GetUpperFSM();
 
 	// Set
 	void setPlayerInfo(PlayerInfo _info) { m_Info = _info; }
-	void setPlayerHp(UINT iHp) { m_Info.iHp = iHp; }
+	void setID(int _id) { m_Info.Client_Num = _id; }
+	void setHp(int iHp) { m_Info.iHp = iHp; }
 	void setReady(bool _ready) { m_Ready = _ready; }
+	void setTeam(char _team) { m_Info.TeamType = _team; }
+	
 
 	void setKeyInput(DWORD _key);
 	void setPosition(XMFLOAT3 pos);
@@ -70,6 +75,7 @@ public:
 	void ChangeRootAnimation(int _Ani);
 	void setJump(bool bJump);
 	void setCharacterType(unsigned char _type);
+	void setHost(bool bHost);
 
 public:
 	//PhysX

@@ -35,7 +35,7 @@ void WorkThread::Thread_Run()
 		SOCKET clientSock;
 		OVER_EX* over_ex = reinterpret_cast<OVER_EX*>(over);
 
-		if (key == SERVER_KEY) {
+		if (key == EVENT_KEY) {
 
 		}
 		else { // 이때 key로 넘어오는 값이 user_num 값
@@ -77,7 +77,7 @@ void WorkThread::Thread_Run()
 						}
 						else {
 							int room_num = g_Clients[key]->Room_num;
-							// 이제 방 만들어야지..
+							g_Rooms[room_num]->roomEvent_push(rEvent);
 						}
 					}
 					io_size -= (cur_packet_size - pr_data_size);
@@ -87,17 +87,17 @@ void WorkThread::Thread_Run()
 				}
 				else
 				{
-					g_Clients[key]->Client_mutex.lock();
+					g_Client_mutex.lock();
 					memcpy(g_Clients[key]->Packet_buf + pr_data_size, buffer, io_size);
-					g_Clients[key]->Client_mutex.unlock();
+					g_Client_mutex.unlock();
 					cur_packet_size += io_size;
 					io_size = 0;
 				}
 			}
-			g_Clients[key]->Client_mutex.lock();
+			
 			g_Clients[key]->Cur_packet_size = cur_packet_size;
 			g_Clients[key]->Prev_data_size = pr_data_size;
-			g_Clients[key]->Client_mutex.unlock();
+			
 
 			DWORD flags = 0;
 			memset(&over_ex->Over, 0, sizeof(WSAOVERLAPPED));
@@ -129,16 +129,28 @@ void WorkThread::Thread_Run()
 
 		}
 		break;
-		case OP_ROOM_SEND_PACKET:
+		case OP_ROOM_SEND_PACKET: // 방에서 일어난 일 보내
 		{
-
+			int room_num = *reinterpret_cast<int*>(over_ex->Iocp_buf);
+			g_Rooms[room_num]->Send_sendEvent_Packet();
+			delete over_ex;
 		}
 		break;
-		case OP_ROOM_UPDATE:
+		case OP_ROOM_UPDATE: // 방 업데이트
 		{
-
+			int room_num = *reinterpret_cast<int*>(over_ex->Iocp_buf);
+			g_Rooms[room_num]->Update();
+			
+			delete over_ex;
 		}
 		break;
+		//case OP_ROOM_BREAK:
+		//{
+		//	int room_num = *reinterpret_cast<int*>(over_ex->Iocp_buf);
+		//	BreakRoom(room_num);
+		//	delete over_ex;
+		//	break;
+		//}
 
 		}
 	}
@@ -152,9 +164,13 @@ void WorkThread::Join()
 void WorkThread::Disconnect_Client(int client_Num, SOCKET client)
 {
 	int room_num = g_Clients[client_Num]->Room_num;
-
+	int playerCount = 1;
 	if (room_num != NO_ROOM) { // 방에 소속되어 있다면
-
+		g_Rooms[room_num]->ExitRoom(client_Num);
+		playerCount = g_Rooms[room_num]->Get_Player_Count();
+		if (playerCount <= 0) {
+			BreakRoom(room_num);
+		}
 	}
 
 	g_Client_mutex.lock();
@@ -163,15 +179,31 @@ void WorkThread::Disconnect_Client(int client_Num, SOCKET client)
 	g_Clients[client_Num]->Socket = NULL;
 	g_ConnectedClients_Number.erase(client_Num);
 	g_Client_mutex.unlock();
+
+
+
+}
+
+void WorkThread::BreakRoom(int room_Num)
+{
+	if (g_Rooms[room_Num] == nullptr)
+		return;
+
+	g_Room_mutex.lock();
+	g_Rooms.erase(room_Num);
+	g_Room_mutex.unlock();
+
+	Server::GetInstance()->SendRoomBreak_Packet(room_Num); // 방이 없어졌으면 모든 클라이언트에게 알려줘야지
+
 }
 
 ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 {
 	char* packet = reinterpret_cast<char*>(buffer);
-	char packetType = packet[2]; // short(size) 0 1, (char) type
+	unsigned char packetType = packet[2]; // short(size) 0 1, (char) type
 	ROOM_EVENT RoomPacket;
 	RoomPacket.playerID = id;
-	RoomPacket.type = NO_ROOM;
+	RoomPacket.type = NO_ROOM_PACKET;
 
 	switch (packetType)
 	{
@@ -188,13 +220,16 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 		cout << id << " - Client가 방 생성 요청을 했습니다.\n";
 		int room_num = NO_ROOM;
 		for (int i = 0; i < MAX_ROOMS; ++i) {
+			g_Room_mutex.lock();
 			if (g_Rooms[i] == nullptr) { // i번방이 없으면 i번방 생성
-				g_Rooms[i] = new Room(i,id);
-				g_Rooms[i]->EnterRoom(id);
-				Server::GetInstance()->SendRoomMake_OK_Packet(id, i);
+				g_Rooms[i] = new Room(i, id);
+				g_Rooms[i]->EnterRoom(id, true);
+				g_Room_mutex.unlock();
+				Server::GetInstance()->SendRoomMake_OK_Packet(id, i); // id 가 i 번방을 만들었다.
 				break;
 			}
 			room_num = i + 1;
+			g_Room_mutex.unlock();
 		}
 		if (room_num >= MAX_ROOMS) { // 최대 방 개수 초과
 			Server::GetInstance()->SendRoomMake_Deny_Packet(id);
@@ -208,17 +243,76 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 		CTOS_ROOM_JOIN_REQUEST* data = reinterpret_cast<CTOS_ROOM_JOIN_REQUEST*>(buffer);
 		int room_num = NO_ROOM;
 		if (g_Rooms[data->room_num] != nullptr) { // 방이 존재
-			if (g_Rooms[data->room_num]->isEnterable()) { // 입장가능?
-
+			if (g_Rooms[data->room_num]->EnterRoom(id)) { // 방에 입장
+				Server::GetInstance()->SendRoomJoin_OK_Packet(id); // 방에 입장 성공 패킷 보내기
 			}
-
+			else {
+				Server::GetInstance()->SendRoomJoin_Deny_Packet(id);
+			}
 		}
 		else { // 방 못들어감 졸려..
 			Server::GetInstance()->SendRoomJoin_Deny_Packet(id);
 		}
 
 	}
+	// Room
+	case ctos_RoomInfo_Request:
+	{
+		RoomPacket.type = ctos_RoomInfo_Request;
+		break;
+	}
+	case ctos_Ready_OK:
+	{
+		cout << id << " - ready ok\n";
+		RoomPacket.type = ctos_Ready_OK;
+		break;
+	}
+	case ctos_Ready_NONE:
+	{
+		cout << id << " - ready no\n";
+		RoomPacket.type = ctos_Ready_NONE;
+		break;
+	}
+	case ctos_Game_Start:
+	{
+		cout << id << " - Request Game Start\n";
+		RoomPacket.type = ctos_Game_Start;
+		break;
+	}
+	case ctos_Team_Change:
+	{
+		cout << id << " - Request TeamChange\n";
+		CTOS_TEAMSELECT_REQUEST* data = reinterpret_cast<CTOS_TEAMSELECT_REQUEST*>(packet);
+		RoomPacket.type = ctos_Team_Change;
+		RoomPacket.data1 = data->teamType;
+		break;
+	}
+	case ctos_Room_Exit:
+	{
+		cout << id << " - Request Room Exit\n";
+		int room_num = g_Clients[id]->Room_num;
+		g_Rooms[room_num]->ExitRoom(id);
+		if (g_Rooms[room_num]->Get_Player_Count() <= 0) {
+			BreakRoom(id);
+		}
+		break;
+	}
+	case ctos_Character_Change:
+	{
+		cout << id << " - Request Character Change\n";
+		CTOS_CHARACTER_CHANGE* data = reinterpret_cast<CTOS_CHARACTER_CHANGE*>(packet);
+		RoomPacket.type = ctos_Character_Change;
+		RoomPacket.data1 = data->characterType;
+		break;
+	}
+	case ctos_IngameInfo_Request:
+	{
+		cout << id << " - Request InGameInfo\n";
+		RoomPacket.type = ctos_IngameInfo_Request;
+		break;
+	}
 	default:
+		cout << id << " 가 이상한 Packet을 요청하였습니다.\n";
 		break;
 	}
 

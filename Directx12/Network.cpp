@@ -21,7 +21,7 @@ Network* Network::m_pInstance = NULL;
 
 bool Network::Init(const string& strServerIP)
 {
-	m_bLobbyEnd = false;
+
 
 	int retval;
 
@@ -71,44 +71,15 @@ bool Network::Init(const string& strServerIP)
 	m_tMyInfo.iHp = 100;
 	m_tMyInfo.CharacterType = WIZARD_FIRE;
 	m_tMyInfo.Room_Num = -1;
-	m_LateInit = false;
-	{ // packet 초기화
-		packetInit();
-	}
 
 	packet_size = 0;
 	savedPacket_size = 0;
-	m_SceneChange = LOADING_SCENE; // 처음엔 로딩씬
-	mainSceneLateInit = false;
+
+
+
 
 
 	return false;
-}
-
-void Network::packetInit()
-{
-	{ // packet 초기화
-		{ // packet_keyInput
-			KEY_packet.size = sizeof(KEY_packet);
-			KEY_packet.type = packet_keyInput;
-			KEY_packet.id = m_tMyInfo.Client_Num;
-		}
-		{ // ctos_playerInfo
-			tInfo_packet.size = sizeof(tInfo_packet);
-			tInfo_packet.type = ctos_playerInfo;
-			tInfo_packet.ePlayerState = static_cast<int>(PLAYER_STATE::IDLE);
-			tInfo_packet.bAttackEnd = false;
-
-		}
-		{// packet_ready
-			Ready_packet.size = sizeof(Ready_packet);
-			//Ready_packet.type = packet_ready;
-			//Ready_packet.id = m_tMyInfo.Client_Num;
-			//Ready_packet.CharacterType = WIZARD_FIRE;
-			//Ready_packet.ready = 0;
-		}
-
-	}
 }
 
 bool Network::Release()
@@ -122,63 +93,62 @@ void Network::Update()
 {
 	// 이제 여기서 돌릴거
 	recvUpdate();
-	if (!m_LateInit) {
-		packetInit();
-		m_LateInit = true;
-	}
-	switch (m_SceneChange)
-	{
-	case LOADING_SCENE:
-		break;
-	case TITLE_SCENE:
-		break;
-	case LOBBY_SCENE:
-		break;
-	case ROOM_SCENE:
-		break;
-	case STAGE_SCENE:
-		break;
-	case RESULT_SCENE:
-		break;
-	default:
-		cout << "SCENE ERROR\n";
-		break;
-	}
 
-	if (m_SceneChange == LOADING_SCENE)  // Logo
-	{
+	EventKeyInput();
 
-	}
-	else if (m_SceneChange == LOBBY_SCENE) // Lobby
-	{
-		//SendReadyState(); // lobby에서는 ready만 보냄
-	}
-	else if (m_SceneChange == ROOM_SCENE)
-	{
+	//switch (m_SceneChange)
+	//{
+	//case LOADING_SCENE:
+	//	break;
+	//case TITLE_SCENE:
+	//	break;
+	//case LOBBY_SCENE:
+	//	break;
+	//case ROOM_SCENE:
+	//	break;
+	//case STAGE_SCENE:
+	//	break;
+	//case RESULT_SCENE:
+	//	break;
+	//default:
+	//	cout << "SCENE ERROR\n";
+	//	break;
+	//}
 
-	}
-	else if (m_SceneChange == STAGE_SCENE) // mainScene
-	{
-		//if (!mainSceneLateInit)
-		//{
-		//	//상대의 플레이어 정보 받아오기
-		//	RecvOtherPlayerInfo();
-		//	mainSceneLateInit = true;
-		//}
+	//if (m_SceneChange == LOADING_SCENE)  // Logo
+	//{
 
-		////Send
-		////내 플레이어정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
-		//SendMyPlayerInfo();
-		////키입력정보(w, a, s, d, 스킬12, 점프, 마우스클릭)
-		//SendKeyInput();
+	//}
+	//else if (m_SceneChange == LOBBY_SCENE) // Lobby
+	//{
+	//	//SendReadyState(); // lobby에서는 ready만 보냄
+	//}
+	//else if (m_SceneChange == ROOM_SCENE)
+	//{
 
+	//}
+	//else if (m_SceneChange == STAGE_SCENE) // mainScene
+	//{
+	//	//if (!mainSceneLateInit)
+	//	//{
+	//	//	//상대의 플레이어 정보 받아오기
+	//	//	RecvOtherPlayerInfo();
+	//	//	mainSceneLateInit = true;
+	//	//}
+
+	//	////Send
+	//	////내 플레이어정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
+	//	//SendMyPlayerInfo();
+	//	////키입력정보(w, a, s, d, 스킬12, 점프, 마우스클릭)
+	//	//SendKeyInput();
 
 
-	}
-	else if (m_SceneChange == ENDING_Scene)
-	{
-		//cout << "엔딩씬인가" << endl;
-	}
+
+	//}
+	//else if (m_SceneChange == ENDING_Scene)
+	//{
+	//	//cout << "엔딩씬인가" << endl;
+	//}
 
 }
 
@@ -200,6 +170,32 @@ int Network::recvn(SOCKET s, char* buf, int len, int flags)
 	}
 
 	return (len - left);						//읽어야할 총 길이 - 수신해야할 데이터 양 = 읽은 데이터 양
+}
+
+void Network::Lobby_Init()
+{
+	for (int i = 0; i < 8; ++i) { // 방에 들어가면 Room에 있었을 때 썻던 정보를 Clear
+		m_RoomPlayerSlots[i].characterType = ELEMENT_FIRE;
+		m_RoomPlayerSlots[i].ishost = false;
+		m_RoomPlayerSlots[i].used = false;
+		m_RoomPlayerSlots[i].readyState = false;
+	}
+	m_tMyInfo.isreadyState = false;
+	m_tMyInfo.isRoom_Host = false;
+	m_tMyInfo.Room_Num = -1;
+	m_tMyInfo.TeamType = TEAM_NONE;
+	
+}
+
+void Network::Room_Init()
+{
+	// 방에 들어가면 먼저 서버에게 지금 내가 속한 방의 정보 요구
+	SendRoomInfo_Request();
+}
+
+void Network::Ingame_Init()
+{
+	SendIngameInfo_Request();
 }
 
 STOC_PlayerInfo Network::GetRecvPlayerInfo(DWORD playerNum)
@@ -257,11 +253,7 @@ string Network::LoadServerIPtxt(string filePath)
 	return ServerIp;
 }
 
-void Network::ClearNetworkForNext()
-{
-	//Ready_packet.ready = 0;
-	m_SceneChange = LOBBY_SCENE;
-}
+
 
 void Network::CallEvent(int EventType, int args, ...)
 {
@@ -270,15 +262,17 @@ void Network::CallEvent(int EventType, int args, ...)
 	case EVENT_SCENE_CHANGE:
 	{
 		int scene;
+		bool Retry = false;
 		va_list vl;
 		va_start(vl, args);
 		scene = va_arg(vl, int);
+		Retry = va_arg(vl, bool);
 		va_end(vl);
 		if (scene == TITLE_SCENE) {
 
 		}
 		else if (scene == LOBBY_SCENE) {
-			LobbyScene* lobbyScene = new LobbyScene();
+			LobbyScene* lobbyScene = new LobbyScene(Retry);
 			MainApp::GetInstance()->ChangeScene(lobbyScene);
 		}
 		else if (scene == ROOM_SCENE) {
@@ -327,14 +321,35 @@ void Network::CallEvent(int EventType, int args, ...)
 	case EVENT_ROOM_PLAYER_ENTER:
 		break;
 	case EVENT_ROOM_PLAYER_READY_ON:
+		SendReadyState(true);
 		break;
 	case EVENT_ROOM_PLAYER_READY_OFF:
+		SendReadyState(false);
 		break;
 	case EVENT_ROOM_PLAYER_SELECT_CHARACTER:
+	{
+		va_list ap;
+		va_start(ap, args);
+		int value = va_arg(ap, int);
+		va_end(ap);
+		SendCharacterChange_Request(value);
 		break;
+	}
 	case EVENT_ROOM_PLAYER_EXIT:
+	{
+		SendExit_Request();
+	}
 		break;
-
+	case EVENT_ROOM_PLAYER_SELECT_TEAM:
+	{
+		cout << "팀 고르기\n";
+		va_list ap;
+		va_start(ap, args);
+		int value = va_arg(ap, int);
+		va_end(ap);
+		SendTeamChange_Request(value);
+		break;
+	}
 		// STAGE
 	case EVENT_STAGE_GAME_START:
 		break;
@@ -362,10 +377,7 @@ bool Network::IsMoveToMainGame()
 	return isNext;
 }
 
-void Network::RecvOtherPlayerInfo()
-{
-	m_bLobbyEnd = true;
-}
+
 
 void Network::recvUpdate() // 모든 recv는 이걸 할거야 이제
 {
@@ -416,7 +428,7 @@ void Network::recvProcessing(int _bytes)
 
 void Network::packetProcessing(char* _packetBuffer)
 {
-	char packetType = _packetBuffer[2];
+	unsigned char packetType = _packetBuffer[2];
 	switch (packetType)
 	{
 	case stoc_Accept_OK: // Accept 완료
@@ -424,23 +436,21 @@ void Network::packetProcessing(char* _packetBuffer)
 		cout << "Server Accept OK" << endl;
 		STOC_Accept_OK* data = reinterpret_cast<STOC_Accept_OK*>(_packetBuffer);
 		m_tMyInfo.Client_Num = data->id;
-		m_tMyInfo.dwTeamNum = TEAM_NONE;
+		m_tMyInfo.TeamType = TEAM_NONE;
 		m_tMyInfo.isRoom_Host = false;
 		break;
 	}
 	//// Lobby
 	case stoc_Room_Make_OK:
 	{
-		cout << " Room Make OK \n";
 		STOC_ROOM_MAKE_OK* data = reinterpret_cast<STOC_ROOM_MAKE_OK*>(_packetBuffer);
+		cout << data->room_num << " 번방 Room Make OK \n";
 		if (m_tMyInfo.Client_Num == data->Host_num) { // 방장이면 넘어가야지
 			m_tMyInfo.Room_Num = data->room_num;
-			m_tMyInfo.dwTeamNum = TEAM_RED;
-			m_tMyInfo.CharacterType = ELEMENT_FIRE;
-			m_tMyInfo.isRoom_Host = true; // 방장이고
-			CallEvent(EVENT_SCENE_CHANGE, 1, ROOM_SCENE); 
+			m_tMyInfo.TeamType = ELEMENT_FIRE;
+			m_tMyInfo.isRoom_Host = true; // 방 만들었으니 방장이고
 		}
-		else { // 방장이 아니고 로비에 있는 플레이어면
+		else { // 방장이 아니고 로비에 있는 플레이어면 방리스트 갱신해야함
 
 		}
 		break;
@@ -452,23 +462,102 @@ void Network::packetProcessing(char* _packetBuffer)
 	}
 	case stoc_Room_Join_OK:
 	{
-		cout << " Room Make Deny \n";
+		cout << " Room Join OK \n";
+		STOC_ROOM_JOIN* data = reinterpret_cast<STOC_ROOM_JOIN*>(_packetBuffer);
+		m_tMyInfo.Room_Num = data->room_num;
+		
+		break;
+	}
+	case stoc_Room_Break_OK:
+	{
+		STOC_ROOM_BREAK* data = reinterpret_cast<STOC_ROOM_BREAK*>(_packetBuffer);
+		int roomNum = data->room_num;
+
+		cout << roomNum << " - Room Break" << endl;
 		break;
 	}
 	case stoc_Room_Join_Deny:
 	{
-		cout << " Room Make Deny \n";
+		cout << " Room Join Deny \n";
 		break;
 	}
-	case stoc_sceneChange: // IsMoveToMainGame
+	// Room Scene
+	case stoc_RoomPlayer_Enter: // Lobby ==> Room
 	{
-		cout << "씬 전환" << endl;
-		STOC_sceneChange* data = reinterpret_cast<STOC_sceneChange*>(_packetBuffer);
-		m_SceneChange = data->sceneNum;
-		if (m_SceneChange == LOBBY_Scene)
-		{
-			ClearNetworkForNext();
+		cout << " 방에 들어갔음\n";
+		STOC_ROOM_ENTER* data = reinterpret_cast<STOC_ROOM_ENTER*>(_packetBuffer);
+		m_tMyInfo.Room_Num = data->room_num; // 내가 들어간 방 번호 
+		CallEvent(EVENT_SCENE_CHANGE, 1, ROOM_SCENE);
+		break;
+	}
+	case stoc_RoomPlayer_Change:
+	{
+		cout << "Room Slot Change \n";
+		STOC_ROOM_CHANGE* data = reinterpret_cast<STOC_ROOM_CHANGE*>(_packetBuffer);
+		int slot = data->slot_num;
+		m_RoomPlayerSlots[slot].characterType = data->characterType;
+		m_RoomPlayerSlots[slot].ishost = data->host;
+		m_RoomPlayerSlots[slot].readyState = data->readyState;
+		m_RoomPlayerSlots[slot].slot_num = data->slot_num;
+		m_RoomPlayerSlots[slot].used = data->used;
+		m_RoomPlayerSlots[slot].id = data->id;
+
+		if (data->id == m_tMyInfo.Client_Num) { // 내 정보는 나도 따로 들고 있어야지
+			m_tMyInfo.CharacterType = data->characterType;
+			m_tMyInfo.isRoom_Host = data->host;
+			m_tMyInfo.isreadyState = data->readyState;
+			m_tMyInfo.isRoom_Host = data->host;
+
+			if (data->slot_num <4) {
+				cout << "Blue Team \n";
+			}
+			else {
+				cout << "Red Team \n";
+			}
 		}
+		break;
+	}
+	case stoc_RoomPlayer_Leave: // Room == > Lobby
+	{
+		cout << " 방을 나갔음\n";
+		CallEvent(EVENT_SCENE_CHANGE, 2, LOBBY_SCENE, true);
+		break;
+	}
+	// InGame
+	case stoc_Game_Start:
+	{
+		cout << "게임 시작 패킷 받음\n";
+		STOC_GAME_START* data = reinterpret_cast<STOC_GAME_START*>(_packetBuffer);
+
+		Ingame_Init();
+		
+		break;
+	}
+	case stoc_InGame_StartInfo:
+	{
+		STOC_INGAME_STARTINFO* data = reinterpret_cast<STOC_INGAME_STARTINFO*>(_packetBuffer);
+		cout << "pos - (" << data->xmfPosition.x << " , " << data->xmfPosition.y << " , " << data->xmfPosition.z << " )\n";
+		cout << "data id - " << data->id << " , 내 아이디 - " <<m_tMyInfo.Client_Num << "\n";
+		if (data->id == m_tMyInfo.Client_Num) {
+			m_tMyInfo.iHp = data->iHp;
+			m_tMyInfo.CharacterType = data->CharacterType;
+			m_tMyInfo.TeamType = data->dwTeamNum;
+			m_tMyInfo.xmfPosition = data->xmfPosition;
+		}
+		else {
+			m_mapOtherPlayerInfos[data->id].Client_Num = data->id;
+			m_mapOtherPlayerInfos[data->id].iHp = data->iHp;
+			m_mapOtherPlayerInfos[data->id].CharacterType = data->CharacterType;
+			m_mapOtherPlayerInfos[data->id].xmfPosition = data->xmfPosition;
+			m_mapOtherPlayerInfos[data->id].TeamType = data->dwTeamNum;
+		}
+		break;
+	}
+	case stoc_SceneChange:
+	{
+		cout << "Scene Change\n";
+		STOC_sceneChange* data = reinterpret_cast<STOC_sceneChange*>(_packetBuffer);
+		CallEvent(EVENT_SCENE_CHANGE, 1, data->sceneType);
 		break;
 	}
 	case stoc_otherPlayerNum: // 다른 플레이어 인원수 받아오기
@@ -483,7 +572,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		cout << "다른 플레이어 초기좌표" << endl;
 		STOC_OtherstartInfo* data = reinterpret_cast<STOC_OtherstartInfo*>(_packetBuffer);
 		m_mapOtherPlayerInfos[data->dwPlayerNum].Client_Num = data->dwPlayerNum;
-		m_mapOtherPlayerInfos[data->dwPlayerNum].dwTeamNum = data->dwTeamNum;
+		m_mapOtherPlayerInfos[data->dwPlayerNum].TeamType = data->dwTeamNum;
 		m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition = data->xmfPosition;
 		m_mapOtherPlayerInfos[data->dwPlayerNum].iHp = data->iHp;
 		m_mapOtherPlayerInfos[data->dwPlayerNum].CharacterType = data->CharacterType;
@@ -507,7 +596,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].matWorld = data->matWorld;
 
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.Client_Num = data->playerInfo.Client_Num;
-		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.dwTeamNum = data->playerInfo.dwTeamNum;
+		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.TeamType = data->playerInfo.TeamType;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.iHp = data->playerInfo.iHp;
 		//cout << "HP: " << data->playerInfo.iHp << endl;
@@ -578,58 +667,101 @@ void Network::SendRoomJoin_Request()
 	}
 }
 
-void Network::SendReadyState(int ReadyState)
+void Network::SendRoomInfo_Request()
 {
-	int retval;
+	CTOS_ROOMINFO_REQUEST packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_RoomInfo_Request;
+	packet.room_num = m_tMyInfo.Room_Num; // 내가 원하는 정보를 가진 방의 번호
+	if (!SendPacket(&packet)) {
+		cout << "SendRoomInfo_Request() Failed \n";
+	}
+}
 
-	Object* pObj = MainApp::GetInstance()->GetScene()->GetUIForTag(0);
-
-	if (pObj != NULL)
+void Network::SendReadyState(bool ReadyState)
+{
+	CTOS_Ready packet;
+	packet.size = sizeof(CTOS_Ready);
+	if (ReadyState) // ReadyOn
 	{
-		switch (dynamic_cast<Button*>(pObj)->GetButtonState())
-		{
-		case BUTTON_STATE::MOUSEON:
-		case BUTTON_STATE::NONE:
-			//Ready_packet.ready = 0;
-			break;
-		case BUTTON_STATE::ON:
-			//Ready_packet.ready = 1;
-			break;
-		}
+		packet.type = ctos_Ready_OK;
+
+	}
+	else // Off
+	{
+		packet.type = ctos_Ready_NONE;
 	}
 
-	Object* pButton[3] = { MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_FIRE),
-		MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_COLD),
-		MainApp::GetInstance()->GetScene()->GetUIForTag(WIZARD_DARKNESS)
-	};
+	if (m_tMyInfo.isRoom_Host) { // 방장은 GameStart보냄
+		packet.type = ctos_Game_Start;
+	}
 
-	//if (pButton[0] != NULL && dynamic_cast<RadioButton*>(pButton[0])->GetButtonState() == BUTTON_STATE::ON)
-	//	Ready_packet.CharacterType = WIZARD_FIRE;
-	//else if (pButton[1] != NULL && dynamic_cast<RadioButton*>(pButton[1])->GetButtonState() == BUTTON_STATE::ON)
-	//	Ready_packet.CharacterType = WIZARD_COLD;
-	//else if (pButton[2] != NULL && dynamic_cast<RadioButton*>(pButton[2])->GetButtonState() == BUTTON_STATE::ON)
-	//	Ready_packet.CharacterType = WIZARD_DARKNESS;
+	if (!SendPacket(&packet)) {
+		cout << "SendReadyState() Failed \n";
+	}
+}
 
-	retval = send(m_Sock, (char*)&Ready_packet, Ready_packet.size, 0);
+void Network::SendExit_Request()
+{
+	CTOS_ROOM_EXIT packet;
+	packet.size = sizeof(CTOS_ROOM_EXIT);
+	packet.type = ctos_Room_Exit;
+	if (!SendPacket(&packet)) {
+		cout << "SendExit_Request() Failed \n";
+	}
+}
+
+void Network::SendTeamChange_Request(int type)
+{
+	CTOS_TEAMSELECT_REQUEST packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_Team_Change;
+	packet.teamType = static_cast<unsigned char>(type);
+	if (!SendPacket(&packet)) {
+		cout << "SendTeamChange_Request() Failed \n";
+	}
+}
+
+void Network::SendCharacterChange_Request(int type)
+{
+	CTOS_CHARACTER_CHANGE packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_Character_Change;
+	packet.characterType = static_cast<unsigned char>(type);
+	if (!SendPacket(&packet)) {
+		cout << "SendCharacterChange_Request() Failed \n";
+	}
+}
+
+void Network::SendIngameInfo_Request()
+{
+	CTOS_INGAMEINFO_REQUEST packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_IngameInfo_Request;
+	packet.room_num = m_tMyInfo.Room_Num;
+	if (!SendPacket(&packet)) {
+		cout << "SendIngameInfo_Request() Failed \n";
+	}
 }
 
 void Network::SendMyPlayerInfo()
 {
 	Object* pObj = MainApp::GetInstance()->GetScene()->GetPlayer();
 
+	CTOS_PlayerInfo packet;
 
 	if (pObj != NULL)
 	{
 		Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
-		tInfo_packet.matWorld = pPlayer->GetWorld();
+		packet.matWorld = pPlayer->GetWorld();
 		//tInfo_packet.ePlayerState = pPlayer->GetRootFSM()->GetState();
-		tInfo_packet.bAttackEnd = dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->GetAttackEnd();
+		packet.bAttackEnd = dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->GetAttackEnd();
 		if (pPlayer->GetInstName() == CHARACTER_WIZARD_FIRE)
-			tInfo_packet.InstanceName = WIZARD_FIRE; // 01번 캐릭터 메쉬를 사용한 친구임
+			packet.InstanceName = WIZARD_FIRE; // 01번 캐릭터 메쉬를 사용한 친구임
 		else if (pPlayer->GetInstName() == CHARACTER_WIZARD_COLD)
-			tInfo_packet.InstanceName = WIZARD_COLD;
+			packet.InstanceName = WIZARD_COLD;
 		else if (pPlayer->GetInstName() == CHARACTER_WIZARD_DARKNESS)
-			tInfo_packet.InstanceName = WIZARD_DARKNESS;
+			packet.InstanceName = WIZARD_DARKNESS;
 	}
 	else
 	{
@@ -637,16 +769,32 @@ void Network::SendMyPlayerInfo()
 		//tInfo_packet.matWorld = MathHelper::Identity4x4();
 	}
 
-	tInfo_packet.id = m_tMyInfo.Client_Num;
+	packet.id = m_tMyInfo.Client_Num;
 
 	int retval;
-	retval = send(m_Sock, (char*)&tInfo_packet, tInfo_packet.size, 0);
+	retval = send(m_Sock, (char*)&packet, packet.size, 0);
 }
 
 void Network::SendKeyInput()
 {
-	DWORD dwKeyInput = 0;
+	//
+}
 
+void Network::EventKeyInput()
+{
+	DWORD dwKeyInput = 0;
+	if (KeyMgr::GetInstance()->KeyDown(0x31)) // ELEMENT_FIRE
+	{ // 1
+		dwKeyInput |= ctos_KEY_1;
+	}
+	if (KeyMgr::GetInstance()->KeyDown(0x32)) // ELEMENT_COLD
+	{ // 2
+		dwKeyInput |= ctos_KEY_2;
+	}
+	if (KeyMgr::GetInstance()->KeyDown(0x33)) // ELEMENT_DARKNESS
+	{ // 3
+		dwKeyInput |= ctos_KEY_3;
+	}
 	if (KeyMgr::GetInstance()->KeyPressing('W'))
 	{
 		dwKeyInput |= ctos_KEY_W;
@@ -675,12 +823,6 @@ void Network::SendKeyInput()
 	{
 		dwKeyInput |= ctos_KEY_E;
 	}
-
-	KEY_packet.key = dwKeyInput;
-
-	int retval;
-	retval = send(m_Sock, (char*)&KEY_packet, KEY_packet.size, 0);
-	int a = 0;
 }
 
 void Network::SendLoadingEnd()

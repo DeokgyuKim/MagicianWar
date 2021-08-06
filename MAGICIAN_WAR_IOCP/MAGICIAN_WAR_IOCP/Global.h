@@ -24,7 +24,7 @@ enum OP_TYPE { // Accept는 Main_Thread가 할거임
 	OP_ACCEPT, // MainThread
 
 	OP_ROOM_UPDATE, OP_ROOM_TIME, // GameRoom
-	OP_ROOM_SEND_PACKET
+	OP_ROOM_SEND_PACKET,OP_ROOM_BREAK
 };
 
 struct EVENT {
@@ -63,8 +63,8 @@ typedef struct Client_Info { // 클라이언트 정보 구조체
 
 struct ROOM_EVENT {
 	int playerID; // 어떤 플레이어의 
-	char type;		// 무슨 패킷인가
-
+	unsigned char type;		// 무슨 패킷인가
+	DWORD data1;
 	// 기타 정보
 };
 

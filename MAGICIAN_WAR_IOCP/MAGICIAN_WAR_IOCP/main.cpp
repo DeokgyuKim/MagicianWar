@@ -60,7 +60,7 @@ int main()
 	
 	Server::GetInstance()->MainThread_Run(); // Only Accept
 
-	Server::GetInstance()->DestoryInstance();
+	//Server::GetInstance()->DestoryInstance();
 }
 
 void CreatePlayerSocket(int _size)

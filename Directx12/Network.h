@@ -45,14 +45,18 @@ public:
 	}
 public:
 	bool Init(const string& strServerIP = "127.0.0.1");
-	void packetInit();
 	bool Release();
 	void Update();
 	int  recvn(SOCKET s, char* buf, int len, int flags);
+
 public:
-	bool		GetLobbyEnd() { return m_bLobbyEnd; }
+	void Lobby_Init();
+	void Room_Init();
+	void Ingame_Init();
+public:
+
 	XMFLOAT3	GetMyPlayerStartPos() { return m_tMyInfo.xmfPosition; }
-	map<DWORD, PlayerInfo>	GetOtherPlayerInfo() { return m_mapOtherPlayerInfos; }
+	map<int, PlayerInfo>	GetOtherPlayerInfo() { return m_mapOtherPlayerInfos; }
 	STOC_PlayerInfo GetRecvPlayerInfo(DWORD playerNum);
 	PlayerInfo	GetMyInfo() { return m_tMyInfo; }
 	void		SetMyPlayerInfo(Player* pPlayer);
@@ -60,10 +64,9 @@ public:
 	
 	vector<Client_Bullet> GetBullets() { return m_vBullets; }
 	Client_GameEnd GetGameEnd() { return m_CLgameEnd; }
-	DWORD		GetCurScene() { return m_SceneChange; }
+
 
 	string	LoadServerIPtxt(string filePath);
-	void ClearNetworkForNext();
 	// 이벤트 발생시 호출될 함수
 	void CallEvent(int EventType, int args, ...); // ( 일어난 일, 가변인자 개수, 보낼 정보 )
 private:
@@ -74,10 +77,10 @@ private:
 	PlayerInfo	m_tMyInfo;
 private:
 	//각 씬 단계의 스레드가 끝났는 지 판별
-	bool	m_bLobbyEnd;
-	bool	m_LateInit;
+
 private:
-	map<DWORD, PlayerInfo>		m_mapOtherPlayerInfos;
+	map<int, PlayerInfo>		m_mapOtherPlayerInfos;
+	array<RoomPlayer, 8>		m_RoomPlayerSlots;	// Room Player Data
 	map<DWORD, STOC_PlayerInfo> m_mapRecvPlayerInfos;
 	vector<Client_Bullet>		m_vBullets;
 	Client_GameEnd				m_CLgameEnd;
@@ -93,16 +96,26 @@ public:
 	void SendRoomMake_Request();
 	void SendRoomJoin_Request();
 
-	void SendReadyState(int ReadyState);
+	// Room Scene
+	void SendRoomInfo_Request();
+	void SendReadyState(bool ReadyState);
+	void SendExit_Request();
+	void SendTeamChange_Request(int type);
+	void SendCharacterChange_Request(int type);
+
+	// Ingame Scene
+	void SendIngameInfo_Request();
+
 	void SendMyPlayerInfo();
 	void SendKeyInput();
+	void EventKeyInput();
 
 	bool SendPacket(void* buffer);
 	void error_display(const char* msg, int err_no);
 public:
 	//Function For LobbyThread Recv
 	bool IsMoveToMainGame();
-	void RecvOtherPlayerInfo();
+
 
 
 public:
@@ -111,10 +124,6 @@ public:
 	void packetProcessing(char* _packetBuffer);
 
 private: // packets
-	CTOS_keyInput KEY_packet;
-	CTOS_PlayerInfo tInfo_packet;
-	CTOS_Ready Ready_packet;
-	
 
 	char* packet_start_ptr;
 	char recvBuffer[MAX_BUFFER];
@@ -122,8 +131,6 @@ private: // packets
 	short packet_size;
 	int savedPacket_size;
 
-	int m_SceneChange;
-	bool mainSceneLateInit;
 
 };
 

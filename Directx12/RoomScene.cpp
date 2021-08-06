@@ -9,6 +9,7 @@
 #include "Renderer.h"
 #include "UI.h"
 #include "Button.h"
+#include "ServerButton.h"
 #include "RadioButton.h"
 
 RoomScene::RoomScene()
@@ -21,11 +22,11 @@ int RoomScene::Update(const float& fTimeDelta)
 	Scene::Update(fTimeDelta);
 
 #ifdef NETWORK
-	if (Network::GetInstance()->GetCurScene() == STAGE_Scene)
-	{
-		Network::GetInstance()->CallEvent(EVENT_SCENE_CHANGE, 1, STAGE_SCENE);
-		return -1;
-	}
+	//if (Network::GetInstance()->GetCurScene() == STAGE_Scene)
+	//{
+	//	Network::GetInstance()->CallEvent(EVENT_SCENE_CHANGE, 1, STAGE_SCENE);
+	//	return -1;
+	//}
 #else
 	if (m_pButton->GetButtonState() == BUTTON_STATE::ON)
 	{
@@ -59,19 +60,26 @@ void RoomScene::Initialize()
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 
-	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	pObj = new ServerButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(WINCX * 0.5f - 200.f, 850.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+	dynamic_cast<ServerButton*>(pObj)->SetTag(BUTTON_GAME_READY,EVENT_ROOM_PLAYER_READY_ON);
 	m_pObjects[OBJ_UI].push_back(pObj);
 
-	m_pButton = dynamic_cast<Button*>(pObj);
-	m_pButton->SetTag(BUTTON_GAME_READY);
 
-	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(WINCX * 0.5f + 400.f, 150.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+	pObj = new ServerButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT4(WINCX * 0.5f - 200.f, 150.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+	dynamic_cast<ServerButton*>(pObj)->SetTag(BUTTON_ROOM_EXIT, EVENT_ROOM_PLAYER_EXIT);
 	m_pObjects[OBJ_UI].push_back(pObj);
 
-	m_pButton = dynamic_cast<Button*>(pObj);
-	m_pButton->SetTag(BUTTON_ROOM_EXIT);
+	pObj = new ServerButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT4(WINCX * 0.5f - 800.f, 50.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+	dynamic_cast<ServerButton*>(pObj)->SetTag(BUTTON_BLUETEAM, EVENT_ROOM_PLAYER_SELECT_TEAM);
+	m_pObjects[OBJ_UI].push_back(pObj);
+
+	pObj = new ServerButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT4(WINCX * 0.5f + 400.f, 50.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+	dynamic_cast<ServerButton*>(pObj)->SetTag(BUTTON_REDTEAM, EVENT_ROOM_PLAYER_SELECT_TEAM);
+	m_pObjects[OBJ_UI].push_back(pObj);
 
 
 	///Radio
@@ -108,5 +116,10 @@ void RoomScene::Initialize()
 	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(1170.f, 510.f, 180.f, 180.f), "Ui_Char_Darkness");
 	m_pObjects[OBJ_UI].push_back(pObj);
+
+#ifdef NETWORK
+	Network::GetInstance()->Room_Init();
+#endif // NETWORK
+
 
 }
