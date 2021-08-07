@@ -75,7 +75,6 @@ void Scene::RemoveObject(Object* pobj, OBJ_TYPE eType)
 	}
 	if (eraseiter == m_pObjects[eType].end())
 		return;
-	delete pobj;
 	m_pObjects[eType].erase(eraseiter);
 }
 

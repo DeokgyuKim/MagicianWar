@@ -746,33 +746,33 @@ void Network::SendIngameInfo_Request()
 
 void Network::SendMyPlayerInfo()
 {
-	Object* pObj = MainApp::GetInstance()->GetScene()->GetPlayer();
-
-	CTOS_PlayerInfo packet;
-
-	if (pObj != NULL)
-	{
-		Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
-		packet.matWorld = pPlayer->GetWorld();
-		//tInfo_packet.ePlayerState = pPlayer->GetRootFSM()->GetState();
-		packet.bAttackEnd = dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->GetAttackEnd();
-		if (pPlayer->GetInstName() == CHARACTER_WIZARD_FIRE)
-			packet.InstanceName = WIZARD_FIRE; // 01번 캐릭터 메쉬를 사용한 친구임
-		else if (pPlayer->GetInstName() == CHARACTER_WIZARD_COLD)
-			packet.InstanceName = WIZARD_COLD;
-		else if (pPlayer->GetInstName() == CHARACTER_WIZARD_DARKNESS)
-			packet.InstanceName = WIZARD_DARKNESS;
-	}
-	else
-	{
-		return;
-		//tInfo_packet.matWorld = MathHelper::Identity4x4();
-	}
-
-	packet.id = m_tMyInfo.Client_Num;
-
-	int retval;
-	retval = send(m_Sock, (char*)&packet, packet.size, 0);
+	//Object* pObj = MainApp::GetInstance()->GetScene()->GetPlayer();
+	//
+	//CTOS_PlayerInfo packet;
+	//
+	//if (pObj != NULL)
+	//{
+	//	Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
+	//	packet.matWorld = pPlayer->GetWorld();
+	//	//tInfo_packet.ePlayerState = pPlayer->GetRootFSM()->GetState();
+	//	packet.bAttackEnd = dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->GetAttackEnd();
+	//	if (pPlayer->GetInstName() == CHARACTER_WIZARD_FIRE)
+	//		packet.InstanceName = WIZARD_FIRE; // 01번 캐릭터 메쉬를 사용한 친구임
+	//	else if (pPlayer->GetInstName() == CHARACTER_WIZARD_COLD)
+	//		packet.InstanceName = WIZARD_COLD;
+	//	else if (pPlayer->GetInstName() == CHARACTER_WIZARD_DARKNESS)
+	//		packet.InstanceName = WIZARD_DARKNESS;
+	//}
+	//else
+	//{
+	//	return;
+	//	//tInfo_packet.matWorld = MathHelper::Identity4x4();
+	//}
+	//
+	//packet.id = m_tMyInfo.Client_Num;
+	//
+	//int retval;
+	//retval = send(m_Sock, (char*)&packet, packet.size, 0);
 }
 
 void Network::SendKeyInput()

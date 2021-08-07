@@ -13,6 +13,8 @@ public:
     void UpdateChange();
     void SetScrollPos(float fRatio);
     void SetTextColor(XMFLOAT3 fColor);
+public:
+    void RemoveTexts(Scene* pScene);
 protected:
     ID3D12Device*               m_pDevice;
     ID3D12GraphicsCommandList*  m_pCmdLst;

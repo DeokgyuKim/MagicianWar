@@ -14,6 +14,7 @@ public:
     virtual void LateUpdate(const float& fTimeDelta) override;
 public:
     void SetScrollPos(float Scorll, float fRatio);
+    void RemoveText();
 protected:
     Scene* m_pScene;
     XMFLOAT4 m_xmfInfo;

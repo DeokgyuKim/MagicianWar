@@ -13,6 +13,12 @@
 
 #include "CharInfoController.h"
 
+void readyroom();
+void unreadyroom();
+void exitroom();
+void selectredteam();
+void selectblueteam();
+
 RoomScene::RoomScene()
 {
     Initialize();
@@ -27,11 +33,11 @@ int RoomScene::Update(const float& fTimeDelta)
 	Scene::Update(fTimeDelta);
 
 #ifdef NETWORK
-	if (Network::GetInstance()->GetCurScene() == STAGE_Scene)
-	{
-		Network::GetInstance()->CallEvent(EVENT_SCENE_CHANGE, 1, STAGE_SCENE);
-		return -1;
-	}
+	//if (Network::GetInstance()->GetCurScene() == STAGE_Scene)
+	//{
+	//	Network::GetInstance()->CallEvent(EVENT_SCENE_CHANGE, 1, STAGE_SCENE);
+	//	return -1;
+	//}
 #else
 	if (m_pButton->GetButtonState() == BUTTON_STATE::ON)
 	{
@@ -40,35 +46,6 @@ int RoomScene::Update(const float& fTimeDelta)
 		return -1;
 	}
 #endif // NETWORK
-
-	if (GetAsyncKeyState(VK_NUMPAD1) & 0x0001)
-	{
-		m_RoomPlayer[1].host = false;
-		m_RoomPlayer[1].chartype = WIZARD_FIRE;
-		m_RoomPlayer[1].readystate = false;
-		m_RoomPlayer[1].used = true;
-	}
-	if (GetAsyncKeyState(VK_NUMPAD2) & 0x0001)
-	{
-		m_RoomPlayer[2].host = false;
-		m_RoomPlayer[2].chartype = WIZARD_COLD;
-		m_RoomPlayer[2].readystate = true;
-		m_RoomPlayer[2].used = true;
-	}
-	if (GetAsyncKeyState(VK_NUMPAD3) & 0x0001)
-	{
-		m_RoomPlayer[4].host = false;
-		m_RoomPlayer[4].chartype = WIZARD_DARKNESS;
-		m_RoomPlayer[4].readystate = false;
-		m_RoomPlayer[4].used = true;
-	}
-	if (GetAsyncKeyState(VK_NUMPAD4) & 0x0001)
-	{
-		m_RoomPlayer[5].host = false;
-		m_RoomPlayer[5].chartype = WIZARD_COLD;
-		m_RoomPlayer[5].readystate = true;
-		m_RoomPlayer[5].used = true;
-	}
 
 
 	return 0;
@@ -101,6 +78,8 @@ void RoomScene::Initialize()
 	m_pButton = dynamic_cast<Button*>(pObj);
 	m_pButton->SetTextTextureName("Ui_Text_Ready");
 	m_pButton->SetTag(BUTTON_GAME_READY);
+	m_pButton->SetEventButtonOn(readyroom);
+	m_pButton->SetEventButtonOff(unreadyroom);
 
 	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(WINCX * 0.5f - 200.f, 860.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
@@ -109,6 +88,7 @@ void RoomScene::Initialize()
 	m_pButton = dynamic_cast<Button*>(pObj);
 	m_pButton->SetTextTextureName("Ui_Text_Exit"); 
 	m_pButton->SetTag(BUTTON_ROOM_EXIT);
+	m_pButton->SetEventButtonOn(exitroom);
 
 
 	///Radio
@@ -149,6 +129,7 @@ void RoomScene::Initialize()
 		XMFLOAT4(0.f, 100.f, 512.f, 180.f), "Ui_Text_RedTeam", "Ui_Text_RedTeam", "Ui_Text_RedTeam");
 	m_pObjects[OBJ_UI].push_back(pObj);
 	m_pRadioTeam[0]->SetTag(BUTTON_TAG::BUTTON_ROOM_END);
+	m_pRadioTeam[0]->SetEventButtonOn(selectredteam);
 
 
 	pObj = m_pRadioTeam[1] = new RadioButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
@@ -158,10 +139,32 @@ void RoomScene::Initialize()
 	m_pRadioTeam[1]->SetTag(BUTTON_TAG::BUTTON_ROOM_END + 1);
 	m_pRadioTeam[0]->SetOthers(m_pRadioTeam[1]);
 	m_pRadioTeam[1]->SetOthers(m_pRadioTeam[0]);
+	m_pRadioTeam[0]->SetEventButtonOn(selectblueteam);
 
 
 
 	m_pCharInfoCtrl = new CharInfoController(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this);
 	for (int i = 0; i < 8; ++i)
 		m_pCharInfoCtrl->AddPlayer(i, &m_RoomPlayer[i]);
+}
+
+void readyroom()
+{
+	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_READY_ON, 0);
+}
+void unreadyroom()
+{
+	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_READY_OFF, 0);
+}
+void exitroom()
+{
+	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_EXIT, 0);
+}
+void selectredteam()
+{
+	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_SELECT_TEAM, TEAM_RED);
+}
+void selectblueteam()
+{
+	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_SELECT_TEAM, TEAM_BLUE);
 }

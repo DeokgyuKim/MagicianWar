@@ -1,6 +1,7 @@
 #include "RoomRadio.h"
 #include "Renderer.h"
 #include "TextController.h"
+#include "Scene.h"
 
 RoomRadio::RoomRadio(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT4 xmfInfo, string strBaseTextureName, string strMouseOnTextureName, string strActiveTextureName, Scene* pScene)
 	: RadioButton(device, cmdLst, pRenderer, xmfInfo, strBaseTextureName, strMouseOnTextureName, strActiveTextureName)
@@ -8,6 +9,7 @@ RoomRadio::RoomRadio(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Re
     m_xmfRatio.x = 0.f;
     m_xmfRatio.y = 0.f;
 	m_xmfInfo = xmfInfo;
+	m_pScene = pScene;
 
 	XMFLOAT4 info = XMFLOAT4(xmfInfo.x + 58.f, xmfInfo.y + 58.f, 64.f, 64.f);
 
@@ -17,6 +19,7 @@ RoomRadio::RoomRadio(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Re
 
 RoomRadio::~RoomRadio()
 {
+	RemoveText();
 }
 
 void RoomRadio::LateUpdate(const float& fTimeDelta)
@@ -35,4 +38,9 @@ void RoomRadio::SetScrollPos(float Scorll, float fRatio)
     m_xmfRatio.y = fRatio;
 	if (m_pTxtCtrl != nullptr)
 		m_pTxtCtrl->SetScrollPos(fRatio);
+}
+
+void RoomRadio::RemoveText()
+{
+	m_pTxtCtrl->RemoveTexts(m_pScene);
 }

@@ -26,6 +26,8 @@
 
 #include "Loading.h"
 
+void makeroom();
+void joinroom();
 
 LobbyScene::LobbyScene(bool bRetry)
 {
@@ -74,17 +76,39 @@ void LobbyScene::Initialize(bool bRetry)
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 #ifdef NETWORK
-	pObj = new ServerButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(WINCX * 0.5f + 400.f, 150.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
-	dynamic_cast<ServerButton*>(pObj)->SetTag(BUTTON_ROOM_MAKE, EVENT_LOBBY_ROOM_MAKE_REQUEST);
+	//pObj = new ServerButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT4(WINCX * 0.5f + 400.f, 150.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+	//dynamic_cast<ServerButton*>(pObj)->SetTag(BUTTON_ROOM_MAKE, EVENT_LOBBY_ROOM_MAKE_REQUEST);
+	//m_pObjects[OBJ_UI].push_back(pObj);
+	//
+	//
+	//pObj = new ServerButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT4(WINCX * 0.5f + 400.f, 350.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
+	//dynamic_cast<ServerButton*>(pObj)->SetTag(BUTTON_ROOM_JOIN, EVENT_LOBBY_ROOM_JOIN_REQUEST);
+	//m_pObjects[OBJ_UI].push_back(pObj);
+	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT4(WINCX * 0.5f + 400.f, 650.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 
-	pObj = new ServerButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(WINCX * 0.5f + 400.f, 350.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
-	dynamic_cast<ServerButton*>(pObj)->SetTag(BUTTON_ROOM_JOIN, EVENT_LOBBY_ROOM_JOIN_REQUEST);
+	m_pButton = dynamic_cast<Button*>(pObj);
+	m_pButton->SetTag(BUTTON_ROOM_MAKE);
+	m_pButton->SetTextTextureName("Ui_Text_MakeRoom");
+	m_pButton->SetEventButtonOn(makeroom);
+
+	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT4(WINCX * 0.5f + 400.f, 850.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
+	m_pButton = dynamic_cast<Button*>(pObj);
+	m_pButton->SetTag(BUTTON_ROOM_JOIN);
+	m_pButton->SetTextTextureName("Ui_Text_JoinRoom");
+	m_pButton->SetEventButtonOn(joinroom);
+
+	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(150.f, 250.f, 1080.f, 800.f), "RoomBase");
+	m_pObjects[OBJ_UI].push_back(pObj);
+
+	m_rbController = new RoomRadioController(XMFLOAT4(150.f, 250.f, 1080.f, 800.f));
 	
 
 #else
@@ -158,4 +182,13 @@ void LobbyScene::Initialize(bool bRetry)
 #endif
 
 	ShowCursor(TRUE);
+}
+
+void makeroom()
+{
+	Network::GetInstance()->CallEvent(EVENT_LOBBY_ROOM_MAKE_REQUEST, 0);
+}
+void joinroom()
+{
+	Network::GetInstance()->CallEvent(EVENT_LOBBY_ROOM_JOIN_REQUEST, 0);
 }

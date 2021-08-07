@@ -71,5 +71,6 @@ void RoomRadioController::RemoveRoom(Scene* pScene, int iTag)
 	if (eraseiter == m_vecRadios.end())
 		return;
 	pScene->RemoveObject((*eraseiter), OBJ_TYPE::OBJ_UI);
+	delete* eraseiter;
 	m_vecRadios.erase(eraseiter);
 }

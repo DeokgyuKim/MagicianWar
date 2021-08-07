@@ -73,3 +73,14 @@ void TextController::SetTextColor(XMFLOAT3 fColor)
 	for (auto Txt : m_vecTxt)
 		Txt->SetTextColor(fColor);
 }
+
+void TextController::RemoveTexts(Scene* pScene)
+{
+	for (auto Txt : m_vecTxt)
+	{
+		pScene->RemoveObject(Txt, OBJ_UI);
+		delete Txt;
+	}
+	m_vecTxt.clear();
+}
+

@@ -70,6 +70,10 @@ void RadioButton::SetButtonState(BUTTON_STATE eState)
 
     if (m_eButtonState == BUTTON_STATE::ON)
         for (auto button : m_lstOthers)
+        {
             button->SetButtonState(BUTTON_STATE::NONE);
+            if(ButtonOfffp != nullptr)
+                button->ButtonOfffp();
+        }
 
 }
