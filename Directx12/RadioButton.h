@@ -15,6 +15,7 @@ public:
     virtual void Render(const float& fTimeDelta, int _instanceCount = 1) override;
 public:
     void SetButtonState(BUTTON_STATE eState);
+    BUTTON_STATE GetButtonState() { return m_eButtonState; }
 public:
     void SetOthers(RadioButton* pRadio) { m_lstOthers.push_back(pRadio); }
 protected:

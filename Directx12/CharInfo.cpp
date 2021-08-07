@@ -10,7 +10,7 @@ CharInfo::CharInfo(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Rend
 	xmfPortrait.z = 100.f;
 	xmfPortrait.w = 100.f;
 
-	m_pPortrait = new UI(device, cmdLst, pRenderer, xmfPortrait, "No");
+	m_pPortrait = new UI(device, cmdLst, pRenderer, xmfPortrait, "Ui_Text_No");
 }
 
 CharInfo::~CharInfo()

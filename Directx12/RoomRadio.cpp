@@ -3,7 +3,7 @@
 #include "TextController.h"
 #include "Scene.h"
 
-RoomRadio::RoomRadio(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT4 xmfInfo, string strBaseTextureName, string strMouseOnTextureName, string strActiveTextureName, Scene* pScene)
+RoomRadio::RoomRadio(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT4 xmfInfo, string strBaseTextureName, string strMouseOnTextureName, string strActiveTextureName, Scene* pScene, int iTag)
 	: RadioButton(device, cmdLst, pRenderer, xmfInfo, strBaseTextureName, strMouseOnTextureName, strActiveTextureName)
 {
     m_xmfRatio.x = 0.f;
@@ -13,7 +13,10 @@ RoomRadio::RoomRadio(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Re
 
 	XMFLOAT4 info = XMFLOAT4(xmfInfo.x + 58.f, xmfInfo.y + 58.f, 64.f, 64.f);
 
-	m_pTxtCtrl = new TextController(device, cmdLst, pRenderer, info, "ROOM", pScene);
+	string roomname = "ROOM ";
+	roomname += to_string(iTag);
+
+	m_pTxtCtrl = new TextController(device, cmdLst, pRenderer, info, roomname.c_str(), pScene);
 	m_pTxtCtrl->SetTextColor(XMFLOAT3(0.f, 1.f, 1.f));
 }
 

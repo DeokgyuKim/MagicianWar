@@ -451,7 +451,10 @@ void Network::packetProcessing(char* _packetBuffer)
 			m_tMyInfo.isRoom_Host = true; // 방 만들었으니 방장이고
 		}
 		else { // 방장이 아니고 로비에 있는 플레이어면 방리스트 갱신해야함
-
+			m_mapRooms[data->room_num].Host_num = data->Host_num;
+			m_mapRooms[data->room_num].room_num = data->room_num;
+			m_mapRooms[data->room_num].size = data->size;
+			m_mapRooms[data->room_num].type = data->type;
 		}
 		break;
 	}
@@ -474,6 +477,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		int roomNum = data->room_num;
 
 		cout << roomNum << " - Room Break" << endl;
+		m_mapRooms.erase(data->room_num);
 		break;
 	}
 	case stoc_Room_Join_Deny:
