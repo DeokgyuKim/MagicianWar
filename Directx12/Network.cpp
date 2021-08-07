@@ -520,6 +520,22 @@ void Network::packetProcessing(char* _packetBuffer)
 				cout << "Red Team \n";
 			}
 		}
+
+		Scene* pScene = MainApp::GetInstance()->GetScene();
+		if (pScene->GetSceneType() == SCENE_TYPE::ROOM)
+		{
+			RoomScene* pRoom = dynamic_cast<RoomScene*>(pScene);
+			for (int i = 0; i < 8; ++i)
+			{
+				Ui_Roomplayer playerinfo;
+				playerinfo.used = m_RoomPlayerSlots[i].used;
+				playerinfo.host = m_RoomPlayerSlots[i].ishost;
+				playerinfo.readystate = m_RoomPlayerSlots[i].readyState;
+				playerinfo.chartype = m_RoomPlayerSlots[i].characterType;
+				pRoom->SetRoomPlayer(i, playerinfo);
+			}
+		}
+
 		break;
 	}
 	case stoc_RoomPlayer_Leave: // Room == > Lobby

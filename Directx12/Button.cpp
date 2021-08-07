@@ -35,6 +35,7 @@ int Button::Update(const float& fTimeDelta)
 			if (KeyMgr::GetInstance()->KeyDown(VK_LBUTTON))
 			{
 				m_eButtonState = BUTTON_STATE::ON;
+				cout << "Button click!" << endl;
 				if(ButtonOnfp != nullptr)
 					ButtonOnfp();
 			}
@@ -46,6 +47,7 @@ int Button::Update(const float& fTimeDelta)
 			if (KeyMgr::GetInstance()->KeyDown(VK_LBUTTON))
 			{
 				m_eButtonState = BUTTON_STATE::ON;
+				cout << "Button click!" << endl;
 				if (ButtonOnfp != nullptr)
 					ButtonOnfp();
 			}

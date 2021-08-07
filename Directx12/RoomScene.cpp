@@ -21,11 +21,7 @@ void selectblueteam();
 
 RoomScene::RoomScene()
 {
-	Initialize();
-	m_RoomPlayer[0].host = true;
-	m_RoomPlayer[0].chartype = WIZARD_FIRE;
-	m_RoomPlayer[0].readystate = false;
-	m_RoomPlayer[0].used = true;
+    Initialize();
 }
 
 int RoomScene::Update(const float& fTimeDelta)
@@ -86,7 +82,7 @@ void RoomScene::Initialize()
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	m_pButton = dynamic_cast<Button*>(pObj);
-	m_pButton->SetTextTextureName("Ui_Text_Exit");
+	m_pButton->SetTextTextureName("Ui_Text_Exit"); 
 	m_pButton->SetTag(BUTTON_ROOM_EXIT);
 	m_pButton->SetEventButtonOn(exitroom);
 
@@ -126,20 +122,21 @@ void RoomScene::Initialize()
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	pObj = m_pRadioTeam[0] = new RadioButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(0.f, 100.f, 512.f, 180.f), "Ui_Text_RedTeam", "Ui_Text_RedTeam", "Ui_Text_RedTeam");
+		XMFLOAT4(1408.f, 100.f, 512.f, 180.f), "Ui_Text_RedTeam", "Ui_Text_RedTeam", "Ui_Text_RedTeam");
 	m_pObjects[OBJ_UI].push_back(pObj);
 	m_pRadioTeam[0]->SetTag(BUTTON_TAG::BUTTON_ROOM_END);
 	m_pRadioTeam[0]->SetEventButtonOn(selectredteam);
 
 
 	pObj = m_pRadioTeam[1] = new RadioButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(1408.f, 100.f, 512.f, 180.f), "Ui_Text_BlueTeam", "Ui_Text_BlueTeam", "Ui_Text_BlueTeam");
+		XMFLOAT4(0.f, 100.f, 512.f, 180.f), "Ui_Text_BlueTeam", "Ui_Text_BlueTeam", "Ui_Text_BlueTeam");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	m_pRadioTeam[1]->SetTag(BUTTON_TAG::BUTTON_ROOM_END + 1);
+	m_pRadioTeam[1]->SetEventButtonOn(selectblueteam);
+
 	m_pRadioTeam[0]->SetOthers(m_pRadioTeam[1]);
 	m_pRadioTeam[1]->SetOthers(m_pRadioTeam[0]);
-	m_pRadioTeam[0]->SetEventButtonOn(selectblueteam);
 
 
 

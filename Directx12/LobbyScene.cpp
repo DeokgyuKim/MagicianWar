@@ -68,7 +68,7 @@ int LobbyScene::Update(const float& fTimeDelta)
 		m_mapClientRooms[index] = Network::GetInstance()->GetRoomInfo()->find(index)->second;
 	}
 	idx.clear();
-
+	
 	for (auto iter : m_mapClientRooms)
 	{
 		auto serveriter = Network::GetInstance()->GetRoomInfo()->find(iter.first);
@@ -142,7 +142,7 @@ void LobbyScene::Initialize(bool bRetry)
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	m_rbController = new RoomRadioController(XMFLOAT4(150.f, 250.f, 1080.f, 800.f));
-
+	
 
 #else
 	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
@@ -212,7 +212,6 @@ void LobbyScene::Initialize(bool bRetry)
 		Network::GetInstance()->Init(Network::GetInstance()->LoadServerIPtxt("../Data/ServerIP.txt"));
 	}
 	Network::GetInstance()->Lobby_Init();
-
 #endif
 
 	ShowCursor(TRUE);
