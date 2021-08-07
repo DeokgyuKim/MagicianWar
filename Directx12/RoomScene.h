@@ -10,12 +10,13 @@ class RoomScene :
 {
 public:
     RoomScene();
-
     virtual ~RoomScene() {}
 public:
     virtual int		Update(const float& fTimeDelta);
 private:
     void Initialize();
+public:
+    void SetRoomPlayer(int idx, Ui_Roomplayer player) { m_RoomPlayer[idx] = player; }
 private:
     Camera* m_pCamera;
     Button* m_pButton;

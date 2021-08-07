@@ -210,8 +210,8 @@ void LobbyScene::Initialize(bool bRetry)
 #ifdef NETWORK
 	if (!bRetry) {
 		Network::GetInstance()->Init(Network::GetInstance()->LoadServerIPtxt("../Data/ServerIP.txt"));
-		Network::GetInstance()->Lobby_Init();
 	}
+	Network::GetInstance()->Lobby_Init();
 #endif
 
 	ShowCursor(TRUE);
