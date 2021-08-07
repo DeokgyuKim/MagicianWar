@@ -150,16 +150,16 @@ void Player::LateUpdate(const float& fTimeDelta)
 
 	ModifyPhysXPos(fTimeDelta);
 
-	if (m_pCamera == NULL)
-	{
-		STOC_PlayerInfo info = Network::GetInstance()->GetRecvPlayerInfo(m_tNetInfo.Client_Num);
-		dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetWorld(info.matWorld);
-
-		dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(SCint(info.Upper_eAnimType));
-		dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->ChangeAnimation(SCint(info.Root_eAnimType));
-
-
-	}
+	//if (m_pCamera == NULL)
+	//{
+	//	STOC_PlayerInfo info = Network::GetInstance()->GetRecvPlayerInfo(m_tNetInfo.Client_Num);
+	//	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetWorld(info.matWorld);
+	//
+	//	dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(SCint(info.Upper_eAnimType));
+	//	dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->ChangeAnimation(SCint(info.Root_eAnimType));
+	//
+	//
+	//}
 	m_pWeapon->LateUpdate(fTimeDelta);
 }
 

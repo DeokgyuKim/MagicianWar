@@ -1,26 +1,28 @@
 #include "Player.h"
 #include "PlayerFSM.h"
 
-Player::Player()
+Player::Player(int client_num, int room_num)
 {
-    Initialize();
+    Initialize(client_num, room_num);
 }
 
 Player::~Player()
 {
 }
 
-void Player::Initialize()
+void Player::Initialize(int client_num, int room_num)
 {
     ZeroMemory(&m_Info, sizeof(PlayerInfo));
     m_Info.PlayerState = STATE_IDLE;
     m_Info.CharacterType = ELEMENT_FIRE;
-    m_Info.Client_Num = NO_PLAYER;
-    m_Info.Room_Num = NO_ROOM;
+    m_Info.Client_Num = client_num;
+    m_Info.isRoom_Host = false;
+    m_Info.Room_Num = room_num;
     m_Info.iHp = 100;
     m_keyInput = 0;
     m_Ready = false;
     m_Bullet = 0;
+    m_Room_JoinState = false;
 
     m_UpperBody = make_unique<PlayerFSM>(this, BONE_UPPER); // ( player , BoneType )
     m_RootBody = make_unique<PlayerFSM>(this, BONE_ROOT);
@@ -276,6 +278,13 @@ void Player::setJump(bool bJump)
 void Player::setCharacterType(unsigned char _type)
 {
     m_Info.CharacterType = _type;
+}
+
+void Player::setHost(bool bHost)
+{
+    if (bHost) { // 호스트는 항상 레디 상태
+        m_Ready = true;
+    }
 }
 
 void Player::CreateCapsuleController()

@@ -1,5 +1,6 @@
 #pragma once
 #include "framework.h"
+#include "Global.h"
 
 class Server
 {
@@ -38,12 +39,28 @@ public:
 	bool SendPacket(int id, void* buffer);
 	void error_display(const char* msg, int err_no);
 
+	// Loading
 	void SendAcceptOK(int id);
+
+	// Lobby
+	void SendRoomMake_OK_Packet(int host_num, int room_num); // ( 방장, 방 번호 )
+	void SendRoomMake_Deny_Packet(int id);
+	void SendRoomJoin_OK_Packet(int id);
+	void SendRoomJoin_Deny_Packet(int id);
+	void SendRoomBreak_Packet(int room_num);
+	void SendRoomPlayerInfo(int id, int slot_num);
+	void SendRoomEnter(int id, int room_num);
+
+	// Room
+	void SendRoomExit(int id);
+	
+	void AddTimer(EVENT& rEvent);
 private:
 	bool WinSock_Init();
 	unique_ptr<SOCKET> TCPSocket_Create();
 	bool Socket_Bind();
 	bool Socket_Listen();
+
 
 
 

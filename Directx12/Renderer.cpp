@@ -629,18 +629,18 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 
 void Renderer::DebugKeyInput()
 {
-	if (GetAsyncKeyState(VK_F4) & 0x8000)
-		DebugInput = "Shade";
-	if (GetAsyncKeyState(VK_F5) & 0x8000)
-		DebugInput = "Diffuse";
-	if (GetAsyncKeyState(VK_F6) & 0x8000)
-		DebugInput = "Ambient";
-	if (GetAsyncKeyState(VK_F7) & 0x8000)
-		DebugInput = "Specular";
-	if (GetAsyncKeyState(VK_F8) & 0x8000)
-		DebugInput = "Normal";
-	if (GetAsyncKeyState(VK_F9) & 0x8000)
-		DebugInput = "Depth";
-	if (GetAsyncKeyState(VK_F10) & 0x8000)
-		DebugInput = "Blend";
+	//if (GetAsyncKeyState(VK_F4) & 0x8000)
+	//	DebugInput = "Shade";
+	//if (GetAsyncKeyState(VK_F5) & 0x8000)
+	//	DebugInput = "Diffuse";
+	//if (GetAsyncKeyState(VK_F6) & 0x8000)
+	//	DebugInput = "Ambient";
+	//if (GetAsyncKeyState(VK_F7) & 0x8000)
+	//	DebugInput = "Specular";
+	//if (GetAsyncKeyState(VK_F8) & 0x8000)
+	//	DebugInput = "Normal";
+	//if (GetAsyncKeyState(VK_F9) & 0x8000)
+	//	DebugInput = "Depth";
+	//if (GetAsyncKeyState(VK_F10) & 0x8000)
+	//	DebugInput = "Blend";
 }

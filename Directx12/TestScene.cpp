@@ -38,7 +38,7 @@ int TestScene::Update(const float& fTimeDelta)
 		if (!GameEndForPanelCreate)
 		{
 			//Panel»ý¼º
-			if (Network::GetInstance()->GetMyInfo().dwTeamNum == Network::GetInstance()->GetGameEnd().teamNum)
+			if (Network::GetInstance()->GetMyInfo().TeamType == Network::GetInstance()->GetGameEnd().teamNum)
 			{
 				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 					XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, 50.f, 760.f * 1.5f, 200.f * 1.5f), "Win"));
@@ -52,13 +52,13 @@ int TestScene::Update(const float& fTimeDelta)
 		}
 
 	}
-	if (Network::GetInstance()->GetCurScene() == LOBBY_Scene)
-	{
-		//´ÙÀ½ ¾À »ý¼º ÈÄ ¹Ù²ãÁÜ.
-		LobbyScene* lobbyScene = new LobbyScene(true);
-		MainApp::GetInstance()->ChangeScene(lobbyScene);
-		return -1;
-	}
+	//if (Network::GetInstance()->GetCurScene() == LOBBY_Scene)
+	//{
+	//	//´ÙÀ½ ¾À »ý¼º ÈÄ ¹Ù²ãÁÜ.
+	//	LobbyScene* lobbyScene = new LobbyScene(true);
+	//	MainApp::GetInstance()->ChangeScene(lobbyScene);
+	//	return -1;
+	//}
 
 	return 0;
 }
@@ -69,10 +69,10 @@ void TestScene::LateUpdate(const float& fTimeDelta)
 
 #ifdef NETWORK
 	Object* pObj = GetPlayer();
-	if (pObj != NULL) {
-		Network::GetInstance()->SetMyPlayerInfo(dynamic_cast<Player*>(pObj));
+	//if (pObj != NULL) {
+	//	Network::GetInstance()->SetMyPlayerInfo(dynamic_cast<Player*>(pObj));
 
-	}
+	//}
 
 	PoolingMgr::GetInstance()->UpdatePoolingObject(Network::GetInstance()->GetBullets());
 #endif
@@ -104,15 +104,15 @@ void TestScene::Initialize()
 	XMFLOAT3 pos = Network::GetInstance()->GetMyPlayerStartPos();
 	switch (Network::GetInstance()->GetMyInfo().CharacterType)
 	{
-	case WIZARD_FIRE:
+	case ELEMENT_FIRE:
 		pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 			CHARACTER_WIZARD_FIRE, pos, Network::GetInstance()->GetMyInfo(), MESH_TYPE::CHARACTER);
 		break;
-	case WIZARD_COLD:
+	case ELEMENT_COLD:
 		pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 			CHARACTER_WIZARD_COLD, pos, Network::GetInstance()->GetMyInfo(), MESH_TYPE::CHARACTER);
 		break;
-	case WIZARD_DARKNESS:
+	case ELEMENT_DARKNESS:
 		pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 			CHARACTER_WIZARD_DARKNESS, pos, Network::GetInstance()->GetMyInfo(), MESH_TYPE::CHARACTER);
 		break;
@@ -122,22 +122,22 @@ void TestScene::Initialize()
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 
-	map<DWORD, PlayerInfo> Others = Network::GetInstance()->GetOtherPlayerInfo();
+	map<int, PlayerInfo> Others = Network::GetInstance()->GetOtherPlayerInfo();
 	for (auto iter = Others.begin(); iter != Others.end(); ++iter)
 	{
 		Core::GetInstance()->CmdLstReset();
 		pos = (*iter).second.xmfPosition;
 		switch ((*iter).second.CharacterType)
 		{
-		case WIZARD_FIRE:
+		case ELEMENT_FIRE:
 			pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 				CHARACTER_WIZARD_FIRE, pos, (*iter).second, MESH_TYPE::CHARACTER);
 			break;
-		case WIZARD_COLD:
+		case ELEMENT_COLD:
 			pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 				CHARACTER_WIZARD_COLD, pos, (*iter).second, MESH_TYPE::CHARACTER);
 			break;
-		case WIZARD_DARKNESS:
+		case ELEMENT_DARKNESS:
 			pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 				CHARACTER_WIZARD_DARKNESS, pos, (*iter).second, MESH_TYPE::CHARACTER);
 			break;

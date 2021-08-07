@@ -9,7 +9,7 @@ constexpr int WORKTHREAD_COUNT = 6; // 총 쓰레드 개수 == 코어 개수 * 1.5 ( Main
 constexpr int MAX_PLAYER = 8; // 최대 4 : 4 까지 고려
 constexpr int MAX_ID_LEN = 10;
 constexpr int MAX_CLIENTS = 100; // ( 테스트로 100명 동접 ) 이걸 최대로 하면서 성능이 안정화 되는게 IOCP의 목적
-constexpr int MAX_ROOMS = 50; // 1 : 1 고려
+constexpr int MAX_ROOMS = 3; // 1 : 1 고려
 
 constexpr int NO_PLAYER = -1;
 constexpr int NO_ROOM = -1;
@@ -24,7 +24,7 @@ enum OP_TYPE { // Accept는 Main_Thread가 할거임
 	OP_ACCEPT, // MainThread
 
 	OP_ROOM_UPDATE, OP_ROOM_TIME, // GameRoom
-	OP_ROOM_SEND_PACKET
+	OP_ROOM_SEND_PACKET,OP_ROOM_BREAK
 };
 
 struct EVENT {
@@ -63,8 +63,8 @@ typedef struct Client_Info { // 클라이언트 정보 구조체
 
 struct ROOM_EVENT {
 	int playerID; // 어떤 플레이어의 
-	char type;		// 무슨 패킷인가
-
+	unsigned char type;		// 무슨 패킷인가
+	DWORD data1;
 	// 기타 정보
 };
 

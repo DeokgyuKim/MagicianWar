@@ -1,6 +1,7 @@
 #include "TimeThread.h"
 #include "extern.h"
-#include "Global.h"
+#include "Server.h"
+#include "protocol.h"
 void TimeThread::Initialize()
 {
 	m_Thread = thread([&]()
@@ -42,18 +43,23 @@ void TimeThread::Thread_Run()
 			if (Event_proc.opType == OP_ROOM_UPDATE)
 			{
 				over_ex->OpType = OP_ROOM_UPDATE;
-				*(int*)over_ex->Iocp_buf = Event_proc.Target_ID;
+				*reinterpret_cast<int*>(over_ex->Iocp_buf) = Event_proc.Target_ID;
 			}
 			else if (Event_proc.opType == OP_ROOM_SEND_PACKET)
 			{
 				over_ex->OpType = OP_ROOM_SEND_PACKET;
-				*(int*)over_ex->Iocp_buf = Event_proc.Target_ID;
+				*reinterpret_cast<int*>(over_ex->Iocp_buf) = Event_proc.Target_ID;
 			}
 			else if (Event_proc.opType == OP_ROOM_TIME)
 			{
 				over_ex->OpType = OP_ROOM_TIME;
-				*(int*)over_ex->Iocp_buf = Event_proc.Target_ID;
+				*reinterpret_cast<int*>(over_ex->Iocp_buf) = Event_proc.Target_ID;
 			}
+			//else if (Event_proc.opType = OP_ROOM_BREAK)
+			//{
+			//	over_ex->OpType = OP_ROOM_BREAK;
+			//	*reinterpret_cast<int*>(over_ex->Iocp_buf) = Event_proc.Target_ID;
+			//}
 			else
 			{
 				cout << " TimeThread - Thread_Run() - Error " << endl;

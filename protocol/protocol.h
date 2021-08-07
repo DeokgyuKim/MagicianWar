@@ -3,6 +3,7 @@
 
 #define SERVER_PORT 9000
 #define SERVER_KEY	9999
+#define EVENT_KEY	9990
 
 #define BulletCB_Count 70
 
@@ -15,7 +16,7 @@
 // Server ==> Client
 
 // Common	1 ~ 30
-#define stoc_sceneChange 1
+#define stoc_SceneChange 1
 
 
 // Loading	Scene	31 ~ 60
@@ -35,12 +36,17 @@
 // Lobby	Scene	91 ~ 120
 #define stoc_Room_Make_OK 91
 #define stoc_Room_Make_Deny 92
-#define stoc_Room_Join_OK 91
-#define stoc_Room_Join_Deny 92
+#define stoc_Room_Join_OK 93
+#define stoc_Room_Join_Deny 94
+#define stoc_Room_Break_OK 95
+#define stoc_RoomPlayer_Enter	96
 
 // Room		Scene	121 ~ 150
 #define stoc_Game_Start	121
+#define stoc_RoomPlayer_Change	122
+#define stoc_RoomPlayer_Leave	123
 // Stage	Scene	151 ~ 180
+#define stoc_InGame_StartInfo	151
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -60,12 +66,15 @@
 #define ctos_Room_Join_Request 92
 
 // Room		Scene	121 ~ 150
-#define ctos_Ready_OK	121
-#define ctos_Ready_NONE 122
-#define ctos_BlueTeam_Request 123
-#define ctos_RedTeam_Request 124
-#define ctos_Room_Exit 124
+#define ctos_RoomInfo_Request 121
+#define ctos_Ready_OK	122
+#define ctos_Ready_NONE 123
+#define ctos_Team_Change 124
+#define ctos_Character_Change 125
+#define ctos_Game_Start 126
+#define ctos_Room_Exit 127
 // Stage	Scene	151 ~ 180
+#define ctos_IngameInfo_Request 151
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -77,6 +86,9 @@
 #define ctos_KEY_SPACE		0x0010 
 #define ctos_KEY_LBUTTON	0x0020 
 #define ctos_KEY_E			0x0040 
+#define ctos_KEY_1			0x0080
+#define ctos_KEY_2			0x0100
+#define ctos_KEY_3			0x0200
 
 // Scene
 #define LOADING_SCENE	0
@@ -129,17 +141,36 @@ struct PlayerInfo
 {
 	int					Client_Num;
 	int					Room_Num;
-	char				dwTeamNum;
+	bool				isRoom_Host;
+	char				TeamType;
 	XMFLOAT4X4			matWorld;
 	XMFLOAT3			xmfPosition;
 	unsigned char		CharacterType; // 캐릭터 타입
 	int					PlayerState;   // 플레이어 현재 상태
 	int					iHp;
+	bool				isreadyState;
+};
+struct Room_PlayerInfo
+{
+	bool isRoom_Host;
+	char TeamNum;
+	char CharacterType;
 };
 struct RoomInfo
 {
 	int					Room_Num;
 	string				Room_Name;
+	int					HostPlayer;
+};
+
+struct RoomPlayer
+{
+	bool used;
+	bool ishost;
+	bool readyState;
+	char characterType;
+	char slot_num;
+	int	 id;
 };
 
 struct Client_State { // 
@@ -169,30 +200,72 @@ struct STOC_Accept_OK {
 	int id;
 };
 
-struct STOC_ROOM_MAKE {
+struct STOC_ROOM_MAKE_OK {
 	short size;
 	unsigned char type;
-	
+	int Host_num;
+	int room_num;
+};
+
+struct STOC_ROOM_MAKE_DENY {
+	short size;
+	unsigned char type;
 };
 
 struct STOC_ROOM_JOIN {
 	short size;
 	unsigned char type;
-	
+	int room_num;
+};
+
+struct STOC_ROOM_CHANGE {
+	short size;
+	unsigned char type;
+	bool used;
+	bool host;
+	bool readyState;
+	char characterType;
+	char slot_num;
+	int id;
+};
+
+struct STOC_ROOM_ENTER {
+	short size;
+	unsigned char type;
+	int room_num;
+};
+
+struct STOC_ROOM_LEAVE {
+	short size;
+	unsigned char type;
+};
+
+struct STOC_ROOM_BREAK {
+	short size;
+	unsigned char type;
+	int room_num;
 };
 
 // Room Scene
 
 struct STOC_GAME_START {
 	short size;
+	unsigned char type;	
+};
+
+// InGame Scene
+
+struct STOC_INGAME_STARTINFO {
+	short size;
 	unsigned char type;
 
 	char				dwTeamNum;		// 내 팀 번호
-	XMFLOAT3			xmfPosition;	// 내 초기좌표
 	char				CharacterType;	// 캐릭터 타입
+	XMFLOAT3			xmfPosition;	// 내 초기좌표
 	int					iHp;			// 내 초기 HP
-	
+	int					id;				// ID
 };
+
 
 struct STOC_ServerPlayer
 {
@@ -219,7 +292,7 @@ struct STOC_PlayerInfo
 struct STOC_sceneChange {
 	short size;
 	unsigned char type;
-	DWORD sceneNum; // 0 : Logo, 1 : Lobby, 2 : mainScene, 3 : GameEnd
+	char sceneType; // 0 : Logo, 1 : Lobby, 2 : mainScene, 3 : GameEnd
 };
 
 
@@ -308,6 +381,13 @@ struct CTOS_ROOM_JOIN_REQUEST
 
 // Room Scene
 
+struct CTOS_ROOMINFO_REQUEST
+{
+	short size;
+	unsigned char type;
+	int room_num;
+};
+
 struct CTOS_Ready {
 	short size;
 	unsigned char type;
@@ -318,6 +398,23 @@ struct CTOS_ROOM_EXIT {
 	unsigned char type;
 };
 
+struct CTOS_TEAMSELECT_REQUEST {
+	short size;
+	unsigned char type; 
+	unsigned char teamType; // blue, red
+};
+struct CTOS_CHARACTER_CHANGE {
+	short size;
+	unsigned char type;
+	unsigned char characterType; // fire, cold, carkness
+};
+
+struct CTOS_INGAMEINFO_REQUEST
+{
+	short size;
+	unsigned char type;
+	int room_num;
+};
 
 struct CTOS_Skill {
 	short size;

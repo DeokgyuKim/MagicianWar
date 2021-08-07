@@ -85,6 +85,8 @@ void LobbyScene::Initialize(bool bRetry)
 	dynamic_cast<ServerButton*>(pObj)->SetTag(BUTTON_ROOM_JOIN, EVENT_LOBBY_ROOM_JOIN_REQUEST);
 	m_pObjects[OBJ_UI].push_back(pObj);
 
+	
+
 #else
 	pObj = new Button(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(WINCX * 0.5f + 400.f, 650.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
@@ -149,8 +151,10 @@ void LobbyScene::Initialize(bool bRetry)
 
 
 #ifdef NETWORK
-	if(!bRetry)
+	if (!bRetry) {
 		Network::GetInstance()->Init(Network::GetInstance()->LoadServerIPtxt("../Data/ServerIP.txt"));
+		Network::GetInstance()->Lobby_Init();
+	}
 #endif
 
 	ShowCursor(TRUE);

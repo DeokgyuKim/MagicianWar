@@ -34,6 +34,18 @@
 	// Tile
 #define TILE_01 "Tile_01"
 
+// Button
+
+// Lobby
+#define BUTTON_ROOM_MAKE	0
+#define BUTTON_ROOM_JOIN	1
+
+// Room
+#define BUTTON_GAME_READY	2
+#define BUTTON_GAME_START	3
+#define BUTTON_ROOM_EXIT	4
+#define BUTTON_BLUETEAM		5
+#define BUTTON_REDTEAM		6		
 
 
 #define KEY_W		0x00000001 // 0000 0000 0000 0000 0000 0000 0000 0001
@@ -56,7 +68,7 @@
 #define M_MoveBackward_Speed 0.03f
 
 
-#define NETWOR
+#define NETWORK
 #define PHYS
 
 #define MAX_BUFFER 4096
@@ -91,6 +103,7 @@
 #define EVENT_ROOM_PLAYER_READY_OFF			93
 #define EVENT_ROOM_PLAYER_SELECT_CHARACTER	94
 #define EVENT_ROOM_PLAYER_EXIT				95
+#define EVENT_ROOM_PLAYER_SELECT_TEAM		96
 
 
 // Stage Scene Event	121 ~ 150

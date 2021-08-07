@@ -15,7 +15,10 @@ priority_queue<EVENT> g_Timer_queue;
 mutex g_Time_mutex;
 
 array<CLIENT_INFO*, MAX_CLIENTS> g_Clients; // 최대 동접만큼 수용
+mutex g_Client_mutex;
+map<int,int> g_ConnectedClients_Number; // 연결된 클라이언트의 User_num을 들고있음
 map<int, Room*> g_Rooms;
+mutex g_Room_mutex;
 
 HANDLE g_IOCP; // IOCP 핸들
 vector<PxRigidStatic*> StaticObjects;
@@ -28,7 +31,7 @@ int main()
 	// 사전에 오버헤드 많이 드는 작업들은 다 해놔야함
 	StaticMeshMgr::GetInstance()->LoadMeshInfo("../../Data/Map1Data.txt");
 	MeshMgr::GetInstnace()->BuildModels();
-	CPhysXMgr::GetInstance()->Initialize();
+	//CPhysXMgr::GetInstance()->Initialize();
 
 	multimap<string*, TransformStruct> vtxs = StaticMeshMgr::GetInstance()->GetMapMeshInfo();
 	for (auto iter = vtxs.begin(); iter != vtxs.end(); ++iter)
@@ -46,7 +49,7 @@ int main()
 
 		world = s * rx * ry * rz * t;
 
-		StaticObjects.push_back(CPhysXMgr::GetInstance()->CreateTriangleStaticMesh(*(*iter).first, world));
+		//StaticObjects.push_back(CPhysXMgr::GetInstance()->CreateTriangleStaticMesh(*(*iter).first, world));
 	}
 	//cout << "StaticObjects Count is " << StaticObjects.size() << endl;
 	cout << "All Load Complete!" << endl;
@@ -57,7 +60,7 @@ int main()
 	
 	Server::GetInstance()->MainThread_Run(); // Only Accept
 
-	Server::GetInstance()->DestoryInstance();
+	//Server::GetInstance()->DestoryInstance();
 }
 
 void CreatePlayerSocket(int _size)

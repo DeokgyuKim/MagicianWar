@@ -35,7 +35,7 @@ void Server::Initialize()
 
 	g_IOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 0); // IOCP
 	m_listenSocket = TCPSocket_Create();
-	CreateIoCompletionPort(reinterpret_cast<HANDLE>(*(m_listenSocket.get())), g_IOCP, SERVER_KEY, 0);
+	CreateIoCompletionPort(reinterpret_cast<HANDLE>(*(m_listenSocket.get())), g_IOCP, EVENT_KEY, 0);
 	Socket_Bind();
 	Socket_Listen();
 
@@ -82,9 +82,9 @@ void Server::MainThread_Run()
 			}
 		}
 
+		g_Accept_mutex.unlock();
 		
 
-		g_Accept_mutex.unlock();
 
 
 
@@ -117,6 +117,10 @@ void Server::MainThread_Run()
 		}
 
 		cout << user_num << " - Accept Success\n";
+		g_Accept_mutex.lock();
+		g_ConnectedClients_Number.insert({ user_num ,user_num });
+		g_Accept_mutex.unlock();
+		
 
 		clientSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
 		ZeroMemory(&Accept_over.Over, sizeof(Accept_over.Over));
@@ -175,6 +179,104 @@ void Server::SendAcceptOK(int id)
 	if (!SendPacket(id, &packet)) {
 		cout << "SendAcceptOK() Failed \n";
 	};
+}
+
+void Server::SendRoomMake_OK_Packet(int host_num, int room_num) 
+{	// 방이 만들어 진건 모든 클라가 알아야함
+	STOC_ROOM_MAKE_OK packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_Room_Make_OK;
+	packet.Host_num = host_num;
+	packet.room_num = room_num;
+
+	for (auto iter = g_ConnectedClients_Number.begin(); iter != g_ConnectedClients_Number.end(); ++iter) { // 방이 만들어지면 모든 연결된 클라이언트에게 방이 생성되었다를 보내줘야함
+		if (!SendPacket(iter->second, &packet)) {
+			cout << "SendRoomMake_OK_Packet() Failed \n";
+		};
+	}
+
+}
+
+void Server::SendRoomMake_Deny_Packet(int id)
+{
+	STOC_ROOM_MAKE_DENY packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_Room_Make_Deny;
+
+	if (!SendPacket(id, &packet)) {
+		cout << "SendRoomMake_Deny_Packet() Failed \n";
+	};
+}
+
+void Server::SendRoomJoin_OK_Packet(int id)
+{
+	STOC_ROOM_JOIN packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_Room_Join_OK;
+	
+	if (!SendPacket(id, &packet)) {
+		cout << "SendRoomJoin_OK_Packet() Failed \n";
+	};
+}
+
+void Server::SendRoomJoin_Deny_Packet(int id)
+{
+	STOC_ROOM_JOIN packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_Room_Join_Deny;
+
+	if (!SendPacket(id, &packet)) {
+		cout << "SendRoomJoin_Deny_Packet() Failed \n";
+	};
+}
+
+void Server::SendRoomBreak_Packet(int room_num)
+{	// 방이 없어진건 모든 클라가 알아야함
+	STOC_ROOM_BREAK packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_Room_Break_OK;
+	packet.room_num = room_num;
+	g_Room_mutex.lock();
+	for (auto iter = g_ConnectedClients_Number.begin(); iter != g_ConnectedClients_Number.end(); ++iter) { // 방이 만들어지면 모든 연결된 클라이언트에게 방이 생성되었다를 보내줘야함
+		if (!SendPacket(iter->second, &packet)) {
+			cout << "SendRoomBreak_Packet() Failed \n";
+		}
+	}
+	g_Room_mutex.unlock();
+}
+
+void Server::SendRoomPlayerInfo(int id, int slot_num)
+{
+}
+
+void Server::SendRoomEnter(int id,int room_num)
+{
+	STOC_ROOM_ENTER packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_RoomPlayer_Enter;
+	packet.room_num = room_num;
+	if (!SendPacket(id, &packet)) {
+		cout << "SendRoomEnter() Failed \n";
+	}
+}
+
+
+void Server::SendRoomExit(int id)
+{
+	STOC_ROOM_LEAVE packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_RoomPlayer_Leave;
+	if (!SendPacket(id, &packet)) {
+		cout << "SendRoomExit() Failed \n";
+	}
+}
+
+
+void Server::AddTimer(EVENT& rEvent)
+{
+	g_Time_mutex.lock();
+	g_Timer_queue.push(rEvent);
+	g_Time_mutex.unlock();
 }
 
 bool Server::WinSock_Init()

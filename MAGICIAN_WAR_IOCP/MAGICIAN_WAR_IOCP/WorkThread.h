@@ -15,6 +15,7 @@ public:
 public:
     void Accept_Client(SOCKET client);
     void Disconnect_Client(int client_Num, SOCKET client);
+    void BreakRoom(int room_Num);
 public:
     ROOM_EVENT packetProcessing(int id, void* buffer);
     
