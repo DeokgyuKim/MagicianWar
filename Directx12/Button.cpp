@@ -33,14 +33,22 @@ int Button::Update(const float& fTimeDelta)
 		{
 			m_eButtonState = BUTTON_STATE::MOUSEON;
 			if (KeyMgr::GetInstance()->KeyDown(VK_LBUTTON))
+			{
 				m_eButtonState = BUTTON_STATE::ON;
+				if(ButtonOnfp != nullptr)
+					ButtonOnfp();
+			}
 		}
 	case MOUSEON:
 		if (PtInRect(&m_Rect, pt))
 		{
 			m_eButtonState = BUTTON_STATE::MOUSEON;
 			if (KeyMgr::GetInstance()->KeyDown(VK_LBUTTON))
+			{
 				m_eButtonState = BUTTON_STATE::ON;
+				if (ButtonOnfp != nullptr)
+					ButtonOnfp();
+			}
 		}
 		else
 			m_eButtonState = BUTTON_STATE::NONE;
@@ -49,7 +57,11 @@ int Button::Update(const float& fTimeDelta)
 		if (PtInRect(&m_Rect, pt))
 		{
 			if (KeyMgr::GetInstance()->KeyDown(VK_LBUTTON))
+			{
 				m_eButtonState = BUTTON_STATE::NONE;
+				if (ButtonOfffp != nullptr)
+					ButtonOfffp();
+			}
 		}
 		break;
 	default:

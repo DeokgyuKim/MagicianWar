@@ -48,7 +48,7 @@ int LoadingScene::Update(const float& fTimeDelta)
 			Network::GetInstance()->CallEvent(EVENT_LOADING_LOADINGEND, 0);
 			Network::GetInstance()->CallEvent(EVENT_SCENE_CHANGE, 1, LOBBY_SCENE);
 #else
-			Network::GetInstance()->CallEvent(EVENT_SCENE_CHANGE, 1, ROOM_SCENE);
+			Network::GetInstance()->CallEvent(EVENT_SCENE_CHANGE, 1, LOBBY_SCENE);
 #endif // !
 			return -1;
 		}

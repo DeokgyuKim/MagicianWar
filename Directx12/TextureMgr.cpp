@@ -87,6 +87,10 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["Ui_Text_CharHost"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "AllText", L"../Resources/UI/Text/AllText.dds");
+	m_mapTextures["Ui_Text_AllText"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "Lobby", L"../Resources/UI/Lobby/Lobby.dds");
 	m_mapTextures["Lobby"] = pTexture;
 	pLoading->AddCount();

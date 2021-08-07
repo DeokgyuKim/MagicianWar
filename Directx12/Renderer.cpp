@@ -168,6 +168,15 @@ void Renderer::Render(const float& fTimeDelta)
 		pObject->Render(fTimeDelta);
 	}
 
+	m_mapShaders[RENDER_TYPE::RENDER_UI_TEXT]->PreRender(m_pCmdLst);
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_UI_TEXT])
+	{
+		if (pObject->GetTextureName() != "")
+			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+
+		pObject->Render(fTimeDelta);
+	}
+
 	DebugKeyInput();
 	m_pCore->Render_EndTest(m_pRTMgr->GetRenderTarget(DebugInput));
 	//EnterCriticalSection(&m_Crt);
@@ -365,7 +374,7 @@ void Renderer::BuildRootSignature()
 	srvTable[14].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 14);	// Shade Texture
 
 
-	const size_t rootSize = 23;
+	const size_t rootSize = 24;
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[rootSize];
 
@@ -393,6 +402,7 @@ void Renderer::BuildRootSignature()
 	slotRootParameter[20].InitAsConstantBufferView(7);	//UiCB
 	slotRootParameter[21].InitAsDescriptorTable(1, &srvTable[13], D3D12_SHADER_VISIBILITY_PIXEL);	// LightDepth Texture
 	slotRootParameter[22].InitAsDescriptorTable(1, &srvTable[14], D3D12_SHADER_VISIBILITY_PIXEL);	// Shade Texture
+	slotRootParameter[23].InitAsConstantBufferView(8);	//TextCB
 
 	auto staticSamplers = GetStaticSamplers();
 
@@ -426,7 +436,7 @@ void Renderer::BuildDescrpitorHeap()
 {
 	//Create SRV Heap
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 100;// 텍스처 개수 + blur skybox 등등
+	srvHeapDesc.NumDescriptors = 120;// 텍스처 개수 + blur skybox 등등
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	m_pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_ptrDescriptorHeap));
@@ -523,6 +533,15 @@ void Renderer::BuildShader()
 	pShader->BuildShadersAndInputLayout(L"Blend.hlsl", "VS_UI_ROOMS", L"Blend.hlsl", "PS_UI_ROOMS", layout);
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
 	m_mapShaders[RENDER_TYPE::RENDER_UI_ROOMS] = pShader;
+
+	layout = {
+	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pShader = new Shader;
+	pShader->BuildShadersAndInputLayout(L"Blend.hlsl", "VS_UI_ROOMS", L"Blend.hlsl", "PS_UI_TEXT", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
+	m_mapShaders[RENDER_TYPE::RENDER_UI_TEXT] = pShader;
 
 	// Bullet
 	layout = {

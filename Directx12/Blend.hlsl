@@ -263,13 +263,23 @@ PS_BLEND_OUT PS_UI_ROOMS(Shade_Out_UI_Room pin)
 	float4 color = text * value + ui * (1.f - value);
 	pOut.Blend = color;
 
-	//((250.f / (1080.f / 2.f)) - 1.f) * -1.f;
-	//(800.f / 1080.f) * 2.f
-
 	pOut.Blend.a = 0.f;
 	if (pin.Pos.y > ((270.f / (1080.f / 2.f)) - 1.f) * -1.f - (760.f / 1080.f) * 2.f
 		&& pin.Pos.y < ((270.f / (1080.f / 2.f)) - 1.f) * -1.f)
 		pOut.Blend.a = 1.f;
+
+	return pOut;
+}
+
+PS_BLEND_OUT PS_UI_TEXT(Shade_Out_UI_Room pin)
+{
+	PS_BLEND_OUT pOut;
+
+	float2 UV = (Textidx + pin.UV) / 6.f;
+	float3 color = Texture.Sample(gsamLinear, UV).rgb * (1.f - TextColor);
+	float alpha = Texture.Sample(gsamLinear, UV).a;
+
+	pOut.Blend = float4(color, alpha);
 
 	return pOut;
 }

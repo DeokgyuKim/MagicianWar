@@ -47,7 +47,7 @@ void RoomRadioController::SetScrollPos(int Zdir, float speed)
 void RoomRadioController::AddRoom(Scene* pScene, int iTag)
 {
 	RoomRadio* pRadio = new RoomRadio(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(178.f, 270.f + m_vecRadios.size() * 200.f, 1024.f, 180.f), "Room", "RoomSelect", "RoomSelect");
+		XMFLOAT4(178.f, 270.f + m_vecRadios.size() * 200.f, 1024.f, 180.f), "Room", "RoomSelect", "RoomSelect", pScene);
 	pRadio->SetTag(iTag);
 
 	pScene->PushObject(pRadio, OBJ_TYPE::OBJ_UI);

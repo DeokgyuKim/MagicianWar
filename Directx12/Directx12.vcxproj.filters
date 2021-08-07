@@ -247,6 +247,12 @@
     <Filter Include="00.Game\02.Object\09.UI\01.CharInfo\01.CharInfoController">
       <UniqueIdentifier>{c0937d00-e98e-4a2e-bc81-fba8f038a242}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Game\02.Object\09.UI\02.Text">
+      <UniqueIdentifier>{ec90ab7a-62d7-42f6-a533-ba8017965e0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\09.UI\02.Text\02.TextController">
+      <UniqueIdentifier>{fb1f83db-e7d2-4600-be34-8fa4811b6af7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -485,6 +491,12 @@
     <ClInclude Include="CharInfoController.h">
       <Filter>00.Game\02.Object\09.UI\01.CharInfo\01.CharInfoController</Filter>
     </ClInclude>
+    <ClInclude Include="TextController.h">
+      <Filter>00.Game\02.Object\09.UI\02.Text\02.TextController</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>00.Game\02.Object\09.UI\02.Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -695,6 +707,12 @@
     </ClCompile>
     <ClCompile Include="CharInfoController.cpp">
       <Filter>00.Game\02.Object\09.UI\01.CharInfo\01.CharInfoController</Filter>
+    </ClCompile>
+    <ClCompile Include="TextController.cpp">
+      <Filter>00.Game\02.Object\09.UI\02.Text\02.TextController</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>00.Game\02.Object\09.UI\02.Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

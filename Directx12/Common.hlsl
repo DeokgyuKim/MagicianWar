@@ -42,6 +42,11 @@ cbuffer cbUi : register(b7)
 {
 	float2	ratio;
 }
+cbuffer cbText : register(b8)
+{
+	float2	Textidx;
+	float3	TextColor;
+}
 
 
 Texture2D Texture : register(t0);

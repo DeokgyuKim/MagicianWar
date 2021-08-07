@@ -16,12 +16,17 @@ public:
     virtual void Render(const float& fTimeDelta, int _instanceCount = 1) override;
     virtual string	GetTextureName() override;
     BUTTON_STATE GetButtonState() { return m_eButtonState; }
+public:
+    void SetEventButtonOn(void(*fp)()) { ButtonOnfp = fp; }
+    void SetEventButtonOff(void(*fp)()) { ButtonOfffp = fp; }
 protected:
     string          m_strMouseOnTextureName;
     string          m_strActiveTextureName;
     RECT            m_Rect;
     BUTTON_STATE    m_eButtonState;
     BUTTON_STATE    m_prevButtonState;
+    void            (*ButtonOnfp)() = nullptr;
+    void            (*ButtonOfffp)() = nullptr;
 
     
 };

@@ -19,11 +19,13 @@
 #include "RadioButton.h"
 #include "RoomRadio.h"
 #include "RoomRadioController.h"
+#include "TextController.h"
 
 #include "StaticMeshMgr.h"
 #include "TextureMgr.h"
 
 #include "Loading.h"
+
 
 LobbyScene::LobbyScene(bool bRetry)
 {
@@ -88,6 +90,7 @@ void LobbyScene::Initialize(bool bRetry)
 		XMFLOAT4(WINCX * 0.5f + 400.f, 650.f, 400.f, 130.f), "ButtonBase", "ButtonMouseOn", "ButtonOn");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
+
 	m_pButton = dynamic_cast<Button*>(pObj);
 	m_pButton->SetTag(BUTTON_ROOM_MAKE);
 	m_pButton->SetTextTextureName("Ui_Text_MakeRoom");
@@ -106,6 +109,7 @@ void LobbyScene::Initialize(bool bRetry)
 	m_rbController = new RoomRadioController(XMFLOAT4(150.f, 250.f, 1080.f, 800.f));
 	m_rbController->AddRoom(this, iTag++);
 	m_rbController->AddRoom(this, iTag++);
+
 #endif // !NETWORK
 
 	/////Radio
@@ -151,4 +155,3 @@ void LobbyScene::Initialize(bool bRetry)
 
 	ShowCursor(TRUE);
 }
-
