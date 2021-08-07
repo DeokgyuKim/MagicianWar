@@ -22,7 +22,6 @@ RoomRadio::RoomRadio(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Re
 
 RoomRadio::~RoomRadio()
 {
-	RemoveText();
 }
 
 void RoomRadio::LateUpdate(const float& fTimeDelta)

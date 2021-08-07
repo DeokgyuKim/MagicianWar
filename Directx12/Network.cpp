@@ -13,6 +13,7 @@
 #include "KeyMgr.h"
 
 #include "RadioButton.h"
+#include "RoomRadioController.h"
 
 
 Network* Network::m_pInstance = NULL;
@@ -665,7 +666,8 @@ void Network::SendRoomJoin_Request()
 	CTOS_ROOM_JOIN_REQUEST packet;
 	packet.size = sizeof(packet);
 	packet.type = ctos_Room_Join_Request;
-	packet.room_num = 0; // 일단 방 1개 만들어졌다 가정
+	packet.room_num = MainApp::GetInstance()->GetScene()->GetRadioButtonConteroller()->GetSelectRoomNumber();
+
 	if (!SendPacket(&packet)) {
 		cout << "SendRoomJoin_Request() Failed \n";
 	}

@@ -78,6 +78,7 @@ void RoomRadioController::RemoveRoom(Scene* pScene, int iTag)
 	for (auto Radio : m_vecRadios)
 	{
 		pScene->RemoveObject(Radio, OBJ_TYPE::OBJ_UI);
+		dynamic_cast<RoomRadio*>(Radio)->RemoveText();
 		delete Radio;
 	}
 	m_vecRadios.clear();
