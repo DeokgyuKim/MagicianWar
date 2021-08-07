@@ -363,7 +363,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 				break;
 			}
 		}
-		roomslot_Clear(Roomdata.slot_num);
+		roomslot_Clear(clearSlot);
 
 		if (rEvent.data1 == TEAM_BLUE) {
 			for (int i = 0; i < 4; ++i) { // 0 ~ 4  BlueTeam

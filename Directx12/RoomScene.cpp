@@ -21,7 +21,7 @@ void selectblueteam();
 
 RoomScene::RoomScene()
 {
-    Initialize();
+	Initialize();
 	m_RoomPlayer[0].host = true;
 	m_RoomPlayer[0].chartype = WIZARD_FIRE;
 	m_RoomPlayer[0].readystate = false;
@@ -86,7 +86,7 @@ void RoomScene::Initialize()
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	m_pButton = dynamic_cast<Button*>(pObj);
-	m_pButton->SetTextTextureName("Ui_Text_Exit"); 
+	m_pButton->SetTextTextureName("Ui_Text_Exit");
 	m_pButton->SetTag(BUTTON_ROOM_EXIT);
 	m_pButton->SetEventButtonOn(exitroom);
 
@@ -162,9 +162,9 @@ void exitroom()
 }
 void selectredteam()
 {
-	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_SELECT_TEAM, TEAM_RED);
+	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_SELECT_TEAM, 1, TEAM_RED);
 }
 void selectblueteam()
 {
-	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_SELECT_TEAM, TEAM_BLUE);
+	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_SELECT_TEAM, 1, TEAM_BLUE);
 }
