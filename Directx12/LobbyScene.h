@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "protocol.h"
 
 class Loading;
 class Camera;
@@ -22,5 +23,6 @@ private:
     Button*         m_pButton;
     RadioButton*    m_pRadio[3];
     int iTag = BUTTON_ROOM_END;
+    map<int, STOC_ROOM_MAKE_OK> m_mapClientRooms;
 };
 

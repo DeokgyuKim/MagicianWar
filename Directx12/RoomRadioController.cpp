@@ -44,33 +44,62 @@ void RoomRadioController::SetScrollPos(int Zdir, float speed)
 		dynamic_cast<RoomRadio*>(Button)->SetScrollPos(m_fScrollPos, (m_fScrollPos * 2.f) / WINCY);
 }
 
-void RoomRadioController::AddRoom(Scene* pScene, int iTag)
+int RoomRadioController::GetSelectRoomNumber()
+{
+	for (auto Button : m_vecRadios)
+	{
+		if (Button->GetButtonState() == BUTTON_STATE::ON)
+			return Button->GetTag();
+	}
+	return -1;
+}
+
+void RoomRadioController::AddRoom(Scene* pScene, int iTag, bool bAddIdx)
 {
 	RoomRadio* pRadio = new RoomRadio(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT4(178.f, 270.f + m_vecRadios.size() * 200.f, 1024.f, 180.f), "Room", "RoomSelect", "RoomSelect", pScene);
+		XMFLOAT4(178.f, 270.f + m_vecRadios.size() * 200.f, 1024.f, 180.f), "Room", "RoomSelect", "RoomSelect", pScene, iTag);
 	pRadio->SetTag(iTag);
 
 	pScene->PushObject(pRadio, OBJ_TYPE::OBJ_UI);
 	m_vecRadios.push_back(pRadio);
-
+	if (bAddIdx)
+		m_lstRooms.push_back(iTag);
 	SetRadioOthers();
 
 }
 
 void RoomRadioController::RemoveRoom(Scene* pScene, int iTag)
 {
-	auto eraseiter = m_vecRadios.end();
-	for (auto iter = m_vecRadios.begin(); iter != m_vecRadios.end(); ++iter)
-	{
-		if ((*iter)->GetTag() == iTag)
-		{
-			eraseiter = iter;
-			break;
-		}
-	}
-	if (eraseiter == m_vecRadios.end())
+	auto iter = find(m_lstRooms.begin(), m_lstRooms.end(), iTag);
+	if (iter == m_lstRooms.end())
 		return;
-	pScene->RemoveObject((*eraseiter), OBJ_TYPE::OBJ_UI);
-	delete* eraseiter;
-	m_vecRadios.erase(eraseiter);
+	m_lstRooms.erase(iter);
+
+	for (auto Radio : m_vecRadios)
+	{
+		pScene->RemoveObject(Radio, OBJ_TYPE::OBJ_UI);
+		delete Radio;
+	}
+	m_vecRadios.clear();
+
+	for (auto roomnum : m_lstRooms)
+	{
+		AddRoom(pScene, roomnum, false);
+	}
+	//auto eraseiter = m_vecRadios.end();
+	//for (auto iter = m_vecRadios.begin(); iter != m_vecRadios.end(); ++iter)
+	//{
+	//	if ((*iter)->GetTag() == iTag)
+	//	{
+	//		eraseiter = iter;
+	//		break;
+	//	}
+	//}
+	//if (eraseiter == m_vecRadios.end())
+	//	return;
+	//pScene->RemoveObject((*eraseiter), OBJ_TYPE::OBJ_UI);
+	//delete* eraseiter;
+	//m_vecRadios.erase(eraseiter);
+
+	
 }

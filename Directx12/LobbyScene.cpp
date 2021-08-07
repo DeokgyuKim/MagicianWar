@@ -52,6 +52,39 @@ int LobbyScene::Update(const float& fTimeDelta)
 	if (GetAsyncKeyState(VK_NUMPAD1) & 0x0001)
 		m_rbController->RemoveRoom(this, --iTag);
 
+	vector<int> idx;
+	for (auto iter : *Network::GetInstance()->GetRoomInfo())
+	{
+		auto clientiter = m_mapClientRooms.find(iter.first);
+		if (clientiter == m_mapClientRooms.end())
+		{
+			m_rbController->AddRoom(this, iter.second.room_num);
+			idx.push_back(iter.second.room_num);
+		}
+	}
+
+	for (int index : idx)
+	{
+		m_mapClientRooms[index] = Network::GetInstance()->GetRoomInfo()->find(index)->second;
+	}
+	idx.clear();
+	
+	for (auto iter : m_mapClientRooms)
+	{
+		auto serveriter = Network::GetInstance()->GetRoomInfo()->find(iter.first);
+		if (serveriter == Network::GetInstance()->GetRoomInfo()->end())
+		{
+			m_rbController->RemoveRoom(this, iter.first);
+			idx.push_back(iter.first);
+		}
+	}
+	for (int index : idx)
+	{
+		m_mapClientRooms.erase(index);
+	}
+	idx.clear();
+
+
 	return 0;
 }
 

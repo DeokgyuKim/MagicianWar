@@ -8,7 +8,7 @@ class RoomRadio :
 {
 public:
     RoomRadio(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer,
-        XMFLOAT4 xmfInfo, string strBaseTextureName, string strMouseOnTextureName, string strActiveTextureName, Scene* pScene);
+        XMFLOAT4 xmfInfo, string strBaseTextureName, string strMouseOnTextureName, string strActiveTextureName, Scene* pScene, int iTag);
     virtual ~RoomRadio();
 public:
     virtual void LateUpdate(const float& fTimeDelta) override;

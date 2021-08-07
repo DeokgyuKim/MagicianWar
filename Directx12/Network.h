@@ -69,6 +69,7 @@ public:
 	string	LoadServerIPtxt(string filePath);
 	// 이벤트 발생시 호출될 함수
 	void CallEvent(int EventType, int args, ...); // ( 일어난 일, 가변인자 개수, 보낼 정보 )
+	map<int, STOC_ROOM_MAKE_OK>* GetRoomInfo() { return &m_mapRooms; }
 private:
 	SOCKET	m_Sock;
 
@@ -130,7 +131,7 @@ private: // packets
 	char packetBuffer[MAX_BUFFER];
 	short packet_size;
 	int savedPacket_size;
-
+	map<int, STOC_ROOM_MAKE_OK> m_mapRooms;
 
 };
 
