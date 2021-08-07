@@ -193,6 +193,8 @@ void WorkThread::BreakRoom(int room_Num)
 	g_Rooms.erase(room_Num);
 	g_Room_mutex.unlock();
 
+	cout << room_Num << " 방이 지워졌습니다.\n";
+
 	Server::GetInstance()->SendRoomBreak_Packet(room_Num); // 방이 없어졌으면 모든 클라이언트에게 알려줘야지
 
 }
@@ -219,7 +221,7 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 	{
 		cout << id << " - Client가 방 생성 요청을 했습니다.\n";
 		int room_num = NO_ROOM;
-		for (int i = 0; i < MAX_ROOMS; ++i) {
+		for (int i = ROOM_INDEX_START; i < ROOM_INDEX_START + MAX_ROOMS; ++i) {
 			g_Room_mutex.lock();
 			if (g_Rooms[i] == nullptr) { // i번방이 없으면 i번방 생성
 				g_Rooms[i] = new Room(i, id);
@@ -254,6 +256,7 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 			Server::GetInstance()->SendRoomJoin_Deny_Packet(id);
 		}
 
+		break;
 	}
 	// Room
 	case ctos_RoomInfo_Request:
@@ -293,7 +296,7 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 		int room_num = g_Clients[id]->Room_num;
 		g_Rooms[room_num]->ExitRoom(id);
 		if (g_Rooms[room_num]->Get_Player_Count() <= 0) {
-			BreakRoom(id);
+			BreakRoom(room_num);
 		}
 		break;
 	}
