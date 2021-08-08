@@ -16,7 +16,7 @@ public:
 private:
     void Initialize();
 public:
-    void SetRoomPlayer(int idx, Ui_Roomplayer player) { m_RoomPlayer[idx] = player; }
+    void SetRoomPlayer(int idx, Ui_Roomplayer player);
 private:
     Camera* m_pCamera;
     Button* m_pButton;

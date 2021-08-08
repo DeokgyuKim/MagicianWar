@@ -111,6 +111,18 @@ bool CPhysXMgr::Initialize()
 	gScene->addActor(*groundPlane);
 
 
+	for (int z = 0; z < 10; ++z)
+	{
+		for (int x = 0; x < 5; ++x)
+		{
+			XMFLOAT3 pos;
+			pos.x = x * 10.f + 5.f;
+			pos.y = 0.f;
+			pos.z = z * 10.f + 5.f;
+			m_pxDynamicBox[x][z] = CreateBox(pos, 10.f, 100.f, 10.f);
+		}
+	}
+
 	return false;
 }
 
@@ -167,38 +179,38 @@ PxRigidDynamic* CPhysXMgr::CreateSphere(XMFLOAT3 Pos, float Radius, const PxVec3
 //
 //
 //
-//PxRigidDynamic* CPhysXMgr::CreateBox(CPhysXObject* pObj, _vec3 Pos, PxReal x, PxReal y, PxReal z, PxMaterial* Material_) // 가로길이가 1.f일경우 x는 0.5f다
-//{
-//
-//	const PxTransform& t = PxTransform(PxVec3(Pos.x, Pos.y, Pos.z));
-//			
-//	if (Material_ == nullptr)
-//		Material_ = gMaterial;
-//	
-//
-//	PxShape* shape = gPhysics->createShape(PxBoxGeometry(x, y, z), *Material_);
-//	
-//	PxTransform localTm(PxVec3(0, 0, 0) * x);
-//	PxRigidDynamic* body = gPhysics->createRigidDynamic(t.transform(localTm));
-//	body->attachShape(*shape);
-//	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-//	gScene->addActor(*body);
-//	//body->setMass(1.f);
-//	
-//	shape->release();
-//
-//	MyPhysXGameObject str;
-//	str.pObject = pObj;
-//	str.pRigidDynamic = body;
-//	VecPGO.push_back(str);
-//
-//	PDynamiclist.push_back(body);
-//
-//	body->setName("");
-//
-//	return body;
-//}
-//
+PxRigidDynamic* CPhysXMgr::CreateBox(XMFLOAT3 Pos, PxReal x, PxReal y, PxReal z, PxMaterial* Material_)
+{
+
+	const PxTransform& t = PxTransform(PxVec3(Pos.x, Pos.y, Pos.z));
+			
+	if (Material_ == nullptr)
+		Material_ = gMaterial;
+	
+
+	PxShape* shape = gPhysics->createShape(PxBoxGeometry(x, y, z), *Material_);
+	
+	PxTransform localTm(PxVec3(0, 0, 0) * x);
+	PxRigidDynamic* body = gPhysics->createRigidDynamic(t.transform(localTm));
+	body->attachShape(*shape);
+	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
+	//gScene->addActor(*body);
+	//body->setMass(1.f);
+	
+	shape->release();
+
+	//MyPhysXGameObject str;
+	//str.pObject = pObj;
+	//str.pRigidDynamic = body;
+	//VecPGO.push_back(str);
+	//
+	//PDynamiclist.push_back(body);
+
+	body->setName("");
+
+	return body;
+}
+
 //PxRigidStatic* CPhysXMgr::CreateStaticBox(CPhysXObject* pObj, _vec3 Pos, PxReal x, PxReal y, PxReal z)
 //{
 //	const PxTransform& t = PxTransform(PxVec3(Pos.x, Pos.y, Pos.z));
@@ -396,6 +408,18 @@ PxRigidStatic* CPhysXMgr::CreateTriangleStaticMesh(string meshname, XMMATRIX mat
 	PStaticlist.push_back(iglooActor);
 
 	iglooActor->setName("");
+
+
+	for (int z = 0; z < 10; ++z)
+	{
+		for (int x = 0; x < 5; ++x)
+		{
+			if (OverlapBetweenTwoObject(m_pxDynamicBox[x][z], iglooActor))
+			{
+				m_lstStaticOoc[x][z].push_back(iglooActor);
+			}
+		}
+	}
 
 	return iglooActor;
 }
@@ -1811,6 +1835,32 @@ PxTransform CPhysXMgr::MakePxTransform(XMFLOAT4X4 world)
 	px.q.w = xmfQuat.w;
 
 	return px;
+}
+
+bool CPhysXMgr::CollisionForStaticObjects(PxRigidActor* pBody)
+{
+	PxTransform pxtrans = pBody->getGlobalPose();
+	int idxX = int(pxtrans.p.x / 10.f);
+	int idxZ = int(pxtrans.p.z / 10.f);
+
+	if (OverlapBetweenTwoObject(pBody, m_pxDynamicBox[idxX][idxZ]))
+		for (auto Static : m_lstStaticOoc[idxX][idxZ])
+			if (OverlapBetweenTwoObject(pBody, Static))
+				return true;
+
+	for(int i = -1; i <= 1; ++i)
+		for (int j = -1; j <= 1; ++j)
+		{
+			if (i == 0 && j == 0)
+				continue;
+
+			if (OverlapBetweenTwoObject(pBody, m_pxDynamicBox[idxX + i][idxZ + j]))
+				for (auto Static : m_lstStaticOoc[idxX + i][idxZ + j])
+					if (OverlapBetweenTwoObject(pBody, Static))
+						return true;
+		}
+
+	return false;
 }
 
 
