@@ -82,7 +82,7 @@ public:
 
 	PxRigidDynamic* CreateSphere(XMFLOAT3 Pos, float Radius, const PxVec3& velocity = { 0,0,0 }, PxMaterial* Material_ = nullptr);
 	//
-	//PxRigidDynamic * CreateBox(CPhysXObject* pObj, _vec3 Pos, PxReal x, PxReal y, PxReal z, PxMaterial*	Material_ = nullptr);
+	PxRigidDynamic * CreateBox(XMFLOAT3 Pos, PxReal x, PxReal y, PxReal z, PxMaterial*	Material_ = nullptr);
 	//
 	PxCapsuleController* CreateCapsuleController(DWORD dwPlayerNum, XMFLOAT3 Pos, float Radius, float Height, bool Player = false);
 	//
@@ -169,7 +169,8 @@ public:
 
 	void ModifyPhysXPos(const float& fTimeDelta, PxRigidDynamic* pDynamic, XMFLOAT3 scale, XMFLOAT4X4 world, XMFLOAT4X4* outWorld, XMFLOAT3* outPos);
 	PxTransform MakePxTransform(XMFLOAT4X4 world);
-
+public:
+	bool CollisionForStaticObjects(PxRigidActor* pBody);
 private:
 	//LPDIRECT3DDEVICE9 m_pGraphicDev = nullptr;
 	//Engine::CLayer* m_StaticLayer = nullptr;
@@ -181,6 +182,8 @@ public:
 
 	list<PxRigidStatic*> PStaticlist;
 	list<PxRigidDynamic*> PDynamiclist;
+	PxRigidDynamic* m_pxDynamicBox[5][10];
+	list<PxRigidStatic*> m_lstStaticOoc[5][10];
 
 public:
 	bool GameStart = false;

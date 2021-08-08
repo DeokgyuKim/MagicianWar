@@ -529,6 +529,13 @@ void Network::packetProcessing(char* _packetBuffer)
 			RoomScene* pRoom = dynamic_cast<RoomScene*>(pScene);
 			for (int i = 0; i < 8; ++i)
 			{
+				if (i == 0)
+				{
+					if (m_RoomPlayerSlots[i].used)
+						cout << "룸플레이어 슬롯 0번이 사용되고있어." << endl;
+					else
+						cout << "룸플레이어 슬롯 0번이 사용안되고있어." << endl;
+				}
 				Ui_Roomplayer playerinfo;
 				playerinfo.used = m_RoomPlayerSlots[i].used;
 				playerinfo.host = m_RoomPlayerSlots[i].ishost;
