@@ -22,15 +22,14 @@
 // Loading	Scene	31 ~ 60
 #define stoc_Accept_OK 31
 
+
 #define stoc_otherPlayerNum 29
 #define stoc_OtherstartInfo 30
-#define stoc_playerInfo 33
 #define stoc_SkillPacket 34
 #define stoc_bullet 35
 #define stoc_gameend 36
 
 #define packet_skill 21
-#define packet_keyInput 22
 
 // Title	Scene	61 ~ 90
 // Lobby	Scene	91 ~ 120
@@ -47,6 +46,7 @@
 #define stoc_RoomPlayer_Leave	123
 // Stage	Scene	151 ~ 180
 #define stoc_InGame_StartInfo	151
+#define stoc_playerInfo 152
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -55,6 +55,7 @@
 // Common			1 ~ 30
 
 #define ctos_playerInfo 1
+#define ctos_keyInput	2
 
 // Loading	Scene	31 ~ 60
 #define ctos_LoadingEnd 31
@@ -86,9 +87,7 @@
 #define ctos_KEY_SPACE		0x0010 
 #define ctos_KEY_LBUTTON	0x0020 
 #define ctos_KEY_E			0x0040 
-#define ctos_KEY_1			0x0080
-#define ctos_KEY_2			0x0100
-#define ctos_KEY_3			0x0200
+
 
 // Scene
 #define LOADING_SCENE	0
@@ -281,10 +280,10 @@ struct STOC_PlayerInfo
 	unsigned char type;
 	PlayerInfo		playerInfo;
 	XMFLOAT4X4		matWorld;
-	int	ePlayerState;
+	char	ePlayerState;
 
-	int	Root_eAnimType;
-	int	Upper_eAnimType;
+	char	Root_eAnimType;
+	char	Upper_eAnimType;
 	bool bAttackEnd;
 };
 
@@ -425,10 +424,9 @@ struct CTOS_Skill {
 	// 또 뭐 필요하지
 };
 
-struct CTOS_keyInput {
+struct CTOS_KEYINPUT {
 	short size;
 	unsigned char type;
-	int id;
 	DWORD key; // 키입력
 };
 

@@ -95,7 +95,7 @@ void Network::Update()
 	// 이제 여기서 돌릴거
 	recvUpdate();
 
-	EventKeyInput();
+	ServerKeyInput();
 
 	//switch (m_SceneChange)
 	//{
@@ -196,6 +196,7 @@ void Network::Room_Init()
 
 void Network::Ingame_Init()
 {
+	m_prevKey = 0;
 	SendIngameInfo_Request();
 }
 
@@ -450,6 +451,7 @@ void Network::packetProcessing(char* _packetBuffer)
 			m_tMyInfo.Room_Num = data->room_num;
 			m_tMyInfo.TeamType = ELEMENT_FIRE;
 			m_tMyInfo.isRoom_Host = true; // 방 만들었으니 방장이고
+			CallEvent(EVENT_SCENE_CHANGE, 1, ROOM_SCENE);
 		}
 		else { // 방장이 아니고 로비에 있는 플레이어면 방리스트 갱신해야함
 			m_mapRooms[data->room_num].Host_num = data->Host_num;
@@ -469,7 +471,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		cout << " Room Join OK \n";
 		STOC_ROOM_JOIN* data = reinterpret_cast<STOC_ROOM_JOIN*>(_packetBuffer);
 		m_tMyInfo.Room_Num = data->room_num;
-		
+		//CallEvent(EVENT_SCENE_CHANGE, 1, ROOM_SCENE);
 		break;
 	}
 	case stoc_Room_Break_OK:
@@ -492,7 +494,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		cout << " 방에 들어갔음\n";
 		STOC_ROOM_ENTER* data = reinterpret_cast<STOC_ROOM_ENTER*>(_packetBuffer);
 		m_tMyInfo.Room_Num = data->room_num; // 내가 들어간 방 번호 
-		CallEvent(EVENT_SCENE_CHANGE, 1, ROOM_SCENE);
+		//CallEvent(EVENT_SCENE_CHANGE, 1, ROOM_SCENE);
 		break;
 	}
 	case stoc_RoomPlayer_Change:
@@ -511,7 +513,7 @@ void Network::packetProcessing(char* _packetBuffer)
 			m_tMyInfo.CharacterType = data->characterType;
 			m_tMyInfo.isRoom_Host = data->host;
 			m_tMyInfo.isreadyState = data->readyState;
-			m_tMyInfo.isRoom_Host = data->host;
+			
 
 			if (data->slot_num <4) {
 				cout << "Blue Team \n";
@@ -797,26 +799,21 @@ void Network::SendMyPlayerInfo()
 	//retval = send(m_Sock, (char*)&packet, packet.size, 0);
 }
 
-void Network::SendKeyInput()
+void Network::SendKeyInput(DWORD _keyInput)
 {
-	//
+	CTOS_KEYINPUT packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_keyInput;
+	packet.key = _keyInput;
+	if (!SendPacket(&packet)) {
+		cout << "SendKeyInput() Failed \n";
+	}
 }
 
-void Network::EventKeyInput()
+void Network::ServerKeyInput()
 {
 	DWORD dwKeyInput = 0;
-	if (KeyMgr::GetInstance()->KeyDown(0x31)) // ELEMENT_FIRE
-	{ // 1
-		dwKeyInput |= ctos_KEY_1;
-	}
-	if (KeyMgr::GetInstance()->KeyDown(0x32)) // ELEMENT_COLD
-	{ // 2
-		dwKeyInput |= ctos_KEY_2;
-	}
-	if (KeyMgr::GetInstance()->KeyDown(0x33)) // ELEMENT_DARKNESS
-	{ // 3
-		dwKeyInput |= ctos_KEY_3;
-	}
+
 	if (KeyMgr::GetInstance()->KeyPressing('W'))
 	{
 		dwKeyInput |= ctos_KEY_W;
@@ -845,6 +842,14 @@ void Network::EventKeyInput()
 	{
 		dwKeyInput |= ctos_KEY_E;
 	}
+
+	if (m_prevKey != dwKeyInput) {
+		m_prevKey = dwKeyInput;
+		SendKeyInput(m_prevKey);
+	}
+
+
+
 }
 
 void Network::SendLoadingEnd()

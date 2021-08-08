@@ -1,5 +1,6 @@
 #include "Room.h"
 #include "Player.h"
+#include "PlayerFSM.h"
 #include "Server.h"
 
 Room::Room(int room_num, int host)
@@ -29,6 +30,7 @@ void Room::Initalize(int room_num, int host)
 		m_roomPlayerSlots[i].used = false;
 		m_roomPlayerSlots[i].readyState = false;
 		m_roomPlayerSlots[i].id = NO_PLAYER;
+		m_roomPlayerSlots[i].slot_num = i;
 	}
 
 
@@ -82,12 +84,7 @@ void Room::Update()
 
 	if (m_isGameStart)  // 게임 시작되면 처리할 부분
 	{
-		// 인게임 player 처리
-		if (!m_players.empty()) {
-			for (auto& player : m_players) {
-				player->Update(elapsedTime);
-			}
-		}
+		InGame_Update(elapsedTime);
 	}
 	else // 게임 시작이 아니면 RoomScene이니까
 	{
@@ -124,6 +121,25 @@ void Room::Update()
 	//	roomEvent_Break.opType = OP_ROOM_BREAK;
 	//	Server::GetInstance()->AddTimer(roomEvent_Break);
 	//}
+
+}
+
+void Room::InGame_Update(float fTime)
+{
+	// 인게임 player 처리
+	for (auto player : m_players) {
+		player->Update(fTime);
+	}
+
+	///PhysXUpdate
+	CPhysXMgr::GetInstance()->gScene->simulate(fTime);
+	CPhysXMgr::GetInstance()->gScene->fetchResults(true);
+
+	for (auto player : m_players) {
+		player->LateUpdate(fTime);
+		Push_UpdatePlayerInfoPacket(player);
+	}
+
 }
 
 void Room::Physics_Collision()
@@ -141,9 +157,9 @@ bool Room::EnterRoom(int id, bool host)
 
 	cout << id << " 가 방에 들어옴\n";
 
-	
+
 	g_Clients[id]->Room_num = m_Info.Room_Num;
-	
+
 
 	int sendSlot = -1;
 
@@ -163,8 +179,8 @@ bool Room::EnterRoom(int id, bool host)
 
 	++m_curPlayer_Count;
 
-	Server::GetInstance()->SendRoomEnter(id, m_Info.Room_Num); // room_num 방에 id가 들어감
 	PushRoomPlayerEvent(sendSlot); // 룸 플레이어가 변화될때마다 호출할 것
+	Server::GetInstance()->SendRoomEnter(id, m_Info.Room_Num); // room_num 방에 id가 들어감
 
 
 	//for (int i = 0; i < MAX_PLAYER; ++i) { // 룸에 접속한 모든 플레이어에게 보내줘야해 룸데이터 밀어줘야해
@@ -204,7 +220,7 @@ void Room::ExitRoom(int id)
 	Player_Disconnect(id);
 	roomslot_Clear(islotNum);
 	PushRoomPlayerEvent(islotNum);
-	
+
 
 	--m_curPlayer_Count;
 
@@ -263,12 +279,12 @@ void Room::Player_Disconnect(int id)
 	}
 	m_player_mutex.unlock();
 
-	
+
 	g_Client_mutex.lock();
 	g_Clients[id]->Room_num = NO_ROOM;
 	g_Client_mutex.unlock();
 	Server::GetInstance()->SendRoomExit(id);
-	
+
 }
 
 void Room::roomEvent_push(ROOM_EVENT& rEvent)
@@ -412,8 +428,19 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 		for (auto player : m_players) {
 			PushIngame_PlayerInfo_Start(player->getID());
 		}
-		
+
 		Push_SceneChange(rEvent.playerID, STAGE_SCENE);
+		break;
+	}
+	case ctos_keyInput:
+	{
+		for (auto player : m_players) {
+			if (player->getID() == rEvent.playerID) {
+				dynamic_cast<PlayerFSM*>(player->GetUpperFSM())->SetDefaultKey(rEvent.data1);
+				dynamic_cast<PlayerFSM*>(player->GetRootFSM())->SetDefaultKey(rEvent.data1);
+				break;
+			}
+		}
 		break;
 	}
 	default:
@@ -428,7 +455,8 @@ void Room::sendEvent_push(int id, void* buffer)
 	char* packet = reinterpret_cast<char*>(buffer);
 	Send_Packet_RoomInfo SP_RoomInfo;
 	SP_RoomInfo.playerID = id;
-	memcpy(&SP_RoomInfo.buffer, buffer, (short)packet[0]);
+
+	memcpy(&SP_RoomInfo.buffer, buffer, *(short*)packet);
 
 	m_send_mutex.lock();
 	m_sendEventQueue.push(SP_RoomInfo);
@@ -468,6 +496,7 @@ void Room::PushRoomPlayerEvent(int roomSlot_num)
 	m_player_mutex.lock();
 	packet.size = sizeof(packet);
 	packet.type = stoc_RoomPlayer_Change;
+	packet.used = m_roomPlayerSlots[roomSlot_num].used;
 	packet.characterType = m_roomPlayerSlots[roomSlot_num].characterType;
 	packet.host = m_roomPlayerSlots[roomSlot_num].ishost;
 	packet.readyState = m_roomPlayerSlots[roomSlot_num].readyState;
@@ -491,6 +520,7 @@ void Room::PushRoomPlayerEvent_Byid(int id, int roomSlot_num)
 	m_player_mutex.lock();
 	packet.size = sizeof(packet);
 	packet.type = stoc_RoomPlayer_Change;
+	packet.used = m_roomPlayerSlots[roomSlot_num].used;
 	packet.characterType = m_roomPlayerSlots[roomSlot_num].characterType;
 	packet.host = m_roomPlayerSlots[roomSlot_num].ishost;
 	packet.readyState = m_roomPlayerSlots[roomSlot_num].readyState;
@@ -536,5 +566,24 @@ void Room::Push_SceneChange(int id, char sceneType)
 	packet.type = stoc_SceneChange;
 	packet.sceneType = sceneType;
 	sendEvent_push(id, &packet);
+}
+
+void Room::Push_UpdatePlayerInfoPacket(Player* _player)
+{
+	STOC_PlayerInfo packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_playerInfo;
+	packet.ePlayerState = _player->getState();
+	packet.Root_eAnimType = _player->getRootAnimType();
+	packet.Upper_eAnimType = _player->getUpperAnimType();
+	
+	packet.matWorld = _player->getWorld();
+	packet.playerInfo = _player->getInfo();
+	packet.bAttackEnd = _player->IsAttackEnded();
+	packet.playerInfo.iHp = _player->getHp();
+	
+	for (auto player : m_players) {
+		sendEvent_push(player->getID(), &packet);
+	}
 }
 

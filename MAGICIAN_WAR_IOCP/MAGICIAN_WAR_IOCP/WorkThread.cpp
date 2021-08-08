@@ -63,7 +63,7 @@ void WorkThread::Thread_Run()
 			while (io_size > 0)
 			{
 				if (cur_packet_size == 0) {
-					cur_packet_size = (short)buffer[0];
+					cur_packet_size = *(short*)buffer;
 				}
 				if (io_size + pr_data_size >= cur_packet_size) {
 					unsigned char packet[MAX_PACKET];
@@ -226,8 +226,8 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 			if (g_Rooms[i] == nullptr) { // i번방이 없으면 i번방 생성
 				g_Rooms[i] = new Room(i, id);
 				g_Rooms[i]->EnterRoom(id, true);
-				g_Room_mutex.unlock();
 				Server::GetInstance()->SendRoomMake_OK_Packet(id, i); // id 가 i 번방을 만들었다.
+				g_Room_mutex.unlock();
 				break;
 			}
 			room_num = i + 1;
@@ -308,14 +308,23 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 		RoomPacket.data1 = data->characterType;
 		break;
 	}
+	// Stage Scene
 	case ctos_IngameInfo_Request:
 	{
 		cout << id << " - Request InGameInfo\n";
 		RoomPacket.type = ctos_IngameInfo_Request;
 		break;
 	}
+	case ctos_keyInput:
+	{
+		//cout << id << " - KeyInput\n";
+		CTOS_KEYINPUT* data = reinterpret_cast<CTOS_KEYINPUT*>(packet);
+		RoomPacket.type = ctos_keyInput;
+		RoomPacket.data1 = data->key;
+		break;
+	}
 	default:
-		cout << id << " 가 이상한 Packet을 요청하였습니다.\n";
+		cout << id << " 가 이상한"<< (int)packetType <<" Packet을 요청하였습니다.\n";
 		break;
 	}
 

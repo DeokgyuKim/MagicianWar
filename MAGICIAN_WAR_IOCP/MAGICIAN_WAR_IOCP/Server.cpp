@@ -134,7 +134,7 @@ void Server::MainThread_Run()
 bool Server::SendPacket(int id, void* buffer)
 {
 	char* packet = reinterpret_cast<char*>(buffer);
-	short packetSize = (short)packet[0];
+	short packetSize = *(short*)packet;
 	OVER_EX* over = new OVER_EX;
 	memset(over, 0, sizeof(OVER_EX));
 	over->OpType = OP_SEND;

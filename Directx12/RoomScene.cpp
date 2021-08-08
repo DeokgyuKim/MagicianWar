@@ -143,6 +143,9 @@ void RoomScene::Initialize()
 	m_pCharInfoCtrl = new CharInfoController(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this);
 	for (int i = 0; i < 8; ++i)
 		m_pCharInfoCtrl->AddPlayer(i, &m_RoomPlayer[i]);
+#ifdef NETWORK
+	Network::GetInstance()->Room_Init();
+#endif // NETWORK
 }
 
 void readyroom()

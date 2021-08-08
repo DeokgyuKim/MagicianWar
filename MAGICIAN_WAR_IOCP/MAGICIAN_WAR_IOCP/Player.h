@@ -15,6 +15,7 @@ public:
 	void Initialize(int client_num, int room_num);
 	void ReInit();
 	void Update(float fTime);
+	void LateUpdate(float fTime);
 	void UpdatePlayerInfo(PlayerInfo* pInfo);
 	void UpdatePosition();
 	void noTransWorldUpdate(XMFLOAT4X4 _world);
@@ -83,7 +84,7 @@ public:
 	void ModifyPhysXPos(const float& fTimeDelta);
 	void GravityProgress(const float& fTimeDelta);
 	void MoveCapsuleController(XMFLOAT3 vSpeed, const float& fTimeDelta);
-	//PxCapsuleController* GetPxCapsuleController() { return m_pCapsuleCon; }
+	PxCapsuleController* GetPxCapsuleController() { return m_pCapsuleCon; }
 
 private: // 
 	// info
@@ -113,7 +114,7 @@ private: //
 	unique_ptr<InterfaceFSM>                    m_RootBody;     // «œ√º
 
 	//PhysX
-	//PxCapsuleController* m_pCapsuleCon = nullptr;
+	PxCapsuleController* m_pCapsuleCon = nullptr;
 
 	int m_Bullet;
 

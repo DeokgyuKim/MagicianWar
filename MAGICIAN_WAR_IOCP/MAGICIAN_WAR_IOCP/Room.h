@@ -14,6 +14,7 @@ public:
 	void Initalize(int room_num,int host);
 	void ReInit();
 	void Update();
+	void InGame_Update(float fTime);
 	void Physics_Collision();
 
 public:
@@ -39,6 +40,7 @@ public:
 	void PushGameStartEvent(int id);
 	void PushIngame_PlayerInfo_Start(int id);
 	void Push_SceneChange(int id,char sceneType);
+	void Push_UpdatePlayerInfoPacket(Player* _player);
 public:
 	// Get
 	bool isGameStart() { return m_isGameStart; }

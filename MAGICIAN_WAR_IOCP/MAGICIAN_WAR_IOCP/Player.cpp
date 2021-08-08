@@ -37,6 +37,9 @@ void Player::Initialize(int client_num, int room_num)
     m_Upper_eAnimBlendType = ANIM_IDLE;
     m_Upper_fWeight = 0.f;
 
+
+    CreateCapsuleController();
+
 }
 
 void Player::ReInit()
@@ -57,6 +60,9 @@ void Player::ReInit()
     m_keyInput = 0;
 
     m_Bullet = 0;
+
+    
+
 }
 
 void Player::Update(float fTime)
@@ -65,6 +71,14 @@ void Player::Update(float fTime)
     m_RootBody->Execute(fTime);
 
     m_Info.PlayerState = m_RootBody->GetState();
+
+
+}
+
+void Player::LateUpdate(float fTime)
+{
+    ModifyPhysXPos(fTime);
+
 }
 
 void Player::UpdatePlayerInfo(PlayerInfo* pInfo)
@@ -289,78 +303,78 @@ void Player::setHost(bool bHost)
 
 void Player::CreateCapsuleController()
 {
-    //XMFLOAT3 xmfpos = XMFLOAT3(0.f, 0.85f, 0.f);
-    //XMStoreFloat3(&xmfpos, XMLoadFloat3(&xmfpos) + XMLoadFloat3(&m_Info.xmfPosition));
+    XMFLOAT3 xmfpos = XMFLOAT3(0.f, 0.85f, 0.f);
+    XMStoreFloat3(&xmfpos, XMLoadFloat3(&xmfpos) + XMLoadFloat3(&m_Info.xmfPosition));
 
-    //if (m_pCapsuleCon != NULL)
-    //{
-    //    CPhysXMgr::GetInstance()->gScene->removeActor(*m_pCapsuleCon->getActor());
-    //    m_pCapsuleCon->release();
-    //}
+    if (m_pCapsuleCon != NULL)
+    {
+        CPhysXMgr::GetInstance()->gScene->removeActor(*m_pCapsuleCon->getActor());
+        m_pCapsuleCon->release();
+    }
 
 
-    //CPhysXMgr::GetInstance()->m_PlayerController = m_pCapsuleCon = CPhysXMgr::GetInstance()->
-    //    CreateCapsuleController(m_Info.Client_Num, xmfpos, 0.5f, 0.5f, true);
-    //m_pCapsuleCon->getActor()->setName("Player");
-    //m_pCapsuleCon->getActor()->setMass(20.f);
+    CPhysXMgr::GetInstance()->m_PlayerController = m_pCapsuleCon = CPhysXMgr::GetInstance()->
+        CreateCapsuleController(m_Info.Client_Num, xmfpos, 0.5f, 0.5f, true);
+    m_pCapsuleCon->getActor()->setName("Player");
+    m_pCapsuleCon->getActor()->setMass(20.f);
 
 }
 
 void Player::ModifyPhysXPos(const float& fTimeDelta)
 {
-    //XMMATRIX matScale, matTrans, matQuat, matWorl, matOffset;
-    //XMVECTOR vQuat;
+    XMMATRIX matScale, matTrans, matQuat, matWorl, matOffset;
+    XMVECTOR vQuat;
 
-    //XMVECTOR vecs, vect;
-    //XMFLOAT3 xmfScale = XMFLOAT3(0.01f, 0.01f, 0.01f);
+    XMVECTOR vecs, vect;
+    XMFLOAT3 xmfScale = XMFLOAT3(0.01f, 0.01f, 0.01f);
 
-    //PxRigidDynamic* pRigid = m_pCapsuleCon->getActor();
-    //PxTransform gp = pRigid->getGlobalPose();
+    PxRigidDynamic* pRigid = m_pCapsuleCon->getActor();
+    PxTransform gp = pRigid->getGlobalPose();
 
-    //PxMat44 m = PxMat44(gp);
+    PxMat44 m = PxMat44(gp);
 
-    //matWorl = CPhysXMgr::GetInstance()->ToMatrix(m);
+    matWorl = CPhysXMgr::GetInstance()->ToMatrix(m);
 
-    //XMMatrixDecompose(&vecs, &vQuat, &vect, XMLoadFloat4x4(&m_Info.matWorld));
-    //matQuat = XMMatrixRotationQuaternion(vQuat);
+    XMMatrixDecompose(&vecs, &vQuat, &vect, XMLoadFloat4x4(&m_Info.matWorld));
+    matQuat = XMMatrixRotationQuaternion(vQuat);
 
-    //matScale = XMMatrixScalingFromVector(XMLoadFloat3(&xmfScale));
-
-
-    /////Gravity
-    //GravityProgress(fTimeDelta);
-
-    //PxExtendedVec3 GetPosition = m_pCapsuleCon->getPosition();
-    //PxVec3 pxVecGp;
-    //pxVecGp.x = float(GetPosition.x);
-    //pxVecGp.y = float(GetPosition.y);
-    //pxVecGp.z = float(GetPosition.z);
-    //matTrans = XMMatrixTranslation(pxVecGp.x, pxVecGp.y, pxVecGp.z);
-
-    //if (m_Info.CharacterType != ELEMENT_DARKNESS)
-    //    matOffset = XMMatrixTranslation(0.f, -0.85f, 0.f);
-    //else
-    //    matOffset = XMMatrixTranslation(0.f, -0.45f, 0.f);
+    matScale = XMMatrixScalingFromVector(XMLoadFloat3(&xmfScale));
 
 
-    //XMStoreFloat4x4(&m_matRealWorld, matScale * matQuat * matTrans);
+    ///Gravity
+    GravityProgress(fTimeDelta);
 
-    //XMStoreFloat4x4(&m_Info.matWorld, matScale * matQuat * matTrans * matOffset);
+    PxExtendedVec3 GetPosition = m_pCapsuleCon->getPosition();
+    PxVec3 pxVecGp;
+    pxVecGp.x = float(GetPosition.x);
+    pxVecGp.y = float(GetPosition.y);
+    pxVecGp.z = float(GetPosition.z);
+    matTrans = XMMatrixTranslation(pxVecGp.x, pxVecGp.y, pxVecGp.z);
+
+    if (m_Info.CharacterType != ELEMENT_DARKNESS)
+        matOffset = XMMatrixTranslation(0.f, -0.85f, 0.f);
+    else
+        matOffset = XMMatrixTranslation(0.f, -0.45f, 0.f);
+
+
+    XMStoreFloat4x4(&m_matRealWorld, matScale * matQuat * matTrans);
+
+    XMStoreFloat4x4(&m_Info.matWorld, matScale * matQuat * matTrans * matOffset);
 }
 
 void Player::GravityProgress(const float& fTimeDelta)
 {
-    //if (m_matRealWorld._42 <= 0.f)
-    //    return;
-    //PxVec3 upDisp = { 0, 1.f ,0 };
-    //upDisp *= -9.81f * fTimeDelta;
-    //const PxVec3 disp = upDisp;
-    //const PxU32 flags = m_pCapsuleCon->move(disp, 0.0f, fTimeDelta, PxControllerFilters());
+    if (m_matRealWorld._42 <= 0.f)
+        return;
+    PxVec3 upDisp = { 0, 1.f ,0 };
+    upDisp *= -9.81f * fTimeDelta;
+    const PxVec3 disp = upDisp;
+    const PxU32 flags = m_pCapsuleCon->move(disp, 0.0f, fTimeDelta, PxControllerFilters());
 }
 
 void Player::MoveCapsuleController(XMFLOAT3 vSpeed, const float& fTimeDelta)
 {
-    //if (m_pCapsuleCon == NULL)
-    //    return;
-    //PxControllerCollisionFlags colflag = m_pCapsuleCon->move(CPhysXMgr::GetInstance()->ToPxVec3(vSpeed) * fTimeDelta, 0.f, fTimeDelta, PxControllerFilters());
+    if (m_pCapsuleCon == NULL)
+        return;
+    PxControllerCollisionFlags colflag = m_pCapsuleCon->move(CPhysXMgr::GetInstance()->ToPxVec3(vSpeed) * fTimeDelta, 0.f, fTimeDelta, PxControllerFilters());
 }

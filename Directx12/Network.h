@@ -108,8 +108,8 @@ public:
 	void SendIngameInfo_Request();
 
 	void SendMyPlayerInfo();
-	void SendKeyInput();
-	void EventKeyInput();
+	void SendKeyInput(DWORD _keyInput);
+	void ServerKeyInput();
 
 	bool SendPacket(void* buffer);
 	void error_display(const char* msg, int err_no);
@@ -125,7 +125,7 @@ public:
 	void packetProcessing(char* _packetBuffer);
 
 private: // packets
-
+	DWORD m_prevKey;
 	char* packet_start_ptr;
 	char recvBuffer[MAX_BUFFER];
 	char packetBuffer[MAX_BUFFER];

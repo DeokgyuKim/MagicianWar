@@ -69,10 +69,10 @@ void TestScene::LateUpdate(const float& fTimeDelta)
 
 #ifdef NETWORK
 	Object* pObj = GetPlayer();
-	//if (pObj != NULL) {
-	//	Network::GetInstance()->SetMyPlayerInfo(dynamic_cast<Player*>(pObj));
+	if (pObj != NULL) {
+		Network::GetInstance()->SetMyPlayerInfo(dynamic_cast<Player*>(pObj));
 
-	//}
+	}
 
 	PoolingMgr::GetInstance()->UpdatePoolingObject(Network::GetInstance()->GetBullets());
 #endif
