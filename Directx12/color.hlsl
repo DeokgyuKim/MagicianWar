@@ -14,6 +14,7 @@ struct PSOut
 	float4 Normal : SV_TARGET3;
 	float4 Depth : SV_TARGET4;
 	float4 Position : SV_TARGET5;
+	float4 Emmissive : SV_TARGET6;
 };
 
 
@@ -67,6 +68,7 @@ PSOut PS_Main(Out pin)
 	vout.Normal = float4((pin.Normal * 0.5f + 0.5f).xyz, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 	vout.Position = float4(pin.ViewPos, 1.f);
+	vout.Emmissive = float4(0.f, 0.f, 0.f, 0.f);
 
 	return vout;
 }
@@ -121,9 +123,9 @@ VertexOut_Default VS_FireBall(VertexIn_Static vin, uint instanceID : SV_Instance
 
 	vin.NormalL.x *= -1.f;
 
-	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)world));
-	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)world));
-	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)world));
+	vout.NormalW = normalize(mul(vin.NormalL, (row_major float3x3)world));
+	vout.TangentW = normalize(mul(vin.TangentL, (row_major float3x3)world));
+	vout.BinormalW = normalize(mul(vin.BinormalL, (row_major float3x3)world));
 
 	// 월드 & 카메라 변환
 	
@@ -166,6 +168,7 @@ PSOut PS_FireBall(VertexOut_Default pin)
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 	vout.Position = float4(pin.ViewPos, 1.f);
+	vout.Emmissive = float4(0.f, 0.f, 0.f, 0.f);
 
 	return vout;
 }
@@ -186,9 +189,9 @@ VertexOut_Default VS_Static(VertexIn_Static vin, uint instanceID : SV_InstanceID
 	vout.PosH = posH;
 	vout.ViewPos = mul(mul(float4(vin.PosL, 1.0f), world), gView).xyz;
 
-	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)world));
-	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)world));
-	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)world));
+	vout.NormalW = normalize(mul(vin.NormalL, (row_major float3x3)world));
+	vout.TangentW = normalize(mul(vin.TangentL, (row_major float3x3)world));
+	vout.BinormalW = normalize(mul(vin.BinormalL, (row_major float3x3)world));
 
 	vout.TexC = vin.TexC;
 
@@ -208,6 +211,7 @@ PSOut PS_Static(VertexOut_Default pin)
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 	vout.Position = float4(pin.ViewPos, 1.f);
+	vout.Emmissive = float4(0.f, 0.f, 0.f, 0.f);
 
 	return vout;
 }
@@ -250,9 +254,9 @@ VertexOut_Default VS_Movable(VertexIn_Movable vin, uint instanceID : SV_Instance
 
 		
 		posL += weights[i] * mul(float4(vin.PosL, 1.0f), makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]])).xyz;
-		normalL += weights[i] * mul(vin.NormalL, (float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
-		tangentL += weights[i] * mul(vin.TangentL.xyz, (float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
-		binormalL += weights[i] * mul(vin.BinormalL, (float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
+		normalL += weights[i] * mul(vin.NormalL, (row_major float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
+		tangentL += weights[i] * mul(vin.TangentL.xyz, (row_major float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
+		binormalL += weights[i] * mul(vin.BinormalL, (row_major float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
 	}
 
 	vin.PosL = posL;
@@ -266,9 +270,9 @@ VertexOut_Default VS_Movable(VertexIn_Movable vin, uint instanceID : SV_Instance
 	//float4 posH = mul(mul(posW, gView), gProj);
 	//vout.PosH = posH;
 
-	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)world));
-	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)world));
-	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)world));
+	vout.NormalW = normalize(mul(vin.NormalL, (row_major float3x3)world));
+	vout.TangentW = normalize(mul(vin.TangentL, (row_major float3x3)world));
+	vout.BinormalW = normalize(mul(vin.BinormalL, (row_major float3x3)world));
 
 	vout.PosH = mul(mul(posW, gView), gProj);
 	vout.ViewPos = mul(posW, gView).xyz;
@@ -293,6 +297,7 @@ PSOut PS_Movable(VertexOut_Default pin)
 
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 	vout.Position = float4(pin.ViewPos, 1.f);
+	vout.Emmissive = float4(0.f, 0.f, 0.f, 0.f);
 
 	return vout;
 }

@@ -94,9 +94,9 @@ struct SkinnedData
 	float3 gPos[33];
 };
 
-float4x4 makeFloat4x4ForFloat3x4(float3 r, float3 u, float3 l, float3 p)
+row_major matrix makeFloat4x4ForFloat3x4(float3 r, float3 u, float3 l, float3 p)
 {
-	float4x4 result;
+	row_major matrix result;
 	//result._11 = r.x; result._21 = r.y; result._31 = r.z; result._41 = 0;
 	//result._12 = u.x; result._22 = u.y; result._32 = u.z; result._42 = 0;
 	//result._13 = l.x; result._23 = l.y; result._33 = l.z; result._43 = 0;

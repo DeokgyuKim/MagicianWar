@@ -150,7 +150,7 @@ void TestScene::Initialize()
 
 #else
 	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		CHARACTER_WIZARD_COLD, MESH_TYPE::CHARACTER);
+		CHARACTER_WIZARD_COLD, MESH_TYPE::CHARACTER, XMFLOAT3(40.f, 0.f, 10.f));
 	pPlayer = dynamic_cast<Player*>(pObj);
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
 #endif

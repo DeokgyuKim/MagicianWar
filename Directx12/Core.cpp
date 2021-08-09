@@ -261,7 +261,7 @@ HRESULT Core::CreateSwapchain()
 HRESULT Core::CreateDescriptorHeap()
 {
     D3D12_DESCRIPTOR_HEAP_DESC rtvDesc = {};
-    rtvDesc.NumDescriptors = 14;
+    rtvDesc.NumDescriptors = 15;
     rtvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
     rtvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
     rtvDesc.NodeMask = 0;
@@ -339,8 +339,8 @@ HRESULT Core::CreateRtvDsvBufferAndView()
     )))
         return E_FAIL;
 
-    //rscDesc.Width = WINCX * 5.f;
-    //rscDesc.Height = WINCY * 5.f;
+    rscDesc.Width = WINCX * SHADOWRATIO;
+    rscDesc.Height = WINCY * SHADOWRATIO;
     if (FAILED(m_ptrDevice->CreateCommittedResource(
         &heapPro, D3D12_HEAP_FLAG_NONE, &rscDesc, D3D12_RESOURCE_STATE_DEPTH_WRITE,
         &clearValue, IID_PPV_ARGS(&m_ptrDsvForShadow)
@@ -381,6 +381,30 @@ HRESULT Core::SetViewportAndScissorrect()
     m_ScissorRect.right = WINCX;
     m_ScissorRect.bottom = WINCY;
 
+    return S_OK;
+}
+
+HRESULT Core::SetViewportAndScissorrectForShadow()
+{
+    m_Viewport.TopLeftX = 0.f;
+    m_Viewport.TopLeftY = 0.f;
+    m_Viewport.Width = WINCX * SHADOWRATIO;
+    m_Viewport.Height = WINCY * SHADOWRATIO;
+    m_Viewport.MaxDepth = 1.f;
+    m_Viewport.MinDepth = 0.f;
+
+    m_ScissorRect.left = 0;
+    m_ScissorRect.top = 0;
+    m_ScissorRect.right = WINCX * SHADOWRATIO;
+    m_ScissorRect.bottom = WINCY * SHADOWRATIO;
+
+    return S_OK;
+}
+
+HRESULT Core::SetViewportAndScissorrectAtCmdLst()
+{
+    m_ptrCmdLst->RSSetViewports(1, &m_Viewport);
+    m_ptrCmdLst->RSSetScissorRects(1, &m_ScissorRect);
     return S_OK;
 }
 

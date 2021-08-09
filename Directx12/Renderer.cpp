@@ -101,9 +101,13 @@ void Renderer::Render(const float& fTimeDelta)
 
 	m_pLight->RenderLight();
 
+	m_pCore->SetViewportAndScissorrectForShadow();
+	m_pCore->SetViewportAndScissorrectAtCmdLst();
 	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Shadow");
 	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Shadow", m_pCore->GetDSVForShadowCpuHandle());
 	Render_Shadow(fTimeDelta);
+	m_pCore->SetViewportAndScissorrect();
+	m_pCore->SetViewportAndScissorrectAtCmdLst();
 
 	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "Blend");
 	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "Blend", m_pCore->GetDSVForShadeCpuHandle());
@@ -115,6 +119,7 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pRTMgr->GetRenderTarget("Depth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 9);
 	m_pRTMgr->GetRenderTarget("LightDepth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 21);
 	m_pRTMgr->GetRenderTarget("Position")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 12);
+	m_pRTMgr->GetRenderTarget("Normal")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 13);
 	m_pBlendGeo->Render(fTimeDelta);
 
 
@@ -311,6 +316,7 @@ void Renderer::Render_Shadow(const float& fTimeDelta)
 		}
 		else
 		{
+			m_pCmdLst->SetGraphicsRootShaderResourceView(0, InstanceMgr::GetInstnace()->m_InstanceCBs[pObject->GetInstName()]->Resource()->GetGPUVirtualAddress());	// obj
 			if (pObject->GetMeshType() != MESH_TYPE::COUNT) {
 				m_pCmdLst->SetGraphicsRootShaderResourceView(11, InstanceMgr::GetInstnace()->m_SkinnedCBs[pObject->GetInstName()]->Resource()->GetGPUVirtualAddress());
 			}
@@ -457,7 +463,7 @@ void Renderer::BuildShader()
 	};
 	pShader = new Shader;
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Main", L"color.hlsl", "PS_Main", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 6, true, true, false, 4);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 7, true, true, false, 4);
 	m_mapShaders[RENDER_TYPE::RENDER_NOBLEND] = pShader;
 
 	pShader = new Shader;
@@ -475,7 +481,7 @@ void Renderer::BuildShader()
 	};
 	pShader = new Shader;
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Static", L"color.hlsl", "PS_Static", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 6, true, true, false, 4);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 7, true, true, false, 4);
 	m_mapShaders[RENDER_TYPE::RENDER_STATIC] = pShader;
 
 	pShader = new Shader;
@@ -495,13 +501,26 @@ void Renderer::BuildShader()
 	};
 	pShader = new Shader;
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Movable", L"color.hlsl", "PS_Movable", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 6, true, true, false, 4);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 7, true, true, false, 4);
 	m_mapShaders[RENDER_TYPE::RENDER_DYNAMIC] = pShader;
 
 	pShader = new Shader;
 	pShader->BuildShadersAndInputLayout(L"Shadow.hlsl", "VS_MOVABLE_SHADOW", L"Shadow.hlsl", "PS_LIGHTDEPTH", layout);
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, true, false, 0);
 	m_mapShadersForShadow[RENDER_TYPE::RENDER_DYNAMIC] = pShader;
+
+	// Bullet
+	layout = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pShader = new Shader;
+	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_FireBall", L"color.hlsl", "PS_FireBall", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 7, true, true, false, 4);
+	m_mapShaders[RENDER_TYPE::RENDER_BULLET] = pShader;
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -544,18 +563,6 @@ void Renderer::BuildShader()
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
 	m_mapShaders[RENDER_TYPE::RENDER_UI_TEXT] = pShader;
 
-	// Bullet
-	layout = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
-	};
-	pShader = new Shader;
-	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_FireBall", L"color.hlsl", "PS_FireBall", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 6, true, true, false, 4);
-	m_mapShaders[RENDER_TYPE::RENDER_BULLET] = pShader;
 
 	layout = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },

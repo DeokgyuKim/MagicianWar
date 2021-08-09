@@ -26,8 +26,10 @@ private:
 	HRESULT CreateSwapchain();
 	HRESULT CreateDescriptorHeap();
 	HRESULT CreateRtvDsvBufferAndView();
+public:
 	HRESULT SetViewportAndScissorrect();
-
+	HRESULT SetViewportAndScissorrectForShadow();
+	HRESULT SetViewportAndScissorrectAtCmdLst();
 public:
 	void	Present();
 	void	CmdLstReset();

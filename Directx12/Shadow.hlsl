@@ -36,7 +36,7 @@ VS_Shadow VS_NOBLEND_SHADOW(NoBlendShadow_In vin, uint instanceID : SV_InstanceI
 	VS_Shadow vout;
 
 	InstanceObject instObjData = gInstanceData[instanceID];
-	float4x4 world = instObjData.gWorld;
+	row_major matrix world = instObjData.gWorld;
 
 	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), world), gLightView), gLightProj);
 	vout.ProjPos = vout.PosH;
@@ -60,7 +60,7 @@ VS_Shadow VS_STATIC_SHADOW(StaticShadow_In vin, uint instanceID : SV_InstanceID)
 
 	// 인스턴싱
 	InstanceObject instObjData = gInstanceData[instanceID];
-	float4x4 world = instObjData.gWorld;
+	row_major matrix world = instObjData.gWorld;
 
 	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), world), gLightView), gLightProj);
 	vout.ProjPos = vout.PosH;
@@ -87,15 +87,10 @@ VS_Shadow VS_MOVABLE_SHADOW(MovableShadow_In vin, uint instanceID : SV_InstanceI
 
 	// 인스턴싱
 	InstanceObject instObjData = gInstanceData[instanceID];
-	float4x4 world = instObjData.gWorld;
+	row_major matrix world = instObjData.gWorld;
 	uint matIndex = instObjData.MaterialIndex;
 
 	SkinnedData instSkinned = gSkinnedData[instanceID];
-	//float4x4 SkinnedBoneTransforms[33];
-	//for (int i = 0; i < 33; ++i)
-	//{
-	//	SkinnedBoneTransforms[i] = makeFloat4x4ForFloat3x4(instSkinned.gRight[i], instSkinned.gUp[i], instSkinned.gLook[i], instSkinned.gPos[i]);
-	//}
 
 	float weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	weights[0] = vin.BoneWeights.x;
@@ -109,17 +104,10 @@ VS_Shadow VS_MOVABLE_SHADOW(MovableShadow_In vin, uint instanceID : SV_InstanceI
 	float3 binormalL = float3(0.0f, 0.0f, 0.0f);
 	for (int i = 0; i < 4; ++i)
 	{
-
-		//posL += weights[i] * mul(float4(vin.PosL, 1.0f), SkinnedBoneTransforms[vin.BoneIndices[i]]).xyz;
-		//normalL += weights[i] * mul(vin.NormalL, (float3x3)SkinnedBoneTransforms[vin.BoneIndices[i]]);
-		//tangentL += weights[i] * mul(vin.TangentL.xyz, (float3x3)instSkinned.gStructedBoneTransforms[vin.BoneIndices[i]]);
-		//binormalL += weights[i] * mul(vin.BinormalL, (float3x3)instSkinned.gStructedBoneTransforms[vin.BoneIndices[i]]);
-
-
 		posL += weights[i] * mul(float4(vin.PosL, 1.0f), makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]])).xyz;
-		normalL += weights[i] * mul(vin.NormalL, (float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
-		tangentL += weights[i] * mul(vin.TangentL.xyz, (float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
-		binormalL += weights[i] * mul(vin.BinormalL, (float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
+		normalL += weights[i] * mul(vin.NormalL, (row_major float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
+		tangentL += weights[i] * mul(vin.TangentL.xyz, (row_major float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
+		binormalL += weights[i] * mul(vin.BinormalL, (row_major float3x3)makeFloat4x4ForFloat3x4(instSkinned.gRight[vin.BoneIndices[i]], instSkinned.gUp[vin.BoneIndices[i]], instSkinned.gLook[vin.BoneIndices[i]], instSkinned.gPos[vin.BoneIndices[i]]));
 	}
 
 	vin.PosL = posL;
@@ -128,9 +116,8 @@ VS_Shadow VS_MOVABLE_SHADOW(MovableShadow_In vin, uint instanceID : SV_InstanceI
 	vin.BinormalL = binormalL;
 
 	// 월드 & 카메라 변환
-	float4 posW = mul(float4(vin.PosL, 1.0f), world);
 
-	vout.PosH = mul(mul(posW, gLightView), gLightProj);
+	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), world), gLightView), gLightProj);
 	vout.ProjPos = vout.PosH;
 
 

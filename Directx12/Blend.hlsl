@@ -62,8 +62,10 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	float4 diffuse = DiffTex.Sample(gsamLinear, pin.UV);
 	float4 ambient = AmbiTex.Sample(gsamLinear, pin.UV);
 	float4 specular = SpecTex.Sample(gsamLinear, pin.UV);
-
 	float4 Normal = NormalTex.Sample(gsamLinear, pin.UV);
+	float4 viewposition = NoiseTex.Sample(gsamLinear, pin.UV);
+	float4 worldpos = mul(float4(viewposition.xyz, 1.f), gInvView);
+
 	Normal = Normal * 2.f - 1.f;
 	Normal.w = 0.f;
 
@@ -92,12 +94,12 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	float4 InvViewPos = mul(InvProjPos, gInvView);
 	//position = mul(position, gInvProj); 
 
-	float4 vLook = float4(normalize(gCamPosition.xyz - InvViewPos.xyz), 0.f);
-	float4 vReflect = reflect(float4(normalize(-gLightDirection.xyz), 0.f), Normal);
+	float4 vLook = float4(normalize(gCamPosition.xyz - worldpos.xyz), 0.f);
+	float4 vReflect = reflect(float4(normalize(gLightDirection.xyz), 0.f), Normal);
 
 	//pOut.Specular = float4(ceil(InvViewPos.xyz) / 100.f , 1.f);
 
-	pOut.Specular = pow((saturate(dot(vReflect, -vLook))), 20.f);
+	pOut.Specular = pow((saturate(dot(vReflect, vLook))), 20.f);
 	//pOut.Specular.a = 0.f;
 
 
@@ -106,39 +108,45 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	{
 		for (int j = -1; j <= 1; ++j)
 		{
+			//float2 adjacencyUV = pin.UV + float2(j * 0.0005f, i * 0.0009f);
+			//adjacencyUV = saturate(adjacencyUV);
+			//
+			//float4 adjacencydepth = DepthTex.Sample(gsamLinear, adjacencyUV);
+			//float adjacencyViewZ = adjacencydepth.y * 1000.f;
+			//
+			//float4 adjacencyposition;
+			//
+			//
+			//adjacencyposition.x = (adjacencyUV.x * 2.f - 1.f) * adjacencyViewZ;
+			//adjacencyposition.y = (adjacencyUV.y * -2.f + 1.f) * adjacencyViewZ;
+			//adjacencyposition.z = adjacencydepth.x * adjacencyViewZ;
+			//adjacencyposition.w = adjacencyViewZ;
+			//
+			//adjacencyposition = mul(adjacencyposition, gInvProj);
+			//adjacencyposition = mul(adjacencyposition, gInvView);
+			//
+			//if(distance(InvViewPos.xyz, adjacencyposition.xyz) > 150.f || dot(adjacencyNormal, Normal) <= 0.3f)
+			//	pOut.OutLine = float4(1.f, 1.f, 1.f, 1.f);
+			//if (abs(depth.y - adjacencydepth.y) >= 0.001f || dot(adjacencyNormal, Normal) <= 0.3f)
+			//	//if (dot(adjacencyNormal, Normal) <= 0.3f)
+			//	pOut.OutLine = float4(1.f, 1.f, 1.f, 1.f);
+			
 			float2 adjacencyUV = pin.UV + float2(j * 0.0005f, i * 0.0009f);
-			adjacencyUV = saturate(adjacencyUV);
-
-			float4 adjacencydepth = DepthTex.Sample(gsamLinear, adjacencyUV);
-			float adjacencyViewZ = adjacencydepth.y * 1000.f;
-
-			float4 adjacencyposition;
-
-
-			adjacencyposition.x = (adjacencyUV.x * 2.f - 1.f) * adjacencyViewZ;
-			adjacencyposition.y = (adjacencyUV.y * -2.f + 1.f) * adjacencyViewZ;
-			adjacencyposition.z = adjacencydepth.x * adjacencyViewZ;
-			adjacencyposition.w = adjacencyViewZ;
-
-			adjacencyposition = mul(adjacencyposition, gInvProj);
-			adjacencyposition = mul(adjacencyposition, gInvView);
 
 			float4 adjacencyNormal = NormalTex.Sample(gsamLinear, adjacencyUV);
 			adjacencyNormal = adjacencyNormal * 2.f - 1.f;
 			adjacencyNormal.w = 0.f;
+			float4 adjacencyviewposition = NoiseTex.Sample(gsamLinear, adjacencyUV);
+			float4 adjacencyworldpos = mul(float4(adjacencyviewposition.xyz, 1.f), gInvView);
 
-			if(distance(InvViewPos.xyz, adjacencyposition.xyz) > 150.f || dot(adjacencyNormal, Normal) <= 0.3f)
+			if(distance(worldpos.xyz, adjacencyworldpos.xyz) > 1.f || dot(adjacencyNormal, Normal) <= 0.3f)
 				pOut.OutLine = float4(1.f, 1.f, 1.f, 1.f);
-
-			//if (abs(depth.y - adjacencydepth.y) >= 0.001f || dot(adjacencyNormal, Normal) <= 0.3f)
-			//	//if (dot(adjacencyNormal, Normal) <= 0.3f)
-			//	pOut.OutLine = float4(1.f, 1.f, 1.f, 1.f);
 		}
 	}
 
 	/////RimLight//////////////////////////////////////////////////////////////////////////////////////
 	float fresnel = 1.f - abs(dot(Normal, -vLook));
-	float RimLightValue = max(0.f, -dot(-gLightDirection.xyz, -vLook.xyz));
+	float RimLightValue = max(0.f, -dot(-gLightDirection.xyz, vLook.xyz));
 	pOut.RimLight = float4(1.f, 1.f, 1.f, 1.f) * RimLightValue * fresnel;
 
 	return pOut;
@@ -172,53 +180,27 @@ PS_BLEND_OUT PS_BLEND(Blend_Out pin)
 	float4 viewposition = NoiseTex.Sample(gsamLinear, pin.UV);
 	
 
-	float4 color = shade + specular + rimlight;
-	color = color * (1 - outline);
-	color = pow(color, 1.f / 2.2f);
-	color.a = 1.f;
-
 	float4 worldpos = mul(float4(viewposition.xyz, 1.f), gInvView);
 	float4 shadowproj = mul(mul(float4(worldpos), gLightView), gLightProj);
 	float shadowdepth = shadowproj.z / shadowproj.w;
 
 	float2 shadowuv = float2((shadowproj.x / shadowproj.w) * 0.5f + 0.5f, (shadowproj.y / shadowproj.w) * -0.5f + 0.5f);
 
+	float shadowvalue = 1.f;
 	if (shadowuv.x > 0.01f && shadowuv.x < 0.99f && shadowuv.y > 0.01f && shadowuv.y < 0.99f)
 	{
 		float lightdepth = LightDepthTex.Sample(gsamLinear, shadowuv).r;
-		if (lightdepth != 0.f && (shadowdepth > lightdepth + 0.00001f))
+		if (lightdepth != 0.f && (shadowdepth > lightdepth + 0.000005f))
 		{
-			color *= 0.1f;
+			shadowvalue *= 0.45f;
+			specular = float4(0.f, 0.f, 0.f, 0.f);
 		}
 	}
-		
-	//Find Position
-	//float ViewZ = depth.y * 1000.f;
-	//float4 position;
-	//position.x = (pin.UV.x * 2.f - 1.f) * ViewZ;
-	//position.y = (pin.UV.y * -2.f + 1.f) * ViewZ;
-	//position.z = depth.x * ViewZ;
-	//position.w = ViewZ;
-	//position = mul(position, gInvProj);
-	//position = mul(position, gInvView);
-	//
-	//float4 shadowpos = mul(position, gLightView);
-	//float4 uvpos = mul(shadowpos, gLightProj);
-	//float2 newuv;
-	//
-	//newuv.x = (uvpos.x / uvpos.w) * 0.5f + 0.5f;
-	//newuv.y = (uvpos.y / uvpos.w) * -0.5f + 0.5f;
-	////color = LightDepthTex.Sample(gsamLinear, saturate(newuv));
-	//if (saturate(newuv.x) == newuv.x && saturate(newuv.y) == newuv.y)
-	//{
-	//	float4 lightdepth = LightDepthTex.Sample(gsamLinear, newuv);
-	//
-	//	if (shadowpos.z - 0.1f > lightdepth.r * 1000.f)
-	//	{
-	//		color *= 0.5f;
-	//		color.a = 1.f;
-	//	}
-	//}
+
+	float4 color = shade * shadowvalue + specular + rimlight;
+	color = color * (1 - outline);
+	color = pow(color, 1.f / 2.2f);
+	color.a = 1.f;
 
 
 	pOut.Blend = color;
@@ -233,6 +215,8 @@ PS_BLEND_OUT PS_BLEND(Blend_Out pin)
 		pOut.Blend = SpecTex.Sample(gsamLinear, pin.UV / 0.1f);
 	if (0.f * ratioX <= pin.UV.x && pin.UV.x < 1.f * ratioX && 3.f * ratioY <= pin.UV.y && pin.UV.y < 4.f * ratioY)
 		pOut.Blend = NormalTex.Sample(gsamLinear, pin.UV / 0.1f);
+	if (0.f * ratioX <= pin.UV.x && pin.UV.x < 1.f * ratioX && 4.f * ratioY <= pin.UV.y && pin.UV.y < 5.f * ratioY)
+		pOut.Blend = SkillEffTex1.Sample(gsamLinear, pin.UV / 0.1f);
 
 
 	if (1.f * ratioX <= pin.UV.x && pin.UV.x < 2.f * ratioX && 0.f * ratioY <= pin.UV.y && pin.UV.y < 1.f * ratioY)
