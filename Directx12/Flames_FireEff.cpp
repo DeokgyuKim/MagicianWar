@@ -23,14 +23,15 @@ Flames_FireEff::~Flames_FireEff()
 
 void Flames_FireEff::BuildComponent()
 {
-	Component* pComponent = new Transform(XMFLOAT3(1.f, 2.f, 2.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(0.01f, 0.01f, 0.01f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetParentMatrix(dynamic_cast<Transform*>(m_pParent->GetTransController())->GetWorldMatrixPointer());
 
 
-	pComponent = new Plane(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), 0.f, 0.f, false);
+	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), "FireWall");
 	m_mapComponent["Mesh"] = pComponent;
+
 	pComponent = new MaterialCom("FireEff", XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 0.f));
 	m_mapComponent["Material"] = pComponent;
 

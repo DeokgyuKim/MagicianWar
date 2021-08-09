@@ -242,6 +242,9 @@ void MeshMgr::BuildModels(Loading* pLoading)
 	pLoading->AddCount();
 	BuildModel("weapon", MESH_TYPE::TILE);
 	pLoading->AddCount();
+	BuildModel("FireWall", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	
 
 	cout << "Load Model Complete!" << endl;
 }
