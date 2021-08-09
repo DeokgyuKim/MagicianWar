@@ -13,6 +13,7 @@ public:
 public:
 	void Initalize(int room_num,int host);
 	void ReInit();
+	void Release();
 	void Update();
 	void InGame_Update(float fTime);
 	void Physics_Collision();

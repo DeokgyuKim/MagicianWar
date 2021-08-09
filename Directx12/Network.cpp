@@ -96,7 +96,7 @@ void Network::Update()
 	recvUpdate();
 
 	ServerKeyInput();
-
+	//SendAttackEnd();
 	//switch (m_SceneChange)
 	//{
 	//case LOADING_SCENE:
@@ -208,37 +208,8 @@ STOC_PlayerInfo Network::GetRecvPlayerInfo(DWORD playerNum)
 	return (*iter).second;
 }
 
-void Network::SetMyPlayerInfo(Player* pPlayer)
-{
-
-	XMFLOAT3 pos;
-	int Root_Ani = 0;
-	int Upper_Ani = 0;
-
-	memcpy(&pos, &m_mapRecvPlayerInfos[m_tMyInfo.Client_Num].matWorld._41, sizeof(XMFLOAT3));
-	//cout << pos.x << ", " << pos.y << ", " << pos.z << endl;
-	Root_Ani = SCint(m_mapRecvPlayerInfos[m_tMyInfo.Client_Num].Root_eAnimType);
-	Upper_Ani = SCint(m_mapRecvPlayerInfos[m_tMyInfo.Client_Num].Upper_eAnimType);
-	//cout << "1번 클라의 Root - " << Root_Ani << endl;
-	//cout << "1번 클라의 Upper - " << Root_Ani << endl;
-
-	pPlayer->SetPosition(pos);
-	dynamic_cast<AnimationCom*>(pPlayer->GetRootAniController())->ChangeAnimation(Root_Ani);
-	dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->ChangeAnimation(Upper_Ani);
-}
-
-void Network::SetOtherPlayerInfo(list<Object*>* plstPlayer)
-{
-
-	//pPlayer->SetWorld(m_mapRecvPlayerInfos[m_tMyInfo.dwPlayerNum].matWorld);
-	for (auto iter = plstPlayer->begin(); iter != plstPlayer->end(); ++iter)
-	{
-		Player* pPlayer = dynamic_cast<Player*>(*iter);
-		pPlayer->SetWorld(m_mapRecvPlayerInfos[pPlayer->GetNetworkInfo().Client_Num].matWorld);
-	}
 
 
-}
 
 string Network::LoadServerIPtxt(string filePath)
 {
@@ -362,8 +333,17 @@ void Network::CallEvent(int EventType, int args, ...)
 	case EVENT_STAGE_PLAYER_INFO:
 		break;
 	case EVENT_STAGE_PLAYER_ANIMATE:
+		SendAttackEnd();
 		break;
-
+	case EVENT_STAGE_CAMERA_UPDATE:
+	{
+		va_list ap;
+		va_start(ap, args);
+		double value = va_arg(ap, double);
+		va_end(ap);
+		SendCameraUpdate(value);
+		break;
+	}
 	default:
 		break;
 	}
@@ -623,12 +603,13 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].Root_eAnimType = data->Root_eAnimType;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].Upper_eAnimType = data->Upper_eAnimType;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].ePlayerState = data->ePlayerState;
-		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].matWorld = data->matWorld;
+		
 
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.Client_Num = data->playerInfo.Client_Num;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.TeamType = data->playerInfo.TeamType;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.iHp = data->playerInfo.iHp;
+		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.CameraY = data->playerInfo.CameraY;
 		//cout << "HP: " << data->playerInfo.iHp << endl;
 		//cout << data->playerInfo.iHp << endl;
 
@@ -775,35 +756,27 @@ void Network::SendIngameInfo_Request()
 	}
 }
 
-void Network::SendMyPlayerInfo()
+void Network::SendCameraUpdate(float cameraY)
 {
-	//Object* pObj = MainApp::GetInstance()->GetScene()->GetPlayer();
-	//
-	//CTOS_PlayerInfo packet;
-	//
-	//if (pObj != NULL)
-	//{
-	//	Player* pPlayer = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer());
-	//	packet.matWorld = pPlayer->GetWorld();
-	//	//tInfo_packet.ePlayerState = pPlayer->GetRootFSM()->GetState();
-	//	packet.bAttackEnd = dynamic_cast<AnimationCom*>(pPlayer->GetUpperAniController())->GetAttackEnd();
-	//	if (pPlayer->GetInstName() == CHARACTER_WIZARD_FIRE)
-	//		packet.InstanceName = WIZARD_FIRE; // 01번 캐릭터 메쉬를 사용한 친구임
-	//	else if (pPlayer->GetInstName() == CHARACTER_WIZARD_COLD)
-	//		packet.InstanceName = WIZARD_COLD;
-	//	else if (pPlayer->GetInstName() == CHARACTER_WIZARD_DARKNESS)
-	//		packet.InstanceName = WIZARD_DARKNESS;
-	//}
-	//else
-	//{
-	//	return;
-	//	//tInfo_packet.matWorld = MathHelper::Identity4x4();
-	//}
-	//
-	//packet.id = m_tMyInfo.Client_Num;
-	//
-	//int retval;
-	//retval = send(m_Sock, (char*)&packet, packet.size, 0);
+	CTOS_CAMERA packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_Camera_y;
+	packet.CameraY = cameraY;
+	//cout << "카메라 y - " << cameraY<< " ";
+	if (!SendPacket(&packet)) {
+		cout << "SendCameraUpdate() Failed \n";
+	}
+}
+
+void Network::SendAttackEnd()
+{
+	CTOS_ATTACKEND packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_AttackEnd;
+	if (!SendPacket(&packet)) {
+		cout << "SendAttackEnd() Failed \n";
+	}
+	
 }
 
 void Network::SendKeyInput(DWORD _keyInput)
@@ -885,7 +858,7 @@ void Network::SendConnectOK()
 bool Network::SendPacket(void* buffer)
 {
 	char* packet = reinterpret_cast<char*>(buffer);
-	int packetSize = (short)packet[0];
+	int packetSize = *(short*)packet;
 	int ret = send(m_Sock, packet, packetSize, 0);
 	if (ret == SOCKET_ERROR)
 	{

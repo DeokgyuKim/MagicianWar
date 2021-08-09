@@ -19,6 +19,11 @@ constexpr int NO_ROOM_PACKET = -1;
 constexpr int ACTIVATE = 1;
 constexpr int DISABLED = -1;
 
+// Character Default MoveSpeed
+#define P_MoveForward_Speed 0.003f
+#define P_MoveLeft_Speed 0.003f
+#define P_MoveRight_Speed 0.003f
+#define P_MoveBackward_Speed 0.003f
 
 enum OP_TYPE { // Accept는 Main_Thread가 할거임
 	OP_RECV, OP_SEND, // WorkThread
@@ -66,6 +71,7 @@ struct ROOM_EVENT {
 	int playerID; // 어떤 플레이어의 
 	unsigned char type;		// 무슨 패킷인가
 	DWORD data1;
+	float fdata;
 	// 기타 정보
 };
 

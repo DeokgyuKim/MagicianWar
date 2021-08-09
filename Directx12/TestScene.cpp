@@ -30,7 +30,7 @@ TestScene::TestScene()
 int TestScene::Update(const float& fTimeDelta)
 {
 	Scene::Update(fTimeDelta);
-
+	
 
 	if (Network::GetInstance()->GetGameEnd().bEnd)
 	{
@@ -68,14 +68,11 @@ void TestScene::LateUpdate(const float& fTimeDelta)
 	Scene::LateUpdate(fTimeDelta);
 
 #ifdef NETWORK
-	Object* pObj = GetPlayer();
-	if (pObj != NULL) {
-		Network::GetInstance()->SetMyPlayerInfo(dynamic_cast<Player*>(pObj));
 
-	}
 
 	PoolingMgr::GetInstance()->UpdatePoolingObject(Network::GetInstance()->GetBullets());
 #endif
+
 #ifdef PHYSX
 	if (CPhysXMgr::GetInstance()->PhysXStartTime > 10.f)
 	{

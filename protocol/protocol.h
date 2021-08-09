@@ -7,11 +7,7 @@
 
 #define BulletCB_Count 70
 
-// Character Default MoveSpeed
-#define P_MoveForward_Speed 0.05f
-#define P_MoveLeft_Speed 0.05f
-#define P_MoveRight_Speed 0.05f
-#define P_MoveBackward_Speed 0.03f
+
 
 // Server ==> Client
 
@@ -56,6 +52,7 @@
 
 #define ctos_playerInfo 1
 #define ctos_keyInput	2
+#define ctos_Camera_y	3
 
 // Loading	Scene	31 ~ 60
 #define ctos_LoadingEnd 31
@@ -76,6 +73,7 @@
 #define ctos_Room_Exit 127
 // Stage	Scene	151 ~ 180
 #define ctos_IngameInfo_Request 151
+#define ctos_AttackEnd			152
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -142,8 +140,8 @@ struct PlayerInfo
 	int					Room_Num;
 	bool				isRoom_Host;
 	char				TeamType;
-	XMFLOAT4X4			matWorld;
 	XMFLOAT3			xmfPosition;
+	float				CameraY;
 	unsigned char		CharacterType; // 캐릭터 타입
 	int					PlayerState;   // 플레이어 현재 상태
 	int					iHp;
@@ -279,7 +277,6 @@ struct STOC_PlayerInfo
 	short size;
 	unsigned char type;
 	PlayerInfo		playerInfo;
-	XMFLOAT4X4		matWorld;
 	char	ePlayerState;
 
 	char	Root_eAnimType;
@@ -430,3 +427,13 @@ struct CTOS_KEYINPUT {
 	DWORD key; // 키입력
 };
 
+struct CTOS_CAMERA {
+	short size;
+	unsigned char type;
+	float CameraY;
+};
+
+struct CTOS_ATTACKEND {
+	short size;
+	unsigned char type;
+};
