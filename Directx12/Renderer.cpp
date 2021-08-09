@@ -144,13 +144,12 @@ void Renderer::Render(const float& fTimeDelta)
 			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetInstName()]);
 		}
 	}
-	
+
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_SKILL])
 	{
 		m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
 		pObject->Render(fTimeDelta);
 	}
-
 
 	m_mapShaders[RENDER_TYPE::RENDER_UI]->PreRender(m_pCmdLst);
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_UI])

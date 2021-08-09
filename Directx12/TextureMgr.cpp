@@ -160,6 +160,18 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["Flames_FireEff"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "FireMake", L"../Resources/FireMake.dds");
+	m_mapTextures["FireMake"] = pTexture;
+	pLoading->AddCount();
+	
+	pTexture = new DDSTexture(device, cmdLst, heap, "FireMakeLong", L"../Resources/FireMakeLong.dds");
+	m_mapTextures["FireMakeLong"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "FireMakeLongSmooth", L"../Resources/FireMakeLongSmooth.dds");
+	m_mapTextures["FireMakeLongSmooth"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "wizard_Fire", L"../Resources/Models/Characters/wizard_Fire/wizard_Fire.dds");
 	m_mapTextures["wizard_Fire"] = pTexture;
 	pLoading->AddCount();

@@ -16,7 +16,7 @@ void RenderTargetMgr::BuildRenderTarget(ID3D12Device* device, Renderer* pRendere
 	clear.Color[0] = 0.f;
 	clear.Color[1] = 0.f;
 	clear.Color[2] = 0.f;
-	clear.Color[3] = 1.f;
+	clear.Color[3] = 0.f;
 
 	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
 	m_mapRenderTarget["Diffuse"] = Rt;

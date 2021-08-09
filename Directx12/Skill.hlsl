@@ -76,13 +76,14 @@ PSOut_Skill PS_Flames_FireEff(Out_Skill pin)
 	float perturb = ((1.f - pin.TexC.y) * 0.8f) + 0.5f;
 
 	float2 noiseCoord = (noise.xy * perturb) + pin.TexC.xy;
-	float4 fire = SkillEffTex1.Sample(gsamClamp, noiseCoord);
+	float4 fire = SkillEffTex1.Sample(gsamClamp, noiseCoord) + SkillEffTex1.Sample(gsamClamp, noiseCoord + float2(0.f, 0.2f));
 
 	vout.Diffuse = fire;
+	vout.Diffuse.a = saturate(vout.Diffuse.r + 0.1f);
 	//vout.Diffuse = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gDiffuse;
 	//vout.Ambient = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gAmbient;
 	//vout.Specular = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gSpecular;
-	vout.Normal = float4((pin.Normal * 0.5f + 0.5f).xyz, 1.f);
+	vout.Normal = float4(0.f, 0.f, 0.f, 0.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 
 	return vout;
