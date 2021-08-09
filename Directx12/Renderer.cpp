@@ -98,6 +98,7 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pRTMgr->GetRenderTarget("Normal")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 8);
 	m_pRTMgr->GetRenderTarget("Depth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 9);
 	m_pRTMgr->GetRenderTarget("LightDepth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 21);
+	m_pRTMgr->GetRenderTarget("Position")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 12);
 
 	m_pLight->RenderLight();
 
@@ -118,7 +119,6 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pRTMgr->GetRenderTarget("OutLine")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 8);
 	m_pRTMgr->GetRenderTarget("Depth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 9);
 	m_pRTMgr->GetRenderTarget("LightDepth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 21);
-	m_pRTMgr->GetRenderTarget("Position")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 12);
 	m_pRTMgr->GetRenderTarget("Normal")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 13);
 	m_pBlendGeo->Render(fTimeDelta);
 
