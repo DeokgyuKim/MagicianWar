@@ -69,7 +69,7 @@ void Weapon::LateUpdate(const float& fTimeDelta)
 	{
 		// 21¹ø »À°¡ weapon
 		XMStoreFloat4x4(&m_xmf4x4ParentWorld, 
-			XMMatrixTranspose(XMLoadFloat4x4(&dynamic_cast<AnimationCom*>(Anim)->GetSkinnedModellnst()->FinalTransforms[m_iSocketIdx])) *
+			(XMLoadFloat4x4(&dynamic_cast<AnimationCom*>(Anim)->GetSkinnedModellnst()->FinalTransforms[m_iSocketIdx])) *
 			XMLoadFloat4x4(dynamic_cast<Transform*>(m_pParent->GetTransController())->GetWorldMatrixPointer()));
 	}
 

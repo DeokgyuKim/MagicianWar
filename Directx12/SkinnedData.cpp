@@ -186,7 +186,7 @@ void SkinnedData::GetFinalTransforms(const ANIMATION_TYPE eType, float timePos, 
 		XMMATRIX toRoot = XMLoadFloat4x4(&toParentTransforms[i]);
 		XMMATRIX finalTransform = XMMatrixMultiply(offset, toRoot);
 
-		XMStoreFloat4x4(&finalTransforms[i], XMMatrixTranspose(finalTransform));
+		XMStoreFloat4x4(&finalTransforms[i], (finalTransform));
 	}
 }
 

@@ -13,6 +13,7 @@ struct PSOut
 	float4 Specular : SV_TARGET2;
 	float4 Normal : SV_TARGET3;
 	float4 Depth : SV_TARGET4;
+	float4 Position : SV_TARGET5;
 };
 
 
@@ -26,6 +27,7 @@ struct In
 struct Out
 {
 	float4 PosH  : SV_POSITION;
+	float3 ViewPos : POSITION;
 	float2 UV : TEXCOORD;
 	float4 Normal : NORMAL;
 
@@ -38,12 +40,13 @@ Out VS_Main(In vin, uint instanceID : SV_InstanceID)
 	Out vout;
 
 	InstanceObject instObjData = gInstanceData[instanceID];
-	float4x4 world = instObjData.gWorld;
+	row_major matrix world = instObjData.gWorld;
 	uint matIndex = instObjData.MaterialIndex;
 	vout.MaterialIndex = matIndex;
 
 	// Transform to homogeneous clip space.
 	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), world), gView), gProj);
+	vout.ViewPos = mul(mul(float4(vin.PosL, 1.0f), world), gView).xyz;
 
 	// Just pass vertex color into the pixel shader.
 	vout.UV = vin.UV;
@@ -63,6 +66,7 @@ PSOut PS_Main(Out pin)
 	vout.Specular = pow(Texture.Sample(gsamLinear, pin.UV * terrainsize), 2.2f) * materialData.gSpecular;
 	vout.Normal = float4((pin.Normal * 0.5f + 0.5f).xyz, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+	vout.Position = float4(pin.ViewPos, 1.f);
 
 	return vout;
 }
@@ -93,6 +97,7 @@ struct VertexOut_Default
 {   // 기본 
 	float4 PosH    : SV_POSITION;
 	float3 PosW    : POSITION2;
+	float3 ViewPos : POSITION;
 	float3 NormalW : NORMAL;
 	float2 TexC    : TEXCOORD;
 	float3 TangentW : TANGENT;
@@ -109,7 +114,7 @@ VertexOut_Default VS_FireBall(VertexIn_Static vin, uint instanceID : SV_Instance
 
 	// 인스턴싱
 	InstanceObject instObjData = gInstanceData[instanceID];
-	float4x4 world = instObjData.gWorld;
+	row_major matrix world = instObjData.gWorld;
 	uint matIndex = instObjData.MaterialIndex;
 
 	vout.MaterialIndex = matIndex;
@@ -135,6 +140,7 @@ VertexOut_Default VS_FireBall(VertexIn_Static vin, uint instanceID : SV_Instance
 
 	float4 posH = mul(mul(mul(float4(vin.PosL, 1.0f), world), gView), gProj);
 	vout.PosH = posH;
+	vout.ViewPos = mul(mul(float4(vin.PosL, 1.0f), world), gView).xyz;
 
 
 	vout.TexC = vin.TexC;
@@ -159,6 +165,7 @@ PSOut PS_FireBall(VertexOut_Default pin)
 	vout.Specular = color;// * materialData.gSpecular;
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+	vout.Position = float4(pin.ViewPos, 1.f);
 
 	return vout;
 }
@@ -169,7 +176,7 @@ VertexOut_Default VS_Static(VertexIn_Static vin, uint instanceID : SV_InstanceID
 
 	// 인스턴싱
 	InstanceObject instObjData = gInstanceData[instanceID];
-	float4x4 world = instObjData.gWorld;
+	row_major matrix world = instObjData.gWorld;
 	uint matIndex = instObjData.MaterialIndex;
 
 	vout.MaterialIndex = matIndex;
@@ -177,6 +184,7 @@ VertexOut_Default VS_Static(VertexIn_Static vin, uint instanceID : SV_InstanceID
 	// 월드 & 카메라 변환
 	float4 posH = mul(mul(mul(float4(vin.PosL, 1.0f), world), gView), gProj);
 	vout.PosH = posH;
+	vout.ViewPos = mul(mul(float4(vin.PosL, 1.0f), world), gView).xyz;
 
 	vout.NormalW = normalize(mul(vin.NormalL, (float3x3)world));
 	vout.TangentW = normalize(mul(vin.TangentL, (float3x3)world));
@@ -199,6 +207,7 @@ PSOut PS_Static(VertexOut_Default pin)
 	vout.Specular = outcolor * materialData.gSpecular;
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+	vout.Position = float4(pin.ViewPos, 1.f);
 
 	return vout;
 }
@@ -209,7 +218,7 @@ VertexOut_Default VS_Movable(VertexIn_Movable vin, uint instanceID : SV_Instance
 
 	// 인스턴싱
 	InstanceObject instObjData = gInstanceData[instanceID];
-	float4x4 world = instObjData.gWorld;
+	row_major matrix world = instObjData.gWorld;
 	uint matIndex = instObjData.MaterialIndex;
 
 	SkinnedData instSkinned = gSkinnedData[instanceID];
@@ -262,6 +271,7 @@ VertexOut_Default VS_Movable(VertexIn_Movable vin, uint instanceID : SV_Instance
 	vout.BinormalW = normalize(mul(vin.BinormalL, (float3x3)world));
 
 	vout.PosH = mul(mul(posW, gView), gProj);
+	vout.ViewPos = mul(posW, gView).xyz;
 
 	vout.TexC = vin.TexC;
 
@@ -282,6 +292,7 @@ PSOut PS_Movable(VertexOut_Default pin)
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+	vout.Position = float4(pin.ViewPos, 1.f);
 
 	return vout;
 }
@@ -305,7 +316,7 @@ SkyboxOut VS_Skybox(SkyboxIn vin, uint instanceID : SV_InstanceID)
 
 	// 인스턴싱
 	InstanceObject instObjData = gInstanceData[instanceID];
-	float4x4 world = instObjData.gWorld;
+	row_major matrix world = instObjData.gWorld;
 
 
 	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.f), world), gView), gProj);

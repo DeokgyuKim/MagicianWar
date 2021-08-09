@@ -261,7 +261,7 @@ HRESULT Core::CreateSwapchain()
 HRESULT Core::CreateDescriptorHeap()
 {
     D3D12_DESCRIPTOR_HEAP_DESC rtvDesc = {};
-    rtvDesc.NumDescriptors = 13;
+    rtvDesc.NumDescriptors = 14;
     rtvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
     rtvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
     rtvDesc.NodeMask = 0;
@@ -339,6 +339,8 @@ HRESULT Core::CreateRtvDsvBufferAndView()
     )))
         return E_FAIL;
 
+    //rscDesc.Width = WINCX * 5.f;
+    //rscDesc.Height = WINCY * 5.f;
     if (FAILED(m_ptrDevice->CreateCommittedResource(
         &heapPro, D3D12_HEAP_FLAG_NONE, &rscDesc, D3D12_RESOURCE_STATE_DEPTH_WRITE,
         &clearValue, IID_PPV_ARGS(&m_ptrDsvForShadow)

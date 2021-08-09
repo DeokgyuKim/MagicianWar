@@ -40,6 +40,7 @@ void CLight::BuildConstantBuffer()
 	int boxCBufIndex = 0;
 
 	XMMATRIX proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(90.f), (float)WINCX / (float)WINCY, 0.1f, 1000.0f);
+	XMMATRIX ortho = XMMatrixOrthographicLH(WINCX, WINCY, 0.1f, 1000.f);
 
 
 	XMVECTOR pos = XMVectorSet(m_xmfPosition.x, m_xmfPosition.y, m_xmfPosition.z, 1.0f);
@@ -59,8 +60,8 @@ void CLight::BuildConstantBuffer()
 	XMStoreFloat4(&lightcb.Specular, XMLoadFloat4(&m_xmfSpecular));
 	XMStoreFloat4(&lightcb.Position, XMLoadFloat4(&m_xmfPosition));
 	XMStoreFloat4(&lightcb.Direction, XMLoadFloat4(&m_xmfDirection));
-	XMStoreFloat4x4(&lightcb.LightView, XMMatrixTranspose(view));
-	XMStoreFloat4x4(&lightcb.LightProj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&lightcb.LightView, (view));
+	XMStoreFloat4x4(&lightcb.LightProj, (proj));
 	m_LightCB->CopyData(0, lightcb);
 
 }

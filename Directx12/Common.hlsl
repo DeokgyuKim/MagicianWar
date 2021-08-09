@@ -1,10 +1,10 @@
 
 cbuffer cbCamera : register(b1)
 {
-	float4x4 gView;
-	float4x4 gProj;
-	float4x4 gInvView;
-	float4x4 gInvProj;
+	row_major matrix gView;
+	row_major matrix gProj;
+	row_major matrix gInvView;
+	row_major matrix gInvProj;
 	float4 gCamPosition;
 	float gTime;
 };
@@ -16,8 +16,8 @@ cbuffer cbLight : register(b3)
 	float4 gLightSpecular;
 	float4 gLightPosition;
 	float4 gLightDirection;
-	float4x4 gLightView;
-	float4x4 gLightProj;
+	row_major matrix gLightView;
+	row_major matrix gLightProj;
 };
 
 //cbuffer cbSkinned : register(b4)
@@ -34,7 +34,7 @@ cbuffer cbSkill : register(b5)
 
 cbuffer cbObject : register(b6)
 {
-	float4x4	gWorldNoInstanced;
+	row_major matrix	gWorldNoInstanced;
 	uint		MaterialIndexNoInstanced;
 };
 
@@ -74,7 +74,7 @@ Texture2D SkillEffTex5 : register(t12);
 //// 인스턴싱 하는 애들이 사용
 struct InstanceObject
 {
-	float4x4	gWorld;
+	row_major matrix	gWorld;
 	uint		MaterialIndex;
 	uint		gboolBone;
 };

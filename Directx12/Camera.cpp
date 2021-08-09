@@ -117,10 +117,10 @@ void Camera::LateUpdate(const float& fTimeDelta)
 	XMStoreFloat4x4(&m_xmmView, view);
 
 	CameraCB camCB;
-	XMStoreFloat4x4(&camCB.View, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmView)));
-	XMStoreFloat4x4(&camCB.Proj, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmProj)));
-	XMStoreFloat4x4(&camCB.InvView, XMMatrixInverse(NULL, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmView)))); 
-	XMStoreFloat4x4(&camCB.InvProj, XMMatrixInverse(NULL, XMMatrixTranspose(XMLoadFloat4x4(&m_xmmProj))));
+	XMStoreFloat4x4(&camCB.View, (XMLoadFloat4x4(&m_xmmView)));
+	XMStoreFloat4x4(&camCB.Proj, (XMLoadFloat4x4(&m_xmmProj)));
+	XMStoreFloat4x4(&camCB.InvView, XMMatrixInverse(NULL, (XMLoadFloat4x4(&m_xmmView)))); 
+	XMStoreFloat4x4(&camCB.InvProj, XMMatrixInverse(NULL, (XMLoadFloat4x4(&m_xmmProj))));
 	XMFLOAT4 position = XMFLOAT4(m_xmfPosition.x, m_xmfPosition.y, m_xmfPosition.z, 1.f);
 	//cout << position.x << "\t" << position.y << "\t" << position.z << endl;
 	XMStoreFloat4(&camCB.Position, XMLoadFloat4(&position));

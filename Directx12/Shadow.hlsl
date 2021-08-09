@@ -16,7 +16,7 @@ PS_Shadow PS_LIGHTDEPTH(VS_Shadow pin)
 {
 	PS_Shadow vout;
 
-	vout.LightDepth.r = pin.ProjPos.w / 1000.f;
+	vout.LightDepth.r = pin.ProjPos.z / pin.ProjPos.w;
 	vout.LightDepth.g = 0.f;
 	vout.LightDepth.b = 0.f;
 	vout.LightDepth.a = 1.f;

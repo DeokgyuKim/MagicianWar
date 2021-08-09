@@ -77,7 +77,7 @@ void Flames_FireEff::LateUpdate(const float& fTimeDelta)
 
 	ObjectCB objCB;
 	XMMATRIX world = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix();
-	XMStoreFloat4x4(&objCB.World, XMMatrixTranspose(world));
+	XMStoreFloat4x4(&objCB.World, (world));
 	objCB.MaterialIndex = m_MaterialIndex;
 	m_ObjectCB->CopyData(0, objCB);
 

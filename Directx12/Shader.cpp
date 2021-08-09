@@ -98,8 +98,8 @@ HRESULT Shader::BuildPipelineState(ID3D12Device* device, ID3D12RootSignature* Ro
 	for (int i = 0; i < numRt; ++i)
 	{
 		psoDesc.RTVFormats[i] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		if (depthidx == i)
-			psoDesc.RTVFormats[i] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		if (depthidx <= i)
+			psoDesc.RTVFormats[i] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	}
 	psoDesc.SampleDesc.Count = 1;
 

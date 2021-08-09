@@ -36,12 +36,16 @@ void RenderTargetMgr::BuildRenderTarget(ID3D12Device* device, Renderer* pRendere
 	m_mapRenderTarget["Normal"] = Rt;
 	m_mapMRT["Deffered"].push_back(Rt);
 
-	clear.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
-	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear, DXGI_FORMAT_R16G16B16A16_FLOAT);
+	clear.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear, DXGI_FORMAT_R32G32B32A32_FLOAT);
 	m_mapRenderTarget["Depth"] = Rt;
 	m_mapMRT["Deffered"].push_back(Rt);
 
-	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear, DXGI_FORMAT_R16G16B16A16_FLOAT);
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear, DXGI_FORMAT_R32G32B32A32_FLOAT);
+	m_mapRenderTarget["Position"] = Rt;
+	m_mapMRT["Deffered"].push_back(Rt);
+
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear, DXGI_FORMAT_R32G32B32A32_FLOAT);
 	m_mapRenderTarget["LightDepth"] = Rt;
 	m_mapMRT["Shadow"].push_back(Rt);
 	clear.Format = DXGI_FORMAT_R8G8B8A8_UNORM;

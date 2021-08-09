@@ -44,7 +44,7 @@ void InstanceMgr::UpdateInstanceBuffer(Object* _obj)
 	}
 	ObjectCB data;
 	data.MaterialIndex = 0;
-	XMStoreFloat4x4(&data.World, XMMatrixTranspose(dynamic_cast<Transform*>(_obj->GetTransController())->GetWorldMatrix()));
+	XMStoreFloat4x4(&data.World, (dynamic_cast<Transform*>(_obj->GetTransController())->GetWorldMatrix()));
 	data.MaterialIndex = _obj->GetMaterialIndex();
 
 	if (_obj->GetMeshType() == MESH_TYPE::CHARACTER)
@@ -61,7 +61,7 @@ void InstanceMgr::UpdateInstanceBuffer(UINT uiIdx, string instname, XMMATRIX wor
 		return;
 	}
 	ObjectCB data;
-	XMStoreFloat4x4(&data.World, XMMatrixTranspose(world));
+	XMStoreFloat4x4(&data.World, (world));
 	data.MaterialIndex = uiIdx;
 	
 	m_InstanceCBs[instname]->CopyData(uiIdx, data);
@@ -84,7 +84,7 @@ void InstanceMgr::UpdateSkinnedBuffers(Object* _obj)
 
 	XMFLOAT4X4 root = dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[0];
 	XMMATRIX matRoot = XMLoadFloat4x4(&root);
-	matRoot = XMMatrixTranspose(matRoot);
+	matRoot = (matRoot);
 	XMStoreFloat4x4(&root, matRoot);
 
 	memcpy(&data.right[0], &root._11, sizeof(XMFLOAT3));
@@ -94,7 +94,7 @@ void InstanceMgr::UpdateSkinnedBuffers(Object* _obj)
 
 	root = dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[1];
 	matRoot = XMLoadFloat4x4(&root);
-	matRoot = XMMatrixTranspose(matRoot);
+	matRoot = (matRoot);
 	XMStoreFloat4x4(&root, matRoot);
 	
 	memcpy(&data.right[1], &root._11, sizeof(XMFLOAT3));
@@ -107,7 +107,7 @@ void InstanceMgr::UpdateSkinnedBuffers(Object* _obj)
 	for (int upper = 2; upper < 27; ++upper) { // 상체
 		root = dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetUpperAniController())->GetSkinnedModellnst()->FinalTransforms[upper];
 		matRoot = XMLoadFloat4x4(&root);
-		matRoot = XMMatrixTranspose(matRoot);
+		matRoot = (matRoot);
 		XMStoreFloat4x4(&root, matRoot);
 		memcpy(&data.right[upper],	&root._11, sizeof(XMFLOAT3));
 		memcpy(&data.up[upper],		&root._21, sizeof(XMFLOAT3));
@@ -119,7 +119,7 @@ void InstanceMgr::UpdateSkinnedBuffers(Object* _obj)
 	for (int Root = 27; Root < 33; ++Root) { // 하체
 		root = dynamic_cast<AnimationCom*>(dynamic_cast<Player*>(_obj)->GetRootAniController())->GetSkinnedModellnst()->FinalTransforms[Root];
 		matRoot = XMLoadFloat4x4(&root);
-		matRoot = XMMatrixTranspose(matRoot);
+		matRoot = (matRoot);
 		XMStoreFloat4x4(&root, matRoot);
 		memcpy(&data.right[Root],	&root._11, sizeof(XMFLOAT3));
 		memcpy(&data.up[Root],		&root._21, sizeof(XMFLOAT3));
