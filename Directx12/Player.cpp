@@ -116,9 +116,14 @@ int Player::Update(const float& fTimeDelta)
 		{
 			XMFLOAT3 xmfRotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
 			float cameraY = m_pCamera->GetRotY();
+#ifdef NETWORK
 			if (xmfRotate.y != cameraY) {
 				Network::GetInstance()->SendCameraUpdate(cameraY);
 			}
+#else
+			xmfRotate.y = m_pCamera->GetRotY();
+			dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotate);
+#endif
 
 		}
 	}
@@ -148,12 +153,14 @@ void Player::LateUpdate(const float& fTimeDelta)
 	STOC_PlayerInfo info = Network::GetInstance()->GetRecvPlayerInfo(m_tNetInfo.Client_Num);
 	XMFLOAT3 rotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
 	rotate.y = info.playerInfo.CameraY;
+#ifdef NETWORK
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetPosition(info.playerInfo.xmfPosition);
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rotate);
 	dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(SCint(info.Upper_eAnimType));
 	dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->ChangeAnimation(SCint(info.Root_eAnimType));
 	if (dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetAttackEnd())
 		Network::GetInstance()->CallEvent(EVENT_STAGE_PLAYER_ANIMATE, 0);
+#endif
 	//}
 	m_pWeapon->LateUpdate(fTimeDelta);
 }
