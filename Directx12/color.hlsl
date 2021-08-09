@@ -168,7 +168,8 @@ PSOut PS_FireBall(VertexOut_Default pin)
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 	vout.Position = float4(pin.ViewPos, 1.f);
-	vout.Emmissive = float4(0.f, 0.f, 0.f, 0.f);
+	vout.Emmissive = color * 30.f;
+	vout.Emmissive.a = 1.f;
 
 	return vout;
 }
