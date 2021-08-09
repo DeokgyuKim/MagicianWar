@@ -96,60 +96,7 @@ void Network::Update()
 	recvUpdate();
 
 	ServerKeyInput();
-	//SendAttackEnd();
-	//switch (m_SceneChange)
-	//{
-	//case LOADING_SCENE:
-	//	break;
-	//case TITLE_SCENE:
-	//	break;
-	//case LOBBY_SCENE:
-	//	break;
-	//case ROOM_SCENE:
-	//	break;
-	//case STAGE_SCENE:
-	//	break;
-	//case RESULT_SCENE:
-	//	break;
-	//default:
-	//	cout << "SCENE ERROR\n";
-	//	break;
-	//}
-
-	//if (m_SceneChange == LOADING_SCENE)  // Logo
-	//{
-
-	//}
-	//else if (m_SceneChange == LOBBY_SCENE) // Lobby
-	//{
-	//	//SendReadyState(); // lobby에서는 ready만 보냄
-	//}
-	//else if (m_SceneChange == ROOM_SCENE)
-	//{
-
-	//}
-	//else if (m_SceneChange == STAGE_SCENE) // mainScene
-	//{
-	//	//if (!mainSceneLateInit)
-	//	//{
-	//	//	//상대의 플레이어 정보 받아오기
-	//	//	RecvOtherPlayerInfo();
-	//	//	mainSceneLateInit = true;
-	//	//}
-
-	//	////Send
-	//	////내 플레이어정보(위치, 애니메이션뭔지, 타임, 블레딩뭔지, 가중치)
-	//	//SendMyPlayerInfo();
-	//	////키입력정보(w, a, s, d, 스킬12, 점프, 마우스클릭)
-	//	//SendKeyInput();
-
-
-
-	//}
-	//else if (m_SceneChange == ENDING_Scene)
-	//{
-	//	//cout << "엔딩씬인가" << endl;
-	//}
+	
 
 }
 
@@ -186,6 +133,8 @@ void Network::Lobby_Init()
 	m_tMyInfo.Room_Num = -1;
 	m_tMyInfo.TeamType = TEAM_NONE;
 	
+	SendRoomlist_Request();
+
 }
 
 void Network::Room_Init()
@@ -433,14 +382,11 @@ void Network::packetProcessing(char* _packetBuffer)
 			m_tMyInfo.Room_Num = data->room_num;
 			m_tMyInfo.TeamType = ELEMENT_FIRE;
 			m_tMyInfo.isRoom_Host = true; // 방 만들었으니 방장이고
-			CallEvent(EVENT_SCENE_CHANGE, 1, ROOM_SCENE);
+			//CallEvent(EVENT_SCENE_CHANGE, 1, ROOM_SCENE);
 		}
-		else { // 방장이 아니고 로비에 있는 플레이어면 방리스트 갱신해야함
-			m_mapRooms[data->room_num].Host_num = data->Host_num;
-			m_mapRooms[data->room_num].room_num = data->room_num;
-			m_mapRooms[data->room_num].size = data->size;
-			m_mapRooms[data->room_num].type = data->type;
-		}
+		//else { // 방장이 아니고 로비에 있는 플레이어면 방리스트 갱신해야함
+		MakeRoom_By_roomNum(data->room_num);
+		//}
 		break;
 	}
 	case stoc_Room_Make_Deny:
@@ -465,6 +411,12 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_mapRooms.erase(data->room_num);
 		break;
 	}
+	case stoc_RoomList_Update:
+	{
+		
+		STOC_ROOMLIST_UPDATE* data = reinterpret_cast<STOC_ROOMLIST_UPDATE*>(_packetBuffer);
+		MakeRoom_By_roomNum(data->room_num);
+	}
 	case stoc_Room_Join_Deny:
 	{
 		cout << " Room Join Deny \n";
@@ -476,7 +428,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		cout << " 방에 들어갔음\n";
 		STOC_ROOM_ENTER* data = reinterpret_cast<STOC_ROOM_ENTER*>(_packetBuffer);
 		m_tMyInfo.Room_Num = data->room_num; // 내가 들어간 방 번호 
-		//CallEvent(EVENT_SCENE_CHANGE, 1, ROOM_SCENE);
+		CallEvent(EVENT_SCENE_CHANGE, 1, ROOM_SCENE);
 		break;
 	}
 	case stoc_RoomPlayer_Change:
@@ -681,6 +633,13 @@ void Network::SendRoomJoin_Request()
 	}
 }
 
+void Network::MakeRoom_By_roomNum(int room_num)
+{
+	//m_mapRooms[room_num].Host_num = data->Host_num;
+	m_mapRooms[room_num].room_num = room_num;
+
+}
+
 void Network::SendRoomInfo_Request()
 {
 	CTOS_ROOMINFO_REQUEST packet;
@@ -689,6 +648,16 @@ void Network::SendRoomInfo_Request()
 	packet.room_num = m_tMyInfo.Room_Num; // 내가 원하는 정보를 가진 방의 번호
 	if (!SendPacket(&packet)) {
 		cout << "SendRoomInfo_Request() Failed \n";
+	}
+}
+
+void Network::SendRoomlist_Request()
+{
+	CTOS_ROOMLIST_REQUEST packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_Room_List_Request;
+	if (!SendPacket(&packet)) {
+		cout << "SendRoomlist_Request() Failed \n";
 	}
 }
 

@@ -35,6 +35,7 @@
 #define stoc_Room_Join_Deny 94
 #define stoc_Room_Break_OK 95
 #define stoc_RoomPlayer_Enter	96
+#define stoc_RoomList_Update 97
 
 // Room		Scene	121 ~ 150
 #define stoc_Game_Start	121
@@ -62,6 +63,7 @@
 // Lobby	Scene	91 ~ 120
 #define ctos_Room_Make_Request 91
 #define ctos_Room_Join_Request 92
+#define ctos_Room_List_Request 93
 
 // Room		Scene	121 ~ 150
 #define ctos_RoomInfo_Request 121
@@ -242,6 +244,11 @@ struct STOC_ROOM_BREAK {
 	unsigned char type;
 	int room_num;
 };
+struct STOC_ROOMLIST_UPDATE {
+	short size;
+	unsigned char type;
+	int room_num;
+};
 
 // Room Scene
 
@@ -382,6 +389,12 @@ struct CTOS_ROOMINFO_REQUEST
 	short size;
 	unsigned char type;
 	int room_num;
+};
+
+struct CTOS_ROOMLIST_REQUEST
+{
+	short size;
+	unsigned char type;
 };
 
 struct CTOS_Ready {

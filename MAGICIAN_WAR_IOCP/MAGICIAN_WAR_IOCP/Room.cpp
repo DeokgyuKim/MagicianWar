@@ -485,7 +485,7 @@ void Room::sendEvent_push(int id, void* buffer)
 	Send_Packet_RoomInfo SP_RoomInfo;
 	SP_RoomInfo.playerID = id;
 
-	memcpy(&SP_RoomInfo.buffer, buffer, *(short*)packet);
+	memcpy(&SP_RoomInfo.buffer, buffer, *(short*)(&packet[0]));
 
 	m_send_mutex.lock();
 	m_sendEventQueue.push(SP_RoomInfo);

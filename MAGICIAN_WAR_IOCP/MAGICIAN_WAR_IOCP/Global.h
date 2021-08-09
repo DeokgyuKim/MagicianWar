@@ -30,7 +30,7 @@ enum OP_TYPE { // Accept는 Main_Thread가 할거임
 	OP_ACCEPT, // MainThread
 
 	OP_ROOM_UPDATE, OP_ROOM_TIME, // GameRoom
-	OP_ROOM_SEND_PACKET,OP_ROOM_BREAK
+	OP_ROOM_SEND_PACKET
 };
 
 struct EVENT {

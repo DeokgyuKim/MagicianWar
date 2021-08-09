@@ -50,6 +50,7 @@ public:
 	void SendRoomBreak_Packet(int room_num);
 	void SendRoomPlayerInfo(int id, int slot_num);
 	void SendRoomEnter(int id, int room_num);
+	void SendRoomList(int id, int room_num);
 
 	// Room
 	void SendRoomExit(int id);

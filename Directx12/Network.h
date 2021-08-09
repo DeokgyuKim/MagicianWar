@@ -96,9 +96,11 @@ public:
 	// Lobby Scene
 	void SendRoomMake_Request();
 	void SendRoomJoin_Request();
+	void MakeRoom_By_roomNum(int room_num);
 
 	// Room Scene
 	void SendRoomInfo_Request();
+	void SendRoomlist_Request();
 	void SendReadyState(bool ReadyState);
 	void SendExit_Request();
 	void SendTeamChange_Request(int type);

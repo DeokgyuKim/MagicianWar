@@ -63,7 +63,7 @@ void WorkThread::Thread_Run()
 			while (io_size > 0)
 			{
 				if (cur_packet_size == 0) {
-					cur_packet_size = *(short*)buffer;
+					cur_packet_size = *(short*)(&buffer[0]);
 				}
 				if (io_size + pr_data_size >= cur_packet_size) {
 					unsigned char packet[MAX_PACKET];
@@ -222,6 +222,17 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 		Server::GetInstance()->SendAcceptOK(id);
 		break;
 		// Lobby
+		case ctos_Room_List_Request:
+		{
+			for (int i = ROOM_INDEX_START; i < ROOM_INDEX_START + MAX_ROOMS; ++i) {
+				g_Room_mutex.lock();
+				if (g_Rooms[i] != nullptr) {
+					Server::GetInstance()->SendRoomList(id, i);
+				}
+				g_Room_mutex.unlock();
+			}
+			break;
+		}
 	case ctos_Room_Make_Request:
 	{
 		cout << id << " - Client가 방 생성 요청을 했습니다.\n";

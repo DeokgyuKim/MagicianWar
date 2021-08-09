@@ -134,7 +134,7 @@ void Server::MainThread_Run()
 bool Server::SendPacket(int id, void* buffer)
 {
 	char* packet = reinterpret_cast<char*>(buffer);
-	short packetSize = *(short*)packet;
+	short packetSize = *(short*)(&packet[0]);
 	OVER_EX* over = new OVER_EX;
 	memset(over, 0, sizeof(OVER_EX));
 	over->OpType = OP_SEND;
@@ -257,6 +257,17 @@ void Server::SendRoomEnter(int id,int room_num)
 	packet.room_num = room_num;
 	if (!SendPacket(id, &packet)) {
 		cout << "SendRoomEnter() Failed \n";
+	}
+}
+
+void Server::SendRoomList(int id, int room_num)
+{
+	STOC_ROOMLIST_UPDATE packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_RoomList_Update;
+	packet.room_num = room_num;
+	if (!SendPacket(id, &packet)) {
+		cout << "SendRoomList() Failed \n";
 	}
 }
 
