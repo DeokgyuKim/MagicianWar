@@ -18,6 +18,9 @@ void unreadyroom();
 void exitroom();
 void selectredteam();
 void selectblueteam();
+void selectFireCharacter();
+void selectColdCharacter();
+void selectDarkCharacter();
 
 RoomScene::RoomScene()
 {
@@ -92,16 +95,19 @@ void RoomScene::Initialize()
 		XMFLOAT4(685.f, 370.f, 150.f, 150.f), "Ui_Char_Base", "Ui_Char_Mouse", "Ui_Char_Click");
 	m_pObjects[OBJ_UI].push_back(pObj);
 	m_pRadio[0]->SetTag(WIZARD_FIRE);
+	m_pRadio[0]->SetEventButtonOn(selectFireCharacter);
 
 	pObj = m_pRadio[1] = new RadioButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(885.f, 370.f, 150.f, 150.f), "Ui_Char_Base", "Ui_Char_Mouse", "Ui_Char_Click");
 	m_pObjects[OBJ_UI].push_back(pObj);
 	m_pRadio[1]->SetTag(WIZARD_COLD);
+	m_pRadio[1]->SetEventButtonOn(selectColdCharacter);
 
 	pObj = m_pRadio[2] = new RadioButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(1085.f, 370.f, 150.f, 150.f), "Ui_Char_Base", "Ui_Char_Mouse", "Ui_Char_Click");
 	m_pObjects[OBJ_UI].push_back(pObj);
 	m_pRadio[2]->SetTag(WIZARD_DARKNESS);
+	m_pRadio[2]->SetEventButtonOn(selectDarkCharacter);
 
 	m_pRadio[0]->SetOthers(m_pRadio[1]); m_pRadio[0]->SetOthers(m_pRadio[2]);
 	m_pRadio[1]->SetOthers(m_pRadio[0]); m_pRadio[1]->SetOthers(m_pRadio[2]);
@@ -124,7 +130,7 @@ void RoomScene::Initialize()
 	pObj = m_pRadioTeam[0] = new RadioButton(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(1408.f, 100.f, 512.f, 180.f), "Ui_Text_RedTeam", "Ui_Text_RedTeam", "Ui_Text_RedTeam");
 	m_pObjects[OBJ_UI].push_back(pObj);
-	m_pRadioTeam[0]->SetTag(BUTTON_TAG::BUTTON_ROOM_END);
+	m_pRadioTeam[0]->SetTag(BUTTON_TAG::BUTTON_REDTEAM);
 	m_pRadioTeam[0]->SetEventButtonOn(selectredteam);
 
 
@@ -132,7 +138,7 @@ void RoomScene::Initialize()
 		XMFLOAT4(0.f, 100.f, 512.f, 180.f), "Ui_Text_BlueTeam", "Ui_Text_BlueTeam", "Ui_Text_BlueTeam");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
-	m_pRadioTeam[1]->SetTag(BUTTON_TAG::BUTTON_ROOM_END + 1);
+	m_pRadioTeam[1]->SetTag(BUTTON_TAG::BUTTON_BLUETEAM);
 	m_pRadioTeam[1]->SetEventButtonOn(selectblueteam);
 
 	m_pRadioTeam[0]->SetOthers(m_pRadioTeam[1]);
@@ -176,4 +182,19 @@ void selectredteam()
 void selectblueteam()
 {
 	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_SELECT_TEAM, 1, TEAM_BLUE);
+}
+
+void selectFireCharacter()
+{
+	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_SELECT_CHARACTER, 1, WIZARD_FIRE);
+}
+
+void selectColdCharacter()
+{
+	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_SELECT_CHARACTER, 1, WIZARD_COLD);
+}
+
+void selectDarkCharacter()
+{
+	Network::GetInstance()->CallEvent(EVENT_ROOM_PLAYER_SELECT_CHARACTER, 1, WIZARD_DARKNESS);
 }

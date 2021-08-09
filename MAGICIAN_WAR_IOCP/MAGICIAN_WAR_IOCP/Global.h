@@ -3,7 +3,7 @@
 #include "framework.h"
 
 constexpr int MAX_BUFFER = 4096;
-constexpr int MAX_PACKET = 1024;
+constexpr int MAX_PACKET = 256;
 constexpr int WORKTHREAD_COUNT = 6; // 총 쓰레드 개수 == 코어 개수 * 1.5 ( Main
 
 constexpr int MAX_PLAYER = 8; // 최대 4 : 4 까지 고려

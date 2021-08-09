@@ -268,11 +268,13 @@ void Network::CallEvent(int EventType, int args, ...)
 	case EVENT_LOADING_LOADINGEND:
 	{
 		SendLoadingEnd();
+		break;
 	}
 	break;
 	case EVENT_CTOS_CONNECT_OK:
 	{
 		SendConnectOK();
+		break;
 	}
 	break;
 
@@ -793,7 +795,7 @@ void Network::SendKeyInput(DWORD _keyInput)
 void Network::ServerKeyInput()
 {
 	DWORD dwKeyInput = 0;
-
+	
 	if (KeyMgr::GetInstance()->KeyPressing('W'))
 	{
 		dwKeyInput |= ctos_KEY_W;
@@ -822,7 +824,7 @@ void Network::ServerKeyInput()
 	{
 		dwKeyInput |= ctos_KEY_E;
 	}
-
+	
 	if (m_prevKey != dwKeyInput) {
 		m_prevKey = dwKeyInput;
 		SendKeyInput(m_prevKey);
@@ -858,8 +860,8 @@ void Network::SendConnectOK()
 bool Network::SendPacket(void* buffer)
 {
 	char* packet = reinterpret_cast<char*>(buffer);
-	int packetSize = *(short*)packet;
-	int ret = send(m_Sock, packet, packetSize, 0);
+	int packetSize = *(short*)(&packet[0]);
+	int ret = send(m_Sock, packet, (int)packetSize, 0);
 	if (ret == SOCKET_ERROR)
 	{
 		int err_no = WSAGetLastError();
