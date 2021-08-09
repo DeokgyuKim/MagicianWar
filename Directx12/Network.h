@@ -110,7 +110,7 @@ public:
 	void SendIngameInfo_Request();
 	void SendCameraUpdate(float cameraY);
 
-	void SendAttackEnd();
+	void SendAttackEnd(bool _bAttack);
 	void SendKeyInput(DWORD _keyInput);
 	void ServerKeyInput();
 

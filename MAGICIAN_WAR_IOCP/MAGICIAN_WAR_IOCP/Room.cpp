@@ -467,7 +467,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 	{
 		for (auto player : m_players) {
 			if (player->getID() == rEvent.playerID) {
-				player->setAttackEnd(true);
+				player->setAttackEnd(rEvent.bdata1);
 			break;
 			}
 		}

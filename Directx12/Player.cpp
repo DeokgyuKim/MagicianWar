@@ -35,7 +35,7 @@ Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer
 
 	m_strMeshType = meshType;
 	Initialize(pos);
-
+	m_bAttackEnd = false;
 
 }
 
@@ -150,16 +150,18 @@ void Player::LateUpdate(const float& fTimeDelta)
 
 	//if (m_pCamera == NULL)
 	//{
+#ifdef NETWORK
 	STOC_PlayerInfo info = Network::GetInstance()->GetRecvPlayerInfo(m_tNetInfo.Client_Num);
 	XMFLOAT3 rotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
 	rotate.y = info.playerInfo.CameraY;
-#ifdef NETWORK
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetPosition(info.playerInfo.xmfPosition);
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rotate);
 	dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(SCint(info.Upper_eAnimType));
 	dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->ChangeAnimation(SCint(info.Root_eAnimType));
-	if (dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetAttackEnd())
-		Network::GetInstance()->CallEvent(EVENT_STAGE_PLAYER_ANIMATE, 0);
+	if (m_bAttackEnd != dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetAttackEnd()) {
+		m_bAttackEnd = dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetAttackEnd();
+		Network::GetInstance()->CallEvent(EVENT_STAGE_PLAYER_ANIMATE, 1, m_bAttackEnd);
+	}
 #endif
 	//}
 	m_pWeapon->LateUpdate(fTimeDelta);

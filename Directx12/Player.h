@@ -67,7 +67,7 @@ protected:
     // FSM
     unique_ptr<InterfaceFSM>                    m_UpperBody;    // 상체
     unique_ptr<InterfaceFSM>                    m_RootBody;     // 하체
-
+    bool m_bAttackEnd;
 
     //PhysX
     PxCapsuleController* m_pCapsuleCon = nullptr;

@@ -449,4 +449,5 @@ struct CTOS_CAMERA {
 struct CTOS_ATTACKEND {
 	short size;
 	unsigned char type;
+	bool isAttacked;
 };

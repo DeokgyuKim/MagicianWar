@@ -348,7 +348,9 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 	}
 	case ctos_AttackEnd:
 	{
+		CTOS_ATTACKEND* data = reinterpret_cast<CTOS_ATTACKEND*>(packet);
 		RoomPacket.type = ctos_AttackEnd;
+		RoomPacket.bdata1 = data->isAttacked;
 		break;
 	}
 	default:

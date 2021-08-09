@@ -39,7 +39,7 @@ int AnimationCom::Update(const float& fTimeDelta)
 	//	DefaultAnimate(fTimeDelta);
 	//}
 	//else {
-		BlendingAnimate(fTimeDelta);
+	BlendingAnimate(fTimeDelta);
 	//}
 
 	return 0;
@@ -115,8 +115,9 @@ void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 		(m_fBlendTime / m_fMaxBlendTime));
 
 	if (keyAnimation->Time * 1.4 > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(keyAnimation->eType)) {
-		m_bAttackEnd = true; // 일반 공격시 공격이 끝나면 Idle로 바꾸기 위한 bool 변수
-		
+		if (keyAnimation->eType == ANIMATION_TYPE::ATTACK)
+			m_bAttackEnd = true; // 일반 공격시 공격이 끝나면 Idle로 바꾸기 위한 bool 변수
+
 	}
 	if (keyAnimation->eType != ANIMATION_TYPE::DEAD)
 	{

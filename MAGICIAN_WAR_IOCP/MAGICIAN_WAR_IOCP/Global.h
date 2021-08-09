@@ -72,6 +72,7 @@ struct ROOM_EVENT {
 	unsigned char type;		// 무슨 패킷인가
 	DWORD data1;
 	float fdata;
+	bool bdata1;
 	// 기타 정보
 };
 

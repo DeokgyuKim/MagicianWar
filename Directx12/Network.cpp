@@ -284,8 +284,14 @@ void Network::CallEvent(int EventType, int args, ...)
 	case EVENT_STAGE_PLAYER_INFO:
 		break;
 	case EVENT_STAGE_PLAYER_ANIMATE:
-		SendAttackEnd();
+	{
+		va_list ap;
+		va_start(ap, args);
+		bool value = va_arg(ap, bool);
+		va_end(ap);
+		SendAttackEnd(value);
 		break;
+	}
 	case EVENT_STAGE_CAMERA_UPDATE:
 	{
 		va_list ap;
@@ -739,11 +745,12 @@ void Network::SendCameraUpdate(float cameraY)
 	}
 }
 
-void Network::SendAttackEnd()
+void Network::SendAttackEnd(bool _bAttack)
 {
 	CTOS_ATTACKEND packet;
 	packet.size = sizeof(packet);
 	packet.type = ctos_AttackEnd;
+	packet.isAttacked = _bAttack;
 	if (!SendPacket(&packet)) {
 		cout << "SendAttackEnd() Failed \n";
 	}

@@ -109,7 +109,7 @@ void PlayerFSM::Exit()
 
 			break;
 		case STATE_ATTACK:
-			m_User->setAttackEnd(false);
+			
 			break;
 		case STATE_JUMP:
 			m_User->setJump(false);
