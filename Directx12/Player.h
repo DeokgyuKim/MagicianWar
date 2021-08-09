@@ -33,8 +33,10 @@ public:
 public:
     XMFLOAT3    GetPosition();
     XMFLOAT4X4  GetWorld();
+    XMFLOAT3    GetRotate();
     PlayerInfo  GetNetworkInfo() { return m_tNetInfo; }
     void        SetPosition(XMFLOAT3 xmfPos);
+    void        SetRotate(XMFLOAT3 xmfRotate);
     void        SetWorld(XMFLOAT4X4 world);
     void        SetCamera(Camera* pCamera) { m_pCamera = pCamera; }
 public:

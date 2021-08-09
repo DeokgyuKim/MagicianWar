@@ -1,6 +1,5 @@
 #include "Animation.h"
 #include "AnimationMgr.h"
-
 AnimationCom::AnimationCom(const string& user)
 {
 	// 메쉬에 맞는 애니메이션들 세팅해주고
@@ -36,12 +35,12 @@ AnimationCom::~AnimationCom()
 
 int AnimationCom::Update(const float& fTimeDelta)
 {
-	if (!m_bBlending) {
-		DefaultAnimate(fTimeDelta);
-	}
-	else {
+	//if (!m_bBlending) {
+	//	DefaultAnimate(fTimeDelta);
+	//}
+	//else {
 		BlendingAnimate(fTimeDelta);
-	}
+	//}
 
 	return 0;
 }
@@ -117,6 +116,7 @@ void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 
 	if (keyAnimation->Time * 1.4 > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(keyAnimation->eType)) {
 		m_bAttackEnd = true; // 일반 공격시 공격이 끝나면 Idle로 바꾸기 위한 bool 변수
+		
 	}
 	if (keyAnimation->eType != ANIMATION_TYPE::DEAD)
 	{

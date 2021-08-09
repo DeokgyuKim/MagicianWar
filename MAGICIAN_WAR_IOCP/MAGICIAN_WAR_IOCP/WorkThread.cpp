@@ -189,7 +189,12 @@ void WorkThread::BreakRoom(int room_Num)
 	if (g_Rooms[room_Num] == nullptr)
 		return;
 
+	
 	g_Room_mutex.lock();
+	Room* deleteRoom = g_Rooms.find(room_Num)->second;
+	//deleteRoom->Release();
+	delete deleteRoom;
+	deleteRoom = nullptr;
 	g_Rooms.erase(room_Num);
 	g_Room_mutex.unlock();
 
@@ -321,6 +326,18 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 		CTOS_KEYINPUT* data = reinterpret_cast<CTOS_KEYINPUT*>(packet);
 		RoomPacket.type = ctos_keyInput;
 		RoomPacket.data1 = data->key;
+		break;
+	}
+	case ctos_Camera_y:
+	{
+		CTOS_CAMERA* data = reinterpret_cast<CTOS_CAMERA*>(packet);
+		RoomPacket.type = ctos_Camera_y;
+		RoomPacket.fdata = data->CameraY;
+		break;
+	}
+	case ctos_AttackEnd:
+	{
+		RoomPacket.type = ctos_AttackEnd;
 		break;
 	}
 	default:

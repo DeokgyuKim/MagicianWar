@@ -10,6 +10,7 @@ Room::Room(int room_num, int host)
 
 Room::~Room()
 {
+	Release();
 }
 
 void Room::Initalize(int room_num, int host)
@@ -39,7 +40,7 @@ void Room::Initalize(int room_num, int host)
 	EVENT Room_Update;
 	Room_Update.Object_ID = EVENT_KEY;
 	Room_Update.Target_ID = m_Info.Room_Num;
-	Room_Update.wakeup_time = chrono::system_clock::now() + chrono::microseconds(16);
+	Room_Update.wakeup_time = chrono::system_clock::now() + chrono::milliseconds(16);
 	Room_Update.opType = OP_ROOM_UPDATE;
 	Server::GetInstance()->AddTimer(Room_Update);
 
@@ -61,6 +62,17 @@ void Room::ReInit()
 	m_player_mutex.unlock();
 }
 
+void Room::Release()
+{
+	for (auto& player : m_players)
+	{
+		if (player != nullptr)
+			delete player;
+		player = nullptr;
+	}
+	m_players.clear();
+}
+
 void Room::Update()
 {
 	if (this == nullptr) return;
@@ -74,6 +86,7 @@ void Room::Update()
 	recvEvent_Copy();
 
 	ROOM_EVENT rEvent;
+
 	while (!m_recvEventQueue_Copied.empty())
 	{
 		rEvent = m_recvEventQueue_Copied.front();
@@ -108,19 +121,11 @@ void Room::Update()
 	EVENT roomEvent_Send;
 	roomEvent_Send.Object_ID = EVENT_KEY;
 	roomEvent_Send.Target_ID = m_Info.Room_Num;
-	roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::milliseconds(10);
+	roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::milliseconds(1);
 	roomEvent_Send.opType = OP_ROOM_SEND_PACKET;
 	Server::GetInstance()->AddTimer(roomEvent_Send);
 
 
-	//if (m_curPlayer_Count <= 0) {
-	//	EVENT roomEvent_Break;
-	//	roomEvent_Break.Object_ID = EVENT_KEY;
-	//	roomEvent_Break.Target_ID = m_Info.Room_Num;
-	//	roomEvent_Break.wakeup_time = chrono::system_clock::now() + chrono::milliseconds(10);
-	//	roomEvent_Break.opType = OP_ROOM_BREAK;
-	//	Server::GetInstance()->AddTimer(roomEvent_Break);
-	//}
 
 }
 
@@ -272,6 +277,9 @@ void Room::Player_Disconnect(int id)
 	for (auto iter = m_players.begin(); iter != m_players.end();)
 	{
 		if ((*iter)->getID() == id) {
+			if ((*iter) != nullptr)
+				delete* iter;
+			*iter = nullptr;
 			iter = m_players.erase(iter);
 		}
 		else
@@ -443,6 +451,27 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 		}
 		break;
 	}
+	case ctos_Camera_y:
+	{
+		for (auto player : m_players) {
+			if (player->getID() == rEvent.playerID) {
+				XMFLOAT3 xmfRotate = player->getRotate();
+				xmfRotate.y = rEvent.fdata;
+				player->SetRotate(xmfRotate);
+				break;
+			}
+		}
+		break;
+	}
+	case ctos_AttackEnd:
+	{
+		for (auto player : m_players) {
+			if (player->getID() == rEvent.playerID) {
+				player->setAttackEnd(true);
+			break;
+			}
+		}
+	}
 	default:
 		break;
 	}
@@ -576,12 +605,12 @@ void Room::Push_UpdatePlayerInfoPacket(Player* _player)
 	packet.ePlayerState = _player->getState();
 	packet.Root_eAnimType = _player->getRootAnimType();
 	packet.Upper_eAnimType = _player->getUpperAnimType();
-	
-	packet.matWorld = _player->getWorld();
+
+	//packet.playerInfo.x = _player->getWorld();
 	packet.playerInfo = _player->getInfo();
 	packet.bAttackEnd = _player->IsAttackEnded();
 	packet.playerInfo.iHp = _player->getHp();
-	
+
 	for (auto player : m_players) {
 		sendEvent_push(player->getID(), &packet);
 	}

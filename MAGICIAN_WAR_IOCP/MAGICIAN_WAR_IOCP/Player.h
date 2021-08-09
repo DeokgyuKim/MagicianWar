@@ -13,12 +13,11 @@ public:
 
 public:
 	void Initialize(int client_num, int room_num);
+	void LateInit();
 	void ReInit();
 	void Update(float fTime);
 	void LateUpdate(float fTime);
-	void UpdatePlayerInfo(PlayerInfo* pInfo);
-	void UpdatePosition();
-	void noTransWorldUpdate(XMFLOAT4X4 _world);
+	void UpdatePlayerInfo();
 	void MoveForward(float speed);
 	void MoveBackward(float speed);
 	void MoveLeft(float speed);
@@ -29,7 +28,8 @@ public:
 public:
 	// Get
 	XMFLOAT3 getPosition() { return m_Info.xmfPosition; }
-	XMFLOAT4X4 getWorld() { return m_Info.matWorld; }
+	XMFLOAT3   getRotate() { return m_xmfRotate; }
+	XMFLOAT4X4 getWorld() { return m_xmmWorld; }
 	XMFLOAT4X4 getBulletStartWorld();
 	PlayerInfo getInfo() { return m_Info; }
 	int getState() { return m_Info.PlayerState; }
@@ -79,6 +79,10 @@ public:
 	void setHost(bool bHost);
 
 public:
+	void SetScale(XMFLOAT3 xmfSclae) { m_xmfScale = xmfSclae; }
+	void SetRotate(XMFLOAT3 xmfRotate);
+
+public:
 	//PhysX
 	void CreateCapsuleController();
 	void ModifyPhysXPos(const float& fTimeDelta);
@@ -91,8 +95,14 @@ private: //
 	PlayerInfo m_Info;
 	bool m_Ready;
 	bool m_Room_JoinState;
+	bool m_LateInit;
 
+	// 초기화
 	XMFLOAT4X4		m_matRealWorld;
+	XMFLOAT3		m_xmfScale;
+	XMFLOAT3		m_xmfRotate;
+	XMFLOAT3		m_xmfMeshRotate;
+	XMFLOAT4X4		m_xmmWorld;
 
 	// 하체 ( 기준 )
 	int				m_Root_eAnimType;

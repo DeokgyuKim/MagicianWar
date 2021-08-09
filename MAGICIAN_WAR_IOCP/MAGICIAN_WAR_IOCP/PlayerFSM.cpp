@@ -20,6 +20,7 @@ void PlayerFSM::ChangeState(int _State, int _Ani)
 	Exit();
 
 	m_State = _State;
+	
 
 	Enter(_State, _Ani);
 }
@@ -33,6 +34,7 @@ void PlayerFSM::Enter(int _State, int _Ani)
 	if (m_BoneType == BONE_UPPER)
 	{ // 상체 애니메이션을 갱신
 		m_User->ChangeUpperAnimation(_Ani);
+
 	}
 	else if (m_BoneType == BONE_ROOT)
 	{ // 하체 애니메이션을 갱신
@@ -107,7 +109,7 @@ void PlayerFSM::Exit()
 
 			break;
 		case STATE_ATTACK:
-
+			m_User->setAttackEnd(false);
 			break;
 		case STATE_JUMP:
 			m_User->setJump(false);
@@ -250,16 +252,16 @@ void PlayerFSM::Move(float fTime)
 			{ // 위쪽
 				if (DefaultKey & ctos_KEY_A) { // a
 					// 왼쪽
-					m_User->MoveForward(P_MoveForward_Speed / sqrtf(2.f));
-					m_User->MoveLeft(P_MoveLeft_Speed / sqrtf(2.f));
+					m_User->MoveForward(P_MoveForward_Speed / sqrtf(2.f)* fTime);
+					m_User->MoveLeft(P_MoveLeft_Speed / sqrtf(2.f)* fTime);
 				}
 				else if (DefaultKey & ctos_KEY_D) { // d
 					// 오른쪽
-					m_User->MoveForward(P_MoveForward_Speed / sqrtf(2.f));
-					m_User->MoveRight(P_MoveRight_Speed / sqrtf(2.f));
+					m_User->MoveForward(P_MoveForward_Speed / sqrtf(2.f)* fTime);
+					m_User->MoveRight(P_MoveRight_Speed / sqrtf(2.f)* fTime);
 				}
 				else {
-					m_User->MoveForward(P_MoveForward_Speed);
+					m_User->MoveForward(P_MoveForward_Speed* fTime);
 				}
 				m_User->ChangeRootAnimation(ANIM_WALK_FOWARD);
 			}
@@ -267,26 +269,26 @@ void PlayerFSM::Move(float fTime)
 				// 아래쪽
 				if (DefaultKey & ctos_KEY_A) { // a
 					// 왼쪽
-					m_User->MoveBackward(P_MoveBackward_Speed / sqrtf(2.f));
-					m_User->MoveLeft(P_MoveLeft_Speed / sqrtf(2.f));
+					m_User->MoveBackward(P_MoveBackward_Speed / sqrtf(2.f)* fTime);
+					m_User->MoveLeft(P_MoveLeft_Speed / sqrtf(2.f)* fTime);
 				}
 				else if (DefaultKey & ctos_KEY_D) { // d
 					// 오른쪽
-					m_User->MoveBackward(P_MoveBackward_Speed / sqrtf(2.f));
-					m_User->MoveRight(P_MoveRight_Speed / sqrtf(2.f));
+					m_User->MoveBackward(P_MoveBackward_Speed / sqrtf(2.f)* fTime);
+					m_User->MoveRight(P_MoveRight_Speed / sqrtf(2.f)* fTime);
 				}
 				else {
-					m_User->MoveBackward(P_MoveBackward_Speed);
+					m_User->MoveBackward(P_MoveBackward_Speed* fTime);
 				}
 				m_User->ChangeRootAnimation(ANIM_WALK_BACK);
 			}
 			else if (DefaultKey & ctos_KEY_A) { // a
 				m_User->ChangeRootAnimation(ANIM_WALK_LEFT);
-				m_User->MoveLeft(P_MoveLeft_Speed);
+				m_User->MoveLeft(P_MoveLeft_Speed* fTime);
 			}
 			else if (DefaultKey & ctos_KEY_D) { // d
 				m_User->ChangeRootAnimation(ANIM_WALK_RIGHT);
-				m_User->MoveRight(P_MoveRight_Speed);
+				m_User->MoveRight(P_MoveRight_Speed* fTime);
 			}
 			else
 				ChangeState(STATE_IDLE, ANIM_IDLE);
@@ -354,16 +356,16 @@ void PlayerFSM::Jump(float fTime)
 		{ // 위쪽
 			if (dkey & ctos_KEY_A) { // a
 				// 왼쪽
-				m_User->MoveForward(P_MoveForward_Speed / sqrtf(2.f));
-				m_User->MoveLeft(P_MoveLeft_Speed / sqrtf(2.f));
+				m_User->MoveForward(P_MoveForward_Speed / sqrtf(2.f)* fTime);
+				m_User->MoveLeft(P_MoveLeft_Speed / sqrtf(2.f)* fTime);
 			}
 			else if (dkey & ctos_KEY_D) { // d
 				// 오른쪽
-				m_User->MoveForward(P_MoveForward_Speed / sqrtf(2.f));
-				m_User->MoveRight(P_MoveRight_Speed / sqrtf(2.f));
+				m_User->MoveForward(P_MoveForward_Speed / sqrtf(2.f)* fTime);
+				m_User->MoveRight(P_MoveRight_Speed / sqrtf(2.f)* fTime);
 			}
 			else {
-				m_User->MoveForward(P_MoveForward_Speed);
+				m_User->MoveForward(P_MoveForward_Speed* fTime);
 			}
 			m_User->ChangeRootAnimation(ANIM_WALK_FOWARD);
 		}
@@ -371,26 +373,26 @@ void PlayerFSM::Jump(float fTime)
 			// 아래쪽
 			if (dkey & ctos_KEY_A) { // a
 				// 왼쪽
-				m_User->MoveBackward(P_MoveBackward_Speed / sqrtf(2.f));
-				m_User->MoveLeft(P_MoveLeft_Speed / sqrtf(2.f));
+				m_User->MoveBackward(P_MoveBackward_Speed / sqrtf(2.f)* fTime);
+				m_User->MoveLeft(P_MoveLeft_Speed / sqrtf(2.f)* fTime);
 			}
 			else if (dkey & ctos_KEY_D) { // d
 				// 오른쪽
-				m_User->MoveBackward(P_MoveBackward_Speed / sqrtf(2.f));
-				m_User->MoveRight(P_MoveRight_Speed / sqrtf(2.f));
+				m_User->MoveBackward(P_MoveBackward_Speed / sqrtf(2.f)* fTime);
+				m_User->MoveRight(P_MoveRight_Speed / sqrtf(2.f)* fTime);
 			}
 			else {
-				m_User->MoveBackward(P_MoveBackward_Speed);
+				m_User->MoveBackward(P_MoveBackward_Speed*fTime);
 			}
 			m_User->ChangeRootAnimation(ANIM_WALK_BACK);
 		}
 		else if (dkey & ctos_KEY_A) { // a
 			m_User->ChangeRootAnimation(ANIM_WALK_LEFT);
-			m_User->MoveLeft(P_MoveLeft_Speed);
+			m_User->MoveLeft(P_MoveLeft_Speed * fTime);
 		}
 		else if (dkey & ctos_KEY_D) { // d
 			m_User->ChangeRootAnimation(ANIM_WALK_RIGHT);
-			m_User->MoveRight(P_MoveRight_Speed);
+			m_User->MoveRight(P_MoveRight_Speed * fTime);
 		}
 
 		if (m_User->Jump(fTime))

@@ -20,7 +20,7 @@
 // FSM
 #include "PlayerFSM.h"
 
-
+#include "Network.h"
 
 
 Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName, XMFLOAT3 pos,
@@ -115,17 +115,10 @@ int Player::Update(const float& fTimeDelta)
 		if (m_pCamera->GetMode() == CAMERA_MODE::CAMERA_THIRD)
 		{
 			XMFLOAT3 xmfRotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
-			xmfRotate.y = m_pCamera->GetRotY();
-			dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotate);
-
-			// ÃÑ¾Ë ¹ß»ç
-			//if (GetAsyncKeyState(VK_LBUTTON) & 0x0001)
-			//{
-			//	XMFLOAT3 pos = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
-			//	pos.y += 1.f;
-			//	MainApp::GetInstance()->GetScene()->PushObject(new Bullet(m_pDevice, m_pCmdLst, m_pRenderer,"FireBall",
-			//		pos, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate(), 30.f), OBJ_TYPE::OBJ_BULLET);
-			//}
+			float cameraY = m_pCamera->GetRotY();
+			if (xmfRotate.y != cameraY) {
+				Network::GetInstance()->SendCameraUpdate(cameraY);
+			}
 
 		}
 	}
@@ -152,13 +145,15 @@ void Player::LateUpdate(const float& fTimeDelta)
 
 	//if (m_pCamera == NULL)
 	//{
-	//	STOC_PlayerInfo info = Network::GetInstance()->GetRecvPlayerInfo(m_tNetInfo.Client_Num);
-	//	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetWorld(info.matWorld);
-	//
-	//	dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(SCint(info.Upper_eAnimType));
-	//	dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->ChangeAnimation(SCint(info.Root_eAnimType));
-	//
-	//
+	STOC_PlayerInfo info = Network::GetInstance()->GetRecvPlayerInfo(m_tNetInfo.Client_Num);
+	XMFLOAT3 rotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
+	rotate.y = info.playerInfo.CameraY;
+	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetPosition(info.playerInfo.xmfPosition);
+	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rotate);
+	dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(SCint(info.Upper_eAnimType));
+	dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->ChangeAnimation(SCint(info.Root_eAnimType));
+	if (dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetAttackEnd())
+		Network::GetInstance()->CallEvent(EVENT_STAGE_PLAYER_ANIMATE, 0);
 	//}
 	m_pWeapon->LateUpdate(fTimeDelta);
 }
@@ -208,9 +203,19 @@ XMFLOAT4X4 Player::GetWorld()
 	return world;
 }
 
+XMFLOAT3 Player::GetRotate()
+{
+	return dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
+}
+
 void Player::SetPosition(XMFLOAT3 xmfPos)
 {
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetPosition(xmfPos);
+}
+
+void Player::SetRotate(XMFLOAT3 xmfRotate)
+{
+	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotate);
 }
 
 void Player::SetWorld(XMFLOAT4X4 world)
