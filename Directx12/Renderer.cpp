@@ -99,6 +99,7 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pRTMgr->GetRenderTarget("Depth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 9);
 	m_pRTMgr->GetRenderTarget("LightDepth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 21);
 	m_pRTMgr->GetRenderTarget("Position")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 12);
+	m_pRTMgr->GetRenderTarget("Emmissive")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 14);
 
 	m_pLight->RenderLight();
 
@@ -120,6 +121,9 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pRTMgr->GetRenderTarget("Depth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 9);
 	m_pRTMgr->GetRenderTarget("LightDepth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 21);
 	m_pRTMgr->GetRenderTarget("Normal")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 13);
+	m_pRTMgr->GetRenderTarget("Bloom")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 15);
+	m_pRTMgr->GetRenderTarget("BloomAlpha")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 16);
+	
 	m_pBlendGeo->Render(fTimeDelta);
 
 
@@ -140,13 +144,12 @@ void Renderer::Render(const float& fTimeDelta)
 			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetInstName()]);
 		}
 	}
-	
-	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_SKILL])
+
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_POSTSKILL])
 	{
 		m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
 		pObject->Render(fTimeDelta);
 	}
-
 
 	m_mapShaders[RENDER_TYPE::RENDER_UI]->PreRender(m_pCmdLst);
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_UI])
@@ -275,6 +278,11 @@ void Renderer::Render_Albedo(const float& fTimeDelta)
 			m_InstanceCheck[pObject->GetInstName()] = InstanceMgr::GetInstnace()->m_InstanceObjects[pObject->GetInstName()]->GetInstanceCount();
 			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetInstName()]);
 		}
+	}
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_DEFFSKILL])
+	{
+		m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+		pObject->Render(fTimeDelta);
 	}
 }
 
@@ -570,7 +578,7 @@ void Renderer::BuildShader()
 	};
 	pShader = new Shader;
 	pShader->BuildShadersAndInputLayout(L"Blend.hlsl", "VS_Shade", L"Blend.hlsl", "PS_Shade", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 4, true, false);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 6, true, false, false, 5);
 	m_mapShaders[RENDER_TYPE::RENDER_SHADE] = pShader;
 
 	pShader = new Shader;

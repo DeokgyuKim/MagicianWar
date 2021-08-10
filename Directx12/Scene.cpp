@@ -15,9 +15,16 @@ int Scene::Update(const float& fTimeDelta)
 {
 	for (int i = 0; i < OBJ_END; ++i)
 	{
-		for (auto Object : m_pObjects[i])
+		for (auto iter = m_pObjects[i].begin(); iter != m_pObjects[i].end();)
 		{
-			Object->Update(fTimeDelta);
+			int Event = (*iter)->Update(fTimeDelta);
+			if (Event == -1)
+			{
+				delete* iter;
+				iter = m_pObjects[i].erase(iter);
+			}
+			else
+				++iter;
 		}
 	}
 	return 0;

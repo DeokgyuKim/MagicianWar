@@ -42,5 +42,5 @@ void FireRing::LateUpdate(const float& fTimeDelta)
 
 void FireRing::Render(const float& fTimeDelta, int _instanceCount)
 {
-    Skill::LateUpdate(fTimeDelta);
+    Skill::Render(fTimeDelta, _instanceCount);
 }

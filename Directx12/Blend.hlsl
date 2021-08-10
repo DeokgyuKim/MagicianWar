@@ -49,10 +49,12 @@ Shade_Out VS_Shade(Shade_In pin)
 }
 struct PS_SHADE_OUT
 {
-	float4 Shade	: SV_TARGET0;
-	float4 Specular : SV_TARGET1;
-	float4 RimLight : SV_TARGET2;
-	float4 OutLine	: SV_TARGET3;
+	float4 Shade		: SV_TARGET0;
+	float4 Specular		: SV_TARGET1;
+	float4 RimLight		: SV_TARGET2;
+	float4 OutLine		: SV_TARGET3;
+	float4 BloomAlpha	: SV_TARGET4;
+	float4 Bloom		: SV_TARGET5;
 };
 PS_SHADE_OUT PS_Shade(Shade_Out pin)
 {
@@ -149,6 +151,41 @@ PS_SHADE_OUT PS_Shade(Shade_Out pin)
 	float RimLightValue = max(0.f, -dot(-gLightDirection.xyz, vLook.xyz));
 	pOut.RimLight = float4(1.f, 1.f, 1.f, 1.f) * RimLightValue * fresnel;
 
+	/////BLOOM//////////////////////////////////////////////////////////////////////////////////////
+
+	float Weight[13] = {
+		0.0561f, 0.1353f, 0.278f, 0.4868f, 0.7261f, 0.9231f, 1.f, 0.9231f, 0.7261f, 0.4868f, 0.278f, 0.1353f, 0.0561f
+	};
+	float Total = 6.2108f;
+
+	float3 emmissivek = float3(0.f, 0.f, 0.f);
+	float3 emmissivel = float3(0.f, 0.f, 0.f);
+	for (int k = -6; k <= 6; ++k)
+	{
+		float2 adjacencyUV = pin.UV + float2(0.f, k * 0.0009f);
+		if (0.01f < adjacencyUV.x && adjacencyUV.x < 0.99f && 0.01f < adjacencyUV.y && adjacencyUV.y < 0.99f)
+		{
+			emmissivek += Weight[k + 6] * SkillEffTex2.Sample(gsamLinear, adjacencyUV).xyz;
+		}
+	}
+	emmissivek /= Total;
+	for (int l = -6; l <= 6; ++l)
+	{
+		float2 adjacencyUV = pin.UV + float2(l * 0.0005f, 0.f);
+		if (0.01f < adjacencyUV.x && adjacencyUV.x < 0.99f && 0.01f < adjacencyUV.y && adjacencyUV.y < 0.99f)
+		{
+			emmissivel += Weight[l + 6] * SkillEffTex2.Sample(gsamLinear, adjacencyUV).xyz;
+		}
+	}
+	emmissivel /= Total;
+
+	float3 emmcolor = (emmissivek + emmissivel) / 2.f;
+	float alpha = saturate((emmcolor.r + emmcolor.g + emmcolor.b) / 3.f);
+	
+	pOut.Bloom = float4(emmcolor, alpha);
+	pOut.BloomAlpha = float4(alpha.xxx, 1.f);
+
+
 	return pOut;
 }
 
@@ -178,8 +215,10 @@ PS_BLEND_OUT PS_BLEND(Blend_Out pin)
 	float4 outline = NormalTex.Sample(gsamLinear, pin.UV);
 	float4 depth = DepthTex.Sample(gsamLinear, pin.UV);
 	float4 viewposition = NoiseTex.Sample(gsamLinear, pin.UV);
+	float4 bloom = SkillEffTex3.Sample(gsamLinear, pin.UV);
+	float4 bloomalpha = SkillEffTex4.Sample(gsamLinear, pin.UV);
 	
-
+	//Shadow
 	float4 worldpos = mul(float4(viewposition.xyz, 1.f), gInvView);
 	float4 shadowproj = mul(mul(float4(worldpos), gLightView), gLightProj);
 	float shadowdepth = shadowproj.z / shadowproj.w;
@@ -197,13 +236,13 @@ PS_BLEND_OUT PS_BLEND(Blend_Out pin)
 		}
 	}
 
-	float4 color = shade * shadowvalue + specular + rimlight;
-	color = color * (1 - outline);
+	float3 color = (shade.xyz * shadowvalue) + specular.xyz + rimlight.xyz;
+	color = color * (1 - outline.xyz);
+	color = (bloomalpha.xyz * bloom.xyz) + (1.f - bloomalpha.xyz) * color;
 	color = pow(color, 1.f / 2.2f);
-	color.a = 1.f;
 
 
-	pOut.Blend = color;
+	pOut.Blend = float4(color, 1.f);
 
 	float ratioX = 0.1f;
 	float ratioY = 0.1f;
@@ -223,6 +262,13 @@ PS_BLEND_OUT PS_BLEND(Blend_Out pin)
 		pOut.Blend = DepthTex.Sample(gsamLinear, pin.UV / 0.1f);
 	if (1.f * ratioX <= pin.UV.x && pin.UV.x < 2.f * ratioX && 1.f * ratioY <= pin.UV.y && pin.UV.y < 2.f * ratioY)
 		pOut.Blend = LightDepthTex.Sample(gsamLinear, pin.UV / 0.1f);
+
+	if (2.f * ratioX <= pin.UV.x && pin.UV.x < 3.f * ratioX && 0.f * ratioY <= pin.UV.y && pin.UV.y < 1.f * ratioY)
+		pOut.Blend = SkillEffTex2.Sample(gsamLinear, pin.UV / 0.1f);
+	if (2.f * ratioX <= pin.UV.x && pin.UV.x < 3.f * ratioX && 1.f * ratioY <= pin.UV.y && pin.UV.y < 2.f * ratioY)
+		pOut.Blend = SkillEffTex4.Sample(gsamLinear, pin.UV / 0.1f);
+	if (2.f * ratioX <= pin.UV.x && pin.UV.x < 3.f * ratioX && 2.f * ratioY <= pin.UV.y && pin.UV.y < 3.f * ratioY)
+		pOut.Blend = SkillEffTex3.Sample(gsamLinear, pin.UV / 0.1f);
 	
 	pOut.Blend.a = 1.f;
 	return pOut;

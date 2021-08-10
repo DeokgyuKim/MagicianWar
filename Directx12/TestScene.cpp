@@ -11,6 +11,8 @@
 #include "Flames.h"
 #include "FireShock.h"
 #include "FireRing.h"
+#include "IceBolt.h"
+#include "Meteor.h"
 
 #include "StaticMeshMgr.h"
 #include "InstanceMgr.h"
@@ -147,7 +149,7 @@ void TestScene::Initialize()
 
 #else
 	pObj = new Player(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		CHARACTER_WIZARD_COLD, MESH_TYPE::CHARACTER, XMFLOAT3(40.f, 0.f, 10.f));
+		CHARACTER_WIZARD_COLD, MESH_TYPE::CHARACTER, XMFLOAT3(20.f, 0.f, 10.f));
 	pPlayer = dynamic_cast<Player*>(pObj);
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
 #endif
@@ -199,7 +201,7 @@ void TestScene::Initialize()
 	}
 
 	//pObj = new Flames(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-	//	XMFLOAT3(10.f, 1.f, 5.f));
+	//	XMFLOAT3(20.f, 2.f, 20.f));
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
 	//
 	//pObj = new FireShock(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
@@ -209,8 +211,18 @@ void TestScene::Initialize()
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
 	//
 	//pObj = new Bullet(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), "FireBall",
-	//	XMFLOAT3(20.f, 1.f, 30.f), XMFLOAT3(0.f, 180.f, 0.f), 3.f);
+	//	XMFLOAT3(20.f, 1.f, 10.f), XMFLOAT3(0.f, 180.f, 0.f), 0.f);
 	//m_pObjects[OBJ_BULLET].push_back(pObj);
+	//
+	//pObj = new IceBolt(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 2.f, 15.f));
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
+	//
+	//pObj = new Meteor(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 5.f, 15.f));
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
+
+
 
 	//Core::GetInstance()->CmdLstReset();
 	//pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());

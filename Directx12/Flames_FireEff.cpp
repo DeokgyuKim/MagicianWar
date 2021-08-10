@@ -23,14 +23,15 @@ Flames_FireEff::~Flames_FireEff()
 
 void Flames_FireEff::BuildComponent()
 {
-	Component* pComponent = new Transform(XMFLOAT3(1.f, 2.f, 2.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(1.f, 4.f, 6.f), XMFLOAT3(0.f, 90.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetParentMatrix(dynamic_cast<Transform*>(m_pParent->GetTransController())->GetWorldMatrixPointer());
 
 
-	pComponent = new Plane(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), 0.f, 0.f, false);
+	pComponent = new Plane(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), 0.f, 0.f, false);//new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), "FireWall");
 	m_mapComponent["Mesh"] = pComponent;
+
 	pComponent = new MaterialCom("FireEff", XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 0.f));
 	m_mapComponent["Material"] = pComponent;
 
@@ -39,7 +40,7 @@ void Flames_FireEff::BuildComponent()
 
 void Flames_FireEff::AddTexturesName()
 {
-	m_lstTextureName.push_back("Flames_FireEff");
+	m_lstTextureName.push_back("FireMakeLong");
 	m_lstTextureName.push_back("Noise");
 	m_lstTextureName.push_back("Noise2");
 	m_lstTextureName.push_back("Noise3");

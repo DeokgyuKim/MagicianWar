@@ -33,7 +33,7 @@ int LoadingScene::Update(const float& fTimeDelta)
 
 	if (m_pLoading != NULL)
 	{
-		m_pLoadingBar->SetRatio(XMFLOAT2(m_pLoading->GetCount() / 96.f, 1.f));
+		m_pLoadingBar->SetRatio(XMFLOAT2(m_pLoading->GetCount() / 120.f, 1.f));
 		//cout << m_pLoading->GetCount()<< endl;
 	}
 

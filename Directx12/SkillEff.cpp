@@ -48,6 +48,8 @@ void SkillEff::Release()
 
 int SkillEff::Update(const float& fTimeDelta)
 {
+    if (m_bDead)
+        return -1;
     Object::Update(fTimeDelta);
     return 0;
 }
@@ -55,7 +57,7 @@ int SkillEff::Update(const float& fTimeDelta)
 void SkillEff::LateUpdate(const float& fTimeDelta)
 {
     Object::LateUpdate(fTimeDelta);
-    m_pRenderer->PushObject(RENDER_SKILL, this);
+    m_pRenderer->PushObject(m_eRenderType, this);
 }
 
 void SkillEff::Render(const float& fTimeDelta, int _instanceCount)

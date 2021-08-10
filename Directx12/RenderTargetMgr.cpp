@@ -16,7 +16,7 @@ void RenderTargetMgr::BuildRenderTarget(ID3D12Device* device, Renderer* pRendere
 	clear.Color[0] = 0.f;
 	clear.Color[1] = 0.f;
 	clear.Color[2] = 0.f;
-	clear.Color[3] = 1.f;
+	clear.Color[3] = 0.f;
 
 	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
 	m_mapRenderTarget["Diffuse"] = Rt;
@@ -86,6 +86,16 @@ void RenderTargetMgr::BuildRenderTarget(ID3D12Device* device, Renderer* pRendere
 	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
 	m_mapRenderTarget["OutLine"] = Rt;
 	m_mapMRT["Shade"].push_back(Rt);
+
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
+	m_mapRenderTarget["BloomAlpha"] = Rt;
+	m_mapMRT["Shade"].push_back(Rt);
+
+	clear.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear, DXGI_FORMAT_R32G32B32A32_FLOAT);
+	m_mapRenderTarget["Bloom"] = Rt;
+	m_mapMRT["Shade"].push_back(Rt);
+	clear.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
 	m_mapRenderTarget["Blend"] = Rt;

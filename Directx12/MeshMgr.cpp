@@ -242,6 +242,36 @@ void MeshMgr::BuildModels(Loading* pLoading)
 	pLoading->AddCount();
 	BuildModel("weapon", MESH_TYPE::TILE);
 	pLoading->AddCount();
+	BuildModel("Eff_45mini", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_ArcaneArrow", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_Arrow_Effect01", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_BoomWave1", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_BoomWave2", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_cocal", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_Cylinder_Flat_Band", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_helixT", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_IceBolt", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_IceBottom", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_Mesh_FireTail", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_Meteor_Stone", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_TwistCylinder01", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_TwistMesh", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_Wall", MESH_TYPE::TILE);
+	pLoading->AddCount();
 
 	cout << "Load Model Complete!" << endl;
 }
