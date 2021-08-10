@@ -205,6 +205,7 @@ void Room::Physics_Collision()
 			if (CPhysXMgr::GetInstance()->CollisionForStaticObjects(m_Bullets[i].GetRigidDynamic()))
 			{
 				m_Bullets[i].SetUser(NO_PLAYER);
+				m_Bullets[i].Release();
 				PushBullet_Delete(i);
 			}
 			for (auto player : m_players)
