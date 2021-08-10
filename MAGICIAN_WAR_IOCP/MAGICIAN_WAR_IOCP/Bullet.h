@@ -1,7 +1,6 @@
 #pragma once
 
 #include "framework.h"
-#include "extern.h"
 #include "protocol.h"
 
 class Bullet
@@ -9,8 +8,28 @@ class Bullet
 public:
 	Bullet();
 	Bullet(const Bullet& rhs);
-	~Bullet() { Release(); }
-private:
+	Bullet operator=(Bullet& rhs)
+	{
+		m_Info.user = rhs.getUser();
+		m_Info.Damage = rhs.getDamage();
+		m_Info.ElementType = rhs.getElementType();
+		m_Info.matWorld = rhs.getWorld();
+		m_Info.Team = rhs.getCheckUserTeam();
+		m_TotalLifeTime = rhs.getTotalLifeTime();
+		m_lifeTime = rhs.getLifeTime();
+		m_speed = rhs.m_speed;
+
+		m_xmfScale = rhs.m_xmfScale;
+		m_xmfRotate = rhs.m_xmfRotate;
+		m_xmfPosition = rhs.m_xmfPosition;
+		m_dir = rhs.m_dir;
+
+		Initialize();
+
+		return *this;
+	}
+	~Bullet() { /*Release();*/ }
+public:
 	void Release();
 public:
 	void Initialize();
@@ -24,8 +43,9 @@ public:
 
 	// Set
 	void SetUser(int _user) { m_Info.user = _user; }
-	void setElementType(unsigned char _element) { m_Info.ElementType = _element; }
+	void setElementType(unsigned char _element);
 	void setWorldMatrix(XMFLOAT4X4 _matWorld);
+	void setCheckUserTeam(unsigned char _team) { m_Info.Team = _team; }
 	void setLifeTime(float _lifeTime) { m_lifeTime = _lifeTime; }
 	void setTotalLifeTime(float _lifeTime) { m_TotalLifeTime = _lifeTime; }
 	void setSpeed(float _speed) { m_speed = _speed; }

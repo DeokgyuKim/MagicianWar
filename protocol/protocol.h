@@ -22,7 +22,6 @@
 #define stoc_otherPlayerNum 29
 #define stoc_OtherstartInfo 30
 #define stoc_SkillPacket 34
-#define stoc_bullet 35
 #define stoc_gameend 36
 
 #define packet_skill 21
@@ -44,6 +43,8 @@
 // Stage	Scene	151 ~ 180
 #define stoc_InGame_StartInfo	151
 #define stoc_playerInfo 152
+#define stoc_bullet_update 153
+#define stoc_bullet_delete 154
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -306,6 +307,20 @@ struct STOC_sceneChange {
 	char sceneType; // 0 : Logo, 1 : Lobby, 2 : mainScene, 3 : GameEnd
 };
 
+struct STOC_Bullet_Update {
+	short size;
+	unsigned char type;
+	unsigned char ElementType;
+	unsigned char index;
+	XMFLOAT4X4	  xmmWorld;
+};
+
+struct STOC_Bullet_Delete {
+	short size;
+	unsigned char type;
+	unsigned char index;
+};
+
 
 struct STOC_OtherstartInfo {
 	short size;
@@ -323,12 +338,7 @@ struct STOC_otherPlayerCount {
 	DWORD playerCount;
 };
 
-struct STOC_Bullet {
-	short size;
-	unsigned char type;
-	int Bullet_Count;
-	Bullet_Packet bullets[BulletCB_Count];
-};
+
 
 struct STOC_Skill {
 	short size;

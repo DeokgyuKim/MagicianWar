@@ -9,9 +9,8 @@
 #include "protocol.h"
 
 struct Client_Bullet {
-	unsigned char id; // 어떤 플레이어
-	unsigned char InstanceName; // 어떤 캐릭터가
-	float lifeTime; // 생존시간
+	unsigned char ElementType; // 어떤 캐릭터가
+	bool Used;
 	XMFLOAT4X4 matWorld; // worldMatrix
 };
 
@@ -127,6 +126,7 @@ public:
 	void recvProcessing(int _bytes);
 	void packetProcessing(char* _packetBuffer);
 
+
 private: // packets
 	DWORD m_prevKey;
 	char* packet_start_ptr;
@@ -134,7 +134,8 @@ private: // packets
 	char packetBuffer[MAX_BUFFER];
 	short packet_size;
 	int savedPacket_size;
+	
 	map<int, STOC_ROOM_MAKE_OK> m_mapRooms;
-
+	int m_Curscene;
 };
 

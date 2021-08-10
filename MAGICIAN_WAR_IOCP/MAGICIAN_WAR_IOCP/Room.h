@@ -2,8 +2,10 @@
 #include "framework.h"
 #include "protocol.h"
 #include "Global.h"
-class Player;
+#include "Bullet.h"
+
 class Bullet;
+class Player;
 
 class Room
 {
@@ -43,6 +45,10 @@ public:
 	void PushIngame_PlayerInfo_Start(int id);
 	void Push_SceneChange(int id,char sceneType);
 	void Push_UpdatePlayerInfoPacket(Player* _player);
+
+	void PushBullet_Update(int Bullet_Index);
+	void PushBullet_Delete(int Bullet_Index);
+
 public:
 	// Get
 	bool isGameStart() { return m_isGameStart; }
@@ -55,7 +61,8 @@ private:
 	
 	mutex m_player_mutex;
 	list<Player*> m_players;
-	list<Bullet*> m_Bullets;
+	array<Bullet, MAX_BULLET> m_Bullets;
+
 	array<RoomPlayer, MAX_PLAYER> m_roomPlayerSlots;
 
 	queue<ROOM_EVENT>	m_recvEventQueue;	 // 처리할 이벤트 모아놓기

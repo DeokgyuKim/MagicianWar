@@ -3,6 +3,7 @@
 #include "PlayerFSM.h"
 #include "Server.h"
 
+
 Room::Room(int room_num, int host)
 {
 	Initalize(room_num, host);
@@ -37,6 +38,7 @@ void Room::Initalize(int room_num, int host)
 
 
 
+
 	EVENT Room_Update;
 	Room_Update.Object_ID = EVENT_KEY;
 	Room_Update.Target_ID = m_Info.Room_Num;
@@ -64,6 +66,7 @@ void Room::ReInit()
 
 void Room::Release()
 {
+	// Player
 	for (auto& player : m_players)
 	{
 		if (player != nullptr)
@@ -71,6 +74,12 @@ void Room::Release()
 		player = nullptr;
 	}
 	m_players.clear();
+
+	for (int i = 0; i < BulletCB_Count; ++i) {
+		if (m_Bullets[i].getUser() != NO_PLAYER)
+			m_Bullets[i].Release();
+	}
+
 }
 
 void Room::Update()
@@ -82,7 +91,7 @@ void Room::Update()
 	m_elapsedTime = m_start_time - m_prev_time;
 	m_prev_time = m_start_time;
 
-	float elapsedTime = m_elapsedTime.count() * 1000.f;
+	float elapsedTime = m_elapsedTime.count();
 	recvEvent_Copy();
 
 	ROOM_EVENT rEvent;
@@ -132,12 +141,46 @@ void Room::Update()
 void Room::InGame_Update(float fTime)
 {
 	// 인게임 player 처리
+	Bullet BulletTemp;
 	for (auto player : m_players) {
 		player->Update(fTime);
+
+		if (player->getCreateBullet() == 1)
+		{
+			BulletTemp.SetUser(player->getID());
+			BulletTemp.setCheckUserTeam(player->getTeam());
+			BulletTemp.setElementType(player->getCharacterType());
+			BulletTemp.setWorldMatrix(player->getBulletStartWorld());
+			BulletTemp.setPosition(player->getPosition());
+			BulletTemp.setTotalLifeTime(5.f);
+			BulletTemp.setDirection(XMFLOAT3{ -player->getWorld()._21,-player->getWorld()._22 ,-player->getWorld()._23 });
+
+			for (int i = 0; i < BulletCB_Count; ++i) {
+				if (m_Bullets[i].getUser() == NO_PLAYER) { // 안쓰는 총알 찾아서
+					m_Bullets[i] = BulletTemp;
+					player->setCreateBullet(0);
+					break;
+				}
+			}
+		}
 	}
 
-	
+	// 총알 Update
+	for (int i = 0; i < BulletCB_Count; ++i) {
+		if (m_Bullets[i].getUser() != NO_PLAYER) { // 사용중인 것만 update
+			int dead = m_Bullets[i].Update(fTime);
+			if (dead) { // 총알이 사망체크되면 모든 클라한테 알려줘야함
+				m_Bullets[i].SetUser(NO_PLAYER);
+				PushBullet_Delete(i);
+			}
+			else {
+				m_Bullets[i].LateUpdate(fTime);
+				PushBullet_Update(i);
+			}
 
+		}
+
+	}
 
 
 
@@ -248,11 +291,19 @@ void Room::InGame_Init()
 			_player->setHp(100);
 			_player->setCharacterType(m_roomPlayerSlots[i].characterType);
 			if (i <= 3) { // Blue Team
-				_player->setPosition(XMFLOAT3(20.f, 0.f, 10.f));
+				if (i == 0)_player->setPosition(XMFLOAT3(20.f, 0.f, 10.f));
+				else if (i == 1)_player->setPosition(XMFLOAT3(15.f, 0.f, 10.f));
+				else if (i == 2)_player->setPosition(XMFLOAT3(10.f, 0.f, 10.f));
+				else if (i == 3)_player->setPosition(XMFLOAT3(5.f, 0.f, 10.f));
+
 				_player->setTeam(TEAM_BLUE);
 			}
 			else if (i <= 7) { // Red Team
-				_player->setPosition(XMFLOAT3(30.f, 0.f, 90.f));
+				if (i == 4)_player->setPosition(XMFLOAT3(40.f, 0.f, 100.f));
+				else if (i == 5)_player->setPosition(XMFLOAT3(45.f, 0.f, 100.f));
+				else if (i == 6)_player->setPosition(XMFLOAT3(50.f, 0.f, 100.f));
+				else if (i == 7)_player->setPosition(XMFLOAT3(55.f, 0.f, 100.f));
+
 				_player->setTeam(TEAM_RED);
 			}
 			m_players.emplace_back(_player);
@@ -475,7 +526,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 		for (auto player : m_players) {
 			if (player->getID() == rEvent.playerID) {
 				player->setAttackEnd(rEvent.bdata1);
-			break;
+				break;
 			}
 		}
 	}
@@ -597,6 +648,8 @@ void Room::PushIngame_PlayerInfo_Start(int id)
 
 void Room::Push_SceneChange(int id, char sceneType)
 {
+	if (this == nullptr) return;
+
 	STOC_sceneChange packet;
 	packet.size = sizeof(packet);
 	packet.type = stoc_SceneChange;
@@ -606,6 +659,8 @@ void Room::Push_SceneChange(int id, char sceneType)
 
 void Room::Push_UpdatePlayerInfoPacket(Player* _player)
 {
+	if (this == nullptr) return;
+
 	STOC_PlayerInfo packet;
 	packet.size = sizeof(packet);
 	packet.type = stoc_playerInfo;
@@ -621,5 +676,36 @@ void Room::Push_UpdatePlayerInfoPacket(Player* _player)
 	for (auto player : m_players) {
 		sendEvent_push(player->getID(), &packet);
 	}
+}
+
+void Room::PushBullet_Update(int Bullet_Index)
+{
+	if (this == nullptr) return;
+
+	STOC_Bullet_Update packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_bullet_update;
+	packet.ElementType = m_Bullets[Bullet_Index].getElementType();
+	packet.xmmWorld = m_Bullets[Bullet_Index].getWorld();
+	packet.index = Bullet_Index;
+
+	for (auto player : m_players) {
+		sendEvent_push(player->getID(), &packet);
+	}
+}
+
+void Room::PushBullet_Delete(int Bullet_Index)
+{
+	if (this == nullptr) return;
+
+	STOC_Bullet_Delete packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_bullet_delete;
+	packet.index = Bullet_Index;
+
+	for (auto player : m_players) {
+		sendEvent_push(player->getID(), &packet);
+	}
+
 }
 

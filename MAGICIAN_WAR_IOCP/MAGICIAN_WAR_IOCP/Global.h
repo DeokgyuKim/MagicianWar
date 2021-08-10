@@ -6,6 +6,7 @@ constexpr int MAX_BUFFER = 4096;
 constexpr int MAX_PACKET = 256;
 constexpr int WORKTHREAD_COUNT = 6; // 총 쓰레드 개수 == 코어 개수 * 1.5 ( Main
 
+constexpr int MAX_BULLET = 70;
 constexpr int MAX_PLAYER = 8; // 최대 4 : 4 까지 고려
 constexpr int MAX_ID_LEN = 10;
 constexpr int MAX_CLIENTS = 100; // ( 테스트로 100명 동접 ) 이걸 최대로 하면서 성능이 안정화 되는게 IOCP의 목적
@@ -20,10 +21,13 @@ constexpr int ACTIVATE = 1;
 constexpr int DISABLED = -1;
 
 // Character Default MoveSpeed
-#define P_MoveForward_Speed 0.003f
-#define P_MoveLeft_Speed 0.003f
-#define P_MoveRight_Speed 0.003f
-#define P_MoveBackward_Speed 0.003f
+#define P_MoveForward_Speed 3.f
+#define P_MoveLeft_Speed 3.f
+#define P_MoveRight_Speed 3.f
+#define P_MoveBackward_Speed 3.f
+
+#define BULLET_DAMAGE 10
+
 
 enum OP_TYPE { // Accept는 Main_Thread가 할거임
 	OP_RECV, OP_SEND, // WorkThread

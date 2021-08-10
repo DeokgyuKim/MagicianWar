@@ -95,8 +95,9 @@ void Network::Update()
 	// 이제 여기서 돌릴거
 	recvUpdate();
 
-	ServerKeyInput();
-	
+	if (m_Curscene == STAGE_SCENE)
+		ServerKeyInput();
+
 
 }
 
@@ -132,20 +133,26 @@ void Network::Lobby_Init()
 	m_tMyInfo.isRoom_Host = false;
 	m_tMyInfo.Room_Num = -1;
 	m_tMyInfo.TeamType = TEAM_NONE;
-	
-	SendRoomlist_Request();
 
+	m_Curscene = LOBBY_SCENE;
+	SendRoomlist_Request();
 }
 
 void Network::Room_Init()
 {
 	// 방에 들어가면 먼저 서버에게 지금 내가 속한 방의 정보 요구
+	m_Curscene = ROOM_SCENE;
 	SendRoomInfo_Request();
 }
 
 void Network::Ingame_Init()
 {
+	m_Curscene = STAGE_SCENE;
 	m_prevKey = 0;
+	m_vBullets.resize(BulletCB_Count);
+	for (int i = 0; i < BulletCB_Count; ++i) {
+		m_vBullets[i].Used = false;
+	}
 	SendIngameInfo_Request();
 }
 
@@ -263,7 +270,7 @@ void Network::CallEvent(int EventType, int args, ...)
 	{
 		SendExit_Request();
 	}
-		break;
+	break;
 	case EVENT_ROOM_PLAYER_SELECT_TEAM:
 	{
 		cout << "팀 고르기\n";
@@ -274,7 +281,7 @@ void Network::CallEvent(int EventType, int args, ...)
 		SendTeamChange_Request(value);
 		break;
 	}
-		// STAGE
+	// STAGE
 	case EVENT_STAGE_GAME_START:
 		break;
 	case EVENT_STAGE_INPUT_MOVE:
@@ -313,7 +320,7 @@ bool Network::IsMoveToMainGame()
 
 	cout << "IsNext? " << isNext << endl;
 
-	return isNext; 
+	return isNext;
 }
 
 
@@ -419,7 +426,7 @@ void Network::packetProcessing(char* _packetBuffer)
 	}
 	case stoc_RoomList_Update:
 	{
-		
+
 		STOC_ROOMLIST_UPDATE* data = reinterpret_cast<STOC_ROOMLIST_UPDATE*>(_packetBuffer);
 		MakeRoom_By_roomNum(data->room_num);
 	}
@@ -453,9 +460,9 @@ void Network::packetProcessing(char* _packetBuffer)
 			m_tMyInfo.CharacterType = data->characterType;
 			m_tMyInfo.isRoom_Host = data->host;
 			m_tMyInfo.isreadyState = data->readyState;
-			
 
-			if (data->slot_num <4) {
+
+			if (data->slot_num < 4) {
 				cout << "Blue Team \n";
 			}
 			else {
@@ -500,14 +507,14 @@ void Network::packetProcessing(char* _packetBuffer)
 		STOC_GAME_START* data = reinterpret_cast<STOC_GAME_START*>(_packetBuffer);
 
 		Ingame_Init();
-		
+
 		break;
 	}
 	case stoc_InGame_StartInfo:
 	{
 		STOC_INGAME_STARTINFO* data = reinterpret_cast<STOC_INGAME_STARTINFO*>(_packetBuffer);
 		cout << "pos - (" << data->xmfPosition.x << " , " << data->xmfPosition.y << " , " << data->xmfPosition.z << " )\n";
-		cout << "data id - " << data->id << " , 내 아이디 - " <<m_tMyInfo.Client_Num << "\n";
+		cout << "data id - " << data->id << " , 내 아이디 - " << m_tMyInfo.Client_Num << "\n";
 		if (data->id == m_tMyInfo.Client_Num) {
 			m_tMyInfo.iHp = data->iHp;
 			m_tMyInfo.CharacterType = data->CharacterType;
@@ -563,7 +570,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].Root_eAnimType = data->Root_eAnimType;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].Upper_eAnimType = data->Upper_eAnimType;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].ePlayerState = data->ePlayerState;
-		
+
 
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.Client_Num = data->playerInfo.Client_Num;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.TeamType = data->playerInfo.TeamType;
@@ -580,24 +587,24 @@ void Network::packetProcessing(char* _packetBuffer)
 		//cout << "( " << pos.x << ", " << pos.y << ", " << pos.z << endl;
 		break;
 	}
-	case stoc_bullet:
+	case stoc_bullet_update:
 	{
-		STOC_Bullet* data = reinterpret_cast<STOC_Bullet*>(_packetBuffer);
-		m_vBullets.resize(data->Bullet_Count);
-		for (int i = 0; i < data->Bullet_Count; ++i) {
-			m_vBullets[i].id = data->bullets[i].id;
-			m_vBullets[i].InstanceName = data->bullets[i].InstanceName;
-			m_vBullets[i].lifeTime = data->bullets[i].lifeTime;
-			m_vBullets[i].matWorld = data->bullets[i].matWorld;
-		}
-		//m_pBullets = data;
-		//cout << "총알 개수 - " << (int)data->Bullet_Count << endl;
-		//if (data->bullets != nullptr)
-		//	cout << "총알 첫번째 친구 좌표 - (" << data->bullets[0].matWorld._41 << ", " << data->bullets[0].matWorld._42 << ", " << data->bullets[0].matWorld._43 << " )" << endl;
-		//cout << "ID : " << data->id << endl;
-		//cout << "InstanceName : " << data->InstanceName << endl;
-		//cout << "lifeTime : " << data->lifeTime << endl;
-		//cout << "ID : " << data->id << endl;
+		//cout << "총알 업데이트\n";
+		STOC_Bullet_Update* data = reinterpret_cast<STOC_Bullet_Update*>(_packetBuffer);
+
+		int index = data->index;
+		m_vBullets[index].Used = true;
+		m_vBullets[index].ElementType = data->ElementType;
+		m_vBullets[index].matWorld = data->xmmWorld;
+
+		break;
+	}
+	case stoc_bullet_delete:
+	{
+		cout << " 총알 소멸\n";
+		STOC_Bullet_Delete* data = reinterpret_cast<STOC_Bullet_Delete*>(_packetBuffer);
+		int index = data->index;
+		m_vBullets[index].Used = false;
 		break;
 	}
 
@@ -754,7 +761,7 @@ void Network::SendAttackEnd(bool _bAttack)
 	if (!SendPacket(&packet)) {
 		cout << "SendAttackEnd() Failed \n";
 	}
-	
+
 }
 
 void Network::SendKeyInput(DWORD _keyInput)
@@ -771,7 +778,7 @@ void Network::SendKeyInput(DWORD _keyInput)
 void Network::ServerKeyInput()
 {
 	DWORD dwKeyInput = 0;
-	
+
 	if (KeyMgr::GetInstance()->KeyPressing('W'))
 	{
 		dwKeyInput |= ctos_KEY_W;
@@ -800,7 +807,7 @@ void Network::ServerKeyInput()
 	{
 		dwKeyInput |= ctos_KEY_E;
 	}
-	
+
 	if (m_prevKey != dwKeyInput) {
 		m_prevKey = dwKeyInput;
 		SendKeyInput(m_prevKey);
