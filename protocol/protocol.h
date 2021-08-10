@@ -183,6 +183,14 @@ struct Client_State { //
 	bool			isConnected;
 };
 
+struct BulletInfo {
+	int user; // 어떤플레이어
+	unsigned char ElementType;	// Fire, Cold, Dark
+	unsigned char Team; // 어떤 팀의
+	int Damage;
+	XMFLOAT4X4 matWorld;
+};
+
 struct Bullet_Packet {
 	int id; // 어떤 플레이어
 	unsigned char InstanceName; // 어떤 캐릭터가

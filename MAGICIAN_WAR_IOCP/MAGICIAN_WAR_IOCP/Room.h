@@ -3,6 +3,7 @@
 #include "protocol.h"
 #include "Global.h"
 class Player;
+class Bullet;
 
 class Room
 {
@@ -54,6 +55,7 @@ private:
 	
 	mutex m_player_mutex;
 	list<Player*> m_players;
+	list<Bullet*> m_Bullets;
 	array<RoomPlayer, MAX_PLAYER> m_roomPlayerSlots;
 
 	queue<ROOM_EVENT>	m_recvEventQueue;	 // 처리할 이벤트 모아놓기

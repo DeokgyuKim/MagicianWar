@@ -105,6 +105,9 @@
     <ClCompile Include="PlayerFSM.cpp">
       <Filter>02.Object\01.Player\PlayerFSM</Filter>
     </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -157,6 +160,9 @@
     </ClInclude>
     <ClInclude Include="PlayerFSM.h">
       <Filter>02.Object\01.Player\PlayerFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

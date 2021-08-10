@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshMgr.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -175,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\protocol\protocol.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="extern.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Global.h" />

@@ -136,6 +136,13 @@ void Room::InGame_Update(float fTime)
 		player->Update(fTime);
 	}
 
+	
+
+
+
+
+
+
 	///PhysXUpdate
 	CPhysXMgr::GetInstance()->gScene->simulate(fTime);
 	CPhysXMgr::GetInstance()->gScene->fetchResults(true);

@@ -313,7 +313,7 @@ bool Network::IsMoveToMainGame()
 
 	cout << "IsNext? " << isNext << endl;
 
-	return isNext;
+	return isNext; 
 }
 
 
