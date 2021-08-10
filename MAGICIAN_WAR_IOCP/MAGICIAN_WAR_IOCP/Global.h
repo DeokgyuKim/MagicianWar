@@ -17,6 +17,8 @@ constexpr int NO_PLAYER = -1;
 constexpr int NO_ROOM = -1;
 constexpr int NO_ROOM_PACKET = -1;
 
+constexpr int SHOPPING_TIME = 10;
+
 constexpr int ACTIVATE = 1;
 constexpr int DISABLED = -1;
 

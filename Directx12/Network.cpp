@@ -75,8 +75,8 @@ bool Network::Init(const string& strServerIP)
 
 	packet_size = 0;
 	savedPacket_size = 0;
-
-
+	m_CurRound = 0;
+	m_isRoundStart = false;
 
 
 
@@ -307,6 +307,10 @@ void Network::CallEvent(int EventType, int args, ...)
 		va_end(ap);
 		SendCameraUpdate(value);
 		break;
+	}
+	case EVENT_ROUND_SHOPPING_START_REQUEST:
+	{
+		SendShoppingStart_Request();
 	}
 	default:
 		break;
@@ -571,7 +575,9 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].Upper_eAnimType = data->Upper_eAnimType;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].ePlayerState = data->ePlayerState;
 
-
+		if (data->playerInfo.Client_Num == m_tMyInfo.Client_Num) {
+			m_tMyInfo.PlayerState = data->ePlayerState;
+		}
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.Client_Num = data->playerInfo.Client_Num;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.TeamType = data->playerInfo.TeamType;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
@@ -608,13 +614,19 @@ void Network::packetProcessing(char* _packetBuffer)
 		break;
 	}
 
-	case stoc_gameend:
+	case stoc_roundend:
 	{
-		STOC_GameEnd* data = reinterpret_cast<STOC_GameEnd*>(_packetBuffer);
-		m_CLgameEnd.bEnd = data->bEnd;
-		m_CLgameEnd.teamNum = data->teamNum;
-		if (m_CLgameEnd.bEnd) cout << "게임이 왜 끝나" << endl;
+		STOC_RoundEnd* data = reinterpret_cast<STOC_RoundEnd*>(_packetBuffer);
+		m_RoundEnd.WinnerTeam = data->teamType;
+		
+		
 		//else cout << "게임이 안끝났어" << endl;
+		break;
+	}
+	case stoc_left_shopping_time:
+	{
+		STOC_LEFT_SHOPPING_TIME* data = reinterpret_cast<STOC_LEFT_SHOPPING_TIME*>(_packetBuffer);
+		cout << "시간 - " << (int)data->leftTime << "\n";
 		break;
 	}
 	default:
@@ -742,6 +754,12 @@ void Network::SendIngameInfo_Request()
 
 void Network::SendCameraUpdate(float cameraY)
 {
+	// 죽으면 카메라 회전 안받음
+	if (m_tMyInfo.PlayerState == STATE_DEAD || 
+		m_tMyInfo.PlayerState == STATE_DANCE) return;
+	// 라운드 시작 안하면 카메라 회전 안받음
+	if (!m_isRoundStart) return;
+
 	CTOS_CAMERA packet;
 	packet.size = sizeof(packet);
 	packet.type = ctos_Camera_y;
@@ -777,6 +795,12 @@ void Network::SendKeyInput(DWORD _keyInput)
 
 void Network::ServerKeyInput()
 {
+	// 죽으면 키입력 안받음
+	if (m_tMyInfo.PlayerState == STATE_DEAD || 
+		m_tMyInfo.PlayerState == STATE_DANCE) return;
+	// 라운드 시작 아니면 키입력 안받음
+	if (!m_isRoundStart) return;
+
 	DWORD dwKeyInput = 0;
 
 	if (KeyMgr::GetInstance()->KeyPressing('W'))
@@ -817,6 +841,18 @@ void Network::ServerKeyInput()
 
 }
 
+void Network::SendShoppingStart_Request()
+{
+	cout << "돼라\n";
+
+	CTOS_SHOPPINGSTART_REQUEST packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_ShoppingStart_Request;
+	if (!SendPacket(&packet)) {
+		cout << "SendShoppingStart_Request() Failed \n";
+	}
+}
+
 void Network::SendLoadingEnd()
 {
 	CTOS_LoadingEnd packet;
@@ -842,6 +878,7 @@ void Network::SendConnectOK()
 
 bool Network::SendPacket(void* buffer)
 {
+
 	char* packet = reinterpret_cast<char*>(buffer);
 	int packetSize = *(short*)(&packet[0]);
 	int ret = send(m_Sock, packet, (int)packetSize, 0);

@@ -220,6 +220,11 @@ XMFLOAT4X4 Player::getBulletStartWorld()
 	return xmfWorld;
 }
 
+int Player::getState()
+{
+	return m_RootBody->GetState(); 
+}
+
 InterfaceFSM* Player::GetRootFSM()
 {
 	if (m_RootBody == nullptr)
@@ -232,6 +237,11 @@ InterfaceFSM* Player::GetUpperFSM()
 	if (m_UpperBody == nullptr)
 		return nullptr;
 	return m_UpperBody.get();
+}
+
+void Player::setDamage(int damage)
+{
+	m_Info.iHp -= damage;
 }
 
 void Player::setKeyInput(DWORD _key)

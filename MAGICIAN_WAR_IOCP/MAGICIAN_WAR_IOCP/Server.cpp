@@ -282,6 +282,17 @@ void Server::SendRoomExit(int id)
 	}
 }
 
+void Server::SendLeftShoppingTime(int id, unsigned char leftTime)
+{
+	STOC_LEFT_SHOPPING_TIME packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_left_shopping_time;
+	packet.leftTime = leftTime;
+	if (!SendPacket(id, &packet)) {
+		cout << "SendLeftShoppingTime() Failed \n";
+	}
+}
+
 
 void Server::AddTimer(EVENT& rEvent)
 {

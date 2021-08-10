@@ -32,15 +32,14 @@ TestScene::TestScene()
 int TestScene::Update(const float& fTimeDelta)
 {
 	Scene::Update(fTimeDelta);
-	
 
-	if (Network::GetInstance()->GetGameEnd().bEnd)
+	if (Network::GetInstance()->GetRoundEnd().WinnerTeam != TEAM_NONE)
 	{
-		cout << "게임 끝났어!!!!!" << endl;
+		//cout << "게임 끝났어!!!!!" << endl;
 		if (!GameEndForPanelCreate)
 		{
 			//Panel생성
-			if (Network::GetInstance()->GetMyInfo().TeamType == Network::GetInstance()->GetGameEnd().teamNum)
+			if (Network::GetInstance()->GetMyInfo().TeamType == Network::GetInstance()->GetRoundEnd().WinnerTeam)
 			{
 				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 					XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, 50.f, 760.f * 1.5f, 200.f * 1.5f), "Win"));
@@ -241,4 +240,18 @@ void TestScene::Initialize()
 
 	BuildInstanceCBs();
 	BuildMaterialCBs();
+}
+
+void TestScene::LateInit()
+{
+	if (m_LateInit) return;
+
+#ifdef NETWORK
+
+	// 방장이 TestScene에서 Init이 끝나면 Shopping시작 보내줘.
+	if (Network::GetInstance()->GetMyInfo().isRoom_Host)
+		Network::GetInstance()->CallEvent(EVENT_ROUND_SHOPPING_START_REQUEST, 0);
+
+#endif // NETWORK
+	m_LateInit = true;
 }

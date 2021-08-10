@@ -126,7 +126,9 @@ void WorkThread::Thread_Run()
 		break;
 		case OP_ROOM_TIME:
 		{
-
+			int room_num = *reinterpret_cast<int*>(over_ex->Iocp_buf);
+			g_Rooms[room_num]->SendLeftShoppingTime();
+			delete over_ex;
 		}
 		break;
 		case OP_ROOM_SEND_PACKET: // 방에서 일어난 일 보내
@@ -351,6 +353,11 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 		CTOS_ATTACKEND* data = reinterpret_cast<CTOS_ATTACKEND*>(packet);
 		RoomPacket.type = ctos_AttackEnd;
 		RoomPacket.bdata1 = data->isAttacked;
+		break;
+	}
+	case ctos_ShoppingStart_Request:
+	{
+		RoomPacket.type = ctos_ShoppingStart_Request;
 		break;
 	}
 	default:

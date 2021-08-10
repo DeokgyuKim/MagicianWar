@@ -19,12 +19,18 @@ void Room::Initalize(int room_num, int host)
 	m_Info.Room_Name = "";
 	m_Info.Room_Num = room_num;
 	m_Info.HostPlayer = host;
-	m_BlueTeam_Count = 0;
-	m_RedTeam_Count = 0;
+	m_Info.TotalRound = 3;
+	m_Info.curRound = 1;
+
+	m_BlueTeam_Alive_Count = 0;
+	m_RedTeam_Alive_Count = 0;
 	m_curPlayer_Count = 0;
 	m_isGameStart = false;
 	m_istEnterable = true; // 들어올 수 있음
 	m_prev_time = chrono::system_clock::now();
+
+	m_TotalShoppingTime = SHOPPING_TIME;
+	m_ShoppingTime = 0;
 
 	for (int i = 0; i < MAX_PLAYER; ++i) {
 		m_roomPlayerSlots[i].characterType = ELEMENT_FIRE;
@@ -35,9 +41,10 @@ void Room::Initalize(int room_num, int host)
 		m_roomPlayerSlots[i].slot_num = i;
 	}
 
-
-
-
+	m_isRoundEnd = false;
+	m_isRoundStart = false;
+	m_RoundWinnerCheck = false;
+	m_WinnerTeam = TEAM_NONE;
 
 	EVENT Room_Update;
 	Room_Update.Object_ID = EVENT_KEY;
@@ -49,7 +56,7 @@ void Room::Initalize(int room_num, int host)
 }
 
 void Room::ReInit()
-{
+{	// 라운드가 다 끝나고 로비로 돌아옴
 	m_isGameStart = false;
 	if (m_curPlayer_Count <= MAX_PLAYER) { // 게임 끝났으니 꽉찬거 아니면 더 받자
 		m_istEnterable = true;
@@ -58,10 +65,25 @@ void Room::ReInit()
 
 	m_player_mutex.lock();
 
-	for (auto& player : m_players) {
-		player->ReInit();
+	// m_players는 인게임에서만 씀
+	for (auto& player : m_players)
+	{
+		if (player != nullptr)
+			delete player;
+		player = nullptr;
 	}
+	m_players.clear();
+
 	m_player_mutex.unlock();
+
+	// Bullet초기화
+	for (int i = 0; i < BulletCB_Count; ++i) {
+		if (m_Bullets[i].getUser() != NO_PLAYER)
+			m_Bullets[i].Release();
+
+		m_Bullets[i].SetUser(NO_PLAYER);
+	}
+
 }
 
 void Room::Release()
@@ -106,7 +128,11 @@ void Room::Update()
 
 	if (m_isGameStart)  // 게임 시작되면 처리할 부분
 	{
-		InGame_Update(elapsedTime);
+		if(m_isRoundEnd)
+
+		if (m_isRoundStart)
+			InGame_Update(elapsedTime);
+
 	}
 	else // 게임 시작이 아니면 RoomScene이니까
 	{
@@ -142,7 +168,8 @@ void Room::InGame_Update(float fTime)
 {
 	// 인게임 player 처리
 	Bullet BulletTemp;
-	for (auto player : m_players) {
+	for (auto player : m_players)
+	{
 		player->Update(fTime);
 
 		if (player->getCreateBullet() == 1)
@@ -186,7 +213,10 @@ void Room::InGame_Update(float fTime)
 	CPhysXMgr::GetInstance()->gScene->simulate(fTime);
 	CPhysXMgr::GetInstance()->gScene->fetchResults(true);
 
-	Physics_Collision();
+	if (!m_isRoundEnd) {
+		Physics_Collision();
+		CheckWinnerTeam();
+	}
 
 	for (auto player : m_players) {
 		player->LateUpdate(fTime);
@@ -198,7 +228,7 @@ void Room::InGame_Update(float fTime)
 void Room::Physics_Collision()
 {
 	//총알 충돌
-	for (int i = 0; i < BulletCB_Count; ++i) 
+	for (int i = 0; i < BulletCB_Count; ++i)
 	{
 		if (m_Bullets[i].getUser() != NO_PLAYER)
 		{
@@ -209,13 +239,86 @@ void Room::Physics_Collision()
 				PushBullet_Delete(i);
 			}
 			for (auto player : m_players)
-				if(m_Bullets[i].getCheckUserTeam() != player->getTeam())
-					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(player->GetPxCapsuleController()->getActor(), m_Bullets[i].GetRigidDynamic()))
+			{
+				// 같은 팀이 쏜 총이 아니고 죽은 플레이어가 아니고 승자가 없을때
+				//if (m_Bullets[i].getCheckUserTeam() != player->getTeam() 
+				// && player->getState() != STATE_DEAD&& m_WinnerTeam == TEAM_NONE) 
+				//{
+				if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(player->GetPxCapsuleController()->getActor(), m_Bullets[i].GetRigidDynamic()))
+				{
+					m_Bullets[i].SetUser(NO_PLAYER);
+					PushBullet_Delete(i);
+					//플레이어 피달고 그런거
+					player->setDamage(m_Bullets[i].getDamage());
+					if (player->getHp() <= 0)
 					{
-						m_Bullets[i].SetUser(NO_PLAYER);
-						PushBullet_Delete(i);
-						//플레이어 피달고 그런거
+
+						player->GetUpperFSM()->ChangeState(STATE_DEAD, ANIM_DEAD);
+						player->GetRootFSM()->ChangeState(STATE_DEAD, ANIM_DEAD);
+						if (player->getTeam() == TEAM_BLUE) { // 죽은 친구가 BlueTeam이면
+							--m_BlueTeam_Alive_Count;
+							m_isRoundEnd = CheckRoundEnd(m_BlueTeam_Alive_Count);
+						}
+						else if (player->getTeam() == TEAM_RED) {
+							--m_RedTeam_Alive_Count;
+							m_isRoundEnd = CheckRoundEnd(m_RedTeam_Alive_Count);
+						}
+						if (m_isRoundEnd) // 라운드가 끝나면
+						{
+							if (player->getTeam() == TEAM_RED) { // 마지막에 죽은 친구팀 파악
+								m_WinnerTeam = TEAM_BLUE;
+							}
+							else if (player->getTeam() == TEAM_BLUE) {
+								m_WinnerTeam = TEAM_RED;
+							}
+							m_RoundWinnerCheck = true;
+						}
 					}
+					else
+						player->GetUpperFSM()->ChangeState(STATE_HIT, ANIM_HIT);
+				}
+				//}
+
+			}
+		}
+	}
+}
+
+bool Room::CheckRoundEnd(int TeamCount)
+{
+	if (TeamCount <= 0) {
+		return true;
+	}
+	return false;
+}
+
+void Room::CheckWinnerTeam()
+{
+	if (m_RoundWinnerCheck) // 라운드가 끝났을때
+	{
+		if (m_WinnerTeam == TEAM_BLUE) // 승자팀이 나오면
+		{
+			PushRoundEndEvent(TEAM_BLUE);
+			for (auto player : m_players) {
+				if (player->getTeam() == TEAM_BLUE)
+				{
+					player->GetUpperFSM()->ChangeState(STATE_DANCE, ANIM_DANCE);
+					player->GetRootFSM()->ChangeState(STATE_DANCE, ANIM_DANCE);
+				}
+			}
+			m_RoundWinnerCheck = false;
+		}
+		else if (m_WinnerTeam == TEAM_RED)
+		{
+			PushRoundEndEvent(TEAM_RED);
+			for (auto player : m_players) {
+				if (player->getTeam() == TEAM_RED)
+				{
+					player->GetUpperFSM()->ChangeState(STATE_DANCE, ANIM_DANCE);
+					player->GetRootFSM()->ChangeState(STATE_DANCE, ANIM_DANCE);
+				}
+			}
+			m_RoundWinnerCheck = false;
 		}
 	}
 }
@@ -307,7 +410,7 @@ void Room::InGame_Init()
 		if (m_roomPlayerSlots[i].used) {
 			PushRoomPlayerEvent(i);
 			Player* _player = new Player(m_roomPlayerSlots[i].id, m_Info.Room_Num);
-			_player->setHp(100);
+			_player->setHp(30);
 			_player->setCharacterType(m_roomPlayerSlots[i].characterType);
 			if (i <= 3) { // Blue Team
 				if (i == 0)_player->setPosition(XMFLOAT3(20.f, 0.f, 10.f));
@@ -315,6 +418,7 @@ void Room::InGame_Init()
 				else if (i == 2)_player->setPosition(XMFLOAT3(10.f, 0.f, 10.f));
 				else if (i == 3)_player->setPosition(XMFLOAT3(5.f, 0.f, 10.f));
 
+				++m_BlueTeam_Alive_Count;
 				_player->setTeam(TEAM_BLUE);
 			}
 			else if (i <= 7) { // Red Team
@@ -323,6 +427,7 @@ void Room::InGame_Init()
 				else if (i == 6)_player->setPosition(XMFLOAT3(50.f, 0.f, 100.f));
 				else if (i == 7)_player->setPosition(XMFLOAT3(55.f, 0.f, 100.f));
 
+				++m_RedTeam_Alive_Count;
 				_player->setTeam(TEAM_RED);
 			}
 			m_players.emplace_back(_player);
@@ -549,6 +654,15 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 			}
 		}
 	}
+	case ctos_ShoppingStart_Request:
+	{
+		cout << "왜 안돼 시발\n" << endl;
+		recvEvnet_Clear(); // 라운드 시작전에 받아온 데이터 비워야지
+		m_isRoundStart = true; // 라운드 시작 일단 시켜주고
+		m_ShoppingTime = 0;
+		SendLeftShoppingTime();
+		break;
+	}
 	default:
 		break;
 	}
@@ -646,6 +760,10 @@ void Room::PushGameStartEvent(int id)
 	sendEvent_push(id, &packet);
 }
 
+void Room::PushRoundStartEvent(int Cur_Round)
+{
+}
+
 void Room::PushIngame_PlayerInfo_Start(int id)
 {
 	if (this == nullptr) return;
@@ -726,5 +844,48 @@ void Room::PushBullet_Delete(int Bullet_Index)
 		sendEvent_push(player->getID(), &packet);
 	}
 
+}
+
+void Room::PushRoundEndEvent(int TeamType)
+{
+	if (this == nullptr) return;
+
+	STOC_RoundEnd packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_roundend;
+	packet.teamType = TeamType;
+
+	for (auto player : m_players) {
+		sendEvent_push(player->getID(), &packet);
+	}
+}
+
+void Room::SendLeftShoppingTime()
+{
+	if (this == nullptr) return;
+
+
+
+	if (m_ShoppingTime <= m_TotalShoppingTime) {
+		EVENT roomEvent_Send;
+		roomEvent_Send.Object_ID = EVENT_KEY;
+		roomEvent_Send.Target_ID = m_Info.Room_Num;
+		roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::seconds(1); // 1초에 한번
+		roomEvent_Send.opType = OP_ROOM_TIME;
+		Server::GetInstance()->AddTimer(roomEvent_Send);
+		
+		++m_ShoppingTime;
+
+		unsigned char leftTime = m_TotalShoppingTime - m_ShoppingTime;
+		cout << "시간 - " << (int)leftTime << "\n";
+
+		for (auto player : m_players) // 게임중인 플레이어들에게 쇼핑시간 보내줘야지
+		{
+			int id = player->getID();
+			Server::GetInstance()->SendLeftShoppingTime(id, leftTime);
+		}
+
+
+	}
 }
 

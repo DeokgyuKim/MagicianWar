@@ -32,7 +32,7 @@ public:
 	XMFLOAT4X4 getWorld() { return m_xmmWorld; }
 	XMFLOAT4X4 getBulletStartWorld();
 	PlayerInfo getInfo() { return m_Info; }
-	int getState() { return m_Info.PlayerState; }
+	int getState(); 
 	unsigned char getCharacterType() { return m_Info.CharacterType; }
 
 	int getRootAnimType() { return m_Root_eAnimType; }
@@ -61,6 +61,7 @@ public:
 	void setPlayerInfo(PlayerInfo _info) { m_Info = _info; }
 	void setID(int _id) { m_Info.Client_Num = _id; }
 	void setHp(int iHp) { m_Info.iHp = iHp; }
+	void setDamage(int damage);
 	void setReady(bool _ready) { m_Ready = _ready; }
 	void setTeam(char _team) { m_Info.TeamType = _team; }
 	

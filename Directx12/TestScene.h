@@ -13,9 +13,11 @@ public:
     virtual void    LateUpdate(const float& fTimeDelta) override;
 private:
     void Initialize();
+    void LateInit();
 private:
     bool        ToolMode = false;
     Camera*     m_pCamera;
     bool        GameEndForPanelCreate = false;
+    bool        m_LateInit = false;
 };
 
