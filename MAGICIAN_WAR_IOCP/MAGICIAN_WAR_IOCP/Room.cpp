@@ -182,13 +182,11 @@ void Room::InGame_Update(float fTime)
 
 	}
 
-
-
-
-
 	///PhysXUpdate
 	CPhysXMgr::GetInstance()->gScene->simulate(fTime);
 	CPhysXMgr::GetInstance()->gScene->fetchResults(true);
+
+	Physics_Collision();
 
 	for (auto player : m_players) {
 		player->LateUpdate(fTime);
@@ -199,6 +197,26 @@ void Room::InGame_Update(float fTime)
 
 void Room::Physics_Collision()
 {
+	//총알 충돌
+	for (int i = 0; i < BulletCB_Count; ++i) 
+	{
+		if (m_Bullets[i].getUser() != NO_PLAYER)
+		{
+			if (CPhysXMgr::GetInstance()->CollisionForStaticObjects(m_Bullets[i].GetRigidDynamic()))
+			{
+				m_Bullets[i].SetUser(NO_PLAYER);
+				PushBullet_Delete(i);
+			}
+			for (auto player : m_players)
+				if(m_Bullets[i].getCheckUserTeam() != player->getTeam())
+					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(player->GetPxCapsuleController()->getActor(), m_Bullets[i].GetRigidDynamic()))
+					{
+						m_Bullets[i].SetUser(NO_PLAYER);
+						PushBullet_Delete(i);
+						//플레이어 피달고 그런거
+					}
+		}
+	}
 }
 
 bool Room::EnterRoom(int id, bool host)
