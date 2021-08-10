@@ -36,7 +36,7 @@ protected:
 	string								m_strTextureName = "";
 	unordered_map<string, Component*>	m_mapComponent;
 	bool								m_bInstanced = true;
-
+	bool								m_bDead = false;
 
 protected: // HBD
 	string								m_strInstName = "";

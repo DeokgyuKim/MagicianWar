@@ -208,6 +208,14 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["Lava"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "Ice1", L"../Resources/Ice1.dds");
+	m_mapTextures["Ice1"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Ice2", L"../Resources/Ice2.dds");
+	m_mapTextures["Ice2"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "weapon", L"../Resources/Models/Textures/weapon.dds");
 	m_mapTextures["weapon"] = pTexture;
 	pLoading->AddCount();

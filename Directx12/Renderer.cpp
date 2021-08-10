@@ -145,7 +145,7 @@ void Renderer::Render(const float& fTimeDelta)
 		}
 	}
 
-	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_SKILL])
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_POSTSKILL])
 	{
 		m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
 		pObject->Render(fTimeDelta);
@@ -278,6 +278,11 @@ void Renderer::Render_Albedo(const float& fTimeDelta)
 			m_InstanceCheck[pObject->GetInstName()] = InstanceMgr::GetInstnace()->m_InstanceObjects[pObject->GetInstName()]->GetInstanceCount();
 			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetInstName()]);
 		}
+	}
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_DEFFSKILL])
+	{
+		m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+		pObject->Render(fTimeDelta);
 	}
 }
 

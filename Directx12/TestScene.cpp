@@ -11,6 +11,8 @@
 #include "Flames.h"
 #include "FireShock.h"
 #include "FireRing.h"
+#include "IceBolt.h"
+#include "Meteor.h"
 
 #include "StaticMeshMgr.h"
 #include "InstanceMgr.h"
@@ -211,6 +213,16 @@ void TestScene::Initialize()
 	pObj = new Bullet(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), "FireBall",
 		XMFLOAT3(20.f, 1.f, 10.f), XMFLOAT3(0.f, 180.f, 0.f), 0.f);
 	m_pObjects[OBJ_BULLET].push_back(pObj);
+
+	pObj = new IceBolt(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 2.f, 15.f));
+	m_pObjects[OBJ_SKILL].push_back(pObj);
+
+	pObj = new Meteor(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 5.f, 15.f));
+	m_pObjects[OBJ_SKILL].push_back(pObj);
+
+
 
 	//Core::GetInstance()->CmdLstReset();
 	//pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());

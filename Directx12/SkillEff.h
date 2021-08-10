@@ -40,6 +40,7 @@ protected:
     unique_ptr<UploadBuffer<SkillCB>>	        m_SkillCB;
     Shader*                                     m_pShader = NULL;
     Object*                                     m_pParent = NULL;
+    RENDER_TYPE                                 m_eRenderType = RENDER_POSTSKILL;
     float m_fTime = 0.f;
 };
 
