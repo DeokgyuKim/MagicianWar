@@ -80,22 +80,51 @@ int Camera::Update(const float& fTimeDelta)
 			xmfPlayerPos.y += 1.f;
 			XMFLOAT3 xmfOff = XMFLOAT3(0.f, 1.f, 0.f);
 			XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfLookVec) * m_fOffset + XMLoadFloat3(&xmfOff));
-			XMMATRIX matTestWorld = XMMatrixTranslationFromVector(XMLoadFloat3(&m_xmfPosition));
-			XMFLOAT4X4 xmf4x4Testworld;
-			XMStoreFloat4x4(&xmf4x4Testworld, matTestWorld);
-			if (m_pRigidBody != nullptr)
+
+			float fNearOff = 0.f;
+			float fDist = 0.f;
+			bool bdynamicObj = false;
+			bool bstaticObj = false;
+
+			while (true)
 			{
-				float fNearOff = 0.f;
-				m_pRigidBody->setGlobalPose(CPhysXMgr::GetInstance()->MakePxTransform(xmf4x4Testworld));
-				while (CPhysXMgr::GetInstance()->CollisionForStaticObjects(m_pRigidBody))
+				XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfLookVec) * (m_fOffset - fNearOff) + XMLoadFloat3(&xmfOff));
+				XMVECTOR xmfLook = XMVector3Normalize(XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfPosition));
+				XMVECTOR xmvLength = XMVector3Length(XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfPosition));
+				XMFLOAT3 xmfLength;
+				XMStoreFloat3(&xmfLength, xmvLength);
+				float distance = xmfLength.x;
+				bool bColl = CPhysXMgr::GetInstance()->ShotRay(XMLoadFloat3(&m_xmfPosition), xmfLook, distance, bdynamicObj, bstaticObj);
+				if (!(bColl && bstaticObj))
 				{
-					fNearOff += 0.03f;
-					XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfLookVec) * (m_fOffset - fNearOff) + XMLoadFloat3(&xmfOff));
-					matTestWorld = XMMatrixTranslationFromVector(XMLoadFloat3(&m_xmfPosition));
-					XMStoreFloat4x4(&xmf4x4Testworld, matTestWorld);
-					m_pRigidBody->setGlobalPose(CPhysXMgr::GetInstance()->MakePxTransform(xmf4x4Testworld));
+					XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfLookVec) * (m_fOffset - fNearOff - 0.2f) + XMLoadFloat3(&xmfOff));
+					break;
+				}
+				fNearOff += 0.05f;
+				if (fNearOff > 2.8)
+				{
+					XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfLookVec) * (0.f) + XMLoadFloat3(&xmfOff));
+					break;
+					break;
 				}
 			}
+
+			//XMMATRIX matTestWorld = XMMatrixTranslationFromVector(XMLoadFloat3(&m_xmfPosition));
+			//XMFLOAT4X4 xmf4x4Testworld;
+			//XMStoreFloat4x4(&xmf4x4Testworld, matTestWorld);
+			//if (m_pRigidBody != nullptr)
+			//{
+			//	float fNearOff = 0.f;
+			//	m_pRigidBody->setGlobalPose(CPhysXMgr::GetInstance()->MakePxTransform(xmf4x4Testworld));
+			//	while (CPhysXMgr::GetInstance()->CollisionForStaticObjects(m_pRigidBody))
+			//	{
+			//		fNearOff += 0.03f;
+			//		XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfLookVec) * (m_fOffset - fNearOff) + XMLoadFloat3(&xmfOff));
+			//		matTestWorld = XMMatrixTranslationFromVector(XMLoadFloat3(&m_xmfPosition));
+			//		XMStoreFloat4x4(&xmf4x4Testworld, matTestWorld);
+			//		m_pRigidBody->setGlobalPose(CPhysXMgr::GetInstance()->MakePxTransform(xmf4x4Testworld));
+			//	}
+			//}
 #else
 			XMFLOAT3 xmfPlayerPos = m_pPlayer->GetPosition();
 			xmfPlayerPos.y += 1.f;

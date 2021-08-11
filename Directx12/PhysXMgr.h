@@ -134,9 +134,9 @@ public:
 
 	bool SweepBetweenPlayerAndStatic(PxRigidActor * pBody0, PxRigidActor * pBody1);
 
-	//PxRigidDynamic* ShotRay(_vec3 RayPos, _vec3 RayDir, float MaxDistance);
+	bool ShotRay(XMVECTOR RayPos, XMVECTOR RayDir, float MaxDistance, bool& dynamicObj, bool& staticObj);
 	//
-	//PxRigidStatic * ShotRayStatic(_vec3 RayPos, _vec3 RayDir, float MaxDistance, _float & fDist);
+	PxRigidStatic * ShotRayStatic(XMVECTOR RayPos, XMVECTOR RayDir, float MaxDistance, float& fDist);
 	//
 	//CPhysXObject* SearchSameObject(PxRigidActor* pActor);
 	
@@ -160,6 +160,7 @@ public:
 	XMMATRIX ToMatrix(PxMat44 _mat44);
 	//_vec3   ToVec3(PxVec3 _PxVector3); // ววม๗ฝบบคลอ -> บคลอ
 	PxVec3 ToPxVec3(XMFLOAT3 _vector3); // บคลอ -> ววม๗ฝบบคลอ
+	PxVec3 ToPxVec3(XMVECTOR _vector3); // บคลอ -> ววม๗ฝบบคลอ
 	//void Set_Layer(Engine::CLayer* pLayer) { m_StaticLayer = pLayer; }
 
 	void	Clear_OldTerrain(void);

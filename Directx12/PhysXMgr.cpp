@@ -1200,71 +1200,75 @@ bool CPhysXMgr::SweepBetweenPlayerAndStatic(PxRigidActor * pBody0, PxRigidActor 
 	return false;
 }
 
-//PxRigidDynamic* CPhysXMgr::ShotRay(_vec3 RayPos, _vec3 RayDir, float MaxDistance)
-//{
-//	PxVec3 origin = ToPxVec3(RayPos);
-//		
-//	D3DXVec3Normalize(&RayDir, &RayDir);
+bool CPhysXMgr::ShotRay(XMVECTOR RayPos, XMVECTOR RayDir, float MaxDistance, bool& dynamicObj, bool& staticObj)
+{
+	PxVec3 origin = ToPxVec3(RayPos);
+		
+	RayDir = XMVector3Normalize(RayDir);
+
+	PxVec3 unitDir = ToPxVec3(RayDir);    // [in] Normalized ray direction
+	// [in] MaxDistance -> Raycast max distance
+
+	PxRaycastBuffer buf_;
+	
+	if (gScene->raycast(origin, unitDir, MaxDistance, buf_, PxHitFlags(PxHitFlag::eMESH_ANY | PxHitFlag::eMESH_BOTH_SIDES)))
+	{
+		//PxHitFlags(PxHitFlag::eMESH_ANY) 레이에 첫번째로 적중한 객체를 반환한다.
+		const char* name = buf_.block.actor->getName();
+		PxRigidDynamic* Dynamic = buf_.block.actor->is<PxRigidDynamic>();
+		if (Dynamic != NULL)
+		{
+			staticObj = false;
+			dynamicObj = true;
+			return true;
+		}
+		PxRigidStatic* Static = buf_.block.actor->is<PxRigidStatic>();
+		if (Static != NULL)
+		{
+			dynamicObj = false;
+			staticObj = true;
+			return true;
+		}
+		
+	}
+
+	return false;
+}
 //
-//	PxVec3 unitDir = ToPxVec3(RayDir);    // [in] Normalized ray direction
-//	// [in] MaxDistance -> Raycast max distance
-//
-//	PxRaycastBuffer buf_;
-//	
-//	if (gScene->raycast(origin, unitDir, MaxDistance, buf_, PxHitFlags(PxHitFlag::eMESH_ANY)))
-//	{
-//		//PxHitFlags(PxHitFlag::eMESH_ANY) 레이에 첫번째로 적중한 객체를 반환한다.
-//		const char* name = buf_.block.actor->getName();
-//		PxRigidStatic* Static = buf_.block.actor->is<PxRigidStatic>();
-//		if (Static != NULL)
-//		{
-//			int a = 0;
-//		}
-//			PxRigidDynamic* Dynamic = buf_.block.actor->is<PxRigidDynamic>();
-//			if (Dynamic != NULL)
-//			{
-//				return Dynamic;
-//			}
-//		
-//	}
-//
-//	return nullptr;
-//}
-//
-//PxRigidStatic* CPhysXMgr::ShotRayStatic(_vec3 RayPos, _vec3 RayDir, float MaxDistance, _float& fDist)
-//{
-//	PxVec3 origin = ToPxVec3(RayPos);
-//
-//	D3DXVec3Normalize(&RayDir, &RayDir);
-//
-//	PxVec3 unitDir = ToPxVec3(RayDir);    // [in] Normalized ray direction
-//										  // [in] MaxDistance -> Raycast max distance
-//
-//	PxRaycastBuffer buf_;
-//
-//	if (gScene->raycast(origin, unitDir, MaxDistance, buf_, PxHitFlags(PxHitFlag::eMESH_ANY)))
-//	{
-//		//PxHitFlags(PxHitFlag::eMESH_ANY) 레이에 첫번째로 적중한 객체를 반환한다.
-//		fDist = buf_.block.distance;
-//
-//		PxRigidStatic* Static = buf_.block.actor->is<PxRigidStatic>();
-//		//if (Static->getName() == "터레인")
-//
-//
-//		if (Static != NULL)
-//		{
-//			return Static;
-//		}
-//		/*PxRigidDynamic* Dynamic = buf_.block.actor->is<PxRigidDynamic>();
-//		if (Dynamic != NULL)
-//		{
-//		return Dynamic;
-//		}*/
-//
-//	}
-//
-//	return nullptr;
-//}
+PxRigidStatic* CPhysXMgr::ShotRayStatic(XMVECTOR RayPos, XMVECTOR RayDir, float MaxDistance, float& fDist)
+{
+	PxVec3 origin = ToPxVec3(RayPos);
+	
+	RayDir = XMVector3Normalize(RayDir);
+
+	PxVec3 unitDir = ToPxVec3(RayDir);    // [in] Normalized ray direction
+										  // [in] MaxDistance -> Raycast max distance
+
+	PxRaycastBuffer buf_;
+
+	if (gScene->raycast(origin, unitDir, MaxDistance, buf_, PxHitFlags(PxHitFlag::eMESH_ANY | PxHitFlag::eMESH_BOTH_SIDES)))
+	{
+		//PxHitFlags(PxHitFlag::eMESH_ANY) 레이에 첫번째로 적중한 객체를 반환한다.
+		fDist = buf_.block.distance;
+
+		PxRigidStatic* Static = buf_.block.actor->is<PxRigidStatic>();
+		//if (Static->getName() == "터레인")
+
+
+		if (Static != NULL)
+		{
+			return Static;
+		}
+		/*PxRigidDynamic* Dynamic = buf_.block.actor->is<PxRigidDynamic>();
+		if (Dynamic != NULL)
+		{
+		return Dynamic;
+		}*/
+
+	}
+
+	return nullptr;
+}
 //
 //CPhysXObject * CPhysXMgr::SearchSameObject(PxRigidActor * pActor)
 //{
@@ -1651,6 +1655,18 @@ PxVec3 CPhysXMgr::ToPxVec3(XMFLOAT3 _vector3)
 	return Pxvector3_;
 }
 
+PxVec3 CPhysXMgr::ToPxVec3(XMVECTOR _vector3)
+{
+	XMFLOAT3 vec;
+	XMStoreFloat3(&vec, _vector3);
+
+	PxVec3 Pxvector3_;
+	Pxvector3_.x = vec.x;
+	Pxvector3_.y = vec.y;
+	Pxvector3_.z = vec.z;
+	return Pxvector3_;
+}
+
 void CPhysXMgr::Clear_OldTerrain(void)
 {
 	if (m_StaticOldTerrain != nullptr)
@@ -1778,8 +1794,8 @@ PxTransform CPhysXMgr::MakePxTransform(XMFLOAT4X4 world)
 bool CPhysXMgr::CollisionForStaticObjects(PxRigidActor* pBody)
 {
 	PxTransform pxtrans = pBody->getGlobalPose();
-	int idxX = int(pxtrans.p.x / 10.f);
-	int idxZ = int(pxtrans.p.z / 10.f);
+	int idxX = min(max(int(pxtrans.p.x / 10.f), 0), 4);
+	int idxZ = min(max(int(pxtrans.p.z / 10.f), 0), 9);
 
 	if (OverlapBetweenTwoObject(pBody, m_pxDynamicBox[idxX][idxZ]))
 		for (auto Static : m_lstStaticOoc[idxX][idxZ])
@@ -1792,8 +1808,11 @@ bool CPhysXMgr::CollisionForStaticObjects(PxRigidActor* pBody)
 			if (i == 0 && j == 0)
 				continue;
 
-			if (OverlapBetweenTwoObject(pBody, m_pxDynamicBox[idxX + i][idxZ + j]))
-				for (auto Static : m_lstStaticOoc[idxX + i][idxZ + j])
+			int X = min(max(idxX + i, 0), 4);
+			int Z = min(max(idxZ + j, 0), 9);
+
+			if (OverlapBetweenTwoObject(pBody, m_pxDynamicBox[X][Z]))
+				for (auto Static : m_lstStaticOoc[X][Z])
 					if (OverlapBetweenTwoObject(pBody, Static))
 						return true;
 		}
