@@ -39,10 +39,10 @@ int TestScene::Update(const float& fTimeDelta)
 	LateInit();
 	Scene::Update(fTimeDelta);
 
-	m_fGameTime += fTimeDelta;
+	m_iGameTime = Network::GetInstance()->GetRoundTime();
 
-	int min = int(round(m_fGameTime)) / 60;
-	int sec = int(round(m_fGameTime)) % 60;
+	int min = int(round(m_iGameTime)) / 60;
+	int sec = int(round(m_iGameTime)) % 60;
 	string Time;
 	Time += to_string(min);
 	Time += " ";

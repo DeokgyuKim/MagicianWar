@@ -24,7 +24,7 @@ private:
     bool        m_LateInit = false;
     TextController* m_pTimeTextCtrl;
     TextController* m_pKillTextCtrl;
-    float m_fGameTime = 0.f;
+    short m_iGameTime = 0.f;
     int m_iOldMin, m_iOldSec;
     int m_iOldKill = 0;
 };

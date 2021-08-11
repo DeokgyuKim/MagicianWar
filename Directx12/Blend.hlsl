@@ -308,7 +308,7 @@ Shade_Out_UI_Room VS_UI_ROOMS(Shade_In pin)
 	Shade_Out_UI_Room vOut;
 	//vOut.PosH = mul(mul(float4(pin.PosL, 1.0f), gView), gProj);
 	float4 depth = DepthTex.SampleLevel(gsamLinear, pin.UV, 0);
-	vOut.PosH = float4(pin.PosL.x, pin.PosL.y + ratio.y, depth.x, 1.f);
+	vOut.PosH = float4(pin.PosL.x, pin.PosL.y + ratio.y, 0.f, 1.f);
 	vOut.UV = pin.UV;
 	vOut.Pos = vOut.PosH;
 
