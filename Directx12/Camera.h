@@ -19,7 +19,10 @@ public:
     void        SetPlayer(Player* pPlayer) { m_pPlayer = pPlayer; }
     void        SetMode(CAMERA_MODE eMode);
     CAMERA_MODE GetMode() { return m_eCamMode; }
+    float       GetRotX() { return m_fRotY; }
     float       GetRotY() { return m_fRotX; }
+
+    XMFLOAT3        GetLookVector() { return m_xmfLookVec; }
 
     XMFLOAT3    GetPosition() { return m_xmfPosition; }
     XMFLOAT4X4  GetViewMatrix() { return m_xmmView; }

@@ -304,6 +304,9 @@
     <Filter Include="00.Game\02.Object\09.UI\06.Cursor">
       <UniqueIdentifier>{1e910109-2296-41b3-bf71-2204241a66d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\06.Component\05.NetSkill">
+      <UniqueIdentifier>{eeb071fe-7ce4-4dcc-bdbb-efad7cb6db43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -591,6 +594,9 @@
     <ClInclude Include="Cursor.h">
       <Filter>00.Game\02.Object\09.UI\06.Cursor</Filter>
     </ClInclude>
+    <ClInclude Include="NetSkill.h">
+      <Filter>01.Engine\06.Component\05.NetSkill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -850,6 +856,9 @@
     </ClCompile>
     <ClCompile Include="Cursor.cpp">
       <Filter>00.Game\02.Object\09.UI\06.Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="NetSkill.cpp">
+      <Filter>01.Engine\06.Component\05.NetSkill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

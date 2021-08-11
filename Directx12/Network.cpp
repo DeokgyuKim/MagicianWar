@@ -865,11 +865,19 @@ void Network::ServerKeyInput()
 	if (KeyMgr::GetInstance()->KeyPressing('Q') && SkillController::GetInstance()->UseSkill(0))
 	{
 		cout << "Use Q Skill" << endl;
+		XMFLOAT3 pos = SkillController::GetInstance()->GeneratePositionForPacket(0);
+		XMFLOAT3 rot = SkillController::GetInstance()->GenerateRotateForPacket(0);
+		cout << "pos x " << pos.x << ", y " << pos.y << ", z " << pos.z << endl;
+		cout << "rot x " << rot.x << ", y " << rot.y << ", z " << rot.z << endl;
 		dwKeyInput |= ctos_KEY_Q;
 	}
 	if (KeyMgr::GetInstance()->KeyPressing('E') && SkillController::GetInstance()->UseSkill(1))
 	{
 		cout << "Use E Skill" << endl;
+		XMFLOAT3 pos = SkillController::GetInstance()->GeneratePositionForPacket(0);
+		XMFLOAT3 rot = SkillController::GetInstance()->GenerateRotateForPacket(0);
+		cout << "pos x " << pos.x << ", y " << pos.y << ", z " << pos.z << endl;
+		cout << "rot x " << rot.x << ", y " << rot.y << ", z " << rot.z << endl;
 		dwKeyInput |= ctos_KEY_E;
 	}
 

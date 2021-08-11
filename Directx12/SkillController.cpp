@@ -1,5 +1,7 @@
 #include "SkillController.h"
 #include "Scene.h"
+#include "NetSkill.h"
+#include "Camera.h"
 
 SkillController* SkillController::m_pInstance = NULL;
 SkillController::SkillController()
@@ -35,7 +37,15 @@ bool SkillController::UseSkill(int idx)
 
 	return true;
 }
-void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Scene* pScene)
+XMFLOAT3 SkillController::GeneratePositionForPacket(int idx)
+{
+	return m_pNetSkill[idx]->GetPosition();
+}
+XMFLOAT3 SkillController::GenerateRotateForPacket(int idx)
+{
+	return m_pNetSkill[idx]->GetRotate();
+}
+void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Scene* pScene, int CharType)
 {
 	XMFLOAT4 pos;
 	pos.x = WINCX / 2.f - 300.f;
@@ -73,6 +83,22 @@ void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList
 
 		m_pSkillOn[1][i] = new UI(device, cmdLst, pRenderer, onpos, "Ui_Text_No");
 		pScene->PushObject(m_pSkillOn[1][i], OBJ_TYPE::OBJ_UI);
+	}
+
+	if (CharType == WIZARD_FIRE)
+	{
+		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_TYPE::SKILL_BULLET);
+		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_TYPE::SKILL_RAYCAST);
+	}
+	else if (CharType == WIZARD_COLD)
+	{
+		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_TYPE::SKILL_BULLET);
+		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_TYPE::SKILL_RAYCAST);
+	}
+	else if (CharType == WIZARD_DARKNESS)
+	{
+		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_TYPE::SKILL_BULLET);
+		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_TYPE::SKILL_RAYCAST);
 	}
 }
 

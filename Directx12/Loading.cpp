@@ -73,6 +73,7 @@ unsigned int Loading::ThreadMain(void* pArg)
 			(*iter).second.xmfPosition, (*iter).second.xmfRotate, (*iter).second.xmfScale, *(*iter).first, true);
 		delete pObj;
 	}
+	CPhysXMgr::GetInstance()->CreatePlaneTriangleStaticMesh();
 
 	LeaveCriticalSection(pLoading->GetCrt());
 	_endthreadex(0);
