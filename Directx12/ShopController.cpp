@@ -27,7 +27,7 @@ void ShopController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList*
 	pos.z = 320.f;
 	pos.w = 352.f;
 
-	m_pSkillBase[0] = new UI(device, cmdLst, pRenderer, pos, "SkillBase");
+	m_pSkillBase[0] = new UI(device, cmdLst, pRenderer, pos, "ShopBase");
 
 	for (int i = 0; i < 4; ++i)
 	{
@@ -50,7 +50,7 @@ void ShopController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList*
 
 	pos.x = WINCX / 2.f + 180.f;
 
-	m_pSkillBase[1] = new UI(device, cmdLst, pRenderer, pos, "SkillBase");
+	m_pSkillBase[1] = new UI(device, cmdLst, pRenderer, pos, "ShopBase");
 
 	for (int i = 0; i < 4; ++i)
 	{
@@ -96,12 +96,12 @@ void ShopController::SetRendering(bool On)
 			m_bShopTime = true;
 			for (int i = 0; i < 2; ++i)
 			{
-				m_pScene->PushObject(m_pButton[i], OBJ_TYPE::OBJ_UI);
 				m_pScene->PushObject(m_pSkillBase[i], OBJ_TYPE::OBJ_UI);
 				for (int j = 0; j < 4; ++j)
 				{
 					m_pScene->PushObject(m_pSkillOn[i][j], OBJ_TYPE::OBJ_UI);
 				}
+				m_pScene->PushObject(m_pButton[i], OBJ_TYPE::OBJ_UI);
 			}
 		}
 
@@ -113,12 +113,12 @@ void ShopController::SetRendering(bool On)
 			m_bShopTime = false;
 			for (int i = 0; i < 2; ++i)
 			{
-				m_pScene->RemoveObject(m_pButton[i], OBJ_TYPE::OBJ_UI);
 				m_pScene->RemoveObject(m_pSkillBase[i], OBJ_TYPE::OBJ_UI);
 				for (int j = 0; j < 4; ++j)
 				{
 					m_pScene->RemoveObject(m_pSkillOn[i][j], OBJ_TYPE::OBJ_UI);
 				}
+				m_pScene->RemoveObject(m_pButton[i], OBJ_TYPE::OBJ_UI);
 			}
 		}
 	}

@@ -39,7 +39,7 @@ int ClickerButton::Update(const float& fTimeDelta)
 		if (PtInRect(&m_Rect, pt))
 		{
 			m_eButtonState = BUTTON_STATE::MOUSEON;
-			if (KeyMgr::GetInstance()->KeyDown(VK_LBUTTON))
+			if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 			{
 				m_eButtonState = BUTTON_STATE::ON;
 				cout << "Button click!" << endl;

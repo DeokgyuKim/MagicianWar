@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "Renderer.h"
 #include "Player.h"
+#include "Network.h"
 
 #include "PlayerFSM.h"
 
@@ -38,38 +39,14 @@ int Camera::Update(const float& fTimeDelta)
 
 	if ((m_eCamMode == CAMERA_MODE::CAMERA_FREE || m_eCamMode == CAMERA_MODE::CAMERA_THIRD))
 	{
+#ifdef NETWORK
 		if (Network::GetInstance()->GetRoundStart())
 		{
-			///Rotate
-			GetCursorPos(&m_ptCur);
-			//if ((m_ptCur.x - m_ptOld.x) == 0.f && (m_ptCur.y - m_ptOld.y) == 0.f)
-			//	return 0;
-
-			m_fRotX += (m_ptCur.x - m_ptOld.x) * 0.2f;
-			m_fRotY += (m_ptCur.y - m_ptOld.y) * 0.2f;
-
-			if (m_fRotX >= 180.f)
-				m_fRotX -= 360.f;
-			if (m_fRotX <= -180.f)
-				m_fRotX += 360.f;
-
-			m_fRotY = min(m_fRotY, 85.f);
-			m_fRotY = max(m_fRotY, -85.f);
-
-
-			XMMATRIX matRotX = XMMatrixRotationY(XMConvertToRadians(m_fRotX));
-			XMMATRIX matRotY = XMMatrixRotationX(XMConvertToRadians(m_fRotY));
-			XMMATRIX matRot = matRotY * matRotX;
-
-			XMFLOAT3 look = XMFLOAT3(0.f, 0.f, 1.f);
-			XMFLOAT3 right = XMFLOAT3(1.f, 0.f, 0.f);
-			XMFLOAT3 up = XMFLOAT3(0.f, 1.f, 0.f);
-			XMStoreFloat3(&m_xmfLookVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&look), matRot)));
-			XMStoreFloat3(&m_xmfRightVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&right), matRot)));
-			XMStoreFloat3(&m_xmfUpVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&up), matRot)));
-
-			SetCursorPos(WINCX / 2, WINCY / 2);
+			CameraRotation();
 		}
+#else
+		CameraRotation();
+#endif
 
 		if (m_eCamMode == CAMERA_MODE::CAMERA_THIRD)
 		{
@@ -103,7 +80,6 @@ int Camera::Update(const float& fTimeDelta)
 				if (fNearOff > 2.8)
 				{
 					XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&xmfPlayerPos) - XMLoadFloat3(&m_xmfLookVec) * (0.f) + XMLoadFloat3(&xmfOff));
-					break;
 					break;
 				}
 			}
@@ -197,6 +173,39 @@ void Camera::SetMode(CAMERA_MODE eMode)
 }
 
 
+
+void Camera::CameraRotation()
+{
+	///Rotate
+	GetCursorPos(&m_ptCur);
+	//if ((m_ptCur.x - m_ptOld.x) == 0.f && (m_ptCur.y - m_ptOld.y) == 0.f)
+	//	return 0;
+
+	m_fRotX += (m_ptCur.x - m_ptOld.x) * 0.2f;
+	m_fRotY += (m_ptCur.y - m_ptOld.y) * 0.2f;
+
+	if (m_fRotX >= 180.f)
+		m_fRotX -= 360.f;
+	if (m_fRotX <= -180.f)
+		m_fRotX += 360.f;
+
+	m_fRotY = min(m_fRotY, 85.f);
+	m_fRotY = max(m_fRotY, -85.f);
+
+
+	XMMATRIX matRotX = XMMatrixRotationY(XMConvertToRadians(m_fRotX));
+	XMMATRIX matRotY = XMMatrixRotationX(XMConvertToRadians(m_fRotY));
+	XMMATRIX matRot = matRotY * matRotX;
+
+	XMFLOAT3 look = XMFLOAT3(0.f, 0.f, 1.f);
+	XMFLOAT3 right = XMFLOAT3(1.f, 0.f, 0.f);
+	XMFLOAT3 up = XMFLOAT3(0.f, 1.f, 0.f);
+	XMStoreFloat3(&m_xmfLookVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&look), matRot)));
+	XMStoreFloat3(&m_xmfRightVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&right), matRot)));
+	XMStoreFloat3(&m_xmfUpVec, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&up), matRot)));
+
+	SetCursorPos(WINCX / 2, WINCY / 2);
+}
 
 void Camera::Initialize()
 {

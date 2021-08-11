@@ -36,6 +36,7 @@ TestScene::TestScene()
 
 int TestScene::Update(const float& fTimeDelta)
 {
+	LateInit();
 	Scene::Update(fTimeDelta);
 
 	m_fGameTime += fTimeDelta;
@@ -63,13 +64,13 @@ int TestScene::Update(const float& fTimeDelta)
 	}
 	
 
-	if (Network::GetInstance()->GetGameEnd().bEnd)
+	if (Network::GetInstance()->GetRoundEnd().WinnerTeam != TEAM_NONE)
 	{
 		cout << "霸烙 场车绢!!!!!" << endl;
 		if (!GameEndForPanelCreate)
 		{
 			//Panel积己
-			if (Network::GetInstance()->GetMyInfo().TeamType == Network::GetInstance()->GetGameEnd().teamNum)
+			if (Network::GetInstance()->GetMyInfo().TeamType == Network::GetInstance()->GetRoundEnd().WinnerTeam)
 			{
 				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 					XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, 50.f, 760.f * 1.5f, 200.f * 1.5f), "Win"));
@@ -189,7 +190,7 @@ void TestScene::Initialize()
 	Core::GetInstance()->CmdLstReset();
 	pObj = new Camera(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	m_pCamera = pCamera = dynamic_cast<Camera*>(pObj);
-	m_pCamera->SetMode(CAMERA_MODE::CAMERA_THIRD);
+	//m_pCamera->SetMode(CAMERA_MODE::CAMERA_THIRD);
 	pPlayer->SetCamera(pCamera);
 	dynamic_cast<Camera*>(pObj)->SetPlayer(pPlayer);
 	Core::GetInstance()->CmdLstExecute();
@@ -295,6 +296,7 @@ void TestScene::Initialize()
 	ShopController* pShopCtrl = ShopController::GetInstance();
 	pShopCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this);
 	pShopCtrl->SetSkillCtrl(pSkillCtrl);
+	pShopCtrl->SetRendering(true);
 
 	m_pObjects[OBJ_UI].push_back(new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(WINCX * 0.5f - 20.f, WINCY * 0.5f - 20.f, 40.f, 40.f), "CrossHair"));
@@ -304,4 +306,17 @@ void TestScene::Initialize()
 
 	BuildInstanceCBs();
 	BuildMaterialCBs();
+}
+
+void TestScene::LateInit()
+{
+	if (m_LateInit) return;
+
+#ifdef NETWORK
+
+	if (Network::GetInstance()->GetMyInfo().isRoom_Host)
+		Network::GetInstance()->CallEvent(EVENT_ROUND_SHOPPING_START_REQUEST, 0);
+
+#endif // NETWORK
+	m_LateInit = true;
 }

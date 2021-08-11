@@ -26,7 +26,7 @@ public:
     XMFLOAT4X4  GetProjMatrix() { return m_xmmProj; }
 
     void ReSetCameraRot(float rotate) { m_fRotY = rotate; m_fRotX = rotate; }
-    
+    void CameraRotation();
 
 private:
     void    Initialize();
