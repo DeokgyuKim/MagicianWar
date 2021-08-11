@@ -17,6 +17,7 @@ public:
 	void Initalize(int room_num,int host);
 	void ReInit();
 	void RoundStart();
+	void RoundSetting();
 	void Release();
 	void Update();
 	void InGame_Update(float fTime);
@@ -42,6 +43,7 @@ public:
 	void Send_sendEvent_Packet();
 	
 public:
+	void PushExitPlayer(int id,int out_player_id);
 	void PushRoomPlayerEvent(int roomSlot_num);
 	void PushRoomPlayerEvent_Byid(int id, int roomSlot_num);
 	void PushGameStartEvent(int id);
@@ -60,6 +62,7 @@ public:
 	void SendRoundTime();
 	void SendRoundResetTime();
 	void PushRoundReset();
+	
 public:
 	// Get
 	bool isGameStart() { return m_isGameStart; }

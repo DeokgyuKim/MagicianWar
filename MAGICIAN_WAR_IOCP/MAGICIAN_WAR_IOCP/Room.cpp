@@ -110,8 +110,16 @@ void Room::ReInit()
 
 void Room::RoundStart()
 {
-	m_WinnerTeam = TEAM_NONE;
 	m_isRoundEnd = false;
+	PushRoundStartEvent(++m_Info.curRound);
+	m_RoundTime = 0;
+	SendRoundTime();
+
+}
+
+void Room::RoundSetting()
+{
+	m_WinnerTeam = TEAM_NONE;
 	// 상점 끝나고 라운드 시작할때 해줄것
 	for (auto player : m_players) { // 초기 위치 재설정
 		int spawnPos = player->getSlotNum();
@@ -130,10 +138,6 @@ void Room::RoundStart()
 		player->GetUpperFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
 		player->GetRootFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
 	}
-
-	PushRoundStartEvent(++m_Info.curRound);
-	m_RoundTime = 0;
-	SendRoundTime();
 
 	// Bullet초기화
 	for (int i = 0; i < BulletCB_Count; ++i) {
@@ -479,7 +483,11 @@ void Room::ExitRoom(int id)
 	Player_Disconnect(id);
 	roomslot_Clear(islotNum);
 	PushRoomPlayerEvent(islotNum);
-
+	
+	for (auto player : m_players) {
+		int receiver = player->getID();
+		PushExitPlayer(receiver, id);
+	}
 
 	--m_curPlayer_Count;
 
@@ -794,6 +802,18 @@ void Room::Send_sendEvent_Packet()
 
 }
 
+void Room::PushExitPlayer(int id, int out_player_id)
+{
+	if (this == nullptr)return;
+
+	STOC_INGAME_OUTPLAYER packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_Ingame_OutPlayer;
+	packet.outPlayer_id = out_player_id;
+
+	sendEvent_push(id, &packet);
+}
+
 void Room::PushRoomPlayerEvent(int roomSlot_num)
 {
 	if (this == nullptr) return;
@@ -969,7 +989,10 @@ void Room::SendLeftShoppingTime()
 {
 	if (this == nullptr) return;
 
-
+	if (!m_isRoundReset) {
+		RoundSetting();
+		m_isRoundReset = true;
+	}
 
 	if (m_ShoppingTime <= m_TotalShoppingTime) {
 		EVENT roomEvent_Send;
@@ -1021,7 +1044,7 @@ void Room::SendRoundTime()
 		for (auto player : m_players) // 게임중인 플레이어들에게 쇼핑시간 보내줘야지
 		{
 			int id = player->getID();
-			Server::GetInstance()->SendRoundResetTime(id, leftTime);
+			Server::GetInstance()->SendLeftTime(id, leftTime);
 		}
 
 
@@ -1063,6 +1086,7 @@ void Room::SendRoundResetTime()
 		if (m_Info.curRound < m_Info.TotalRound) { // 라운드가 남았으면 라운드 재시작
 			cout << "Win Lose 팻말 치워줘\n";
 			PushRoundReset();
+			m_isRoundReset = false;
 
 		}
 		else {

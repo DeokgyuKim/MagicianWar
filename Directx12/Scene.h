@@ -19,6 +19,7 @@ public:
 	void	PushObject(Object* pobj, OBJ_TYPE eType) { m_pObjects[eType].push_back(pobj); }
 	void	RemoveObject(Object* pobj, OBJ_TYPE eType);
 	Object* GetUIForTag(int iTag);
+	Object* GetPlayerForID(int id);
 	Object* GetPlayer(); 
 	Object* GetCamera();
 	RoomRadioController* GetRadioButtonConteroller() { return m_rbController; }

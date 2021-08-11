@@ -646,6 +646,20 @@ void Network::packetProcessing(char* _packetBuffer)
 	{
 		cout << "킬 포인트 올라감\n";
 		++m_tMyInfo.killPoint;
+		break;
+	}
+	case stoc_Ingame_OutPlayer:
+	{
+		STOC_INGAME_OUTPLAYER* data = reinterpret_cast<STOC_INGAME_OUTPLAYER*>(_packetBuffer);
+		int id = data->outPlayer_id;
+		Object* pobj = MainApp::GetInstance()->GetScene()->GetPlayerForID(id);
+		if (pobj != nullptr)
+		{
+			MainApp::GetInstance()->GetScene()->RemoveObject(pobj, OBJ_PLAYER);
+			delete pobj;
+		}
+		cout << "Ingame outPlayer\n";
+		break;
 	}
 	default:
 		cout << "No Type Packet" << endl;
