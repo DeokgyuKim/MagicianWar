@@ -609,7 +609,7 @@ void Network::packetProcessing(char* _packetBuffer)
 	case stoc_roundend:
 	{
 		STOC_RoundEnd* data = reinterpret_cast<STOC_RoundEnd*>(_packetBuffer);
-		m_RoundEnd.WinnerTeam = data->teamType;	
+		m_RoundEnd.WinnerTeam = data->teamType;
 		break;
 	}
 	case stoc_left_shopping_time:
@@ -639,7 +639,7 @@ void Network::packetProcessing(char* _packetBuffer)
 	case stoc_roundreset:
 	{
 		if (Network::GetInstance()->GetMyInfo().isRoom_Host)
-			Network::GetInstance()->CallEvent(EVENT_ROUND_SHOPPING_START_REQUEST, 0); 
+			Network::GetInstance()->CallEvent(EVENT_ROUND_SHOPPING_START_REQUEST, 0);
 		break;
 	}
 	case stoc_add_kill_point:
@@ -652,15 +652,15 @@ void Network::packetProcessing(char* _packetBuffer)
 	}
 	case stoc_Ingame_OutPlayer:
 	{
+
 		STOC_INGAME_OUTPLAYER* data = reinterpret_cast<STOC_INGAME_OUTPLAYER*>(_packetBuffer);
 		int id = data->outPlayer_id;
-		Object* pobj = MainApp::GetInstance()->GetScene()->GetPlayerForID(id);
-		if (pobj != nullptr)
-		{
-			MainApp::GetInstance()->GetScene()->RemoveObject(pobj, OBJ_PLAYER);
-			delete pobj;
-		}
-		cout << "Ingame outPlayer\n";
+
+		m_mapRecvPlayerInfos[id].playerInfo.iHp = 0;
+		///*MainApp::GetInstance()->GetScene()->RemoveObject(pobj, OBJ_PLAYER);*/
+		//delete pobj;
+
+	//cout << "Ingame outPlayer\n";
 		break;
 	}
 	default:
@@ -789,7 +789,7 @@ void Network::SendIngameInfo_Request()
 void Network::SendCameraUpdate(float cameraY)
 {
 	// 죽으면 카메라 회전 안받음
-	if (m_tMyInfo.PlayerState == STATE_DEAD || 
+	if (m_tMyInfo.PlayerState == STATE_DEAD ||
 		m_tMyInfo.PlayerState == STATE_DANCE) return;
 	// 라운드 시작 안하면 카메라 회전 안받음
 	if (!m_isRoundStart) return;
@@ -830,7 +830,7 @@ void Network::SendKeyInput(DWORD _keyInput)
 void Network::ServerKeyInput()
 {
 	// 죽으면 키입력 안받음
-	if (m_tMyInfo.PlayerState == STATE_DEAD || 
+	if (m_tMyInfo.PlayerState == STATE_DEAD ||
 		m_tMyInfo.PlayerState == STATE_DANCE) return;
 	// 라운드 시작 아니면 키입력 안받음
 	if (!m_isRoundStart) return;
