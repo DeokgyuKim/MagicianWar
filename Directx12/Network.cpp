@@ -307,11 +307,11 @@ void Network::CallEvent(int EventType, int args, ...)
 	}
 	case EVENT_STAGE_CAMERA_UPDATE:
 	{
-		va_list ap;
-		va_start(ap, args);
-		double value = va_arg(ap, double);
-		va_end(ap);
-		SendCameraUpdate(value);
+		//va_list ap;
+		//va_start(ap, args);
+		//double value = va_arg(ap, double);
+		//va_end(ap);
+		//SendCameraUpdate(value);
 		break;
 	}
 	case EVENT_ROUND_SHOPPING_START_REQUEST:
@@ -664,6 +664,18 @@ void Network::packetProcessing(char* _packetBuffer)
 	//cout << "Ingame outPlayer\n";
 		break;
 	}
+	case stoc_skill:
+	{
+		STOC_Skill* data = reinterpret_cast<STOC_Skill*>(_packetBuffer);
+		cout << data->user << " 가 ";
+		if (data->skillType == SKILL_FIREWALL) {
+			cout << "fireWall을 사용했습니다\n";
+		}
+		else
+			cout << "넌 뭐 썻니 \n";
+
+		break;
+	}
 	default:
 		cout << "No Type Packet" << endl;
 		break;
@@ -787,7 +799,7 @@ void Network::SendIngameInfo_Request()
 	}
 }
 
-void Network::SendCameraUpdate(float cameraY)
+void Network::SendCameraUpdate(float cameraX, float cameraY)
 {
 	// 죽으면 카메라 회전 안받음
 	if (m_tMyInfo.PlayerState == STATE_DEAD ||
@@ -797,7 +809,8 @@ void Network::SendCameraUpdate(float cameraY)
 
 	CTOS_CAMERA packet;
 	packet.size = sizeof(packet);
-	packet.type = ctos_Camera_y;
+	packet.type = ctos_Camera_update;
+	packet.CameraX = cameraX;
 	packet.CameraY = cameraY;
 	//cout << "카메라 y - " << cameraY<< " ";
 	if (!SendPacket(&packet)) {
@@ -862,15 +875,15 @@ void Network::ServerKeyInput()
 	{
 		dwKeyInput |= ctos_KEY_LBUTTON;
 	}
-	if (KeyMgr::GetInstance()->KeyPressing('Q') && SkillController::GetInstance()->UseSkill(0))
+	if (KeyMgr::GetInstance()->KeyPressing('Q') && SkillController::GetInstance()->UseSkill(SKILL_Q))
 	{
 		cout << "Use Q Skill" << endl;
-		dwKeyInput |= ctos_KEY_Q;
+		SendSkillPacket_Request(SKILL_Q);
 	}
-	if (KeyMgr::GetInstance()->KeyPressing('E') && SkillController::GetInstance()->UseSkill(1))
+	if (KeyMgr::GetInstance()->KeyPressing('E') && SkillController::GetInstance()->UseSkill(SKILL_E))
 	{
 		cout << "Use E Skill" << endl;
-		dwKeyInput |= ctos_KEY_E;
+		SendSkillPacket_Request(SKILL_E);
 	}
 
 	if (m_prevKey != dwKeyInput) {
@@ -891,6 +904,18 @@ void Network::SendShoppingStart_Request()
 	packet.type = ctos_ShoppingStart_Request;
 	if (!SendPacket(&packet)) {
 		cout << "SendShoppingStart_Request() Failed \n";
+	}
+}
+
+void Network::SendSkillPacket_Request(unsigned char Skill_type)
+{
+	CTOS_Skill packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_skill_Request;
+	packet.skill_type = Skill_type;
+
+	if (!SendPacket(&packet)) {
+		cout << "SendSkillPacket_Request() Failed \n";
 	}
 }
 

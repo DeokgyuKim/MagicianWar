@@ -7,6 +7,7 @@ constexpr int MAX_PACKET = 256;
 constexpr int WORKTHREAD_COUNT = 6; // 총 쓰레드 개수 == 코어 개수 * 1.5 ( Main
 
 constexpr int MAX_BULLET = 70;
+constexpr int MAX_SKILL = 50;
 constexpr int MAX_PLAYER = 8; // 최대 4 : 4 까지 고려
 constexpr int MAX_ID_LEN = 10;
 constexpr int MAX_CLIENTS = 100; // ( 테스트로 100명 동접 ) 이걸 최대로 하면서 성능이 안정화 되는게 IOCP의 목적
@@ -78,12 +79,35 @@ struct ROOM_EVENT {
 	int playerID; // 어떤 플레이어의 
 	unsigned char type;		// 무슨 패킷인가
 	DWORD data1;
-	float fdata;
+	float fdata1;
+	float fdata2;
 	bool bdata1;
+	unsigned char ucType1;
+	XMFLOAT3	xmfPosition;
+	XMFLOAT3	xmfRotate;
+
 	// 기타 정보
 };
 
 struct Send_Packet_RoomInfo {
 	int playerID;
 	char buffer[MAX_PACKET];
+};
+
+struct Camera {
+	float CamX;
+	float CamY;
+};
+
+
+struct SkillInfo {
+	int user; // 사용자
+	XMFLOAT3 xmfScale;
+	XMFLOAT3 xmfPosition;
+	XMFLOAT3 xmfRotate;
+	XMFLOAT4X4 xmmWorld;
+	float LifeTime;
+	float fSpeed;
+	unsigned char SkillType;
+
 };

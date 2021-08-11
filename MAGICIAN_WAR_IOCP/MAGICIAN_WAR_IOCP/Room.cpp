@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "PlayerFSM.h"
 #include "Server.h"
+#include "FireWall.h"
 
 
 Room::Room(int room_num, int host)
@@ -45,6 +46,11 @@ void Room::Initalize(int room_num, int host)
 		m_roomPlayerSlots[i].readyState = false;
 		m_roomPlayerSlots[i].id = NO_PLAYER;
 		m_roomPlayerSlots[i].slot_num = i;
+	}
+
+	for (int i = 0; i < MAX_SKILL; ++i) {
+		m_Skills[i].setUser(NO_PLAYER);
+		m_Skills[i].setSlotNum(i);
 	}
 
 	m_isRoundEnd = false;
@@ -231,9 +237,9 @@ void Room::InGame_Update(float fTime)
 	//if(m_isRoundEnd)
 	for (auto player : m_players)
 	{
-		
+
 		player->Update(fTime);
-		
+
 
 		if (player->getCreateBullet() == 1)
 		{
@@ -247,9 +253,9 @@ void Room::InGame_Update(float fTime)
 
 			for (int i = 0; i < BulletCB_Count; ++i) {
 				if (m_Bullets[i].getUser() == NO_PLAYER) { // 안쓰는 총알 찾아서
-					
+
 					m_Bullets[i] = BulletTemp;
-					
+
 					player->setCreateBullet(0);
 					break;
 				}
@@ -259,7 +265,7 @@ void Room::InGame_Update(float fTime)
 
 	// 총알 Update
 	for (int i = 0; i < BulletCB_Count; ++i) {
-		
+
 		if (m_Bullets[i].getUser() != NO_PLAYER) { // 사용중인 것만 update
 			int dead = m_Bullets[i].Update(fTime);
 			if (dead) { // 총알이 사망체크되면 모든 클라한테 알려줘야함
@@ -272,8 +278,15 @@ void Room::InGame_Update(float fTime)
 			}
 
 		}
-		
+
 	}
+
+	for (int i = 0; i < MAX_SKILL; ++i) {
+		if (m_Skills[i].getUser() != NO_PLAYER) {
+			int dead = m_Skills[i].Update(fTime);
+		}
+	}
+
 
 	if (CPhysXMgr::GetInstance()->PhysXStartTime > 10.f)
 	{
@@ -299,9 +312,9 @@ void Room::InGame_Update(float fTime)
 	}
 
 	for (auto player : m_players) {
-		
+
 		player->LateUpdate(fTime);
-		
+
 		Push_UpdatePlayerInfoPacket(player);
 	}
 
@@ -316,11 +329,11 @@ void Room::Physics_Collision()
 	{
 		if (m_Bullets[i].getUser() != NO_PLAYER)
 		{
-			
+
 			if (CPhysXMgr::GetInstance()->CollisionForStaticObjects(m_Bullets[i].GetRigidDynamic()))
 			{
 				m_Bullets[i].SetUser(NO_PLAYER);
-				
+
 				PushBullet_Delete(i);
 			}
 			for (auto player : m_players)
@@ -483,7 +496,7 @@ void Room::ExitRoom(int id)
 	Player_Disconnect(id);
 	roomslot_Clear(islotNum);
 	PushRoomPlayerEvent(islotNum);
-	
+
 	for (auto player : m_players) {
 		int receiver = player->getID();
 		PushExitPlayer(receiver, id);
@@ -725,12 +738,13 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 		}
 		break;
 	}
-	case ctos_Camera_y:
+	case ctos_Camera_update:
 	{
 		for (auto player : m_players) {
 			if (player->getID() == rEvent.playerID) {
 				XMFLOAT3 xmfRotate = player->getRotate();
-				xmfRotate.y = rEvent.fdata;
+				xmfRotate.y = rEvent.fdata2;
+				player->setCamera(rEvent.fdata1, rEvent.fdata2);
 				player->SetRotate(xmfRotate);
 				break;
 			}
@@ -756,6 +770,60 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 		SendLeftShoppingTime();
 		break;
 	}
+	case ctos_skill_Request:
+		for (auto player : m_players) {
+			if (player->getID() == rEvent.playerID) 
+			{
+				for (int i = 0; i < MAX_SKILL; ++i)
+				{
+					if (m_Skills[i].getUser() == NO_PLAYER)
+					{
+						if (rEvent.ucType1 == SKILL_Q)
+						{
+							if (player->getCharacterType() == ELEMENT_FIRE) 
+							{
+							FireWall fireWall{};
+							m_Skills[i] = fireWall;
+							m_Skills[i].setSkillType(SKILL_FIREWALL);
+							
+							}
+							else if (player->getCharacterType() == ELEMENT_COLD)
+							{
+
+							}
+							else if (player->getCharacterType() == ELEMENT_DARKNESS)
+							{
+
+							}
+						}
+						else if (rEvent.ucType1 == SKILL_E)
+						{
+							if (player->getCharacterType() == ELEMENT_FIRE)
+							{
+								//FireWall fireWall{};
+								//m_Skills[i] = fireWall;
+								//m_Skills[i].setSkillType(SKILL_FIREWALL);
+							}
+							else if (player->getCharacterType() == ELEMENT_COLD)
+							{
+
+							}
+							else if (player->getCharacterType() == ELEMENT_DARKNESS)
+							{
+
+							}
+						}
+						// common
+						m_Skills[i].setUser(rEvent.playerID);
+						PushSkillCreate(i);
+						break;
+					}
+
+				}
+				break;
+			}
+		}
+		break;
 	default:
 		break;
 	}
@@ -1019,7 +1087,7 @@ void Room::SendLeftShoppingTime()
 	{
 		cout << "라운드 시작\n";
 		RoundStart();
-		
+
 		m_ShoppingTime = 0;
 	}
 
@@ -1051,7 +1119,7 @@ void Room::SendRoundTime()
 	}
 	else
 	{
-		
+
 	}
 }
 
@@ -1107,6 +1175,19 @@ void Room::PushRoundReset()
 	packet.size = sizeof(packet);
 	packet.type = stoc_roundreset;
 
+	for (auto player : m_players) {
+		sendEvent_push(player->getID(), &packet);
+	}
+}
+
+void Room::PushSkillCreate(int slotNum)
+{
+	STOC_Skill packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_skill;
+	packet.user = m_Skills[slotNum].getUser();
+	packet.skillType = m_Skills[slotNum].getSkillType();
+	packet.slotNum = m_Skills[slotNum].getSlotNum();
 	for (auto player : m_players) {
 		sendEvent_push(player->getID(), &packet);
 	}

@@ -46,9 +46,6 @@
     <Filter Include="02.Object\04.Room">
       <UniqueIdentifier>{7db93002-3b57-4b6a-b10c-b019993050c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Object\03.Skill">
-      <UniqueIdentifier>{60381d90-49fa-4dcf-a2fc-be814c2c5513}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Object\01.Player\PlayerFSM">
       <UniqueIdentifier>{fdbc5d81-f127-4f83-a575-30e1dca0138d}</UniqueIdentifier>
     </Filter>
@@ -66,6 +63,15 @@
     </Filter>
     <Filter Include="98.Interface\00.Interface_Thread">
       <UniqueIdentifier>{b9057fbe-f83d-44fa-bba4-496e0f236fc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Object\03.Skill">
+      <UniqueIdentifier>{60381d90-49fa-4dcf-a2fc-be814c2c5513}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Object\03.Skill\01.Fire">
+      <UniqueIdentifier>{ed1b98b7-261a-43d3-88f9-02da509cccf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Object\03.Skill\01.Fire\01.FireWall">
+      <UniqueIdentifier>{847eea7e-0676-49b4-855e-f85a9bf6627a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -107,6 +113,12 @@
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>02.Object\02.Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Skill.cpp">
+      <Filter>02.Object\03.Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="FireWall.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +175,12 @@
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>02.Object\02.Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Skill.h">
+      <Filter>02.Object\03.Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="FireWall.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

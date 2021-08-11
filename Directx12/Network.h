@@ -113,12 +113,13 @@ public:
 
 	// Ingame Scene
 	void SendIngameInfo_Request();
-	void SendCameraUpdate(float cameraY);
+	void SendCameraUpdate(float cameraX, float cameraY);
 
 	void SendAttackEnd(bool _bAttack);
 	void SendKeyInput(DWORD _keyInput);
 	void ServerKeyInput();
 	void SendShoppingStart_Request();
+	void SendSkillPacket_Request(unsigned char Skill_type);
 
 	bool SendPacket(void* buffer);
 	void error_display(const char* msg, int err_no);

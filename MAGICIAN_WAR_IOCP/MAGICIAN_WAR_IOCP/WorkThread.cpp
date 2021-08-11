@@ -356,11 +356,12 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 		RoomPacket.data1 = data->key;
 		break;
 	}
-	case ctos_Camera_y:
+	case ctos_Camera_update:
 	{
 		CTOS_CAMERA* data = reinterpret_cast<CTOS_CAMERA*>(packet);
-		RoomPacket.type = ctos_Camera_y;
-		RoomPacket.fdata = data->CameraY;
+		RoomPacket.type = ctos_Camera_update;
+		RoomPacket.fdata1 = data->CameraX;
+		RoomPacket.fdata2 = data->CameraY;
 		break;
 	}
 	case ctos_AttackEnd:
@@ -373,6 +374,16 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 	case ctos_ShoppingStart_Request:
 	{
 		RoomPacket.type = ctos_ShoppingStart_Request;
+		break;
+	}
+	case ctos_skill_Request:
+	{
+		cout << "스킬 만들어줘 응애\n";
+		CTOS_Skill* data = reinterpret_cast<CTOS_Skill*>(packet);
+		RoomPacket.type = ctos_skill_Request;
+		RoomPacket.ucType1 = data->skill_type;
+		RoomPacket.xmfPosition = data->xmfPosition;
+		RoomPacket.xmfRotate = data->xmfRotate;
 		break;
 	}
 	default:

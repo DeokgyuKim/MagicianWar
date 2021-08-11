@@ -3,6 +3,7 @@
 #include "protocol.h"
 #include "Global.h"
 #include "Bullet.h"
+#include "Skill.h"
 
 class Bullet;
 class Player;
@@ -63,6 +64,7 @@ public:
 	void SendRoundResetTime();
 	void PushRoundReset();
 	
+	void PushSkillCreate(int slotNum);
 public:
 	// Get
 	bool isGameStart() { return m_isGameStart; }
@@ -80,6 +82,7 @@ private:
 	mutex m_player_mutex;
 	list<Player*> m_players;
 	array<Bullet, MAX_BULLET> m_Bullets;
+	array<Skill, MAX_SKILL> m_Skills;
 	mutex m_bullet_mutex;
 	mutex m_physic_mutex;
 

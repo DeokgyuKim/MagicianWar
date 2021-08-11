@@ -119,9 +119,10 @@ int Player::Update(const float& fTimeDelta)
 		{
 			XMFLOAT3 xmfRotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
 			float cameraY = m_pCamera->GetRotY();
+			float cameraX = m_pCamera->GetRotX();
 #ifdef NETWORK
 			if (xmfRotate.y != cameraY) {
-				Network::GetInstance()->SendCameraUpdate(cameraY);
+				Network::GetInstance()->SendCameraUpdate(cameraX,cameraY);
 			}
 #else
 			xmfRotate.y = m_pCamera->GetRotY();

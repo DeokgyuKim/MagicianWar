@@ -21,6 +21,8 @@ void Player::Initialize(int client_num, int room_num)
 {
 	ZeroMemory(&m_Info, sizeof(PlayerInfo));
 
+	m_Camera.CamX = 0.f;
+	m_Camera.CamY = 0.f;
 	m_xmfScale = XMFLOAT3(0.01f, 0.01f, 0.01f);
 	m_xmfRotate = XMFLOAT3(0.f, 0.f, 0.f);
 	m_xmfMeshRotate = XMFLOAT3(-90.f, 0.f, 0.f);

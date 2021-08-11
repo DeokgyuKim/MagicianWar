@@ -5,6 +5,7 @@
 #include "protocol.h"
 class InterfaceFSM;
 
+
 class Player
 {
 public:
@@ -54,6 +55,7 @@ public:
 	bool getReady() { return m_Ready; }
 	char getTeam() { return m_Info.TeamType; }
 	int getSlotNum() { return m_slot_num; }
+	Camera getCamera() { return m_Camera; }
 
 	InterfaceFSM* GetRootFSM();
 	InterfaceFSM* GetUpperFSM();
@@ -80,6 +82,7 @@ public:
 	void setCharacterType(unsigned char _type);
 	void setHost(bool bHost);
 	void setSlotNum(int num) { m_slot_num = num; }
+	void setCamera(float x, float y) { m_Camera.CamX = x; m_Camera.CamY = y; }
 
 public:
 	void SetScale(XMFLOAT3 xmfSclae) { m_xmfScale = xmfSclae; }
@@ -95,7 +98,8 @@ public:
 
 private: // 
 	// info
-	PlayerInfo m_Info;
+	PlayerInfo	m_Info;
+	Camera		m_Camera;
 	int m_slot_num;
 	bool m_Ready;
 	bool m_Room_JoinState;

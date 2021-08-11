@@ -20,9 +20,8 @@
 
 
 #define stoc_otherPlayerNum 29
-#define stoc_SkillPacket 34
 
-#define packet_skill 21
+
 
 // Title	Scene	61 ~ 90
 // Lobby	Scene	91 ~ 120
@@ -50,6 +49,8 @@
 #define stoc_roundreset 158
 #define stoc_add_kill_point 159
 #define stoc_Ingame_OutPlayer 160
+#define ctos_skill_Request 161
+#define stoc_skill 34
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -57,9 +58,9 @@
 
 // Common			1 ~ 30
 
-#define ctos_playerInfo 1
-#define ctos_keyInput	2
-#define ctos_Camera_y	3
+#define ctos_playerInfo		1
+#define ctos_keyInput		2
+#define ctos_Camera_update	3
 
 // Loading	Scene	31 ~ 60
 #define ctos_LoadingEnd 31
@@ -143,6 +144,19 @@
 #define ELEMENT_FIRE		1
 #define ELEMENT_COLD		2
 #define ELEMENT_DARKNESS	3
+
+// Skill Type
+#define SKILL_Q				0
+#define SKILL_E				1
+
+#define SKILL_FIREWALL			2
+#define SKILL_FIRE2				3
+
+#define SKILL_COLD1				4
+#define SKILL_COLD2				5
+
+#define SKILL_DARKNESS1			6
+#define SKILL_DARKNESS2			7
 
 struct PlayerInfo
 {
@@ -366,15 +380,9 @@ struct STOC_otherPlayerCount {
 struct STOC_Skill {
 	short size;
 	unsigned char type;
-	int id; // 어떤 플레이어
-	unsigned char InstanceName; // 어떤 캐릭터가
-	unsigned char skill_type; // 스킬 타입
-	XMFLOAT4X4 matWorld; // worldMatrix
-	float lifeTime; // 생존시간
-	float shaderVariable1; // 셰이더 변수
-	float shaderVariable2;
-	float shaderVariable3;
-	float shaderVariable4;
+	int user;
+	unsigned char slotNum;
+	unsigned char skillType;
 };
 
 struct STOC_RoundEnd {
@@ -486,9 +494,9 @@ struct CTOS_INGAMEINFO_REQUEST
 struct CTOS_Skill {
 	short size;
 	unsigned char type;
-	int id; // 누가 쏘는지
-	unsigned char skill_type; // 스킬 타입
-	XMFLOAT4X4		matWorld;
+	XMFLOAT3	xmfPosition;
+	XMFLOAT3	xmfRotate;
+	unsigned char skill_type;
 	// 또 뭐 필요하지
 };
 
@@ -502,6 +510,7 @@ struct CTOS_CAMERA {
 	short size;
 	unsigned char type;
 	float CameraY;
+	float CameraX;
 };
 
 struct CTOS_ATTACKEND {

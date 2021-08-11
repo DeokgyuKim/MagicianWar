@@ -159,11 +159,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="FireWall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshMgr.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerFSM.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="Skill.cpp" />
     <ClCompile Include="ThreadInterface.cpp" />
     <ClCompile Include="PhysXMgr.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -179,6 +181,7 @@
     <ClInclude Include="..\..\protocol\protocol.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="extern.h" />
+    <ClInclude Include="FireWall.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="InterfaceFSM.h" />
@@ -186,6 +189,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerFSM.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="Skill.h" />
     <ClInclude Include="ThreadInterface.h" />
     <ClInclude Include="PhysXMgr.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
