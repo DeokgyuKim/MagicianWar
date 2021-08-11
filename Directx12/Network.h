@@ -65,6 +65,7 @@ public:
 
 	void SetRoundStart(bool _start) { m_isRoundStart = _start; }
 	bool GetRoundStart() { return m_isRoundStart; }
+	short GetRoundTime() { return m_iTimeLeft; }
 
 
 	string	LoadServerIPtxt(string filePath);
@@ -89,6 +90,7 @@ private:
 	int		m_CurRound;
 	bool	m_isRoundStart;
 	int		m_iPlayerNum;
+	short	m_iTimeLeft;
 public:
 	//Function For LobbyThread Send
 

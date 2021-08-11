@@ -41,6 +41,7 @@ public:
     void        SetWorld(XMFLOAT4X4 world);
     void        SetCamera(Camera* pCamera) { m_pCamera = pCamera; }
     void        SetKillCount(int cnt) { m_iKillCnt = cnt; }
+    void        AddKillCount() { ++m_iKillCnt; }
 public:
     // Get
     Component* GetUpperAniController();

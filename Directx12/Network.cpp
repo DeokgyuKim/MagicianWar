@@ -615,7 +615,7 @@ void Network::packetProcessing(char* _packetBuffer)
 	case stoc_left_shopping_time:
 	{
 		STOC_LEFT_SHOPPING_TIME* data = reinterpret_cast<STOC_LEFT_SHOPPING_TIME*>(_packetBuffer);
-		cout << "시간 - " << (int)data->leftTime << "\n";
+		m_iTimeLeft = (short)data->leftTime;
 		break;
 	}
 	case stoc_roundstart:
@@ -646,20 +646,7 @@ void Network::packetProcessing(char* _packetBuffer)
 	{
 		cout << "킬 포인트 올라감\n";
 		++m_tMyInfo.killPoint;
-		break;
-	}
-	case stoc_Ingame_OutPlayer:
-	{
-		STOC_INGAME_OUTPLAYER* data = reinterpret_cast<STOC_INGAME_OUTPLAYER*>(_packetBuffer);
-		int id = data->outPlayer_id;
-		Object* pobj = MainApp::GetInstance()->GetScene()->GetPlayerForID(id);
-		if (pobj != nullptr)
-		{
-			MainApp::GetInstance()->GetScene()->RemoveObject(pobj, OBJ_PLAYER);
-			delete pobj;
-		}
-		cout << "Ingame outPlayer\n";
-		break;
+		dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer())->AddKillCount();
 	}
 	default:
 		cout << "No Type Packet" << endl;
