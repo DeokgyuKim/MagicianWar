@@ -35,8 +35,8 @@ enum OP_TYPE { // Accept는 Main_Thread가 할거임
 	OP_RECV, OP_SEND, // WorkThread
 	OP_ACCEPT, // MainThread
 
-	OP_ROOM_UPDATE, OP_ROOM_TIME,
-	OP_ROOM_RESET,// GameRoom
+	OP_ROOM_UPDATE, OP_ROOM_SHOPPING_TIME,
+	OP_ROOM_TIME,OP_ROOM_RESET,// GameRoom
 	OP_ROOM_SEND_PACKET
 };
 

@@ -30,10 +30,13 @@ void Room::Initalize(int room_num, int host)
 	m_isRoundReset = false;
 	m_prev_time = chrono::system_clock::now();
 
-	m_TotalShoppingTime = SHOPPING_TIME;
+	m_TotalShoppingTime = 5;//SHOPPING_TIME;
 	m_ShoppingTime = 0;
 	m_TotalRestTime = 5;
 	m_ResetTime = 0;
+	m_TotalRoundTime = 300;
+	m_RoundTime = 0;
+
 
 	for (int i = 0; i < MAX_PLAYER; ++i) {
 		m_roomPlayerSlots[i].characterType = ELEMENT_FIRE;
@@ -126,10 +129,11 @@ void Room::RoundStart()
 		player->SetRotate(XMFLOAT3(0.f, 0.f, 0.f));
 		player->GetUpperFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
 		player->GetRootFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
-	
 	}
 
 	PushRoundStartEvent(++m_Info.curRound);
+	m_RoundTime = 0;
+	SendRoundTime();
 
 	// Bullet초기화
 	for (int i = 0; i < BulletCB_Count; ++i) {
@@ -972,7 +976,7 @@ void Room::SendLeftShoppingTime()
 		roomEvent_Send.Object_ID = EVENT_KEY;
 		roomEvent_Send.Target_ID = m_Info.Room_Num;
 		roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::seconds(1); // 1초에 한번
-		roomEvent_Send.opType = OP_ROOM_TIME;
+		roomEvent_Send.opType = OP_ROOM_SHOPPING_TIME;
 		Server::GetInstance()->AddTimer(roomEvent_Send);
 
 
@@ -983,7 +987,7 @@ void Room::SendLeftShoppingTime()
 		for (auto player : m_players) // 게임중인 플레이어들에게 쇼핑시간 보내줘야지
 		{
 			int id = player->getID();
-			Server::GetInstance()->SendLeftShoppingTime(id, leftTime);
+			Server::GetInstance()->SendLeftTime(id, leftTime);
 		}
 
 
@@ -992,9 +996,40 @@ void Room::SendLeftShoppingTime()
 	{
 		cout << "라운드 시작\n";
 		RoundStart();
+		
 		m_ShoppingTime = 0;
 	}
 
+}
+
+void Room::SendRoundTime()
+{
+	if (this == nullptr) return;
+
+	if (m_RoundTime <= m_TotalRoundTime) {
+		EVENT roomEvent_Send;
+		roomEvent_Send.Object_ID = EVENT_KEY;
+		roomEvent_Send.Target_ID = m_Info.Room_Num;
+		roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::seconds(1); // 1초에 한번
+		roomEvent_Send.opType = OP_ROOM_TIME;
+		Server::GetInstance()->AddTimer(roomEvent_Send);
+
+		short leftTime = m_TotalRoundTime - m_RoundTime;
+		cout << "라운드 진행중 - " << (int)leftTime << "\n";
+		++m_RoundTime;
+
+		for (auto player : m_players) // 게임중인 플레이어들에게 쇼핑시간 보내줘야지
+		{
+			int id = player->getID();
+			Server::GetInstance()->SendRoundResetTime(id, leftTime);
+		}
+
+
+	}
+	else
+	{
+		
+	}
 }
 
 void Room::SendRoundResetTime()

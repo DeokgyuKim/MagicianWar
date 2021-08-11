@@ -127,6 +127,13 @@ void WorkThread::Thread_Run()
 		case OP_ROOM_TIME:
 		{
 			int room_num = *reinterpret_cast<int*>(over_ex->Iocp_buf);
+			g_Rooms[room_num]->SendRoundTime();
+			delete over_ex;
+			break;
+		}
+		case OP_ROOM_SHOPPING_TIME:
+		{
+			int room_num = *reinterpret_cast<int*>(over_ex->Iocp_buf);
 			g_Rooms[room_num]->SendLeftShoppingTime();
 			delete over_ex;
 			break;

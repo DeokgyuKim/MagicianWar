@@ -57,6 +57,7 @@ public:
 
 	void PushRoundEndEvent(int TeamType);
 	void SendLeftShoppingTime();
+	void SendRoundTime();
 	void SendRoundResetTime();
 	void PushRoundReset();
 public:
@@ -98,6 +99,8 @@ private:
 	unsigned char m_TotalShoppingTime;
 	unsigned char m_ResetTime;
 	unsigned char m_TotalRestTime;
+	short m_RoundTime;
+	short m_TotalRoundTime;
 	bool m_isGameStart;
 	bool m_istEnterable;
 

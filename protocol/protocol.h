@@ -379,7 +379,7 @@ struct STOC_RoundEnd {
 struct STOC_LEFT_SHOPPING_TIME {
 	short size;
 	unsigned char type;
-	unsigned char leftTime;
+	short leftTime;
 };
 
 struct STOC_ADD_KILL_POINT {

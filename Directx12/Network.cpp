@@ -639,7 +639,7 @@ void Network::packetProcessing(char* _packetBuffer)
 	case stoc_roundreset:
 	{
 		if (Network::GetInstance()->GetMyInfo().isRoom_Host)
-			Network::GetInstance()->CallEvent(EVENT_ROUND_SHOPPING_START_REQUEST, 0);
+			Network::GetInstance()->CallEvent(EVENT_ROUND_SHOPPING_START_REQUEST, 0); 
 		break;
 	}
 	case stoc_add_kill_point:

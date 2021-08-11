@@ -282,7 +282,7 @@ void Server::SendRoomExit(int id)
 	}
 }
 
-void Server::SendLeftShoppingTime(int id, unsigned char leftTime)
+void Server::SendLeftTime(int id, short leftTime)
 {
 	STOC_LEFT_SHOPPING_TIME packet;
 	packet.size = sizeof(packet);

@@ -50,6 +50,11 @@ void TimeThread::Thread_Run()
 				over_ex->OpType = OP_ROOM_SEND_PACKET;
 				*reinterpret_cast<int*>(over_ex->Iocp_buf) = Event_proc.Target_ID;
 			}
+			else if (Event_proc.opType == OP_ROOM_SHOPPING_TIME)
+			{
+				over_ex->OpType = OP_ROOM_SHOPPING_TIME;
+				*reinterpret_cast<int*>(over_ex->Iocp_buf) = Event_proc.Target_ID;
+			}
 			else if (Event_proc.opType == OP_ROOM_TIME)
 			{
 				over_ex->OpType = OP_ROOM_TIME;
