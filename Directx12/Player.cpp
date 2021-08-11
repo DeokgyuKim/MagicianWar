@@ -90,7 +90,7 @@ void Player::Initialize(XMFLOAT3 pos)
 
 #ifdef PHYSX
 	CPhysXMgr::GetInstance()->m_PlayerController = m_pCapsuleCon = CPhysXMgr::GetInstance()->
-		CreateCapsuleController(this, pos, 0.4f, 1.f, true);
+		CreateCapsuleController(this, pos, 0.5f, 0.5f, true);
 	m_pCapsuleCon->getActor()->setName("Player");
 	m_pCapsuleCon->getActor()->setMass(20.f);
 #endif
@@ -295,9 +295,11 @@ void Player::ModifyPhysXPos(const float& fTimeDelta)
 	PxExtendedVec3 GetPosition = m_pCapsuleCon->getPosition();
 	PxVec3 pxVecGp;
 	pxVecGp.x = float(GetPosition.x);
-	pxVecGp.y = float(GetPosition.y);
+	pxVecGp.y = float(GetPosition.y) - 0.85f;
 	pxVecGp.z = float(GetPosition.z);
 	matTrans = XMMatrixTranslation(pxVecGp.x, pxVecGp.y, pxVecGp.z);
+
+	//matOffset = XMMatrixTranslation(0.f, -0.45f, 0.f);
 
 
 	XMFLOAT4X4 xmf4x4mat;

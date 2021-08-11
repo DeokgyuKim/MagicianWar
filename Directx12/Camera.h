@@ -55,5 +55,6 @@ private:
 
     Player*                     m_pPlayer;
     float                       m_fTime = 0.f;
+    PxRigidBody*                m_pRigidBody = NULL;
 };
 
