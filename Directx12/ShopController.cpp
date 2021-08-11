@@ -25,7 +25,7 @@ void ShopController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList*
 	pos.x = WINCX / 2.f - 500.f;
 	pos.y = WINCY / 2.f - 128.f;
 	pos.z = 320.f;
-	pos.w = 256.f;
+	pos.w = 352.f;
 
 	m_pSkillBase[0] = new UI(device, cmdLst, pRenderer, pos, "SkillBase");
 

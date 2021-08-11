@@ -139,6 +139,10 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["SkillOn"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "ShopBase", L"../Resources/UI/InGame/ShopBase.dds");
+	m_mapTextures["ShopBase"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "ShopNone", L"../Resources/UI/InGame/ShopNone.dds");
 	m_mapTextures["ShopNone"] = pTexture;
 	pLoading->AddCount();
@@ -149,6 +153,10 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "ShopMouse", L"../Resources/UI/InGame/ShopMouse.dds");
 	m_mapTextures["ShopMouse"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Kill", L"../Resources/UI/InGame/Kill.dds");
+	m_mapTextures["Kill"] = pTexture;
 	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "Noise", L"../Resources/Noise.dds", false, 12);

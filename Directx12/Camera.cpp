@@ -29,11 +29,11 @@ int Camera::Update(const float& fTimeDelta)
 
 
 	m_fTime += fTimeDelta;
-	if (GetAsyncKeyState(VK_F1) & 0x0001)
+	if (GetAsyncKeyState(VK_F1) & 0x8000)
 		m_eCamMode = CAMERA_MODE::CAMERA_NONE;
-	if (GetAsyncKeyState(VK_F2) & 0x0001)
+	if (GetAsyncKeyState(VK_F2) & 0x8000)
 		m_eCamMode = CAMERA_MODE::CAMERA_FREE;
-	if (GetAsyncKeyState(VK_F3) & 0x0001)
+	if (GetAsyncKeyState(VK_F3) & 0x8000)
 		m_eCamMode = CAMERA_MODE::CAMERA_THIRD;
 
 	if ((m_eCamMode == CAMERA_MODE::CAMERA_FREE || m_eCamMode == CAMERA_MODE::CAMERA_THIRD))

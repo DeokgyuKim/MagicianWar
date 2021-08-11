@@ -49,11 +49,18 @@ int TestScene::Update(const float& fTimeDelta)
 
 	if (m_iOldMin != min || m_iOldSec != sec)
 	{
-		m_pTextCtrl->RemoveTexts(this);
-		m_pTextCtrl->Initialize(XMFLOAT4(WINCX / 2.f, 10.f, 50.f, 50.f), Time.c_str(), this);
+		m_pTimeTextCtrl->RemoveTexts(this);
+		m_pTimeTextCtrl->Initialize(XMFLOAT4(WINCX / 2.f, 10.f, 50.f, 50.f), Time.c_str(), this);
 	}
 	m_iOldMin = min;
 	m_iOldSec = sec;
+
+	int kill = dynamic_cast<Player*>(GetPlayer())->GetKillCount();
+	if (m_iOldKill != kill)
+	{
+		m_pKillTextCtrl->RemoveTexts(this);
+		m_pKillTextCtrl->Initialize(XMFLOAT4(WINCX - 240.f, 10.f, 100.f, 100.f), to_string(kill).c_str(), this);
+	}
 	
 
 	if (Network::GetInstance()->GetGameEnd().bEnd)
@@ -279,6 +286,9 @@ void TestScene::Initialize()
 	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(10.f, 10.f, 612.f, 100.f), "HpBarBase");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
+	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(WINCX - 400.f, 10.f, 300.f, 100.f), "Kill");
+	m_pObjects[OBJ_UI].push_back(pObj);
+
 	SkillController* pSkillCtrl = SkillController::GetInstance();
 	pSkillCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this);
 
@@ -289,7 +299,8 @@ void TestScene::Initialize()
 	m_pObjects[OBJ_UI].push_back(new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(WINCX * 0.5f - 20.f, WINCY * 0.5f - 20.f, 40.f, 40.f), "CrossHair"));
 
-	m_pTextCtrl = new TextController(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(WINCX / 2.f, 10.f, 50.f, 50.f), "00", this);
+	m_pTimeTextCtrl = new TextController(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(WINCX / 2.f, 10.f, 50.f, 50.f), "00", this);
+	m_pKillTextCtrl = new TextController(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(WINCX - 240.f, 10.f, 100.f, 100.f), "0", this);
 
 	BuildInstanceCBs();
 	BuildMaterialCBs();

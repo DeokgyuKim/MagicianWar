@@ -18,8 +18,10 @@ private:
     bool        ToolMode = false;
     Camera*     m_pCamera;
     bool        GameEndForPanelCreate = false;
-    TextController* m_pTextCtrl;
+    TextController* m_pTimeTextCtrl;
+    TextController* m_pKillTextCtrl;
     float m_fGameTime = 0.f;
     int m_iOldMin, m_iOldSec;
+    int m_iOldKill = 0;
 };
 

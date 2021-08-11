@@ -35,10 +35,12 @@ public:
     XMFLOAT4X4  GetWorld();
     XMFLOAT3    GetRotate();
     PlayerInfo  GetNetworkInfo() { return m_tNetInfo; }
+    int         GetKillCount() { return m_iKillCnt; }
     void        SetPosition(XMFLOAT3 xmfPos);
     void        SetRotate(XMFLOAT3 xmfRotate);
     void        SetWorld(XMFLOAT4X4 world);
     void        SetCamera(Camera* pCamera) { m_pCamera = pCamera; }
+    void        SetKillCount(int cnt) { m_iKillCnt = cnt; }
 public:
     // Get
     Component* GetUpperAniController();
@@ -73,6 +75,6 @@ protected:
     PxCapsuleController* m_pCapsuleCon = nullptr;
 
     Weapon* m_pWeapon;
-
+    int m_iKillCnt = 0;
 };
 
