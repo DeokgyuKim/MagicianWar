@@ -66,7 +66,7 @@ int TestScene::Update(const float& fTimeDelta)
 
 	if (Network::GetInstance()->GetRoundEnd().WinnerTeam != TEAM_NONE)
 	{
-		cout << "霸烙 场车绢!!!!!" << endl;
+		//cout << "霸烙 场车绢!!!!!" << endl;
 		if (!GameEndForPanelCreate)
 		{
 			//Panel积己

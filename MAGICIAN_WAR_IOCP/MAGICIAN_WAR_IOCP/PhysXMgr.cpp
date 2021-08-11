@@ -918,8 +918,8 @@ bool CPhysXMgr::OverlapBetweenTwoObject(PxRigidActor* pBody0, PxRigidActor* pBod
 		Shape[0]->getTriangleMeshGeometry(trigeom);
 		Geometry[0] = &trigeom;
 	}
-	else
-		return false;
+	//else
+	//	return false;
 
 
 	if (Shape[1]->getGeometryType() == PxGeometryType::eBOX)
@@ -946,8 +946,8 @@ bool CPhysXMgr::OverlapBetweenTwoObject(PxRigidActor* pBody0, PxRigidActor* pBod
 		Shape[1]->getTriangleMeshGeometry(trigeom);
 		Geometry[1] = &trigeom;
 	}
-	else
-		return false;
+	//else
+	//	return false;
 
 	XMFLOAT3 pos1 = XMFLOAT3(pBody0->getGlobalPose().p.x, pBody0->getGlobalPose().p.y, pBody0->getGlobalPose().p.z);
 	XMFLOAT3 pos2 = XMFLOAT3(pBody1->getGlobalPose().p.x, pBody1->getGlobalPose().p.y, pBody1->getGlobalPose().p.z);

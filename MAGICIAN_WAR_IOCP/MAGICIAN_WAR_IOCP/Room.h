@@ -74,6 +74,7 @@ private:
 	mutex m_player_mutex;
 	list<Player*> m_players;
 	array<Bullet, MAX_BULLET> m_Bullets;
+	mutex m_bullet_mutex;
 
 	array<RoomPlayer, MAX_PLAYER> m_roomPlayerSlots;
 
