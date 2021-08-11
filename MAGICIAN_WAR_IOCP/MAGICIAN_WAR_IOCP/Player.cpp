@@ -257,6 +257,8 @@ void Player::setPosition(XMFLOAT3 pos)
 	m_xmmWorld._41 = pos.x;
 	m_xmmWorld._42 = pos.y;
 	m_xmmWorld._43 = pos.z;
+	
+	CreateCapsuleController();
 }
 
 void Player::setPlayerInitPos(XMFLOAT3 pos)

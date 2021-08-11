@@ -55,6 +55,7 @@ public:
 	// Room
 	void SendRoomExit(int id);
 	void SendLeftShoppingTime(int id, unsigned char leftTime);
+	void SendRoundResetTime(int id, unsigned char leftTime);
 
 	void AddTimer(EVENT& rEvent);
 private:

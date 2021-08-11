@@ -293,6 +293,10 @@ void Server::SendLeftShoppingTime(int id, unsigned char leftTime)
 	}
 }
 
+void Server::SendRoundResetTime(int id, unsigned char leftTime)
+{
+}
+
 
 void Server::AddTimer(EVENT& rEvent)
 {

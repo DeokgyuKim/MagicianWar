@@ -55,6 +55,8 @@ public:
 
 	void PushRoundEndEvent(int TeamType);
 	void SendLeftShoppingTime();
+	void SendRoundResetTime();
+	void PushRoundReset();
 public:
 	// Get
 	bool isGameStart() { return m_isGameStart; }
@@ -67,6 +69,7 @@ private:
 	bool m_isRoundEnd;
 	bool m_isRoundStart;
 	bool m_RoundWinnerCheck;
+	bool m_isRoundReset;
 	int	m_WinnerTeam;
 	mutex m_player_mutex;
 	list<Player*> m_players;
@@ -89,6 +92,8 @@ private:
 
 	unsigned char m_ShoppingTime;
 	unsigned char m_TotalShoppingTime;
+	unsigned char m_ResetTime;
+	unsigned char m_TotalRestTime;
 	bool m_isGameStart;
 	bool m_istEnterable;
 

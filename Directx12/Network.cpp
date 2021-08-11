@@ -142,6 +142,8 @@ void Network::Room_Init()
 {
 	// 방에 들어가면 먼저 서버에게 지금 내가 속한 방의 정보 요구
 	m_Curscene = ROOM_SCENE;
+	m_RoundEnd.WinnerTeam = TEAM_NONE;
+	m_isRoundStart = false;
 	SendRoomInfo_Request();
 }
 
@@ -311,6 +313,7 @@ void Network::CallEvent(int EventType, int args, ...)
 	case EVENT_ROUND_SHOPPING_START_REQUEST:
 	{
 		SendShoppingStart_Request();
+		break;
 	}
 	default:
 		break;
@@ -603,10 +606,7 @@ void Network::packetProcessing(char* _packetBuffer)
 	case stoc_roundend:
 	{
 		STOC_RoundEnd* data = reinterpret_cast<STOC_RoundEnd*>(_packetBuffer);
-		m_RoundEnd.WinnerTeam = data->teamType;
-		
-		
-		//else cout << "게임이 안끝났어" << endl;
+		m_RoundEnd.WinnerTeam = data->teamType;	
 		break;
 	}
 	case stoc_left_shopping_time:
@@ -621,6 +621,14 @@ void Network::packetProcessing(char* _packetBuffer)
 		cout << data->Cur_Round << " 라운드가 시작됩니다.\n";
 		m_CurRound = data->Cur_Round;
 		m_isRoundStart = true;
+		m_RoundEnd.WinnerTeam = TEAM_NONE;
+		//MainApp::GetInstance()->GetScene()->
+		break;
+	}
+	case stoc_roundreset:
+	{
+		if (Network::GetInstance()->GetMyInfo().isRoom_Host)
+			Network::GetInstance()->CallEvent(EVENT_ROUND_SHOPPING_START_REQUEST, 0);
 		break;
 	}
 	default:
@@ -837,7 +845,7 @@ void Network::ServerKeyInput()
 
 void Network::SendShoppingStart_Request()
 {
-	cout << "돼라\n";
+	m_isRoundStart = false;
 
 	CTOS_SHOPPINGSTART_REQUEST packet;
 	packet.size = sizeof(packet);

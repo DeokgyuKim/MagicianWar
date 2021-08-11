@@ -19,7 +19,7 @@ void Room::Initalize(int room_num, int host)
 	m_Info.Room_Name = "";
 	m_Info.Room_Num = room_num;
 	m_Info.HostPlayer = host;
-	m_Info.TotalRound = 3;
+	m_Info.TotalRound = 2;
 	m_Info.curRound = 0;
 
 	m_BlueTeam_Alive_Count = 0;
@@ -27,10 +27,13 @@ void Room::Initalize(int room_num, int host)
 	m_curPlayer_Count = 0;
 	m_isGameStart = false;
 	m_istEnterable = true; // 들어올 수 있음
+	m_isRoundReset = false;
 	m_prev_time = chrono::system_clock::now();
 
-	m_TotalShoppingTime = SHOPPING_TIME;
+	m_TotalShoppingTime = /*SHOPPING_TIME*/3;
 	m_ShoppingTime = 0;
+	m_TotalRestTime = 3;
+	m_ResetTime = 0;
 
 	for (int i = 0; i < MAX_PLAYER; ++i) {
 		m_roomPlayerSlots[i].characterType = ELEMENT_FIRE;
@@ -58,6 +61,9 @@ void Room::Initalize(int room_num, int host)
 void Room::ReInit()
 {	// 라운드가 다 끝나고 로비로 돌아옴
 	m_isGameStart = false;
+	m_Info.curRound = 0;
+	m_WinnerTeam = TEAM_NONE;
+
 	if (m_curPlayer_Count <= MAX_PLAYER) { // 게임 끝났으니 꽉찬거 아니면 더 받자
 		m_istEnterable = true;
 	}
@@ -90,13 +96,23 @@ void Room::ReInit()
 		}
 	}
 
+	for (int i = 0; i < MAX_PLAYER; ++i) {
+		if (m_roomPlayerSlots[i].used) {
+			Push_SceneChange(m_roomPlayerSlots[i].id, ROOM_SCENE);
+
+		}
+	}
+
 }
 
 void Room::RoundStart()
 {
+	m_WinnerTeam = TEAM_NONE;
+	m_isRoundEnd = false;
 	// 상점 끝나고 라운드 시작할때 해줄것
 	for (auto player : m_players) { // 초기 위치 재설정
 		int spawnPos = player->getSlotNum();
+		cout << "spawnPos - " << spawnPos<<"\n";
 		if (spawnPos == 0) player->setPosition(XMFLOAT3(20.f, 0.f, 10.f));
 		else if (spawnPos == 1) player->setPosition(XMFLOAT3(15.f, 0.f, 10.f));
 		else if (spawnPos == 2) player->setPosition(XMFLOAT3(10.f, 0.f, 10.f));
@@ -106,10 +122,19 @@ void Room::RoundStart()
 		else if (spawnPos == 6) player->setPosition(XMFLOAT3(50.f, 0.f, 100.f));
 		else if (spawnPos == 7) player->setPosition(XMFLOAT3(55.f, 0.f, 100.f));
 
-		player->setHp(100);
+		player->setHp(20);
+		player->SetRotate(XMFLOAT3(0.f, 0.f, 0.f));
 		player->GetUpperFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
 		player->GetRootFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
 		PushRoundStartEvent(++m_Info.curRound);
+	}
+
+	// Bullet초기화
+	for (int i = 0; i < BulletCB_Count; ++i) {
+		if (m_Bullets[i].getUser() != NO_PLAYER)
+			m_Bullets[i].Release();
+
+		m_Bullets[i].SetUser(NO_PLAYER);
 	}
 }
 
@@ -156,9 +181,7 @@ void Room::Update()
 	if (m_isGameStart)  // 게임 시작되면 처리할 부분
 	{
 		//if(m_isRoundEnd)
-
-		if (m_isRoundStart)
-			InGame_Update(elapsedTime);
+		InGame_Update(elapsedTime);
 
 	}
 	else // 게임 시작이 아니면 RoomScene이니까
@@ -195,6 +218,7 @@ void Room::InGame_Update(float fTime)
 {
 	// 인게임 player 처리
 	Bullet BulletTemp;
+	//if(m_isRoundEnd)
 	for (auto player : m_players)
 	{
 		player->Update(fTime);
@@ -244,11 +268,16 @@ void Room::InGame_Update(float fTime)
 		Physics_Collision();
 		CheckWinnerTeam();
 	}
+	else { // 라운드가 끝났을때
+		SendRoundResetTime();
+	}
 
 	for (auto player : m_players) {
 		player->LateUpdate(fTime);
 		Push_UpdatePlayerInfoPacket(player);
 	}
+
+
 
 }
 
@@ -437,7 +466,7 @@ void Room::InGame_Init()
 		if (m_roomPlayerSlots[i].used) {
 			PushRoomPlayerEvent(i);
 			Player* _player = new Player(m_roomPlayerSlots[i].id, m_Info.Room_Num);
-			_player->setHp(30);
+			_player->setHp(20);
 			_player->setCharacterType(m_roomPlayerSlots[i].characterType);
 			_player->setSlotNum(m_roomPlayerSlots[i].slot_num);
 			if (i <= 3) { // Blue Team
@@ -928,12 +957,68 @@ void Room::SendLeftShoppingTime()
 
 
 	}
-	else 
+	else
 	{
 		cout << "라운드 시작\n";
 		RoundStart();
 		m_ShoppingTime = 0;
 	}
 
+}
+
+void Room::SendRoundResetTime()
+{
+	if (this == nullptr) return;
+
+	m_isRoundEnd = false;
+
+	if (m_ResetTime <= m_TotalRestTime) {
+		EVENT roomEvent_Send;
+		roomEvent_Send.Object_ID = EVENT_KEY;
+		roomEvent_Send.Target_ID = m_Info.Room_Num;
+		roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::seconds(1); // 1초에 한번
+		roomEvent_Send.opType = OP_ROOM_RESET;
+		Server::GetInstance()->AddTimer(roomEvent_Send);
+
+		unsigned char leftTime = m_TotalRestTime - m_ResetTime;
+		cout << "라운드 재시작 - " << (int)leftTime << "\n";
+		++m_ResetTime;
+
+		//for (auto player : m_players) // 게임중인 플레이어들에게 쇼핑시간 보내줘야지
+		//{
+		//	int id = player->getID();
+		//	Server::GetInstance()->SendRoundResetTime(id, leftTime);
+		//}
+
+
+	}
+	else
+	{
+		if (m_Info.curRound < m_Info.TotalRound) { // 라운드가 남았으면 라운드 재시작
+			cout << "Win Lose 팻말 치워줘\n";
+			PushRoundReset();
+
+		}
+		else {
+			cout << "게임 끝\n";
+			ReInit();
+		}
+
+
+		m_ResetTime = 0;
+	}
+
+
+}
+
+void Room::PushRoundReset()
+{
+	STOC_ROUND_RESET packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_roundreset;
+
+	for (auto player : m_players) {
+		sendEvent_push(player->getID(), &packet);
+	}
 }
 

@@ -129,6 +129,14 @@ void WorkThread::Thread_Run()
 			int room_num = *reinterpret_cast<int*>(over_ex->Iocp_buf);
 			g_Rooms[room_num]->SendLeftShoppingTime();
 			delete over_ex;
+			break;
+		}
+		case OP_ROOM_RESET:
+		{
+			int room_num = *reinterpret_cast<int*>(over_ex->Iocp_buf);
+			g_Rooms[room_num]->SendRoundResetTime();
+			delete over_ex;
+			break;
 		}
 		break;
 		case OP_ROOM_SEND_PACKET: // 방에서 일어난 일 보내

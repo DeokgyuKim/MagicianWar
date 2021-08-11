@@ -46,6 +46,7 @@
 #define stoc_roundend 155
 #define stoc_roundstart 156
 #define stoc_left_shopping_time 157
+#define stoc_roundreset 158
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -274,6 +275,10 @@ struct STOC_ROUND_START {
 	unsigned char type;
 	unsigned char Cur_Round;
 };
+struct STOC_ROUND_RESET {
+	short size;
+	unsigned char type;
+};
 
 // InGame Scene
 
@@ -374,6 +379,8 @@ struct STOC_LEFT_SHOPPING_TIME {
 	unsigned char type;
 	unsigned char leftTime;
 };
+
+
 
 //// Client ==> Server
 
