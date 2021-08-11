@@ -11,6 +11,8 @@
 #include "PlayerFSM.h"
 #include "Animation.h"
 #include "KeyMgr.h"
+#include "Camera.h"
+#include "ShopController.h"
 
 #include "RadioButton.h"
 #include "RoomRadioController.h"
@@ -622,7 +624,14 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_CurRound = data->Cur_Round;
 		m_isRoundStart = true;
 		m_RoundEnd.WinnerTeam = TEAM_NONE;
-		//MainApp::GetInstance()->GetScene()->
+		Object* pobj = MainApp::GetInstance()->GetScene()->GetUIForTag(99);
+		if (pobj != nullptr)
+		{
+			MainApp::GetInstance()->GetScene()->RemoveObject(pobj, OBJ_TYPE::OBJ_UI);
+			delete pobj;
+		}
+		dynamic_cast<Camera*>(MainApp::GetInstance()->GetScene()->GetCamera())->SetMode(CAMERA_MODE::CAMERA_THIRD);
+		ShopController::GetInstance()->SetRendering(false);
 		break;
 	}
 	case stoc_roundreset:

@@ -70,15 +70,20 @@ int TestScene::Update(const float& fTimeDelta)
 		if (!GameEndForPanelCreate)
 		{
 			//Panel»ý¼º
+			UI* pPanel = nullptr;
 			if (Network::GetInstance()->GetMyInfo().TeamType == Network::GetInstance()->GetRoundEnd().WinnerTeam)
 			{
-				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-					XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, 50.f, 760.f * 1.5f, 200.f * 1.5f), "Win"));
+				pPanel = new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+					XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, 50.f, 760.f * 1.5f, 200.f * 1.5f), "Win");
+				pPanel->SetTag(99);
+				m_pObjects[OBJ_UI].push_back(pPanel);
 			}
 			else
 			{
-				m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-					XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, 50.f, 760.f * 1.5f, 200.f * 1.5f), "Lose"));
+				pPanel = new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+					XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, 50.f, 760.f * 1.5f, 200.f * 1.5f), "Lose");
+				pPanel->SetTag(99);
+				m_pObjects[OBJ_UI].push_back(pPanel);
 			}
 			GameEndForPanelCreate = true;
 		}
@@ -108,15 +113,15 @@ void TestScene::LateUpdate(const float& fTimeDelta)
 #endif
 
 #ifdef PHYSX
-	if (CPhysXMgr::GetInstance()->PhysXStartTime > 10.f)
-	{
-		CPhysXMgr::GetInstance()->gScene->simulate(fTimeDelta);
-		CPhysXMgr::GetInstance()->gScene->fetchResults(true);
-	}
-	else
-	{
-		CPhysXMgr::GetInstance()->PhysXStartTime += fTimeDelta;
-	}
+	//if (CPhysXMgr::GetInstance()->PhysXStartTime > 10.f)
+	//{
+	//	CPhysXMgr::GetInstance()->gScene->simulate(fTimeDelta);
+	//	CPhysXMgr::GetInstance()->gScene->fetchResults(true);
+	//}
+	//else
+	//{
+	//	CPhysXMgr::GetInstance()->PhysXStartTime += fTimeDelta;
+	//}
 #endif
 }
 

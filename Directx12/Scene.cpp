@@ -101,3 +101,10 @@ Object* Scene::GetPlayer()
 		return nullptr;
 	return m_pObjects[OBJ_PLAYER].front();
 }
+
+Object* Scene::GetCamera()
+{
+	if (m_pObjects[OBJ_CAMERA].empty())
+		return nullptr;
+	return m_pObjects[OBJ_CAMERA].front();
+}
