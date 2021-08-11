@@ -1840,8 +1840,8 @@ PxTransform CPhysXMgr::MakePxTransform(XMFLOAT4X4 world)
 bool CPhysXMgr::CollisionForStaticObjects(PxRigidActor* pBody)
 {
 	PxTransform pxtrans = pBody->getGlobalPose();
-	int idxX = int(pxtrans.p.x / 10.f);
-	int idxZ = int(pxtrans.p.z / 10.f);
+	int idxX = min(max(int(pxtrans.p.x / 10.f), 0), 4);
+	int idxZ = min(max(int(pxtrans.p.z / 10.f), 0), 9);
 
 	if (OverlapBetweenTwoObject(pBody, m_pxDynamicBox[idxX][idxZ]))
 		for (auto Static : m_lstStaticOoc[idxX][idxZ])
@@ -1854,8 +1854,11 @@ bool CPhysXMgr::CollisionForStaticObjects(PxRigidActor* pBody)
 			if (i == 0 && j == 0)
 				continue;
 
-			if (OverlapBetweenTwoObject(pBody, m_pxDynamicBox[idxX + i][idxZ + j]))
-				for (auto Static : m_lstStaticOoc[idxX + i][idxZ + j])
+			int X = min(max(idxX + i, 0), 4);
+			int Z = min(max(idxZ + j, 0), 9);
+
+			if (OverlapBetweenTwoObject(pBody, m_pxDynamicBox[X][Z]))
+				for (auto Static : m_lstStaticOoc[X][Z])
 					if (OverlapBetweenTwoObject(pBody, Static))
 						return true;
 		}
