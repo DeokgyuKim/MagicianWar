@@ -98,6 +98,7 @@ int TestScene::Update(const float& fTimeDelta)
 	//}
 
 	ShopController::GetInstance()->Update();
+	SkillController::GetInstance()->Update(fTimeDelta);
 
 	return 0;
 }
@@ -293,6 +294,9 @@ void TestScene::Initialize()
 
 	SkillController* pSkillCtrl = SkillController::GetInstance();
 	pSkillCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this);
+	pSkillCtrl->SetSkillCoolTime(0, 5.f);
+	pSkillCtrl->SetSkillCoolTime(1, 4.f);
+
 
 	ShopController* pShopCtrl = ShopController::GetInstance();
 	pShopCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this);

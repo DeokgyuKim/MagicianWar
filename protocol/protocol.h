@@ -94,6 +94,7 @@
 #define ctos_KEY_SPACE		0x0010 
 #define ctos_KEY_LBUTTON	0x0020 
 #define ctos_KEY_E			0x0040 
+#define ctos_KEY_Q			0x0080 
 
 
 // Scene
