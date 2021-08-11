@@ -293,7 +293,7 @@ void TestScene::Initialize()
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	SkillController* pSkillCtrl = SkillController::GetInstance();
-	pSkillCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this);
+	pSkillCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this, (int)pPlayer->GetNetworkInfo().CharacterType);
 	pSkillCtrl->SetSkillCoolTime(0, 5.f);
 	pSkillCtrl->SetSkillCoolTime(1, 4.f);
 

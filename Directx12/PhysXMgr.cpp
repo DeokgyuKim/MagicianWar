@@ -122,6 +122,7 @@ bool CPhysXMgr::Initialize()
 			m_pxDynamicBox[x][z] = CreateBox(pos, 10.f, 100.f, 10.f);
 		}
 	}
+	CreateStaticBox(XMFLOAT3(25.f, -0.1f, 50.f), 50.f, 0.2f, 100.f);
 
 	return false;
 }
@@ -185,31 +186,25 @@ PxRigidDynamic* CPhysXMgr::CreateBox(XMFLOAT3 Pos, PxReal x, PxReal y, PxReal z,
 	return body;
 }
 //
-//PxRigidStatic* CPhysXMgr::CreateStaticBox(CPhysXObject* pObj, _vec3 Pos, PxReal x, PxReal y, PxReal z)
-//{
-//	const PxTransform& t = PxTransform(PxVec3(Pos.x, Pos.y, Pos.z));
-//
-//
-//	PxTransform localTm(PxVec3(0, 0, 0) * x);
-//	PxRigidStatic* body = gPhysics->createRigidStatic(t.transform(localTm));
-//	PxShape* shape = gPhysics->createShape(PxBoxGeometry(x, y, z), *gMaterial);
-//
-//	body->attachShape(*shape);	
-//	gScene->addActor(*body);
-//	shape->release();
-//
-//	MyPhysXGameObject str;
-//	str.pObject = pObj;
-//	str.pRigidStatic = body;
-//	VecPGO.push_back(str);
-//
-//	PStaticlist.push_back(body);
-//
-//	body->setName("");
-//
-//	return body;
-//
-//}
+PxRigidStatic* CPhysXMgr::CreateStaticBox(XMFLOAT3 Pos, PxReal x, PxReal y, PxReal z)
+{
+	const PxTransform& t = PxTransform(PxVec3(Pos.x, Pos.y, Pos.z));
+
+	PxTransform localTm(PxVec3(0, 0, 0) * x);
+	PxRigidStatic* body = gPhysics->createRigidStatic(t.transform(localTm));
+	PxShape* shape = gPhysics->createShape(PxBoxGeometry(x, y, z), *gMaterial);
+
+	body->attachShape(*shape);	
+	gScene->addActor(*body);
+	shape->release();
+
+	PStaticlist.push_back(body);
+
+	body->setName("");
+
+	return body;
+
+}
 //
 ////현재안쓰는중
 //PxRigidStatic* CPhysXMgr::CreateHexahedron(CPhysXObject* pObj, Engine::CCubeColor* pBuffer, Engine::VTXCOLORCUBE* pVertex, Engine::INDEX16* pIndex, _vec3 ObjectPos)
@@ -394,6 +389,107 @@ PxRigidStatic * CPhysXMgr::CreateTriangleStaticMesh(Object* pObj, string meshnam
 			}
 		}
 	}
+
+	return iglooActor;
+}
+
+PxRigidStatic* CPhysXMgr::CreatePlaneTriangleStaticMesh()
+{
+	vector<XMFLOAT3> pos;
+	pos.push_back(XMFLOAT3(0.f, 0.f, 100.f));
+	pos.push_back(XMFLOAT3(50.f, 0.f, 100.f));
+	pos.push_back(XMFLOAT3(50.f, 0.f, 0.f));
+	pos.push_back(XMFLOAT3(0.f, 0.f, 0.f));
+	vector<Indices> idx;
+	Indices idc;
+	idc.i1 = 0;	idc.i2 = 1; idc.i3 = 2;
+	idx.push_back(idc);
+	idc.i1 = 0;	idc.i2 = 2; idc.i3 = 3;
+	idx.push_back(idc);
+
+	PxRigidStatic* iglooActor = gPhysics->createRigidStatic(PxTransform(PxVec3(0, 0, 0)));
+
+	pxMeshVtxInfo pPxVtx;
+	pPxVtx.ulVertexCnt = 4;
+	pPxVtx.pxVecVertexPos = new PxVec3[4];
+
+
+	for (unsigned long i = 0; i < 4; ++i)
+	{
+		pPxVtx.pxVecVertexPos[i].x = pos[i].x;
+		pPxVtx.pxVecVertexPos[i].y = pos[i].y;
+		pPxVtx.pxVecVertexPos[i].z = pos[i].z;
+	}
+
+	Indices* indic = new Indices[idx.size()];
+	for (size_t i = 0; i < idx.size(); ++i)
+	{
+		indic[i] = idx[i];
+	}
+	/*Engine::Triangle* indices = nullptr;
+
+	indices = new Engine::Triangle[pMesh->NumFace];
+
+
+
+	size_t size = pMesh->vecTIndex.size();
+	for (_ulong i = 0; i < pMesh->NumFace; ++i)
+	{
+	indices[i] = pMesh->vecTIndex[i];
+	}*/
+
+
+
+
+	PxTriangleMeshDesc meshDesc;
+	meshDesc.points.count = 4;
+	meshDesc.points.stride = sizeof(PxVec3);
+	meshDesc.points.data = pPxVtx.pxVecVertexPos;
+
+	meshDesc.triangles.count = idx.size(); // 없어야 된다고??
+	meshDesc.triangles.stride = 3 * sizeof(unsigned int);
+
+	meshDesc.triangles.data = indic; // 이게없어야되네...?
+
+
+
+
+	assert(meshDesc.isValid());
+
+
+	PxDefaultMemoryOutputStream writeBuffer;
+	PxTriangleMeshCookingResult::Enum result;
+	bool status = gCooking->cookTriangleMesh(meshDesc, writeBuffer, &result);
+
+
+	if (!status)
+	{
+		delete[] pPxVtx.pxVecVertexPos;
+
+		return nullptr;
+	}
+	PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+
+	PxTriangleMesh* triMesh = gPhysics->createTriangleMesh(readBuffer);
+
+
+	//Engine::Safe_Delete_Array(indices);
+
+	if (triMesh == NULL)
+	{
+		delete[] pPxVtx.pxVecVertexPos;
+		return nullptr;
+	}
+
+
+	PxTriangleMeshGeometry geom(triMesh);
+	PxShape* iglooShape = PxRigidActorExt::createExclusiveShape(*iglooActor, geom, *gMaterial);
+
+	gScene->addActor(*iglooActor);
+
+	PStaticlist.push_back(iglooActor);
+
+	iglooActor->setName("");
 
 	return iglooActor;
 }
@@ -1230,6 +1326,44 @@ bool CPhysXMgr::ShotRay(XMVECTOR RayPos, XMVECTOR RayDir, float MaxDistance, boo
 			return true;
 		}
 		
+	}
+
+	return false;
+}
+bool CPhysXMgr::ShotRay(XMVECTOR RayPos, XMVECTOR RayDir, float MaxDistance, bool& dynamicObj, bool& staticObj, XMFLOAT3& Pos)
+{
+	PxVec3 origin = ToPxVec3(RayPos);
+
+	RayDir = XMVector3Normalize(RayDir);
+
+	PxVec3 unitDir = ToPxVec3(RayDir);    // [in] Normalized ray direction
+	// [in] MaxDistance -> Raycast max distance
+
+	PxRaycastBuffer buf_;
+
+	if (gScene->raycast(origin, unitDir, MaxDistance, buf_, PxHitFlags(PxHitFlag::eMESH_ANY | PxHitFlag::eMESH_BOTH_SIDES)))
+	{
+		//PxHitFlags(PxHitFlag::eMESH_ANY) 레이에 첫번째로 적중한 객체를 반환한다.
+		const char* name = buf_.block.actor->getName();
+		
+		PxRigidDynamic* Dynamic = buf_.block.actor->is<PxRigidDynamic>();
+		Pos.x = buf_.block.position.x;
+		Pos.y = buf_.block.position.y;
+		Pos.z = buf_.block.position.z;
+		if (Dynamic != NULL)
+		{
+			staticObj = false;
+			dynamicObj = true;
+			return true;
+		}
+		PxRigidStatic* Static = buf_.block.actor->is<PxRigidStatic>();
+		if (Static != NULL)
+		{
+			dynamicObj = false;
+			staticObj = true;
+			return true;
+		}
+
 	}
 
 	return false;

@@ -97,9 +97,10 @@ public:
 	//
 	//bool CollisionDetectionBetweenDynamicAndStaticMesh(PxRigidDynamic * pDynamic, PxRigidStatic * pStatic);
 	//
-	//PxRigidStatic * CreateStaticBox(CPhysXObject* pObj, _vec3 Pos, PxReal x, PxReal y, PxReal z);
+	PxRigidStatic * CreateStaticBox(XMFLOAT3 Pos, PxReal x, PxReal y, PxReal z);
 	//
 	PxRigidStatic * CreateTriangleStaticMesh(Object* pObj, string meshname, XMMATRIX matWorld);
+	PxRigidStatic* CreatePlaneTriangleStaticMesh();
 	//
 	//PxRigidStatic * CreateTerrain(Engine::CTerrainTex * pBuffer, Engine::VTXTEX * pVertex, Engine::INDEX32 * pIndex);
 	//
@@ -135,6 +136,7 @@ public:
 	bool SweepBetweenPlayerAndStatic(PxRigidActor * pBody0, PxRigidActor * pBody1);
 
 	bool ShotRay(XMVECTOR RayPos, XMVECTOR RayDir, float MaxDistance, bool& dynamicObj, bool& staticObj);
+	bool ShotRay(XMVECTOR RayPos, XMVECTOR RayDir, float MaxDistance, bool& dynamicObj, bool& staticObj, XMFLOAT3& Pos);
 	//
 	PxRigidStatic * ShotRayStatic(XMVECTOR RayPos, XMVECTOR RayDir, float MaxDistance, float& fDist);
 	//

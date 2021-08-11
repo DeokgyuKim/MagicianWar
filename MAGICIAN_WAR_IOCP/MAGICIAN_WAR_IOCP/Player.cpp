@@ -376,7 +376,7 @@ void Player::GravityProgress(const float& fTimeDelta)
 	if (m_matRealWorld._42 <= 0.f)
 		return;
 	PxVec3 upDisp = { 0, 1.f ,0 };
-	upDisp *= -9.81f * fTimeDelta;
+	upDisp *= -0.098f * fTimeDelta;
 	const PxVec3 disp = upDisp;
 	const PxU32 flags = m_pCapsuleCon->move(disp, 0.0f, fTimeDelta, PxControllerFilters());
 }

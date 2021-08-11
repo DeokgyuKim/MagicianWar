@@ -175,6 +175,7 @@
     <ClInclude Include="Meteor_FireEff.h" />
     <ClInclude Include="Meteor_FireEff2.h" />
     <ClInclude Include="netHeader.h" />
+    <ClInclude Include="NetSkill.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="PhysXMgr.h" />
     <ClInclude Include="PlayerFSM.h" />
@@ -271,6 +272,7 @@
     <ClCompile Include="Meteor_Body.cpp" />
     <ClCompile Include="Meteor_FireEff.cpp" />
     <ClCompile Include="Meteor_FireEff2.cpp" />
+    <ClCompile Include="NetSkill.cpp" />
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="PhysXMgr.cpp" />
     <ClCompile Include="PlayerFSM.cpp" />
