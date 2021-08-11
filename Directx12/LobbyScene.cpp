@@ -20,6 +20,7 @@
 #include "RoomRadio.h"
 #include "RoomRadioController.h"
 #include "TextController.h"
+#include "Cursor.h"
 
 #include "StaticMeshMgr.h"
 #include "TextureMgr.h"
@@ -205,6 +206,7 @@ void LobbyScene::Initialize(bool bRetry)
 	//pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 	//	XMFLOAT4(1170.f, 510.f, 180.f, 180.f), "Ui_Char_Darkness");
 	//m_pObjects[OBJ_UI].push_back(pObj);
+	m_pObjects[OBJ_UI].push_back(new Cursor(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance()));
 
 
 #ifdef NETWORK
@@ -214,7 +216,7 @@ void LobbyScene::Initialize(bool bRetry)
 	Network::GetInstance()->Lobby_Init();
 #endif
 
-	ShowCursor(TRUE);
+	//ShowCursor(TRUE);
 }
 
 void makeroom()

@@ -7,7 +7,7 @@ class TextController
 public:
     TextController(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT4 xmfInfo, const char* pText, Scene* pScene);
     virtual ~TextController();
-protected:
+public:
     void Initialize(XMFLOAT4 xmfInfo, const char* pText, Scene* pScene);
 public:
     void UpdateChange();

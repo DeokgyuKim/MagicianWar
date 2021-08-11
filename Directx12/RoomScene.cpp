@@ -10,7 +10,7 @@
 #include "UI.h"
 #include "Button.h"
 #include "RadioButton.h"
-
+#include "Cursor.h"
 #include "CharInfoController.h"
 
 void readyroom();
@@ -145,6 +145,7 @@ void RoomScene::Initialize()
 	m_pRadioTeam[1]->SetOthers(m_pRadioTeam[0]);
 
 
+	m_pObjects[OBJ_UI].push_back(new Cursor(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance()));
 
 	m_pCharInfoCtrl = new CharInfoController(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this);
 	for (int i = 0; i < 8; ++i)

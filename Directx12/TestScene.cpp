@@ -7,6 +7,11 @@
 #include "Skybox.h"
 #include "StaticObject.h"
 #include "Bullet.h"
+#include "HpBar.h"
+#include "Cursor.h"
+
+#include "SkillController.h"
+#include "ShopController.h"
 
 #include "Flames.h"
 #include "FireShock.h"
@@ -32,6 +37,23 @@ TestScene::TestScene()
 int TestScene::Update(const float& fTimeDelta)
 {
 	Scene::Update(fTimeDelta);
+
+	m_fGameTime += fTimeDelta;
+
+	int min = int(round(m_fGameTime)) / 60;
+	int sec = int(round(m_fGameTime)) % 60;
+	string Time;
+	Time += to_string(min);
+	Time += " ";
+	Time += to_string(sec);
+
+	if (m_iOldMin != min || m_iOldSec != sec)
+	{
+		m_pTextCtrl->RemoveTexts(this);
+		m_pTextCtrl->Initialize(XMFLOAT4(WINCX / 2.f, 10.f, 50.f, 50.f), Time.c_str(), this);
+	}
+	m_iOldMin = min;
+	m_iOldSec = sec;
 	
 
 	if (Network::GetInstance()->GetGameEnd().bEnd)
@@ -62,6 +84,8 @@ int TestScene::Update(const float& fTimeDelta)
 	//	return -1;
 	//}
 
+	ShopController::GetInstance()->Update();
+
 	return 0;
 }
 
@@ -90,7 +114,7 @@ void TestScene::LateUpdate(const float& fTimeDelta)
 
 void TestScene::Initialize()
 {
-	ShowCursor(FALSE);
+	//ShowCursor(FALSE);
 	m_eSceneType = MAIN;
 	Object* pObj = NULL;
 	Player* pPlayer = NULL;
@@ -236,8 +260,36 @@ void TestScene::Initialize()
 	//m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), 
 	//	XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, WINCY * 0.5f - 200.f * 0.75f, 760.f * 1.5f, 200.f * 1.5f), "Win"));
 
+	pObj = new HpBar(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(105.f, 15.f, 512.f, 64.f), "HpBar");
+	dynamic_cast<HpBar*>(pObj)->SetPlayer(pPlayer);
+	m_pObjects[OBJ_UI].push_back(pObj);
+
+	string name;
+	if (pPlayer->GetNetworkInfo().CharacterType == WIZARD_FIRE)
+		name = "Ui_Char_Fire";
+	else if (pPlayer->GetNetworkInfo().CharacterType == WIZARD_COLD)
+		name = "Ui_Char_Cold";
+	else if (pPlayer->GetNetworkInfo().CharacterType == WIZARD_DARKNESS)
+		name = "Ui_Char_Darkness";
+
+
+	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(15.f, 15.f, 90.f, 90.f), name.c_str());
+	m_pObjects[OBJ_UI].push_back(pObj);
+
+	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(10.f, 10.f, 612.f, 100.f), "HpBarBase");
+	m_pObjects[OBJ_UI].push_back(pObj);
+
+	SkillController* pSkillCtrl = SkillController::GetInstance();
+	pSkillCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this);
+
+	ShopController* pShopCtrl = ShopController::GetInstance();
+	pShopCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this);
+	pShopCtrl->SetSkillCtrl(pSkillCtrl);
+
 	m_pObjects[OBJ_UI].push_back(new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(WINCX * 0.5f - 20.f, WINCY * 0.5f - 20.f, 40.f, 40.f), "CrossHair"));
+
+	m_pTextCtrl = new TextController(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(WINCX / 2.f, 10.f, 50.f, 50.f), "00", this);
 
 	BuildInstanceCBs();
 	BuildMaterialCBs();

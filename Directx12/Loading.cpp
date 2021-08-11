@@ -3,6 +3,9 @@
 #include "TextureMgr.h"
 #include "MeshMgr.h"
 #include "AnimationMgr.h"
+#include "StaticMeshMgr.h"
+#include "StaticObject.h"
+#include "Renderer.h"
 
 Loading::Loading(Core* core, ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap)
 {
@@ -59,6 +62,17 @@ unsigned int Loading::ThreadMain(void* pArg)
 	pLoading->LoadingModels();
 	pLoading->LoadingSkinnedModels();
 	pLoading->LoadingAnimations();
+
+	StaticMeshMgr::GetInstance()->LoadMeshInfo("../Data/Map1Data.txt");
+	//StaticMeshMgr::GetInstance()->LoadMeshInfo("../Data/Saved.txt");
+	multimap<string*, TransformStruct> mmapInfo = StaticMeshMgr::GetInstance()->GetMapMeshInfo();
+	Object* pObj = NULL;
+	for (auto iter = mmapInfo.begin(); iter != mmapInfo.end(); ++iter)
+	{
+		pObj = new StaticObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+			(*iter).second.xmfPosition, (*iter).second.xmfRotate, (*iter).second.xmfScale, *(*iter).first, true);
+		delete pObj;
+	}
 
 	LeaveCriticalSection(pLoading->GetCrt());
 	_endthreadex(0);

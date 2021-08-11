@@ -46,6 +46,9 @@ Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer
 	m_pCmdLst = cmdLst;
 	m_pRenderer = pRenderer;
 
+	m_tNetInfo.iHp = 100.f;
+	m_tNetInfo.CharacterType = WIZARD_COLD;
+
 	Initialize(pos);
 }
 
@@ -277,7 +280,7 @@ void Player::ModifyPhysXPos(const float& fTimeDelta)
 	PxTransform gp = pRigid->getGlobalPose();
 
 
-	cout << "Modify" << gp.p.x << ", " << gp.p.y << ", " << gp.p.z << endl;
+	//cout << "Modify" << gp.p.x << ", " << gp.p.y << ", " << gp.p.z << endl;
 
 	PxMat44 m = PxMat44(gp);
 

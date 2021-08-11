@@ -153,7 +153,9 @@
     <ClInclude Include="Bar.h" />
     <ClInclude Include="CharInfo.h" />
     <ClInclude Include="CharInfoController.h" />
+    <ClInclude Include="ClickerButton.h" />
     <ClInclude Include="Com_Network.h" />
+    <ClInclude Include="Cursor.h" />
     <ClInclude Include="FireRing.h" />
     <ClInclude Include="FireRing_FireCylinder.h" />
     <ClInclude Include="FireShock.h" />
@@ -161,6 +163,7 @@
     <ClInclude Include="FireShock_FireParticle.h" />
     <ClInclude Include="Flames.h" />
     <ClInclude Include="Flames_FireEff.h" />
+    <ClInclude Include="HpBar.h" />
     <ClInclude Include="IceBolt.h" />
     <ClInclude Include="IceBolt_Ice.h" />
     <ClInclude Include="InstanceInfo.h" />
@@ -219,7 +222,9 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ServerButton.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShopController.h" />
     <ClInclude Include="Skill.h" />
+    <ClInclude Include="SkillController.h" />
     <ClInclude Include="SkillEff.h" />
     <ClInclude Include="SkinnedData.h" />
     <ClInclude Include="SkinnedModelInstance.h" />
@@ -245,7 +250,9 @@
     <ClCompile Include="Bar.cpp" />
     <ClCompile Include="CharInfo.cpp" />
     <ClCompile Include="CharInfoController.cpp" />
+    <ClCompile Include="ClickerButton.cpp" />
     <ClCompile Include="Com_Network.cpp" />
+    <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="FireRing.cpp" />
     <ClCompile Include="FireRing_FireCylinder.cpp" />
     <ClCompile Include="FireShock.cpp" />
@@ -253,6 +260,7 @@
     <ClCompile Include="FireShock_FireParticle.cpp" />
     <ClCompile Include="Flames.cpp" />
     <ClCompile Include="Flames_FireEff.cpp" />
+    <ClCompile Include="HpBar.cpp" />
     <ClCompile Include="IceBolt.cpp" />
     <ClCompile Include="IceBolt_Ice.cpp" />
     <ClCompile Include="InstanceInfo.cpp" />
@@ -305,7 +313,9 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ServerButton.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShopController.cpp" />
     <ClCompile Include="Skill.cpp" />
+    <ClCompile Include="SkillController.cpp" />
     <ClCompile Include="SkillEff.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="SkinnedModelInstance.cpp" />

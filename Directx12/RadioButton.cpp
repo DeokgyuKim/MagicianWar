@@ -23,12 +23,6 @@ int RadioButton::Update(const float& fTimeDelta)
         if (PtInRect(&m_Rect, pt))
         {
             SetButtonState(BUTTON_STATE::MOUSEON);
-            if (KeyMgr::GetInstance()->KeyDown(VK_LBUTTON))
-            {
-                SetButtonState(BUTTON_STATE::ON);
-                if (ButtonOnfp != nullptr)
-                    ButtonOnfp();
-            }
         }
     case MOUSEON:
         if (PtInRect(&m_Rect, pt))

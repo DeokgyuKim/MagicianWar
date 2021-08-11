@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "TextController.h"
 
 class Camera;
 class TestScene :
@@ -17,5 +18,8 @@ private:
     bool        ToolMode = false;
     Camera*     m_pCamera;
     bool        GameEndForPanelCreate = false;
+    TextController* m_pTextCtrl;
+    float m_fGameTime = 0.f;
+    int m_iOldMin, m_iOldSec;
 };
 

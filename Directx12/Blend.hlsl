@@ -280,7 +280,7 @@ Shade_Out VS_UI(Shade_In pin)
 	Shade_Out vOut;
 	//vOut.PosH = mul(mul(float4(pin.PosL, 1.0f), gView), gProj);
 	float4 depth = DepthTex.SampleLevel(gsamLinear, pin.UV, 0);
-	vOut.PosH = float4(pin.PosL.x, pin.PosL.y, depth.x, 1.f);
+	vOut.PosH = float4(pin.PosL.x, pin.PosL.y, 0.f, 1.f);
 	vOut.UV = pin.UV;
 
 	return vOut;
@@ -342,6 +342,26 @@ PS_BLEND_OUT PS_UI_TEXT(Shade_Out_UI_Room pin)
 	float alpha = Texture.Sample(gsamLinear, UV).a;
 
 	pOut.Blend = float4(color, alpha);
+
+	return pOut;
+}
+
+Shade_Out_UI_Room VS_UI_CURSOR(Shade_In pin)
+{
+	Shade_Out_UI_Room vOut;
+	//vOut.PosH = mul(mul(float4(pin.PosL, 1.0f), gView), gProj);
+	float4 depth = DepthTex.SampleLevel(gsamLinear, pin.UV, 0);
+	vOut.PosH = float4(pin.PosL.x + ratio.x, pin.PosL.y + ratio.y, 0.f, 1.f);
+	vOut.UV = pin.UV;
+	vOut.Pos = vOut.PosH;
+
+	return vOut;
+}
+PS_BLEND_OUT PS_UI_CURSOR(Shade_Out_UI_Room pin)
+{
+	PS_BLEND_OUT pOut;
+
+	pOut.Blend = Texture.Sample(gsamLinear, pin.UV);
 
 	return pOut;
 }

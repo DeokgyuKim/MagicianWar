@@ -289,6 +289,21 @@
     <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\04.Meteor\02. FireEff2">
       <UniqueIdentifier>{a840b9a9-b40a-4376-99e1-bc36f30e1f58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Game\02.Object\09.UI\03. HpBar">
+      <UniqueIdentifier>{82c50ea1-7d1f-49ee-8aba-2e7a48ece0f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\09.UI\04.SkillController">
+      <UniqueIdentifier>{cf5dcf9a-239e-4dd5-82de-0c90c8c148c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\09.UI\05.ShopController">
+      <UniqueIdentifier>{d5f1ccd1-e35d-42f1-b692-62b07e4fa096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\09.UI\05.ShopController\00.ClickerButton">
+      <UniqueIdentifier>{bd06ab1d-d6d1-4080-8855-410681aaa5c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\09.UI\06.Cursor">
+      <UniqueIdentifier>{1e910109-2296-41b3-bf71-2204241a66d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -561,6 +576,21 @@
     <ClInclude Include="Meteor_FireEff2.h">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\04.Meteor\02. FireEff2</Filter>
     </ClInclude>
+    <ClInclude Include="HpBar.h">
+      <Filter>00.Game\02.Object\09.UI\03. HpBar</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillController.h">
+      <Filter>00.Game\02.Object\09.UI\04.SkillController</Filter>
+    </ClInclude>
+    <ClInclude Include="ClickerButton.h">
+      <Filter>00.Game\02.Object\09.UI\05.ShopController\00.ClickerButton</Filter>
+    </ClInclude>
+    <ClInclude Include="ShopController.h">
+      <Filter>00.Game\02.Object\09.UI\05.ShopController</Filter>
+    </ClInclude>
+    <ClInclude Include="Cursor.h">
+      <Filter>00.Game\02.Object\09.UI\06.Cursor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -805,6 +835,21 @@
     </ClCompile>
     <ClCompile Include="Meteor_FireEff2.cpp">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\04.Meteor\02. FireEff2</Filter>
+    </ClCompile>
+    <ClCompile Include="HpBar.cpp">
+      <Filter>00.Game\02.Object\09.UI\03. HpBar</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillController.cpp">
+      <Filter>00.Game\02.Object\09.UI\04.SkillController</Filter>
+    </ClCompile>
+    <ClCompile Include="ClickerButton.cpp">
+      <Filter>00.Game\02.Object\09.UI\05.ShopController\00.ClickerButton</Filter>
+    </ClCompile>
+    <ClCompile Include="ShopController.cpp">
+      <Filter>00.Game\02.Object\09.UI\05.ShopController</Filter>
+    </ClCompile>
+    <ClCompile Include="Cursor.cpp">
+      <Filter>00.Game\02.Object\09.UI\06.Cursor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

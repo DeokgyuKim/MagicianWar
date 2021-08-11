@@ -722,7 +722,7 @@ bool CPhysXMgr::OverlapBetweenTwoObject(PxRigidActor * pBody0, PxRigidActor * pB
 
 	XMFLOAT3 pos1 = XMFLOAT3(pBody0->getGlobalPose().p.x, pBody0->getGlobalPose().p.y, pBody0->getGlobalPose().p.z);
 	XMFLOAT3 pos2 = XMFLOAT3(pBody1->getGlobalPose().p.x, pBody1->getGlobalPose().p.y, pBody1->getGlobalPose().p.z);
-	cout << "Collision" << pos2.x << ", " << pos2.y << ", " << pos2.z << endl;
+	//cout << "Collision" << pos2.x << ", " << pos2.y << ", " << pos2.z << endl;
 
 	if (PxGeometryQuery::overlap(*Geometry[0], pBody0->getGlobalPose(), *Geometry[1], pBody1->getGlobalPose()))
 	{

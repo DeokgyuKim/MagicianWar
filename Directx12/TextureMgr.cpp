@@ -123,6 +123,34 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["MyChar"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "HpBar", L"../Resources/UI/InGame/HpBar.dds");
+	m_mapTextures["HpBar"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "HpBarBase", L"../Resources/UI/InGame/HpBarBase.dds");
+	m_mapTextures["HpBarBase"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "SkillBase", L"../Resources/UI/InGame/SkillBase.dds");
+	m_mapTextures["SkillBase"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "SkillOn", L"../Resources/UI/InGame/SkillOn.dds");
+	m_mapTextures["SkillOn"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "ShopNone", L"../Resources/UI/InGame/ShopNone.dds");
+	m_mapTextures["ShopNone"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "ShopOn", L"../Resources/UI/InGame/ShopOn.dds");
+	m_mapTextures["ShopOn"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "ShopMouse", L"../Resources/UI/InGame/ShopMouse.dds");
+	m_mapTextures["ShopMouse"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "Noise", L"../Resources/Noise.dds", false, 12);
 	m_mapTextures["Noise"] = pTexture;
 	pLoading->AddCount();
@@ -241,6 +269,8 @@ void TextureMgr::BuildInitTextures(ID3D12Device* device, ID3D12GraphicsCommandLi
 	m_mapTextures["ButtonOn"] = pTexture;
 	pTexture = new DDSTexture(device, cmdLst, heap, "No", L"../Resources/UI/Text/No.dds");
 	m_mapTextures["Ui_Text_No"] = pTexture;
+	pTexture = new DDSTexture(device, cmdLst, heap, "Cursor", L"../Resources/UI/Cursor.dds");
+	m_mapTextures["Cursor"] = pTexture;
 }
 
 DDSTexture* TextureMgr::GetTexture(string textureName)

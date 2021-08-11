@@ -7,20 +7,20 @@
 #include "InstanceMgr.h"
 
 StaticObject::StaticObject(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, 
-	XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3 xmfScale, string MeshName)
+	XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3 xmfScale, string MeshName, bool bPhysx)
 	:Object(MeshName)
 {
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
 	m_pRenderer = pRenderer;
-	Initialize(xmfPosition, xmfRotate, xmfScale, MeshName);
+	Initialize(xmfPosition, xmfRotate, xmfScale, MeshName, bPhysx);
 }
 
 StaticObject::~StaticObject()
 {
 }
 
-void StaticObject::Initialize(XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3 xmfScale, string MeshName)
+void StaticObject::Initialize(XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3 xmfScale, string MeshName, bool bPhysx)
 {
 	Core::GetInstance()->CmdLstReset();
 
@@ -44,7 +44,8 @@ void StaticObject::Initialize(XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotate, XMFLOAT3
 	Object::LateUpdate(0.f);
 
 #ifdef PHYSX
-	CPhysXMgr::GetInstance()->CreateTriangleStaticMesh(this, MeshName, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix());
+	if(bPhysx)
+		CPhysXMgr::GetInstance()->CreateTriangleStaticMesh(this, MeshName, dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetWorldMatrix());
 #endif
 }
 

@@ -32,13 +32,6 @@ int Button::Update(const float& fTimeDelta)
 		if (PtInRect(&m_Rect, pt))
 		{
 			m_eButtonState = BUTTON_STATE::MOUSEON;
-			if (KeyMgr::GetInstance()->KeyDown(VK_LBUTTON))
-			{
-				m_eButtonState = BUTTON_STATE::ON;
-				cout << "Button click!" << endl;
-				if(ButtonOnfp != nullptr)
-					ButtonOnfp();
-			}
 		}
 	case MOUSEON:
 		if (PtInRect(&m_Rect, pt))

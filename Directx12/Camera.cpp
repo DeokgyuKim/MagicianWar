@@ -191,10 +191,10 @@ void Camera::Render(const float& fTimeDelta, int _instanceCount)
 void Camera::SetMode(CAMERA_MODE eMode)
 { 
 	m_eCamMode = eMode;
-	if (m_eCamMode == CAMERA_MODE::CAMERA_THIRD)
-		ShowCursor(FALSE);
-	else
-		ShowCursor(TRUE);
+	//if (m_eCamMode == CAMERA_MODE::CAMERA_THIRD)
+	//	ShowCursor(FALSE);
+	//else
+	//	ShowCursor(TRUE);
 }
 
 

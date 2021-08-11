@@ -186,6 +186,15 @@ void Renderer::Render(const float& fTimeDelta)
 		pObject->Render(fTimeDelta);
 	}
 
+	m_mapShaders[RENDER_TYPE::RENDER_CURSOR]->PreRender(m_pCmdLst);
+	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_CURSOR])
+	{
+		if (pObject->GetTextureName() != "")
+			m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+
+		pObject->Render(fTimeDelta);
+	}
+
 	DebugKeyInput();
 	m_pCore->Render_EndTest(m_pRTMgr->GetRenderTarget(DebugInput));
 	//EnterCriticalSection(&m_Crt);
@@ -570,6 +579,17 @@ void Renderer::BuildShader()
 	pShader->BuildShadersAndInputLayout(L"Blend.hlsl", "VS_UI_ROOMS", L"Blend.hlsl", "PS_UI_TEXT", layout);
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
 	m_mapShaders[RENDER_TYPE::RENDER_UI_TEXT] = pShader;
+
+	layout = {
+	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pShader = new Shader;
+	pShader->BuildShadersAndInputLayout(L"Blend.hlsl", "VS_UI_CURSOR", L"Blend.hlsl", "PS_UI_CURSOR", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
+	m_mapShaders[RENDER_TYPE::RENDER_CURSOR] = pShader;
+
+	
 
 
 	layout = {
