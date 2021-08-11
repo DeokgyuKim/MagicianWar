@@ -38,6 +38,7 @@
 #define stoc_Game_Start	121
 #define stoc_RoomPlayer_Change	122
 #define stoc_RoomPlayer_Leave	123
+
 // Stage	Scene	151 ~ 180
 #define stoc_InGame_StartInfo	151
 #define stoc_playerInfo 152
@@ -48,6 +49,7 @@
 #define stoc_left_shopping_time 157
 #define stoc_roundreset 158
 #define stoc_add_kill_point 159
+#define stoc_Ingame_OutPlayer 160
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -244,6 +246,10 @@ struct STOC_ROOM_CHANGE {
 	int id;
 };
 
+struct STOC_ROOM_EXIT {
+
+};
+
 struct STOC_ROOM_ENTER {
 	short size;
 	unsigned char type;
@@ -385,6 +391,11 @@ struct STOC_LEFT_SHOPPING_TIME {
 struct STOC_ADD_KILL_POINT {
 	short size;
 	unsigned char type;
+};
+struct STOC_INGAME_OUTPLAYER {
+	short size;
+	unsigned char type;
+	int outPlayer_id;
 };
 
 

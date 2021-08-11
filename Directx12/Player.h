@@ -56,6 +56,7 @@ private:
 
 protected:
     PlayerInfo                                  m_tNetInfo;
+    
     ID3D12Device*                               m_pDevice;
     ID3D12GraphicsCommandList*                  m_pCmdLst;
 

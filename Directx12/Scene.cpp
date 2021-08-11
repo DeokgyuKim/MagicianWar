@@ -5,6 +5,7 @@
 #include "InstanceInfo.h"
 
 #include "UI.h"
+#include "Player.h"
 
 Scene::~Scene()
 {
@@ -90,6 +91,16 @@ Object* Scene::GetUIForTag(int iTag)
 	for (auto iter = m_pObjects[OBJ_TYPE::OBJ_UI].begin(); iter != m_pObjects[OBJ_TYPE::OBJ_UI].end(); ++iter)
 	{
 		if (dynamic_cast<UI*>(*iter)->GetTag() == iTag)
+			return (*iter);
+	}
+	return nullptr;
+}
+
+Object* Scene::GetPlayerForID(int id)
+{
+	for (auto iter = m_pObjects[OBJ_PLAYER].begin(); iter != m_pObjects[OBJ_PLAYER].end(); ++iter)
+	{
+		if (dynamic_cast<Player*>(*iter)->GetNetworkInfo().Client_Num == id)
 			return (*iter);
 	}
 	return nullptr;
