@@ -20,9 +20,7 @@
 
 
 #define stoc_otherPlayerNum 29
-#define stoc_OtherstartInfo 30
 #define stoc_SkillPacket 34
-#define stoc_gameend 36
 
 #define packet_skill 21
 
@@ -45,6 +43,10 @@
 #define stoc_playerInfo 152
 #define stoc_bullet_update 153
 #define stoc_bullet_delete 154
+#define stoc_roundend 155
+#define stoc_roundstart 156
+#define stoc_left_shopping_time 157
+#define stoc_roundreset 158
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -77,6 +79,7 @@
 // Stage	Scene	151 ~ 180
 #define ctos_IngameInfo_Request 151
 #define ctos_AttackEnd			152
+#define ctos_ShoppingStart_Request 153
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -161,6 +164,8 @@ struct RoomInfo
 	int					Room_Num;
 	string				Room_Name;
 	int					HostPlayer;
+	int					TotalRound;
+	int					curRound;
 };
 
 struct RoomPlayer
@@ -263,7 +268,16 @@ struct STOC_ROOMLIST_UPDATE {
 
 struct STOC_GAME_START {
 	short size;
-	unsigned char type;	
+	unsigned char type;
+};
+struct STOC_ROUND_START {
+	short size;
+	unsigned char type;
+	unsigned char Cur_Round;
+};
+struct STOC_ROUND_RESET {
+	short size;
+	unsigned char type;
 };
 
 // InGame Scene
@@ -354,12 +368,19 @@ struct STOC_Skill {
 	float shaderVariable4;
 };
 
-struct STOC_GameEnd {
+struct STOC_RoundEnd {
 	short size;
 	unsigned char type;
-	unsigned char teamNum;
-	bool bEnd;
+	unsigned char teamType;
 };
+
+struct STOC_LEFT_SHOPPING_TIME {
+	short size;
+	unsigned char type;
+	unsigned char leftTime;
+};
+
+
 
 //// Client ==> Server
 
@@ -468,4 +489,9 @@ struct CTOS_ATTACKEND {
 	short size;
 	unsigned char type;
 	bool isAttacked;
+};
+
+struct CTOS_SHOPPINGSTART_REQUEST {
+	short size;
+	unsigned char type;
 };

@@ -75,8 +75,8 @@ bool Network::Init(const string& strServerIP)
 
 	packet_size = 0;
 	savedPacket_size = 0;
-
-
+	m_CurRound = 0;
+	m_isRoundStart = false;
 
 
 
@@ -142,6 +142,8 @@ void Network::Room_Init()
 {
 	// 방에 들어가면 먼저 서버에게 지금 내가 속한 방의 정보 요구
 	m_Curscene = ROOM_SCENE;
+	m_RoundEnd.WinnerTeam = TEAM_NONE;
+	m_isRoundStart = false;
 	SendRoomInfo_Request();
 }
 
@@ -306,6 +308,11 @@ void Network::CallEvent(int EventType, int args, ...)
 		double value = va_arg(ap, double);
 		va_end(ap);
 		SendCameraUpdate(value);
+		break;
+	}
+	case EVENT_ROUND_SHOPPING_START_REQUEST:
+	{
+		SendShoppingStart_Request();
 		break;
 	}
 	default:
@@ -544,20 +551,6 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_iPlayerNum = data->playerCount + 1;
 		break;
 	}
-	case stoc_OtherstartInfo:
-	{
-		cout << "다른 플레이어 초기좌표" << endl;
-		STOC_OtherstartInfo* data = reinterpret_cast<STOC_OtherstartInfo*>(_packetBuffer);
-		m_mapOtherPlayerInfos[data->dwPlayerNum].Client_Num = data->dwPlayerNum;
-		m_mapOtherPlayerInfos[data->dwPlayerNum].TeamType = data->dwTeamNum;
-		m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition = data->xmfPosition;
-		m_mapOtherPlayerInfos[data->dwPlayerNum].iHp = data->iHp;
-		m_mapOtherPlayerInfos[data->dwPlayerNum].CharacterType = data->CharacterType;
-		//cout << m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.x << ", "
-		//	<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.y << ", "
-		//	<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.z << endl;
-		break;
-	}
 	case stoc_playerInfo:
 	{
 		//cout << "우리 플레이어 업데이트" << endl;
@@ -571,7 +564,9 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].Upper_eAnimType = data->Upper_eAnimType;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].ePlayerState = data->ePlayerState;
 
-
+		if (data->playerInfo.Client_Num == m_tMyInfo.Client_Num) {
+			m_tMyInfo.PlayerState = data->ePlayerState;
+		}
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.Client_Num = data->playerInfo.Client_Num;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.TeamType = data->playerInfo.TeamType;
 		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
@@ -608,13 +603,32 @@ void Network::packetProcessing(char* _packetBuffer)
 		break;
 	}
 
-	case stoc_gameend:
+	case stoc_roundend:
 	{
-		STOC_GameEnd* data = reinterpret_cast<STOC_GameEnd*>(_packetBuffer);
-		m_CLgameEnd.bEnd = data->bEnd;
-		m_CLgameEnd.teamNum = data->teamNum;
-		if (m_CLgameEnd.bEnd) cout << "게임이 왜 끝나" << endl;
-		//else cout << "게임이 안끝났어" << endl;
+		STOC_RoundEnd* data = reinterpret_cast<STOC_RoundEnd*>(_packetBuffer);
+		m_RoundEnd.WinnerTeam = data->teamType;	
+		break;
+	}
+	case stoc_left_shopping_time:
+	{
+		STOC_LEFT_SHOPPING_TIME* data = reinterpret_cast<STOC_LEFT_SHOPPING_TIME*>(_packetBuffer);
+		cout << "시간 - " << (int)data->leftTime << "\n";
+		break;
+	}
+	case stoc_roundstart:
+	{
+		STOC_ROUND_START* data = reinterpret_cast<STOC_ROUND_START*>(_packetBuffer);
+		cout << data->Cur_Round << " 라운드가 시작됩니다.\n";
+		m_CurRound = data->Cur_Round;
+		m_isRoundStart = true;
+		m_RoundEnd.WinnerTeam = TEAM_NONE;
+		//MainApp::GetInstance()->GetScene()->
+		break;
+	}
+	case stoc_roundreset:
+	{
+		if (Network::GetInstance()->GetMyInfo().isRoom_Host)
+			Network::GetInstance()->CallEvent(EVENT_ROUND_SHOPPING_START_REQUEST, 0);
 		break;
 	}
 	default:
@@ -742,6 +756,12 @@ void Network::SendIngameInfo_Request()
 
 void Network::SendCameraUpdate(float cameraY)
 {
+	// 죽으면 카메라 회전 안받음
+	if (m_tMyInfo.PlayerState == STATE_DEAD || 
+		m_tMyInfo.PlayerState == STATE_DANCE) return;
+	// 라운드 시작 안하면 카메라 회전 안받음
+	if (!m_isRoundStart) return;
+
 	CTOS_CAMERA packet;
 	packet.size = sizeof(packet);
 	packet.type = ctos_Camera_y;
@@ -777,6 +797,12 @@ void Network::SendKeyInput(DWORD _keyInput)
 
 void Network::ServerKeyInput()
 {
+	// 죽으면 키입력 안받음
+	if (m_tMyInfo.PlayerState == STATE_DEAD || 
+		m_tMyInfo.PlayerState == STATE_DANCE) return;
+	// 라운드 시작 아니면 키입력 안받음
+	if (!m_isRoundStart) return;
+
 	DWORD dwKeyInput = 0;
 
 	if (KeyMgr::GetInstance()->KeyPressing('W'))
@@ -817,6 +843,18 @@ void Network::ServerKeyInput()
 
 }
 
+void Network::SendShoppingStart_Request()
+{
+	m_isRoundStart = false;
+
+	CTOS_SHOPPINGSTART_REQUEST packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_ShoppingStart_Request;
+	if (!SendPacket(&packet)) {
+		cout << "SendShoppingStart_Request() Failed \n";
+	}
+}
+
 void Network::SendLoadingEnd()
 {
 	CTOS_LoadingEnd packet;
@@ -842,6 +880,7 @@ void Network::SendConnectOK()
 
 bool Network::SendPacket(void* buffer)
 {
+
 	char* packet = reinterpret_cast<char*>(buffer);
 	int packetSize = *(short*)(&packet[0]);
 	int ret = send(m_Sock, packet, (int)packetSize, 0);

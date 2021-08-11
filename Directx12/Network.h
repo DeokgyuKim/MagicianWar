@@ -15,9 +15,8 @@ struct Client_Bullet {
 };
 
 
-struct Client_GameEnd {
-	int teamNum;
-	bool bEnd;
+struct Client_RoundEnd {
+	char WinnerTeam;
 };
 
 class Player;
@@ -62,7 +61,10 @@ public:
 	
 	
 	vector<Client_Bullet> GetBullets() { return m_vBullets; }
-	Client_GameEnd GetGameEnd() { return m_CLgameEnd; }
+	Client_RoundEnd GetRoundEnd() { return m_RoundEnd; }
+
+	void SetRoundStart(bool _start) { m_isRoundStart = _start; }
+	bool GetRoundStart() { return m_isRoundStart; }
 
 
 	string	LoadServerIPtxt(string filePath);
@@ -83,7 +85,9 @@ private:
 	array<RoomPlayer, 8>		m_RoomPlayerSlots;	// Room Player Data
 	map<DWORD, STOC_PlayerInfo> m_mapRecvPlayerInfos;
 	vector<Client_Bullet>		m_vBullets;
-	Client_GameEnd				m_CLgameEnd;
+	Client_RoundEnd				m_RoundEnd;
+	int		m_CurRound;
+	bool	m_isRoundStart;
 	int		m_iPlayerNum;
 public:
 	//Function For LobbyThread Send
@@ -112,6 +116,7 @@ public:
 	void SendAttackEnd(bool _bAttack);
 	void SendKeyInput(DWORD _keyInput);
 	void ServerKeyInput();
+	void SendShoppingStart_Request();
 
 	bool SendPacket(void* buffer);
 	void error_display(const char* msg, int err_no);

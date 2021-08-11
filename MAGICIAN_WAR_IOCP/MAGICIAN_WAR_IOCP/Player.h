@@ -32,7 +32,7 @@ public:
 	XMFLOAT4X4 getWorld() { return m_xmmWorld; }
 	XMFLOAT4X4 getBulletStartWorld();
 	PlayerInfo getInfo() { return m_Info; }
-	int getState() { return m_Info.PlayerState; }
+	int getState(); 
 	unsigned char getCharacterType() { return m_Info.CharacterType; }
 
 	int getRootAnimType() { return m_Root_eAnimType; }
@@ -53,6 +53,7 @@ public:
 	bool getHost() { return m_Info.isRoom_Host; }
 	bool getReady() { return m_Ready; }
 	char getTeam() { return m_Info.TeamType; }
+	int getSlotNum() { return m_slot_num; }
 
 	InterfaceFSM* GetRootFSM();
 	InterfaceFSM* GetUpperFSM();
@@ -61,6 +62,7 @@ public:
 	void setPlayerInfo(PlayerInfo _info) { m_Info = _info; }
 	void setID(int _id) { m_Info.Client_Num = _id; }
 	void setHp(int iHp) { m_Info.iHp = iHp; }
+	void setDamage(int damage);
 	void setReady(bool _ready) { m_Ready = _ready; }
 	void setTeam(char _team) { m_Info.TeamType = _team; }
 	
@@ -77,6 +79,7 @@ public:
 	void setJump(bool bJump);
 	void setCharacterType(unsigned char _type);
 	void setHost(bool bHost);
+	void setSlotNum(int num) { m_slot_num = num; }
 
 public:
 	void SetScale(XMFLOAT3 xmfSclae) { m_xmfScale = xmfSclae; }
@@ -93,6 +96,7 @@ public:
 private: // 
 	// info
 	PlayerInfo m_Info;
+	int m_slot_num;
 	bool m_Ready;
 	bool m_Room_JoinState;
 	bool m_LateInit;

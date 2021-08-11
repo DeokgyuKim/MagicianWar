@@ -16,10 +16,13 @@ public:
 public:
 	void Initalize(int room_num,int host);
 	void ReInit();
+	void RoundStart();
 	void Release();
 	void Update();
 	void InGame_Update(float fTime);
 	void Physics_Collision();
+	bool CheckRoundEnd(int TeamCount);
+	void CheckWinnerTeam();
 
 public:
 	bool EnterRoom(int id,bool host = false);
@@ -42,6 +45,7 @@ public:
 	void PushRoomPlayerEvent(int roomSlot_num);
 	void PushRoomPlayerEvent_Byid(int id, int roomSlot_num);
 	void PushGameStartEvent(int id);
+	void PushRoundStartEvent(int Cur_Round);
 	void PushIngame_PlayerInfo_Start(int id);
 	void Push_SceneChange(int id,char sceneType);
 	void Push_UpdatePlayerInfoPacket(Player* _player);
@@ -49,6 +53,10 @@ public:
 	void PushBullet_Update(int Bullet_Index);
 	void PushBullet_Delete(int Bullet_Index);
 
+	void PushRoundEndEvent(int TeamType);
+	void SendLeftShoppingTime();
+	void SendRoundResetTime();
+	void PushRoundReset();
 public:
 	// Get
 	bool isGameStart() { return m_isGameStart; }
@@ -58,7 +66,11 @@ public:
 	
 private:
 	RoomInfo m_Info;	// room_num , room_name
-	
+	bool m_isRoundEnd;
+	bool m_isRoundStart;
+	bool m_RoundWinnerCheck;
+	bool m_isRoundReset;
+	int	m_WinnerTeam;
 	mutex m_player_mutex;
 	list<Player*> m_players;
 	array<Bullet, MAX_BULLET> m_Bullets;
@@ -78,11 +90,15 @@ private:
 	chrono::system_clock::time_point	m_prev_time;
 	chrono::duration<float>				m_elapsedTime;
 
+	unsigned char m_ShoppingTime;
+	unsigned char m_TotalShoppingTime;
+	unsigned char m_ResetTime;
+	unsigned char m_TotalRestTime;
 	bool m_isGameStart;
 	bool m_istEnterable;
 
-	int	m_BlueTeam_Count;
-	int m_RedTeam_Count;
+	int	m_BlueTeam_Alive_Count;
+	int m_RedTeam_Alive_Count;
 	int m_curPlayer_Count;
 
 };
