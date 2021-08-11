@@ -53,6 +53,7 @@ public:
 	bool getHost() { return m_Info.isRoom_Host; }
 	bool getReady() { return m_Ready; }
 	char getTeam() { return m_Info.TeamType; }
+	int getSlotNum() { return m_slot_num; }
 
 	InterfaceFSM* GetRootFSM();
 	InterfaceFSM* GetUpperFSM();
@@ -78,6 +79,7 @@ public:
 	void setJump(bool bJump);
 	void setCharacterType(unsigned char _type);
 	void setHost(bool bHost);
+	void setSlotNum(int num) { m_slot_num = num; }
 
 public:
 	void SetScale(XMFLOAT3 xmfSclae) { m_xmfScale = xmfSclae; }
@@ -94,6 +96,7 @@ public:
 private: // 
 	// info
 	PlayerInfo m_Info;
+	int m_slot_num;
 	bool m_Ready;
 	bool m_Room_JoinState;
 	bool m_LateInit;

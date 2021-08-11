@@ -548,20 +548,6 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_iPlayerNum = data->playerCount + 1;
 		break;
 	}
-	case stoc_OtherstartInfo:
-	{
-		cout << "다른 플레이어 초기좌표" << endl;
-		STOC_OtherstartInfo* data = reinterpret_cast<STOC_OtherstartInfo*>(_packetBuffer);
-		m_mapOtherPlayerInfos[data->dwPlayerNum].Client_Num = data->dwPlayerNum;
-		m_mapOtherPlayerInfos[data->dwPlayerNum].TeamType = data->dwTeamNum;
-		m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition = data->xmfPosition;
-		m_mapOtherPlayerInfos[data->dwPlayerNum].iHp = data->iHp;
-		m_mapOtherPlayerInfos[data->dwPlayerNum].CharacterType = data->CharacterType;
-		//cout << m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.x << ", "
-		//	<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.y << ", "
-		//	<< m_mapOtherPlayerInfos[data->dwPlayerNum].xmfPosition.z << endl;
-		break;
-	}
 	case stoc_playerInfo:
 	{
 		//cout << "우리 플레이어 업데이트" << endl;
@@ -627,6 +613,14 @@ void Network::packetProcessing(char* _packetBuffer)
 	{
 		STOC_LEFT_SHOPPING_TIME* data = reinterpret_cast<STOC_LEFT_SHOPPING_TIME*>(_packetBuffer);
 		cout << "시간 - " << (int)data->leftTime << "\n";
+		break;
+	}
+	case stoc_roundstart:
+	{
+		STOC_ROUND_START* data = reinterpret_cast<STOC_ROUND_START*>(_packetBuffer);
+		cout << data->Cur_Round << " 라운드가 시작됩니다.\n";
+		m_CurRound = data->Cur_Round;
+		m_isRoundStart = true;
 		break;
 	}
 	default:

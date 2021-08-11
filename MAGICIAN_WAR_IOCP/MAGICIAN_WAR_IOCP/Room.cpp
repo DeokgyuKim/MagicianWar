@@ -20,7 +20,7 @@ void Room::Initalize(int room_num, int host)
 	m_Info.Room_Num = room_num;
 	m_Info.HostPlayer = host;
 	m_Info.TotalRound = 3;
-	m_Info.curRound = 1;
+	m_Info.curRound = 0;
 
 	m_BlueTeam_Alive_Count = 0;
 	m_RedTeam_Alive_Count = 0;
@@ -84,6 +84,33 @@ void Room::ReInit()
 		m_Bullets[i].SetUser(NO_PLAYER);
 	}
 
+	for (int i = 0; i < MAX_PLAYER; ++i) {
+		if (m_roomPlayerSlots[i].used) {// 사용중인 슬릇만 레디 해제
+			m_roomPlayerSlots[i].readyState = false;
+		}
+	}
+
+}
+
+void Room::RoundStart()
+{
+	// 상점 끝나고 라운드 시작할때 해줄것
+	for (auto player : m_players) { // 초기 위치 재설정
+		int spawnPos = player->getSlotNum();
+		if (spawnPos == 0) player->setPosition(XMFLOAT3(20.f, 0.f, 10.f));
+		else if (spawnPos == 1) player->setPosition(XMFLOAT3(15.f, 0.f, 10.f));
+		else if (spawnPos == 2) player->setPosition(XMFLOAT3(10.f, 0.f, 10.f));
+		else if (spawnPos == 3) player->setPosition(XMFLOAT3(5.f, 0.f, 10.f));
+		else if (spawnPos == 4) player->setPosition(XMFLOAT3(40.f, 0.f, 100.f));
+		else if (spawnPos == 5) player->setPosition(XMFLOAT3(45.f, 0.f, 100.f));
+		else if (spawnPos == 6) player->setPosition(XMFLOAT3(50.f, 0.f, 100.f));
+		else if (spawnPos == 7) player->setPosition(XMFLOAT3(55.f, 0.f, 100.f));
+
+		player->setHp(100);
+		player->GetUpperFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
+		player->GetRootFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
+		PushRoundStartEvent(++m_Info.curRound);
+	}
 }
 
 void Room::Release()
@@ -128,7 +155,7 @@ void Room::Update()
 
 	if (m_isGameStart)  // 게임 시작되면 처리할 부분
 	{
-		if(m_isRoundEnd)
+		//if(m_isRoundEnd)
 
 		if (m_isRoundStart)
 			InGame_Update(elapsedTime);
@@ -412,6 +439,7 @@ void Room::InGame_Init()
 			Player* _player = new Player(m_roomPlayerSlots[i].id, m_Info.Room_Num);
 			_player->setHp(30);
 			_player->setCharacterType(m_roomPlayerSlots[i].characterType);
+			_player->setSlotNum(m_roomPlayerSlots[i].slot_num);
 			if (i <= 3) { // Blue Team
 				if (i == 0)_player->setPosition(XMFLOAT3(20.f, 0.f, 10.f));
 				else if (i == 1)_player->setPosition(XMFLOAT3(15.f, 0.f, 10.f));
@@ -435,7 +463,6 @@ void Room::InGame_Init()
 
 		}
 	}
-
 
 
 }
@@ -473,7 +500,9 @@ void Room::Player_Disconnect(int id)
 	g_Client_mutex.lock();
 	g_Clients[id]->Room_num = NO_ROOM;
 	g_Client_mutex.unlock();
-	Server::GetInstance()->SendRoomExit(id);
+
+	if (g_Clients[id]->IsConnected) // connect되어 있냐 얘?
+		Server::GetInstance()->SendRoomExit(id);
 
 }
 
@@ -653,10 +682,11 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 				break;
 			}
 		}
+		break;
 	}
 	case ctos_ShoppingStart_Request:
 	{
-		cout << "왜 안돼 시발\n" << endl;
+
 		recvEvnet_Clear(); // 라운드 시작전에 받아온 데이터 비워야지
 		m_isRoundStart = true; // 라운드 시작 일단 시켜주고
 		m_ShoppingTime = 0;
@@ -762,6 +792,17 @@ void Room::PushGameStartEvent(int id)
 
 void Room::PushRoundStartEvent(int Cur_Round)
 {
+	if (this == nullptr) return;
+	STOC_ROUND_START packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_roundstart;
+	packet.Cur_Round = Cur_Round;
+
+	for (auto player : m_players) { // 게임에 존재하는 모든 플레이어에게 메시지를 보내줘야한다.
+		int id = player->getID();
+		sendEvent_push(id, &packet);
+	}
+
 }
 
 void Room::PushIngame_PlayerInfo_Start(int id)
@@ -873,11 +914,11 @@ void Room::SendLeftShoppingTime()
 		roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::seconds(1); // 1초에 한번
 		roomEvent_Send.opType = OP_ROOM_TIME;
 		Server::GetInstance()->AddTimer(roomEvent_Send);
-		
-		++m_ShoppingTime;
+
 
 		unsigned char leftTime = m_TotalShoppingTime - m_ShoppingTime;
 		cout << "시간 - " << (int)leftTime << "\n";
+		++m_ShoppingTime;
 
 		for (auto player : m_players) // 게임중인 플레이어들에게 쇼핑시간 보내줘야지
 		{
@@ -887,5 +928,12 @@ void Room::SendLeftShoppingTime()
 
 
 	}
+	else 
+	{
+		cout << "라운드 시작\n";
+		RoundStart();
+		m_ShoppingTime = 0;
+	}
+
 }
 

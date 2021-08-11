@@ -20,7 +20,6 @@
 
 
 #define stoc_otherPlayerNum 29
-#define stoc_OtherstartInfo 30
 #define stoc_SkillPacket 34
 
 #define packet_skill 21
@@ -45,7 +44,8 @@
 #define stoc_bullet_update 153
 #define stoc_bullet_delete 154
 #define stoc_roundend 155
-#define stoc_left_shopping_time 156
+#define stoc_roundstart 156
+#define stoc_left_shopping_time 157
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 

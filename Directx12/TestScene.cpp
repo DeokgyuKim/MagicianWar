@@ -31,6 +31,8 @@ TestScene::TestScene()
 
 int TestScene::Update(const float& fTimeDelta)
 {
+	LateInit();
+
 	Scene::Update(fTimeDelta);
 
 	if (Network::GetInstance()->GetRoundEnd().WinnerTeam != TEAM_NONE)
