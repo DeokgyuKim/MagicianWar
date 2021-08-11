@@ -13,6 +13,7 @@
 #include "KeyMgr.h"
 #include "Camera.h"
 #include "ShopController.h"
+#include "SkillController.h"
 
 #include "RadioButton.h"
 #include "RoomRadioController.h"
@@ -861,8 +862,14 @@ void Network::ServerKeyInput()
 	{
 		dwKeyInput |= ctos_KEY_LBUTTON;
 	}
-	if (KeyMgr::GetInstance()->KeyPressing('E')) // FireRing
+	if (KeyMgr::GetInstance()->KeyPressing('Q') && SkillController::GetInstance()->UseSkill(0))
 	{
+		cout << "Use Q Skill" << endl;
+		dwKeyInput |= ctos_KEY_Q;
+	}
+	if (KeyMgr::GetInstance()->KeyPressing('E') && SkillController::GetInstance()->UseSkill(1))
+	{
+		cout << "Use E Skill" << endl;
 		dwKeyInput |= ctos_KEY_E;
 	}
 

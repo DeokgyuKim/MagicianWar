@@ -21,6 +21,20 @@ void SkillController::SetSkillCnt(int idx, int cnt)
 	for (int i = cnt; i < 4; ++i)
 		m_pSkillOn[idx][i]->SetTextureName("Ui_Text_No");
 }
+bool SkillController::UseSkill(int idx)
+{
+	if (idx < 0 || idx > 1)
+		return false;
+	if (m_fSkillCurCool[idx] > 0.f)
+		return false;
+	if (m_iSkillCnt[idx] <= 0)
+		return false;
+
+	m_fSkillCurCool[idx] = m_fSkillCoolTime[idx];
+	SetSkillCnt(idx, m_iSkillCnt[idx] - 1);
+
+	return true;
+}
 void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Scene* pScene)
 {
 	XMFLOAT4 pos;
@@ -60,5 +74,11 @@ void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList
 		m_pSkillOn[1][i] = new UI(device, cmdLst, pRenderer, onpos, "Ui_Text_No");
 		pScene->PushObject(m_pSkillOn[1][i], OBJ_TYPE::OBJ_UI);
 	}
+}
+
+void SkillController::Update(const float& fTimeDelta)
+{
+	m_fSkillCurCool[0] = max(m_fSkillCurCool[0] - fTimeDelta, 0.f);
+	m_fSkillCurCool[1] = max(m_fSkillCurCool[1] - fTimeDelta, 0.f);
 }
 
