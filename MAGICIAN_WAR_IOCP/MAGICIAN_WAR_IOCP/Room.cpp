@@ -282,6 +282,7 @@ void Room::InGame_Update(float fTime)
 	//CPhysXMgr::GetInstance()->gScene->fetchResults(true);
 
 	if (!m_isRoundEnd) {
+
 		Physics_Collision();
 		CheckWinnerTeam();
 	}
@@ -322,13 +323,14 @@ void Room::Physics_Collision()
 				{
 					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(player->GetPxCapsuleController()->getActor(), m_Bullets[i].GetRigidDynamic()))
 					{
+						int Attack_Player = m_Bullets[i].getUser();
 						m_Bullets[i].SetUser(NO_PLAYER);
 						PushBullet_Delete(i);
 						//플레이어 피달고 그런거
 						player->setDamage(m_Bullets[i].getDamage());
 						if (player->getHp() <= 0)
 						{
-
+							PushAddKillPoint(Attack_Player); // 1킬 했음 너가
 							player->GetUpperFSM()->ChangeState(STATE_DEAD, ANIM_DEAD);
 							player->GetRootFSM()->ChangeState(STATE_DEAD, ANIM_DEAD);
 							if (player->getTeam() == TEAM_BLUE) { // 죽은 친구가 BlueTeam이면
@@ -792,7 +794,7 @@ void Room::PushRoomPlayerEvent(int roomSlot_num)
 {
 	if (this == nullptr) return;
 	STOC_ROOM_CHANGE packet;
-	m_player_mutex.lock();
+
 	packet.size = sizeof(packet);
 	packet.type = stoc_RoomPlayer_Change;
 	packet.used = m_roomPlayerSlots[roomSlot_num].used;
@@ -801,7 +803,7 @@ void Room::PushRoomPlayerEvent(int roomSlot_num)
 	packet.readyState = m_roomPlayerSlots[roomSlot_num].readyState;
 	packet.slot_num = m_roomPlayerSlots[roomSlot_num].slot_num;
 	packet.id = m_roomPlayerSlots[roomSlot_num].id;
-	m_player_mutex.unlock();
+
 	for (int i = 0; i < MAX_PLAYER; ++i) {
 		if (m_roomPlayerSlots[i].used) { // 사용중
 			int id = m_roomPlayerSlots[i].id;
@@ -816,7 +818,7 @@ void Room::PushRoomPlayerEvent_Byid(int id, int roomSlot_num)
 	if (this == nullptr) return;
 
 	STOC_ROOM_CHANGE packet;
-	m_player_mutex.lock();
+
 	packet.size = sizeof(packet);
 	packet.type = stoc_RoomPlayer_Change;
 	packet.used = m_roomPlayerSlots[roomSlot_num].used;
@@ -825,7 +827,7 @@ void Room::PushRoomPlayerEvent_Byid(int id, int roomSlot_num)
 	packet.readyState = m_roomPlayerSlots[roomSlot_num].readyState;
 	packet.slot_num = m_roomPlayerSlots[roomSlot_num].slot_num;
 	packet.id = m_roomPlayerSlots[roomSlot_num].id;
-	m_player_mutex.unlock();
+
 	sendEvent_push(id, &packet);
 }
 
@@ -861,7 +863,7 @@ void Room::PushIngame_PlayerInfo_Start(int id)
 	STOC_INGAME_STARTINFO packet;
 	packet.size = sizeof(packet);
 	packet.type = stoc_InGame_StartInfo;
-	m_player_mutex.lock();
+
 	for (auto player : m_players) {
 		packet.CharacterType = player->getCharacterType();
 		packet.dwTeamNum = player->getTeam();
@@ -870,7 +872,7 @@ void Room::PushIngame_PlayerInfo_Start(int id)
 		packet.id = player->getID();
 		sendEvent_push(id, &packet);
 	}
-	m_player_mutex.unlock();
+
 }
 
 void Room::Push_SceneChange(int id, char sceneType)
@@ -934,6 +936,15 @@ void Room::PushBullet_Delete(int Bullet_Index)
 		sendEvent_push(player->getID(), &packet);
 	}
 
+}
+
+void Room::PushAddKillPoint(int id)
+{
+	if (this == nullptr) return;
+	STOC_ADD_KILL_POINT packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_add_kill_point;
+	sendEvent_push(id, &packet);
 }
 
 void Room::PushRoundEndEvent(int TeamType)

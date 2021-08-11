@@ -15,6 +15,8 @@ public:
 private:
     void Initialize();
     void LateInit();
+public:
+    void SetGameEndForPanelCreate(bool _bCreate) { GameEndForPanelCreate = _bCreate; }
 private:
     bool        ToolMode = false;
     Camera*     m_pCamera;

@@ -34,6 +34,8 @@ void PlayerFSM::Enter(int _State, int _Ani)
 	if (m_BoneType == BONE_UPPER)
 	{ // 상체 애니메이션을 갱신
 		m_User->ChangeUpperAnimation(_Ani);
+		if(m_State == STATE_ATTACK)
+			m_User->setCreateBullet(1);
 
 	}
 	else if (m_BoneType == BONE_ROOT)
@@ -302,7 +304,6 @@ void PlayerFSM::Attack(float fTime)
 	{ // 상체
 		if (m_User->IsAttackEnded()) {
 			ChangeState(STATE_IDLE, ANIM_IDLE);
-			m_User->setCreateBullet(1);
 		}
 		//NoJump
 		//else if (DefaultKey & 0x0010) // 점프

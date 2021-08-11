@@ -52,6 +52,8 @@ public:
 
 	void PushBullet_Update(int Bullet_Index);
 	void PushBullet_Delete(int Bullet_Index);
+	
+	void PushAddKillPoint(int id);
 
 	void PushRoundEndEvent(int TeamType);
 	void SendLeftShoppingTime();
@@ -75,6 +77,7 @@ private:
 	list<Player*> m_players;
 	array<Bullet, MAX_BULLET> m_Bullets;
 	mutex m_bullet_mutex;
+	mutex m_physic_mutex;
 
 	array<RoomPlayer, MAX_PLAYER> m_roomPlayerSlots;
 

@@ -153,6 +153,7 @@ void Network::Ingame_Init()
 {
 	m_Curscene = STAGE_SCENE;
 	m_prevKey = 0;
+	m_tMyInfo.killPoint = 0; // ingame 돌입시 0
 	m_vBullets.resize(BulletCB_Count);
 	for (int i = 0; i < BulletCB_Count; ++i) {
 		m_vBullets[i].Used = false;
@@ -624,6 +625,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_CurRound = data->Cur_Round;
 		m_isRoundStart = true;
 		m_RoundEnd.WinnerTeam = TEAM_NONE;
+		dynamic_cast<TestScene*>(MainApp::GetInstance()->GetScene())->SetGameEndForPanelCreate(false);
 		Object* pobj = MainApp::GetInstance()->GetScene()->GetUIForTag(99);
 		if (pobj != nullptr)
 		{
@@ -639,6 +641,11 @@ void Network::packetProcessing(char* _packetBuffer)
 		if (Network::GetInstance()->GetMyInfo().isRoom_Host)
 			Network::GetInstance()->CallEvent(EVENT_ROUND_SHOPPING_START_REQUEST, 0);
 		break;
+	}
+	case stoc_add_kill_point:
+	{
+		cout << "킬 포인트 올라감\n";
+		++m_tMyInfo.killPoint;
 	}
 	default:
 		cout << "No Type Packet" << endl;

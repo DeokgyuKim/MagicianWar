@@ -47,6 +47,7 @@
 #define stoc_roundstart 156
 #define stoc_left_shopping_time 157
 #define stoc_roundreset 158
+#define stoc_add_kill_point 159
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -151,6 +152,7 @@ struct PlayerInfo
 	unsigned char		CharacterType; // 캐릭터 타입
 	int					PlayerState;   // 플레이어 현재 상태
 	int					iHp;
+	int					killPoint;
 	bool				isreadyState;
 };
 struct Room_PlayerInfo
@@ -378,6 +380,11 @@ struct STOC_LEFT_SHOPPING_TIME {
 	short size;
 	unsigned char type;
 	unsigned char leftTime;
+};
+
+struct STOC_ADD_KILL_POINT {
+	short size;
+	unsigned char type;
 };
 
 
