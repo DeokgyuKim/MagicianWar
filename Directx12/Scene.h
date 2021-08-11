@@ -20,6 +20,7 @@ public:
 	void	RemoveObject(Object* pobj, OBJ_TYPE eType);
 	Object* GetUIForTag(int iTag);
 	Object* GetPlayer(); 
+	Object* GetCamera();
 	RoomRadioController* GetRadioButtonConteroller() { return m_rbController; }
 	SCENE_TYPE GetSceneType() { return m_eSceneType; }
 protected:

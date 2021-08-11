@@ -149,12 +149,16 @@ void Player::LateUpdate(const float& fTimeDelta)
 
 	m_pRenderer->PushObject(RENDER_TYPE::RENDER_DYNAMIC, this);
 
+#ifndef NETWORK
 	ModifyPhysXPos(fTimeDelta);
+#endif // !NETWORK
+
 
 	//if (m_pCamera == NULL)
 	//{
 #ifdef NETWORK
 	STOC_PlayerInfo info = Network::GetInstance()->GetRecvPlayerInfo(m_tNetInfo.Client_Num);
+	m_tNetInfo = info.playerInfo;
 	XMFLOAT3 rotate = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
 	rotate.y = info.playerInfo.CameraY;
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetPosition(info.playerInfo.xmfPosition);
