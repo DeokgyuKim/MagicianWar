@@ -51,7 +51,7 @@ int TestScene::Update(const float& fTimeDelta)
 	if (m_iOldMin != min || m_iOldSec != sec)
 	{
 		m_pTimeTextCtrl->RemoveTexts(this);
-		m_pTimeTextCtrl->Initialize(XMFLOAT4(WINCX / 2.f, 10.f, 50.f, 50.f), Time.c_str(), this);
+		m_pTimeTextCtrl->Initialize(XMFLOAT4(850.f, 0.f, 70.f, 70.f), Time.c_str(), this);
 	}
 	m_iOldMin = min;
 	m_iOldSec = sec;
@@ -60,7 +60,7 @@ int TestScene::Update(const float& fTimeDelta)
 	if (m_iOldKill != kill)
 	{
 		m_pKillTextCtrl->RemoveTexts(this);
-		m_pKillTextCtrl->Initialize(XMFLOAT4(WINCX - 240.f, 10.f, 100.f, 100.f), to_string(kill).c_str(), this);
+		m_pKillTextCtrl->Initialize(XMFLOAT4(1750.f, 0.f, 70.f, 70.f), to_string(kill).c_str(), this);
 	}
 	
 
@@ -272,8 +272,10 @@ void TestScene::Initialize()
 	PoolingMgr::GetInstance()->InitPoolingObject(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	//m_pObjects[OBJ_UI].push_back(new Panel(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), 
 	//	XMFLOAT4(WINCX * 0.5f - 760.f * 0.75f, WINCY * 0.5f - 200.f * 0.75f, 760.f * 1.5f, 200.f * 1.5f), "Win"));
+	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, 1920.f, 1080.f), "InGameUIMainBase");
+	m_pObjects[OBJ_UI].push_back(pObj);
 
-	pObj = new HpBar(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(105.f, 15.f, 512.f, 64.f), "HpBar");
+	pObj = new HpBar(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(180.f, 5.f, 227.f, 57.f), "HpBar");
 	dynamic_cast<HpBar*>(pObj)->SetPlayer(pPlayer);
 	m_pObjects[OBJ_UI].push_back(pObj);
 
@@ -286,13 +288,7 @@ void TestScene::Initialize()
 		name = "Ui_Char_Darkness";
 
 
-	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(15.f, 15.f, 90.f, 90.f), name.c_str());
-	m_pObjects[OBJ_UI].push_back(pObj);
-
-	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(10.f, 10.f, 612.f, 100.f), "HpBarBase");
-	m_pObjects[OBJ_UI].push_back(pObj);
-
-	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(WINCX - 400.f, 10.f, 300.f, 100.f), "Kill");
+	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(5.f, 5.f, 170.f, 170.f), name.c_str());
 	m_pObjects[OBJ_UI].push_back(pObj);
 
 	SkillController* pSkillCtrl = SkillController::GetInstance();
@@ -306,8 +302,8 @@ void TestScene::Initialize()
 	m_pObjects[OBJ_UI].push_back(new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT4(WINCX * 0.5f - 20.f, WINCY * 0.5f - 20.f, 40.f, 40.f), "CrossHair"));
 
-	m_pTimeTextCtrl = new TextController(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(WINCX / 2.f, 10.f, 50.f, 50.f), "00", this);
-	m_pKillTextCtrl = new TextController(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(WINCX - 240.f, 10.f, 100.f, 100.f), "0", this);
+	m_pTimeTextCtrl = new TextController(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(850.f, 0.f, 70.f, 70.f), "00", this);
+	m_pKillTextCtrl = new TextController(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(1750.f, 0.f, 70.f, 70.f), "0", this);
 
 	BuildInstanceCBs();
 	BuildMaterialCBs();

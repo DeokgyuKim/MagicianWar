@@ -127,8 +127,8 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["HpBar"] = pTexture;
 	pLoading->AddCount();
 
-	pTexture = new DDSTexture(device, cmdLst, heap, "HpBarBase", L"../Resources/UI/InGame/HpBarBase.dds");
-	m_mapTextures["HpBarBase"] = pTexture;
+	pTexture = new DDSTexture(device, cmdLst, heap, "InGameUIMainBase", L"../Resources/UI/InGame/InGameUIMainBase.dds");
+	m_mapTextures["InGameUIMainBase"] = pTexture;
 	pLoading->AddCount();
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "SkillBase", L"../Resources/UI/InGame/SkillBase.dds");
