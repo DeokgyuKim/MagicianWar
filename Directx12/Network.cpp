@@ -878,12 +878,16 @@ void Network::ServerKeyInput()
 	if (KeyMgr::GetInstance()->KeyPressing('Q') && SkillController::GetInstance()->UseSkill(SKILL_Q))
 	{
 		cout << "Use Q Skill" << endl;
-		SendSkillPacket_Request(SKILL_Q);
+		XMFLOAT3 Pos = SkillController::GetInstance()->GeneratePositionForPacket(0);
+		XMFLOAT3 Rot = SkillController::GetInstance()->GenerateRotateForPacket(0);
+		SendSkillPacket_Request(SKILL_Q, Pos, Rot);
 	}
 	if (KeyMgr::GetInstance()->KeyPressing('E') && SkillController::GetInstance()->UseSkill(SKILL_E))
 	{
 		cout << "Use E Skill" << endl;
-		SendSkillPacket_Request(SKILL_E);
+		XMFLOAT3 Pos = SkillController::GetInstance()->GeneratePositionForPacket(1);
+		XMFLOAT3 Rot = SkillController::GetInstance()->GenerateRotateForPacket(1);
+		SendSkillPacket_Request(SKILL_E, Pos, Rot);
 	}
 
 	if (m_prevKey != dwKeyInput) {
@@ -907,12 +911,14 @@ void Network::SendShoppingStart_Request()
 	}
 }
 
-void Network::SendSkillPacket_Request(unsigned char Skill_type)
+void Network::SendSkillPacket_Request(unsigned char Skill_type, XMFLOAT3 pos, XMFLOAT3 rot)
 {
 	CTOS_Skill packet;
 	packet.size = sizeof(packet);
 	packet.type = ctos_skill_Request;
 	packet.skill_type = Skill_type;
+	packet.xmfPosition = pos;
+	packet.xmfRotate = rot;
 
 	if (!SendPacket(&packet)) {
 		cout << "SendSkillPacket_Request() Failed \n";
