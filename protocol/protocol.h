@@ -52,6 +52,7 @@
 #define ctos_skill_Request 161
 #define stoc_skill			162
 #define stoc_skillUpdate	163
+#define stoc_skillDelete	164
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -357,6 +358,13 @@ struct STOC_Bullet_Delete {
 	short size;
 	unsigned char type;
 	unsigned char index;
+};
+
+struct STOC_SKILL_DELETE {
+	short size;
+	unsigned char type;
+	unsigned char slotNum;
+	unsigned char skillType;
 };
 
 

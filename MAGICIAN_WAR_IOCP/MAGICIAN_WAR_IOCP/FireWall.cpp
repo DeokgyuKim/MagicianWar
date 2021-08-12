@@ -1,9 +1,9 @@
 #include "FireWall.h"
 
 FireWall::FireWall()
-    :Skill()
+	:Skill()
 {
-   
+	m_Info.TotalLifeTime = 5.f;
 }
 
 FireWall::~FireWall()
@@ -12,12 +12,22 @@ FireWall::~FireWall()
 
 int FireWall::Update(const float& fTime)
 {
-    Skill::Update(fTime);
+	Skill::Update(fTime);
 
-    return 0;
+	m_Info.LifeTime += fTime;
+
+	if (m_Info.TotalLifeTime <= m_Info.LifeTime) {
+
+		return 1;
+	}
+
+	memcpy(&m_Info.xmfPosition, &m_Info.xmmWorld._41, sizeof(XMFLOAT3));
+
+	return 0;
+
 }
 
 void FireWall::LateUpdate(const float& fTime)
 {
-    Skill::LateUpdate(fTime);
+	Skill::LateUpdate(fTime);
 }

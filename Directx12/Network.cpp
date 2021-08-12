@@ -668,12 +668,6 @@ void Network::packetProcessing(char* _packetBuffer)
 	case stoc_skill:
 	{
 		STOC_Skill* data = reinterpret_cast<STOC_Skill*>(_packetBuffer);
-		cout << data->user << " 가 ";
-		if (data->skillType == SKILL_FIREWALL) {
-			cout << "fireWall을 사용했습니다\n";
-		}
-		else
-			cout << "넌 뭐 썻니 \n";
 		
 		if (MainApp::GetInstance()->GetScene()->GetSceneType() == SCENE_TYPE::MAIN)
 		{
@@ -682,6 +676,17 @@ void Network::packetProcessing(char* _packetBuffer)
 		}
 
 
+		break;
+	}
+	case stoc_skillUpdate:
+	{
+		STOC_Skill* data = reinterpret_cast<STOC_Skill*>(_packetBuffer);
+
+		break;
+	}
+	case stoc_skillDelete:
+	{
+		STOC_SKILL_DELETE* data = reinterpret_cast<STOC_SKILL_DELETE*>(_packetBuffer);
 		break;
 	}
 	default:

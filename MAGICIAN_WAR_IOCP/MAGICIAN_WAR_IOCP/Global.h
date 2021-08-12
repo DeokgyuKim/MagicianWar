@@ -107,6 +107,7 @@ struct SkillInfo {
 	XMFLOAT3 xmfRotate;
 	XMFLOAT4X4 xmmWorld;
 	float LifeTime;
+	float TotalLifeTime;
 	float fSpeed;
 	unsigned char SkillType;
 

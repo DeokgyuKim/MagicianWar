@@ -285,10 +285,12 @@ void Room::InGame_Update(float fTime)
 		if (m_FireWall_Skills[i].getUser() != NO_PLAYER) {
 			int dead = m_FireWall_Skills[i].Update(fTime);
 			if (dead) {
-
+				m_FireWall_Skills[i].setUser(NO_PLAYER);
+				PushSkillDelete(i, SKILL_FIREWALL);
 			}
 			else {
 				m_FireWall_Skills[i].LateUpdate(fTime);
+				PushSkillUpdate(i, SKILL_FIREWALL);
 			}
 		}
 	}
@@ -1188,6 +1190,8 @@ void Room::PushRoundReset()
 
 void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 {
+	if (this == nullptr) return;
+
 	STOC_Skill packet;
 	packet.size = sizeof(packet);
 	packet.type = stoc_skill;
@@ -1227,5 +1231,57 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 
 void Room::PushSkillUpdate(int slotNum, unsigned char SkillType)
 {
+	if (this == nullptr) return;
+
+	STOC_Skill packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_skillUpdate;
+	packet.slotNum = static_cast<unsigned char>(slotNum);
+	packet.skillType = SkillType;
+	if (SkillType == SKILL_FIREWALL)
+	{
+		packet.user = m_FireWall_Skills[slotNum].getUser();
+		packet.xmfPosition = m_FireWall_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_FireWall_Skills[slotNum].getRotate();
+	}
+	else if (SkillType == SKILL_FIRE2)
+	{
+
+	}
+	else if (SkillType == SKILL_COLD1)
+	{
+
+	}
+	else if (SkillType == SKILL_COLD2)
+	{
+
+	}
+	else if (SkillType == SKILL_DARKNESS1)
+	{
+
+	}
+	else if (SkillType == SKILL_DARKNESS2)
+	{
+
+	}
+
+	for (auto player : m_players) {
+		sendEvent_push(player->getID(), &packet);
+	}
+}
+
+void Room::PushSkillDelete(int slotNum, unsigned char SkillType)
+{
+	if (this == nullptr) return;
+
+	STOC_SKILL_DELETE packet;
+	packet.size = sizeof(packet);
+	packet.type = stoc_skillDelete;
+	packet.skillType = static_cast<unsigned char>(SkillType);
+	packet.slotNum = slotNum;
+
+	for (auto player : m_players) {
+		sendEvent_push(player->getID(), &packet);
+	}
 }
 

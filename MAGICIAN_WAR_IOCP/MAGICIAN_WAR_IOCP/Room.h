@@ -67,6 +67,7 @@ public:
 	
 	void PushSkillCreate(int slotNum, unsigned char SkillType);
 	void PushSkillUpdate(int slotNum, unsigned char SkillType);
+	void PushSkillDelete(int slotNum, unsigned char SkillType);
 public:
 	// Get
 	bool isGameStart() { return m_isGameStart; }
