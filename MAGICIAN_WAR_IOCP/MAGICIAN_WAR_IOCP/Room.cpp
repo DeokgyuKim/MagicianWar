@@ -99,6 +99,8 @@ void Room::ReInit()
 		m_Bullets[i].SetUser(NO_PLAYER);
 	}
 
+	ResetSkill();
+
 	for (int i = 0; i < MAX_PLAYER; ++i) {
 		if (m_roomPlayerSlots[i].used) {// 사용중인 슬릇만 레디 해제
 			m_roomPlayerSlots[i].readyState = false;
@@ -152,6 +154,9 @@ void Room::RoundSetting()
 
 		m_Bullets[i].SetUser(NO_PLAYER);
 	}
+
+	ResetSkill();
+
 }
 
 void Room::Release()
@@ -549,6 +554,17 @@ void Room::InGame_Init()
 	}
 
 
+}
+
+void Room::ResetSkill()
+{
+	for (int i = 0; i < MAX_SKILL; ++i) 
+	{
+		if (m_FireWall_Skills[i].getUser() != NO_PLAYER)
+		{
+			m_FireWall_Skills[i].setUser(NO_PLAYER);
+		}
+	}
 }
 
 
