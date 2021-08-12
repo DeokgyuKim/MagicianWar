@@ -8,6 +8,7 @@ PlayerFSM::PlayerFSM(Player* user, int _bone)
 	m_curState = STATE_IDLE;
 
 	m_fHitTime = 1.0f;
+	m_fAttackTime = 1.f;
 }
 
 void PlayerFSM::ChangeState(int _State, int _Ani)
@@ -50,7 +51,7 @@ void PlayerFSM::Enter(int _State, int _Ani)
 
 			break;
 		case STATE_ATTACK:
-
+			m_bAttackCool = false;
 			break;
 		case STATE_JUMP:
 			m_beforejump = false;
@@ -302,7 +303,10 @@ void PlayerFSM::Attack(float fTime)
 	{ // 상체
 		if (m_User->IsAttackEnded()) {
 			ChangeState(STATE_IDLE, ANIM_IDLE);
+			
+
 		}
+		
 		//NoJump
 		//else if (DefaultKey & 0x0010) // 점프
 		//{

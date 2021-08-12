@@ -231,6 +231,19 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 
 	switch (packetType)
 	{
+	case ctos_keyInput:
+	{
+		//cout << id << " - KeyInput\n";
+		CTOS_KEYINPUT* data = reinterpret_cast<CTOS_KEYINPUT*>(packet);
+		RoomPacket.type = ctos_keyInput;
+		RoomPacket.data1 = data->key;
+		break;
+	}
+	case ctos_CreateBullet_Request:
+	{
+		RoomPacket.type = ctos_CreateBullet_Request;
+		break;
+	}
 	case ctos_LoadingEnd:
 		cout << "로딩 끝이래\n";
 		break;
@@ -346,14 +359,6 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 	{
 		cout << id << " - Request InGameInfo\n";
 		RoomPacket.type = ctos_IngameInfo_Request;
-		break;
-	}
-	case ctos_keyInput:
-	{
-		//cout << id << " - KeyInput\n";
-		CTOS_KEYINPUT* data = reinterpret_cast<CTOS_KEYINPUT*>(packet);
-		RoomPacket.type = ctos_keyInput;
-		RoomPacket.data1 = data->key;
 		break;
 	}
 	case ctos_Camera_update:

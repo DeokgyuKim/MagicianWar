@@ -73,6 +73,15 @@
     <Filter Include="02.Object\03.Skill\01.Fire\01.FireWall">
       <UniqueIdentifier>{847eea7e-0676-49b4-855e-f85a9bf6627a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Object\03.Skill\01.Fire\02.Fire2">
+      <UniqueIdentifier>{82477abe-8b17-4a70-9322-5692c521156b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Object\03.Skill\03.Cold">
+      <UniqueIdentifier>{5b9024fe-f5c8-462d-b8c7-74ab91345028}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Object\03.Skill\03.Cold\01.">
+      <UniqueIdentifier>{94b21814-d687-451a-8dfc-272a905f9e09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

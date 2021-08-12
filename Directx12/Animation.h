@@ -28,7 +28,7 @@ public:
 	SkinnedModelInstance* GetSkinnedModellnst() { return m_SkinnedModelInst; }
 
 public:
-	void ChangeAnimation(int _Ani);
+	void ChangeAnimation(int _Ani, bool upper = false);
 	bool GetAttackEnd() { return m_bAttackEnd; }
 	AnimData* getCurAnimation();
 	AnimData* getkeyAnimation();

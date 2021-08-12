@@ -354,8 +354,8 @@ void Room::Physics_Collision()
 			for (auto player : m_players)
 			{
 				// °°Àº ÆÀÀÌ ½ð ÃÑÀÌ ¾Æ´Ï°í Á×Àº ÇÃ·¹ÀÌ¾î°¡ ¾Æ´Ï°í ½ÂÀÚ°¡ ¾øÀ»¶§
-				//if (m_Bullets[i].getCheckUserTeam() != player->getTeam()
-				//	&& player->getState() != STATE_DEAD && m_WinnerTeam == TEAM_NONE)
+				if (m_Bullets[i].getCheckUserTeam() != player->getTeam()
+					&& player->getState() != STATE_DEAD && m_WinnerTeam == TEAM_NONE)
 				{
 					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(player->GetPxCapsuleController()->getActor(), m_Bullets[i].GetRigidDynamic()))
 					{
@@ -640,6 +640,27 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 {
 	switch (rEvent.type)
 	{
+	case ctos_keyInput:
+	{
+		for (auto player : m_players) {
+			if (player->getID() == rEvent.playerID) {
+				dynamic_cast<PlayerFSM*>(player->GetUpperFSM())->SetDefaultKey(rEvent.data1);
+				dynamic_cast<PlayerFSM*>(player->GetRootFSM())->SetDefaultKey(rEvent.data1);
+				break;
+			}
+		}
+		break;
+	}
+	case ctos_CreateBullet_Request:
+	{
+		for (auto player : m_players) {
+			if (player->getID() == rEvent.playerID) {
+				player->setCreateBullet(1);
+				break;
+			}
+		}
+		break;
+	}
 	case ctos_RoomInfo_Request:
 	{
 		for (int i = 0; i < MAX_PLAYER; ++i) {
@@ -751,17 +772,6 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 		}
 
 		Push_SceneChange(rEvent.playerID, STAGE_SCENE);
-		break;
-	}
-	case ctos_keyInput:
-	{
-		for (auto player : m_players) {
-			if (player->getID() == rEvent.playerID) {
-				dynamic_cast<PlayerFSM*>(player->GetUpperFSM())->SetDefaultKey(rEvent.data1);
-				dynamic_cast<PlayerFSM*>(player->GetRootFSM())->SetDefaultKey(rEvent.data1);
-				break;
-			}
-		}
 		break;
 	}
 	case ctos_Camera_update:

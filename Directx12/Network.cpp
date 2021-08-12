@@ -320,6 +320,10 @@ void Network::CallEvent(int EventType, int args, ...)
 		SendShoppingStart_Request();
 		break;
 	}
+	case EVENT_CREATE_BULLET_REQUEST:
+	{
+		SendBulletCreate_Request();
+	}
 	default:
 		break;
 	}
@@ -906,7 +910,7 @@ void Network::ServerKeyInput()
 	{
 		dwKeyInput |= ctos_KEY_SPACE;
 	}
-	if (KeyMgr::GetInstance()->KeyPressing(VK_LBUTTON) && dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer())->GetAbleAttack())
+	if (KeyMgr::GetInstance()->KeyPressing(VK_LBUTTON) /*&& dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer())->GetAbleAttack()*/)
 	{
 		dwKeyInput |= ctos_KEY_LBUTTON;
 	}
@@ -959,6 +963,16 @@ void Network::SendSkillPacket_Request(unsigned char Skill_type, XMFLOAT3 pos, XM
 
 	if (!SendPacket(&packet)) {
 		cout << "SendSkillPacket_Request() Failed \n";
+	}
+}
+
+void Network::SendBulletCreate_Request()
+{
+	CTOS_CREATE_BULLET packet;
+	packet.size = sizeof(packet);
+	packet.type = ctos_CreateBullet_Request;
+	if (!SendPacket(&packet)) {
+		cout << "SendBulletCreate_Request() Failed \n";
 	}
 }
 

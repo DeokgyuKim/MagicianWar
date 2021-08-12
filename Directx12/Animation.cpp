@@ -1,5 +1,6 @@
 #include "Animation.h"
 #include "AnimationMgr.h"
+#include "Network.h"
 AnimationCom::AnimationCom(const string& user)
 {
 	// 메쉬에 맞는 애니메이션들 세팅해주고
@@ -133,11 +134,12 @@ void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 
 
 
-void AnimationCom::ChangeAnimation(int _Ani)
+void AnimationCom::ChangeAnimation(int _Ani, bool upper)
 {
 	ANIMATION_TYPE nextAni = static_cast<ANIMATION_TYPE>(_Ani);
 	if (keyAnimation->eType == nextAni)
 		return;
+
 	curAnimation->eType = keyAnimation->eType;
 	if (keyAnimation->eType != nextAni) { // 애니메이션이 바뀌면 Blending
 		m_bBlending = true;
@@ -145,6 +147,15 @@ void AnimationCom::ChangeAnimation(int _Ani)
 		keyAnimation->Time = 0.f;
 		m_fBlendTime = 1.f;
 		m_bAttackEnd = false;
+	}
+
+	if (upper) 
+	{
+		if (nextAni == ANIMATION_TYPE::ATTACK)
+		{
+			cout << "총알 쏴줘\n";
+			Network::GetInstance()->CallEvent(EVENT_CREATE_BULLET_REQUEST, 0);
+		}
 	}
 }
 

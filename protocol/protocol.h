@@ -86,6 +86,7 @@
 #define ctos_IngameInfo_Request 151
 #define ctos_AttackEnd			152
 #define ctos_ShoppingStart_Request 153
+#define ctos_CreateBullet_Request 154
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
@@ -531,6 +532,11 @@ struct CTOS_ATTACKEND {
 };
 
 struct CTOS_SHOPPINGSTART_REQUEST {
+	short size;
+	unsigned char type;
+};
+
+struct CTOS_CREATE_BULLET {
 	short size;
 	unsigned char type;
 };

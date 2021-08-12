@@ -120,6 +120,7 @@ public:
 	void ServerKeyInput();
 	void SendShoppingStart_Request();
 	void SendSkillPacket_Request(unsigned char Skill_type, XMFLOAT3 pos, XMFLOAT3 rot);
+	void SendBulletCreate_Request();
 
 	bool SendPacket(void* buffer);
 	void error_display(const char* msg, int err_no);
