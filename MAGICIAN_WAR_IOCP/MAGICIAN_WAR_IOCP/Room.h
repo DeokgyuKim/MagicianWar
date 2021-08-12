@@ -80,8 +80,10 @@ private:
 	RoomInfo m_Info;	// room_num , room_name
 	bool m_isRoundEnd;
 	bool m_isRoundStart;
+	bool m_isShoppingStart;
 	bool m_RoundWinnerCheck;
 	bool m_isRoundReset;
+
 	int	m_WinnerTeam;
 	mutex m_player_mutex;
 	list<Player*> m_players;

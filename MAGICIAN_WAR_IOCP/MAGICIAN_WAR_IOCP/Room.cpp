@@ -55,6 +55,7 @@ void Room::Initalize(int room_num, int host)
 
 	m_isRoundEnd = false;
 	m_isRoundStart = false;
+	m_isShoppingStart = false;
 	m_RoundWinnerCheck = false;
 	m_WinnerTeam = TEAM_NONE;
 
@@ -119,6 +120,7 @@ void Room::ReInit()
 void Room::RoundStart()
 {
 	m_isRoundEnd = false;
+	
 	PushRoundStartEvent(++m_Info.curRound);
 	m_RoundTime = 0;
 	SendRoundTime();
@@ -352,8 +354,8 @@ void Room::Physics_Collision()
 			for (auto player : m_players)
 			{
 				// 같은 팀이 쏜 총이 아니고 죽은 플레이어가 아니고 승자가 없을때
-				if (m_Bullets[i].getCheckUserTeam() != player->getTeam()
-					&& player->getState() != STATE_DEAD && m_WinnerTeam == TEAM_NONE)
+				//if (m_Bullets[i].getCheckUserTeam() != player->getTeam()
+				//	&& player->getState() != STATE_DEAD && m_WinnerTeam == TEAM_NONE)
 				{
 					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(player->GetPxCapsuleController()->getActor(), m_Bullets[i].GetRigidDynamic()))
 					{
@@ -791,6 +793,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 		recvEvnet_Clear(); // 라운드 시작전에 받아온 데이터 비워야지
 		m_isRoundStart = true; // 라운드 시작 일단 시켜주고
 		m_ShoppingTime = 0;
+		m_isShoppingStart = true;
 		SendLeftShoppingTime();
 		break;
 	}
@@ -1110,9 +1113,9 @@ void Room::SendLeftShoppingTime()
 	else
 	{
 		cout << "라운드 시작\n";
-		RoundStart();
-
+		m_isShoppingStart = false;
 		m_ShoppingTime = 0;
+		RoundStart();
 	}
 
 }
@@ -1120,6 +1123,8 @@ void Room::SendLeftShoppingTime()
 void Room::SendRoundTime()
 {
 	if (this == nullptr) return;
+
+	if (m_isShoppingStart) return;
 
 	if (m_RoundTime <= m_TotalRoundTime) {
 		EVENT roomEvent_Send;

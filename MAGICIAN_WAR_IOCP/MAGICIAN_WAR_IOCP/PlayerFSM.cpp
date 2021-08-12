@@ -34,8 +34,6 @@ void PlayerFSM::Enter(int _State, int _Ani)
 	if (m_BoneType == BONE_UPPER)
 	{ // 상체 애니메이션을 갱신
 		m_User->ChangeUpperAnimation(_Ani);
-		if(m_State == STATE_ATTACK)
-			m_User->setCreateBullet(1);
 
 	}
 	else if (m_BoneType == BONE_ROOT)

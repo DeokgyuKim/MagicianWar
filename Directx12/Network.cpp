@@ -627,13 +627,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		m_CurRound = data->Cur_Round;
 		m_isRoundStart = true;
 		m_RoundEnd.WinnerTeam = TEAM_NONE;
-		dynamic_cast<TestScene*>(MainApp::GetInstance()->GetScene())->SetGameEndForPanelCreate(false);
-		Object* pobj = MainApp::GetInstance()->GetScene()->GetUIForTag(99);
-		if (pobj != nullptr)
-		{
-			MainApp::GetInstance()->GetScene()->RemoveObject(pobj, OBJ_TYPE::OBJ_UI);
-			delete pobj;
-		}
+
 		dynamic_cast<Camera*>(MainApp::GetInstance()->GetScene()->GetCamera())->SetMode(CAMERA_MODE::CAMERA_THIRD);
 		ShopController::GetInstance()->SetRendering(false);
 		break;
@@ -642,6 +636,19 @@ void Network::packetProcessing(char* _packetBuffer)
 	{
 		if (Network::GetInstance()->GetMyInfo().isRoom_Host)
 			Network::GetInstance()->CallEvent(EVENT_ROUND_SHOPPING_START_REQUEST, 0);
+
+		m_RoundEnd.WinnerTeam = TEAM_NONE;
+		dynamic_cast<TestScene*>(MainApp::GetInstance()->GetScene())->SetGameEndForPanelCreate(false);
+		Object* pobj = MainApp::GetInstance()->GetScene()->GetUIForTag(99);
+		if (pobj != nullptr)
+		{
+			MainApp::GetInstance()->GetScene()->RemoveObject(pobj, OBJ_TYPE::OBJ_UI);
+			delete pobj;
+		}
+
+		dynamic_cast<Camera*>(MainApp::GetInstance()->GetScene()->GetCamera())->SetMode(CAMERA_MODE::CAMERA_NONE);
+		ShopController::GetInstance()->SetRendering(true);
+
 		break;
 	}
 	case stoc_add_kill_point:
