@@ -8,6 +8,7 @@
 #include "UI.h"
 #include "Button.h"
 #include "Player.h"
+#include "Transform.h"
 #include "PlayerFSM.h"
 #include "Animation.h"
 #include "KeyMgr.h"
@@ -671,6 +672,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		
 		if (MainApp::GetInstance()->GetScene()->GetSceneType() == SCENE_TYPE::MAIN)
 		{
+			printf("server pos x %f y %f z %f\n", data->xmfPosition.x, data->xmfPosition.y, data->xmfPosition.z);
 			dynamic_cast<TestScene*>(MainApp::GetInstance()->GetScene())->MakeSkillForPacket(
 				(SKILL_TYPE)data->skillType, data->xmfPosition, data->xmfRotate, data->slotNum);
 		}
@@ -681,12 +683,25 @@ void Network::packetProcessing(char* _packetBuffer)
 	case stoc_skillUpdate:
 	{
 		STOC_Skill* data = reinterpret_cast<STOC_Skill*>(_packetBuffer);
+		if (MainApp::GetInstance()->GetScene()->GetSceneType() == SCENE_TYPE::MAIN)
+		{
+			Object* pObj = MainApp::GetInstance()->GetScene()->GetSkillForSlot((SKILL_TYPE)data->skillType, data->slotNum);
+			dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(data->xmfPosition);
+			dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(data->xmfRotate);
+		}
 
 		break;
 	}
 	case stoc_skillDelete:
 	{
 		STOC_SKILL_DELETE* data = reinterpret_cast<STOC_SKILL_DELETE*>(_packetBuffer);
+		if (MainApp::GetInstance()->GetScene()->GetSceneType() == SCENE_TYPE::MAIN)
+		{
+			Object* pObj = MainApp::GetInstance()->GetScene()->GetSkillForSlot((SKILL_TYPE)data->skillType, data->slotNum);
+			MainApp::GetInstance()->GetScene()->RemoveObject(pObj, OBJ_SKILL);
+			delete pObj;
+		}
+		
 		break;
 	}
 	default:
@@ -888,14 +903,16 @@ void Network::ServerKeyInput()
 	{
 		dwKeyInput |= ctos_KEY_LBUTTON;
 	}
-	if (KeyMgr::GetInstance()->KeyPressing('Q') && SkillController::GetInstance()->UseSkill(SKILL_Q))
+	if (KeyMgr::GetInstance()->KeyPressing('Q'))// && SkillController::GetInstance()->UseSkill(SKILL_Q))
 	{
 		cout << "Use Q Skill" << endl;
 		XMFLOAT3 Pos = SkillController::GetInstance()->GeneratePositionForPacket(0);
 		XMFLOAT3 Rot = SkillController::GetInstance()->GenerateRotateForPacket(0);
+		
+		printf("client pos x %f y %f z %f\n", Pos.x, Pos.y, Pos.z);
 		SendSkillPacket_Request(SKILL_Q, Pos, Rot);
 	}
-	if (KeyMgr::GetInstance()->KeyPressing('E') && SkillController::GetInstance()->UseSkill(SKILL_E))
+	if (KeyMgr::GetInstance()->KeyPressing('E'))// && SkillController::GetInstance()->UseSkill(SKILL_E))
 	{
 		cout << "Use E Skill" << endl;
 		XMFLOAT3 Pos = SkillController::GetInstance()->GeneratePositionForPacket(1);

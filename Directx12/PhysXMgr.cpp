@@ -400,6 +400,11 @@ PxRigidStatic* CPhysXMgr::CreatePlaneTriangleStaticMesh()
 	pos.push_back(XMFLOAT3(50.f, 0.f, 100.f));
 	pos.push_back(XMFLOAT3(50.f, 0.f, 0.f));
 	pos.push_back(XMFLOAT3(0.f, 0.f, 0.f));
+	pos.push_back(XMFLOAT3(0.f, -1.f, 100.f));
+	pos.push_back(XMFLOAT3(50.f, -1.f, 100.f));
+	pos.push_back(XMFLOAT3(50.f, -1.f, 0.f));
+	pos.push_back(XMFLOAT3(0.f, -1.f, 0.f));
+
 	vector<Indices> idx;
 	Indices idc;
 	idc.i1 = 0;	idc.i2 = 1; idc.i3 = 2;
@@ -407,14 +412,39 @@ PxRigidStatic* CPhysXMgr::CreatePlaneTriangleStaticMesh()
 	idc.i1 = 0;	idc.i2 = 2; idc.i3 = 3;
 	idx.push_back(idc);
 
+	idc.i1 = 1;	idc.i2 = 5; idc.i3 = 6;
+	idx.push_back(idc);
+	idc.i1 = 1;	idc.i2 = 6; idc.i3 = 2;
+	idx.push_back(idc);
+
+	idc.i1 = 5;	idc.i2 = 4; idc.i3 = 7;
+	idx.push_back(idc);
+	idc.i1 = 5;	idc.i2 = 7; idc.i3 = 6;
+	idx.push_back(idc);
+
+	idc.i1 = 4;	idc.i2 = 0; idc.i3 = 3;
+	idx.push_back(idc);
+	idc.i1 = 4;	idc.i2 = 3; idc.i3 = 7;
+	idx.push_back(idc);
+
+	idc.i1 = 3;	idc.i2 = 2; idc.i3 = 6;
+	idx.push_back(idc);
+	idc.i1 = 3;	idc.i2 = 6; idc.i3 = 7;
+	idx.push_back(idc);
+
+	idc.i1 = 4;	idc.i2 = 5; idc.i3 = 1;
+	idx.push_back(idc);
+	idc.i1 = 4;	idc.i2 = 1; idc.i3 = 0;
+	idx.push_back(idc);
+
 	PxRigidStatic* iglooActor = gPhysics->createRigidStatic(PxTransform(PxVec3(0, 0, 0)));
 
 	pxMeshVtxInfo pPxVtx;
-	pPxVtx.ulVertexCnt = 4;
-	pPxVtx.pxVecVertexPos = new PxVec3[4];
+	pPxVtx.ulVertexCnt = 8;
+	pPxVtx.pxVecVertexPos = new PxVec3[8];
 
 
-	for (unsigned long i = 0; i < 4; ++i)
+	for (unsigned long i = 0; i < 8; ++i)
 	{
 		pPxVtx.pxVecVertexPos[i].x = pos[i].x;
 		pPxVtx.pxVecVertexPos[i].y = pos[i].y;
@@ -442,7 +472,7 @@ PxRigidStatic* CPhysXMgr::CreatePlaneTriangleStaticMesh()
 
 
 	PxTriangleMeshDesc meshDesc;
-	meshDesc.points.count = 4;
+	meshDesc.points.count = 8;
 	meshDesc.points.stride = sizeof(PxVec3);
 	meshDesc.points.data = pPxVtx.pxVecVertexPos;
 
