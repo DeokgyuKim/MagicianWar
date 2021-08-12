@@ -906,7 +906,7 @@ void Network::ServerKeyInput()
 	{
 		dwKeyInput |= ctos_KEY_SPACE;
 	}
-	if (KeyMgr::GetInstance()->KeyPressing(VK_LBUTTON))
+	if (KeyMgr::GetInstance()->KeyPressing(VK_LBUTTON) && dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer())->GetAbleAttack())
 	{
 		dwKeyInput |= ctos_KEY_LBUTTON;
 	}
