@@ -30,6 +30,8 @@ int Portrait::Update(const float& fTimeDelta)
 {
 	if (m_pPlayer->GetNetworkInfo().iHp <= 0)
 		m_xmfRatio.x = 0.5f;
+	else
+		m_xmfRatio.x = 1.f;
 	return 0;
 }
 
