@@ -110,9 +110,25 @@ struct VertexOut_Default
 	nointerpolation uint MaterialIndex : MATINDEX;
 };
 
-VertexOut_Default VS_FireBall(VertexIn_Static vin, uint instanceID : SV_InstanceID)
+struct VertexOut_Default_FIREBALL
+{   // 기본 
+	float4 PosH    : SV_POSITION;
+	float3 PosW    : POSITION2;
+	float3 ViewPos : POSITION;
+	float3 NormalW : NORMAL;
+	float2 TexC    : TEXCOORD;
+	float3 TangentW : TANGENT;
+	float3 BinormalW : BINORMAL;
+
+	// 인덱스가 삼각형을 따라 보간되지 않도록 하기위함
+	// 왜 필요한지는 잘 모르겟음
+	nointerpolation uint MaterialIndex : MATINDEX;
+	nointerpolation uint cbIndex : CBINDEX;
+};
+
+VertexOut_Default_FIREBALL VS_FireBall(VertexIn_Static vin, uint instanceID : SV_InstanceID)
 {
-	VertexOut_Default vout = (VertexOut_Default)0.0f;
+	VertexOut_Default_FIREBALL vout = (VertexOut_Default_FIREBALL)0.0f;
 
 	// 인스턴싱
 	InstanceObject instObjData = gInstanceData[instanceID];
@@ -120,7 +136,7 @@ VertexOut_Default VS_FireBall(VertexIn_Static vin, uint instanceID : SV_Instance
 	uint matIndex = instObjData.MaterialIndex;
 
 	vout.MaterialIndex = matIndex;
-
+	vout.cbIndex = instanceID;
 	vin.NormalL.x *= -1.f;
 
 	vout.NormalW = normalize(mul(vin.NormalL, (row_major float3x3)world));
@@ -149,21 +165,22 @@ VertexOut_Default VS_FireBall(VertexIn_Static vin, uint instanceID : SV_Instance
 
 	return vout;
 }
-PSOut PS_FireBall(VertexOut_Default pin)
+PSOut PS_FireBall(VertexOut_Default_FIREBALL pin)
 {
 	PSOut vout;
 	MaterialData materialData = gMaterialData[pin.MaterialIndex];
+	InstanceObject instObjData = gInstanceData[pin.cbIndex];
 	float2 tex = pin.TexC;
 	tex.x += gTime * 0.1f;
 	tex.y -= gTime * 0.1f;
 	tex *= 3.f;
 
-	float4 color = float4(0.f, 0.f, 0.f, 0f.);
-	if (Attribute == 1)
+	float4 color = float4(0.f, 0.f, 0.f, 0.f);
+	if (instObjData.Attribute == 1)
 		color = Texture.Sample(gsamLinear, pin.TexC);
-	else if (Attribute == 2)
+	else if (instObjData.Attribute == 2)
 		color = SkillEffTex1.Sample(gsamLinear, pin.TexC);
-	else if (Attribute == 3)
+	else if (instObjData.Attribute == 3)
 		color = SkillEffTex2.Sample(gsamLinear, pin.TexC);
 
 	color *= saturate(pow(NoiseTex.Sample(gsamLinear, tex).x * 1.5f, 3.f));
