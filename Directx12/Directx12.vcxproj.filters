@@ -307,6 +307,9 @@
     <Filter Include="01.Engine\06.Component\05.NetSkill">
       <UniqueIdentifier>{eeb071fe-7ce4-4dcc-bdbb-efad7cb6db43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Game\02.Object\09.UI\07.Portrait">
+      <UniqueIdentifier>{da16018c-da02-4d70-8b46-724a4cfb82d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -597,6 +600,9 @@
     <ClInclude Include="NetSkill.h">
       <Filter>01.Engine\06.Component\05.NetSkill</Filter>
     </ClInclude>
+    <ClInclude Include="Portrait.h">
+      <Filter>00.Game\02.Object\09.UI\07.Portrait</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -859,6 +865,9 @@
     </ClCompile>
     <ClCompile Include="NetSkill.cpp">
       <Filter>01.Engine\06.Component\05.NetSkill</Filter>
+    </ClCompile>
+    <ClCompile Include="Portrait.cpp">
+      <Filter>00.Game\02.Object\09.UI\07.Portrait</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -87,18 +87,18 @@ void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList
 
 	if (CharType == WIZARD_FIRE)
 	{
-		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_TYPE::SKILL_BULLET);
-		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_TYPE::SKILL_RAYCAST);
+		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_BULLET);
+		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_RAYCAST);
 	}
 	else if (CharType == WIZARD_COLD)
 	{
-		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_TYPE::SKILL_BULLET);
-		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_TYPE::SKILL_RAYCAST);
+		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_BULLET);
+		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_RAYCAST);
 	}
 	else if (CharType == WIZARD_DARKNESS)
 	{
-		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_TYPE::SKILL_BULLET);
-		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_TYPE::SKILL_RAYCAST);
+		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_BULLET);
+		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_RAYCAST);
 	}
 }
 

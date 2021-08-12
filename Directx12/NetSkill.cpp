@@ -41,7 +41,7 @@ XMFLOAT3 GetRotateRayCastType(Object* pOwner, Camera* Camera)
 	return Rotate;
 }
 
-NetSkill::NetSkill(Object* pOwner, Camera* Camera, SKILL_TYPE eSkillType)
+NetSkill::NetSkill(Object* pOwner, Camera* Camera, SKILL_GENTYPE eSkillType)
 {
 	m_eSkillType = eSkillType;
 	m_pOwner = pOwner;

@@ -21,11 +21,16 @@ public:
     virtual int Update(const float& fTimeDelta) override;
     virtual void LateUpdate(const float& fTimeDelta) override;
     virtual void Render(const float& fTimeDelta, int _instanceCount = 1) override;
+public:
+    void SetSlotNum(unsigned char slot) { m_cSlotNum = slot; }
+    unsigned char GetSlotNum() { return m_cSlotNum; }
+    SKILL_TYPE GetSkillType() { return m_eSkillType; }
 
 protected:
     ID3D12Device*                               m_pDevice;
     ID3D12GraphicsCommandList*                  m_pCmdLst;
-
+    SKILL_TYPE                                  m_eSkillType;
+    unsigned char                               m_cSlotNum;
     vector<SkillEff*>                           m_vecSkillEff;
 };
 

@@ -4,6 +4,7 @@
 class Cursor;
 class Scene;
 class SkillController;
+class TextController;
 class ShopController
 {
 private:
@@ -27,11 +28,15 @@ public:
 	void Update();
 	void SetSkillCtrl(SkillController* pCtrl) { m_pSkillCtrl = pCtrl; }
 	void SetRendering(bool On);
+	bool AddCoin(int coin);
 protected:
 	UI*					m_pSkillBase[2];
 	UI*					m_pSkillOn[2][4];
 	ClickerButton*		m_pButton[2];
 	Cursor*				m_pCursor;
+
+	int					m_iGold = 0;
+	TextController*		m_pGoldTxtCtrl;
 
 	SkillController*	m_pSkillCtrl;
 	Scene*				m_pScene;

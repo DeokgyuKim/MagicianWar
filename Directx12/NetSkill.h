@@ -3,12 +3,12 @@
 
 class Object;
 class Camera;
-enum SKILL_TYPE { SKILL_BULLET, SKILL_RAYCAST };
+enum SKILL_GENTYPE { SKILL_BULLET, SKILL_RAYCAST };
 class NetSkill :
     public Component
 {
 public:
-    NetSkill(Object* pOwner, Camera* Camera, SKILL_TYPE eSkillType);
+    NetSkill(Object* pOwner, Camera* Camera, SKILL_GENTYPE eSkillType);
     ~NetSkill();
 public:
     XMFLOAT3 GetPosition();
@@ -16,6 +16,6 @@ public:
 protected:
     Object* m_pOwner;
     Camera* m_pCamera;
-    SKILL_TYPE m_eSkillType;
+    SKILL_GENTYPE m_eSkillType;
 };
 
