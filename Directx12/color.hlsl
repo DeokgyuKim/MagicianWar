@@ -158,7 +158,14 @@ PSOut PS_FireBall(VertexOut_Default pin)
 	tex.y -= gTime * 0.1f;
 	tex *= 3.f;
 
-	float4 color = Texture.Sample(gsamLinear, pin.TexC);
+	float4 color = float4(0.f, 0.f, 0.f, 0f.);
+	if (Attribute == 1)
+		color = Texture.Sample(gsamLinear, pin.TexC);
+	else if (Attribute == 2)
+		color = SkillEffTex1.Sample(gsamLinear, pin.TexC);
+	else if (Attribute == 3)
+		color = SkillEffTex2.Sample(gsamLinear, pin.TexC);
+
 	color *= saturate(pow(NoiseTex.Sample(gsamLinear, tex).x * 1.5f, 3.f));
 	color.a = 1.f;
 

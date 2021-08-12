@@ -67,6 +67,19 @@ void InstanceMgr::UpdateInstanceBuffer(UINT uiIdx, string instname, XMMATRIX wor
 	m_InstanceCBs[instname]->CopyData(uiIdx, data);
 }
 
+void InstanceMgr::UpdateInstanceBuffer(UINT uiIdx, string instname, XMMATRIX world, UINT attribute)
+{
+	if (instname == "") { // 메시를 다루지 않는 것 - Camera
+		return;
+	}
+	ObjectCB data;
+	XMStoreFloat4x4(&data.World, (world));
+	data.MaterialIndex = uiIdx;
+	data.AttributeType = attribute;
+
+	m_InstanceCBs[instname]->CopyData(uiIdx, data);
+}
+
 void InstanceMgr::SetInstaneCount(string instname, UINT iCnt)
 {
 	auto iter = m_InstanceObjects.find(instname);

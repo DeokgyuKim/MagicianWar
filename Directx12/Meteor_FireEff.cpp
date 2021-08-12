@@ -6,10 +6,11 @@
 
 #include "Renderer.h"
 
-Meteor_FireEff::Meteor_FireEff(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Object* pParent)
+Meteor_FireEff::Meteor_FireEff(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Object* pParent, XMFLOAT3 rotate)
 	: SkillEff(device, cmdLst, pRenderer, pParent)
 {
 	Initialize();
+	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rotate);
 	//m_eRenderType = RENDER_TYPE::RENDER_DEFFSKILL;
 }
 

@@ -292,6 +292,8 @@ void Renderer::Render_Albedo(const float& fTimeDelta)
 			m_pTextureMgr->GetTexture("Noise3")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
 			if (pObject->GetTextureName() != "")
 				m_pTextureMgr->GetTexture(pObject->GetTextureName())->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get());
+			m_pTextureMgr->GetTexture("IceBall")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get(), 13);
+			m_pTextureMgr->GetTexture("BlackBall")->PreRender(m_pCmdLst, m_ptrDescriptorHeap.Get(), 14);
 			m_pCmdLst->SetGraphicsRootShaderResourceView(0, InstanceMgr::GetInstnace()->m_InstanceCBs[pObject->GetInstName()]->Resource()->GetGPUVirtualAddress());	// obj
 			m_InstanceCheck[pObject->GetInstName()] = InstanceMgr::GetInstnace()->m_InstanceObjects[pObject->GetInstName()]->GetInstanceCount();
 			pObject->Render(fTimeDelta, m_InstanceCheck[pObject->GetInstName()]);

@@ -55,7 +55,7 @@ void PoolingMgr::UpdatePoolingObject(vector<Client_Bullet> m_vBullets)
 		//인스턴스 ObjectCB 업데이트
 		if (m_vBullets[i].Used)
 		{
-			InstanceMgr::GetInstnace()->UpdateInstanceBuffer(m_mapInstCnt["FireBall"], "FireBall", XMLoadFloat4x4(&m_vBullets[i].matWorld));
+			InstanceMgr::GetInstnace()->UpdateInstanceBuffer(m_mapInstCnt["FireBall"], "FireBall", XMLoadFloat4x4(&m_vBullets[i].matWorld), m_vBullets[i].ElementType);
 			++m_mapInstCnt["FireBall"];
 		}
 	}
