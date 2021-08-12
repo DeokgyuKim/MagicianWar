@@ -28,6 +28,7 @@
 #include "Panel.h"
 #include "LobbyScene.h"
 #include "MainApp.h"
+#include "Portrait.h"
 
 TestScene::TestScene()
 {
@@ -159,6 +160,10 @@ void TestScene::Initialize()
 	Core::GetInstance()->CmdLstExecute();
 	Core::GetInstance()->WaitForGpuComplete();
 
+	Portrait* pOur[3];
+	Portrait* pEnemy[4];
+	int our = 0;
+	int enemy = 0;
 	map<int, PlayerInfo> Others = Network::GetInstance()->GetOtherPlayerInfo();
 	for (auto iter = Others.begin(); iter != Others.end(); ++iter)
 	{
@@ -182,6 +187,20 @@ void TestScene::Initialize()
 		Core::GetInstance()->CmdLstExecute();
 		Core::GetInstance()->WaitForGpuComplete();
 		m_pObjects[OBJ_PLAYER].push_back(pObj);
+
+		if ((*iter).second.TeamType == pPlayer->GetNetworkInfo().TeamType)
+		{
+			pOur[our] = new Portrait(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+				XMFLOAT4(5.f, 415.f + 85.f * our, 80.f, 80.f), dynamic_cast<Player*>(pObj));
+			++our;
+		}
+		else
+		{
+			pEnemy[enemy] = new Portrait(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+				XMFLOAT4(1835.f, 372.f + 85.f * our, 80.f, 80.f), dynamic_cast<Player*>(pObj));
+			++enemy;
+		}
+
 	}
 
 
@@ -276,6 +295,15 @@ void TestScene::Initialize()
 	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, 1920.f, 1080.f), "InGameUIMainBase");
 	m_pObjects[OBJ_UI].push_back(pObj);
 
+	for (int i = 0; i < our; ++i)
+	{
+		m_pObjects[OBJ_UI].push_back(pOur[i]);
+	}
+	for (int i = 0; i < enemy; ++i)
+	{
+		m_pObjects[OBJ_UI].push_back(pEnemy[i]);
+	}
+
 	pObj = new HpBar(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(180.f, 5.f, 227.f, 57.f), "HpBar");
 	dynamic_cast<HpBar*>(pObj)->SetPlayer(pPlayer);
 	m_pObjects[OBJ_UI].push_back(pObj);
@@ -324,4 +352,34 @@ void TestScene::LateInit()
 
 #endif // NETWORK
 	m_LateInit = true;
+}
+
+void TestScene::MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot, unsigned char slot)
+{
+	Skill* pSkill = nullptr;
+
+	if (GetSkillForSlot(etype, slot) != nullptr)
+		return;
+
+	switch (etype)
+	{
+	case SKILL_FIRE1:
+		pSkill = new Flames(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), pos, rot);
+		break;
+	case SKILL_FIRE2:
+		break;
+	case SKILL_COLD1:
+		break;
+	case SKILL_COLD2:
+		break;
+	case SKILL_DARKNESS1:
+		break;
+	case SKILL_DARKNESS2:
+		break;
+	default:
+		return;
+	}
+
+	pSkill->SetSlotNum(slot);
+	m_pObjects[OBJ_SKILL].push_back(pSkill);
 }

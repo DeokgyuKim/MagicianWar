@@ -5,11 +5,13 @@
 
 #include "Flames_FireEff.h"
 
-Flames::Flames(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 xmfPosition)
+Flames::Flames(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotation)
 	: Skill(device, cmdLst, pRenderer)
 {
 	Initialize();
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetPosition(xmfPosition);
+	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotation);
+	m_eSkillType = SKILL_TYPE::SKILL_FIRE1;
 }
 
 Flames::~Flames()

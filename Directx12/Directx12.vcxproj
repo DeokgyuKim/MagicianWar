@@ -212,6 +212,7 @@
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PoolingMgr.h" />
+    <ClInclude Include="Portrait.h" />
     <ClInclude Include="RadioButton.h" />
     <ClInclude Include="RadioButtonController.h" />
     <ClInclude Include="Renderer.h" />
@@ -305,6 +306,7 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PoolingMgr.cpp" />
+    <ClCompile Include="Portrait.cpp" />
     <ClCompile Include="RadioButton.cpp" />
     <ClCompile Include="RadioButtonController.cpp" />
     <ClCompile Include="Renderer.cpp" />

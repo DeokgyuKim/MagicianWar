@@ -1,6 +1,7 @@
 #include "ShopController.h"
 #include "Scene.h"
 #include "SkillController.h"
+#include "TextController.h"
 #include "Cursor.h"
 
 void buyskillQ();
@@ -70,6 +71,7 @@ void ShopController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList*
 	m_pButton[1] = new ClickerButton(device, cmdLst, pRenderer, buttonpos, "ShopNone", "ShopMouse", "ShopOn");
 	m_pButton[1]->SetEventButtonOn(buyskillE);
 
+	m_pGoldTxtCtrl = new TextController(device, cmdLst, pRenderer, XMFLOAT4(280.f, 67.f, 60.f, 60.f), "0", pScene);
 }
 
 void ShopController::Update()
@@ -122,6 +124,20 @@ void ShopController::SetRendering(bool On)
 			}
 		}
 	}
+}
+
+bool ShopController::AddCoin(int coin)
+{
+	if (m_iGold + coin < 0)
+		return false;
+
+	m_iGold += coin;
+
+	m_pGoldTxtCtrl->RemoveTexts(m_pScene);
+	string gold = to_string(m_iGold);
+	m_pGoldTxtCtrl->Initialize(XMFLOAT4(280.f, 67.f, 60.f, 60.f), gold.c_str(), m_pScene);
+
+	return true;
 }
 
 void buyskillQ()

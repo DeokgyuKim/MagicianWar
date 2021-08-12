@@ -22,6 +22,7 @@ public:
 	Object* GetPlayerForID(int id);
 	Object* GetPlayer(); 
 	Object* GetCamera();
+	Object* GetSkillForSlot(SKILL_TYPE eSkill, unsigned char cSlot);
 	RoomRadioController* GetRadioButtonConteroller() { return m_rbController; }
 	SCENE_TYPE GetSceneType() { return m_eSceneType; }
 protected:

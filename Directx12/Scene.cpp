@@ -6,6 +6,7 @@
 
 #include "UI.h"
 #include "Player.h"
+#include "Skill.h"
 
 Scene::~Scene()
 {
@@ -118,4 +119,13 @@ Object* Scene::GetCamera()
 	if (m_pObjects[OBJ_CAMERA].empty())
 		return nullptr;
 	return m_pObjects[OBJ_CAMERA].front();
+}
+
+Object* Scene::GetSkillForSlot(SKILL_TYPE eSkill, unsigned char cSlot)
+{
+	for (auto skill : m_pObjects[OBJ_SKILL])
+		if (dynamic_cast<Skill*>(skill)->GetSkillType() == eSkill)
+			if (dynamic_cast<Skill*>(skill)->GetSlotNum() == cSlot)
+				return skill;
+	return nullptr;
 }

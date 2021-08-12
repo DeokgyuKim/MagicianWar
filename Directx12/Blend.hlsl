@@ -365,3 +365,13 @@ PS_BLEND_OUT PS_UI_CURSOR(Shade_Out_UI_Room pin)
 
 	return pOut;
 }
+
+PS_BLEND_OUT PS_PORTRAIT(Shade_Out pin)
+{
+	PS_BLEND_OUT pOut;
+	float4 ui = Texture.Sample(gsamLinear, pin.UV);
+
+	pOut.Blend = float4(ui.xyz * ratio.x, 1.f);
+
+	return pOut;
+}

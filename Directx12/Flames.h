@@ -6,7 +6,7 @@ class Flames :
     public Skill
 {
 public:
-    Flames(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 xmfPosition);
+    Flames(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotation);
     ~Flames();
 private:
     virtual void BuildComponents() override;

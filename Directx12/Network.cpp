@@ -647,6 +647,7 @@ void Network::packetProcessing(char* _packetBuffer)
 	{
 		cout << "킬 포인트 올라감\n";
 		++m_tMyInfo.killPoint;
+		ShopController::GetInstance()->AddCoin(100);
 		dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayer())->AddKillCount();
 
 		break;
@@ -670,7 +671,14 @@ void Network::packetProcessing(char* _packetBuffer)
 		cout << data->user << " 가 ";
 		if (data->skillType == SKILL_FIREWALL) {
 			cout << "fireWall을 사용했습니다\n";
-			cout << "좌표 - " << data->xmfPosition.x << ", " << data->xmfPosition.y << ", " << data->xmfPosition.z << "\n";
+		}
+		else
+			cout << "넌 뭐 썻니 \n";
+		
+		if (MainApp::GetInstance()->GetScene()->GetSceneType() == SCENE_TYPE::MAIN)
+		{
+			dynamic_cast<TestScene*>(MainApp::GetInstance()->GetScene())->MakeSkillForPacket(
+				(SKILL_TYPE)data->skillType, XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f), data->slotNum);
 		}
 
 
