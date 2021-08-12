@@ -167,7 +167,12 @@ void Player::LateUpdate(const float& fTimeDelta)
 	rotate.y = info.playerInfo.CameraY;
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetPosition(info.playerInfo.xmfPosition);
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rotate);
-	dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(SCint(info.Upper_eAnimType),true);
+	if (m_tNetInfo.Client_Num == Network::GetInstance()->GetMyInfo().Client_Num) {
+		dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(SCint(info.Upper_eAnimType), true);
+	}
+	else {
+		dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->ChangeAnimation(SCint(info.Upper_eAnimType));
+	}
 	dynamic_cast<AnimationCom*>(m_mapComponent["Root_Animation"])->ChangeAnimation(SCint(info.Root_eAnimType));
 	if (m_bAttackEnd != dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetAttackEnd()) 
 	{

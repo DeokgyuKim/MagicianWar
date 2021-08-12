@@ -655,6 +655,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 	{
 		for (auto player : m_players) {
 			if (player->getID() == rEvent.playerID) {
+				cout << "¼­¹ö ÃÑ¾Ë ½÷Áà\n";
 				player->setCreateBullet(1);
 				break;
 			}

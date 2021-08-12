@@ -323,6 +323,7 @@ void Network::CallEvent(int EventType, int args, ...)
 	case EVENT_CREATE_BULLET_REQUEST:
 	{
 		SendBulletCreate_Request();
+		break;
 	}
 	default:
 		break;
@@ -968,6 +969,7 @@ void Network::SendSkillPacket_Request(unsigned char Skill_type, XMFLOAT3 pos, XM
 
 void Network::SendBulletCreate_Request()
 {
+	cout << "ÃÑ¾Ë ½÷Áà\n";
 	CTOS_CREATE_BULLET packet;
 	packet.size = sizeof(packet);
 	packet.type = ctos_CreateBullet_Request;

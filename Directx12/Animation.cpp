@@ -151,9 +151,12 @@ void AnimationCom::ChangeAnimation(int _Ani, bool upper)
 
 	if (upper) 
 	{
+		if (nextAni == ANIMATION_TYPE::ATTACK) {
+			if (curAnimation->eType == nextAni)
+				return;
+		}
 		if (nextAni == ANIMATION_TYPE::ATTACK)
 		{
-			cout << "ÃÑ¾Ë ½÷Áà\n";
 			Network::GetInstance()->CallEvent(EVENT_CREATE_BULLET_REQUEST, 0);
 		}
 	}
