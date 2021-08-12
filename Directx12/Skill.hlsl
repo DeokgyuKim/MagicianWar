@@ -103,10 +103,17 @@ PSOut_Skill PS_Magic_Circle(Out_Skill pin)
 {
 	PSOut_Skill vout;
 	
-	float4 color = SkillEffTex1.Sample(gsamLinear, pin.UV);
-	float alpha = SkillEffTex2.Sample(gsamLinear, pin.UV).r + gSkillTime;
+	float4 color = SkillEffTex1.Sample(gsamLinear, pin.TexC);
+	float alpha = SkillEffTex2.Sample(gsamLinear, pin.TexC).r + gSkillTime;
 	alpha = floor(alpha);
-	color.a = alpha;
+	color.a = min(alpha, color.r);
+	//color.a = color.r;
+	if (gSkillIdx == 1)
+		color.rgb *= float3(1.f, 0.5f, 0.2f);
+	else if (gSkillIdx == 2)
+		color.rgb *= float3(0.2f, 0.5f, 1.f);
+	else if (gSkillIdx == 3)
+		color.rgb *= float3(0.5f, 0.2f, 1.f);
 
 	vout.Diffuse = color;
 	//vout.Diffuse = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gDiffuse;
