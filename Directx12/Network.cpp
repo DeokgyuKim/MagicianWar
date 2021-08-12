@@ -678,7 +678,7 @@ void Network::packetProcessing(char* _packetBuffer)
 		if (MainApp::GetInstance()->GetScene()->GetSceneType() == SCENE_TYPE::MAIN)
 		{
 			dynamic_cast<TestScene*>(MainApp::GetInstance()->GetScene())->MakeSkillForPacket(
-				(SKILL_TYPE)data->skillType, XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f), data->slotNum);
+				(SKILL_TYPE)data->skillType, data->xmfPosition, data->xmfRotate, data->slotNum);
 		}
 
 
