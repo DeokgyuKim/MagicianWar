@@ -99,6 +99,24 @@ PSOut_Skill PS_Flames_FireEff(Out_Skill pin)
 
 	return vout;
 }
+PSOut_Skill PS_Magic_Circle(Out_Skill pin)
+{
+	PSOut_Skill vout;
+	
+	float4 color = SkillEffTex1.Sample(gsamLinear, pin.UV);
+	float alpha = SkillEffTex2.Sample(gsamLinear, pin.UV).r + gSkillTime;
+	alpha = floor(alpha);
+	color.a = alpha;
+
+	vout.Diffuse = color;
+	//vout.Diffuse = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gDiffuse;
+	//vout.Ambient = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gAmbient;
+	//vout.Specular = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gSpecular;
+	vout.Normal = float4(0.f, 0.f, 0.f, 0.f);
+	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+
+	return vout;
+}
 
 
 struct In_Skill_Static
