@@ -1225,3 +1225,7 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 	}
 }
 
+void Room::PushSkillUpdate(int slotNum, unsigned char SkillType)
+{
+}
+

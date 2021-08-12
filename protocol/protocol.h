@@ -50,7 +50,8 @@
 #define stoc_add_kill_point 159
 #define stoc_Ingame_OutPlayer 160
 #define ctos_skill_Request 161
-#define stoc_skill 34
+#define stoc_skill			162
+#define stoc_skillUpdate	163
 // Result	Scene	181 ~ 210
 // Ending	Scene	211 ~ 240
 
