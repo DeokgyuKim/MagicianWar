@@ -378,7 +378,6 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 	}
 	case ctos_skill_Request:
 	{
-		cout << "스킬 만들어줘 응애\n";
 		CTOS_Skill* data = reinterpret_cast<CTOS_Skill*>(packet);
 		RoomPacket.type = ctos_skill_Request;
 		RoomPacket.ucType1 = data->skill_type;

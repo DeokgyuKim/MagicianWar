@@ -383,6 +383,8 @@ struct STOC_Skill {
 	int user;
 	unsigned char slotNum;
 	unsigned char skillType;
+	XMFLOAT3 xmfPosition;
+	XMFLOAT3 xmfRotate;
 };
 
 struct STOC_RoundEnd {

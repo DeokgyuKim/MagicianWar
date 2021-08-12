@@ -49,8 +49,8 @@ void Room::Initalize(int room_num, int host)
 	}
 
 	for (int i = 0; i < MAX_SKILL; ++i) {
-		m_Skills[i].setUser(NO_PLAYER);
-		m_Skills[i].setSlotNum(i);
+		m_FireWall_Skills[i].setUser(NO_PLAYER);
+		m_FireWall_Skills[i].setSlotNum(i);
 	}
 
 	m_isRoundEnd = false;
@@ -282,8 +282,14 @@ void Room::InGame_Update(float fTime)
 	}
 
 	for (int i = 0; i < MAX_SKILL; ++i) {
-		if (m_Skills[i].getUser() != NO_PLAYER) {
-			int dead = m_Skills[i].Update(fTime);
+		if (m_FireWall_Skills[i].getUser() != NO_PLAYER) {
+			int dead = m_FireWall_Skills[i].Update(fTime);
+			if (dead) {
+
+			}
+			else {
+				m_FireWall_Skills[i].LateUpdate(fTime);
+			}
 		}
 	}
 
@@ -771,54 +777,54 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 		break;
 	}
 	case ctos_skill_Request:
-		for (auto player : m_players) {
+		for (auto player : m_players) 
+		{
 			if (player->getID() == rEvent.playerID) 
 			{
 				for (int i = 0; i < MAX_SKILL; ++i)
 				{
-					if (m_Skills[i].getUser() == NO_PLAYER)
+					if (m_FireWall_Skills[i].getUser() == NO_PLAYER)
 					{
 						if (rEvent.ucType1 == SKILL_Q)
 						{
 							if (player->getCharacterType() == ELEMENT_FIRE) 
 							{
 							FireWall fireWall{};
-							m_Skills[i] = fireWall;
-							m_Skills[i].setSkillType(SKILL_FIREWALL);
-							
+							m_FireWall_Skills[i] = fireWall;
+							m_FireWall_Skills[i].setSkillType(SKILL_FIREWALL);
+							m_FireWall_Skills[i].setUser(rEvent.playerID);
+							m_FireWall_Skills[i].setPosition(rEvent.xmfPosition);
+							m_FireWall_Skills[i].setRotate(rEvent.xmfRotate);
+							unsigned char Skilltype =  m_FireWall_Skills[i].getSkillType();
+							PushSkillCreate(i, Skilltype);
+							break;
 							}
 							else if (player->getCharacterType() == ELEMENT_COLD)
 							{
-
+								break;
 							}
 							else if (player->getCharacterType() == ELEMENT_DARKNESS)
 							{
-
+								break;
 							}
 						}
 						else if (rEvent.ucType1 == SKILL_E)
 						{
 							if (player->getCharacterType() == ELEMENT_FIRE)
 							{
-								//FireWall fireWall{};
-								//m_Skills[i] = fireWall;
-								//m_Skills[i].setSkillType(SKILL_FIREWALL);
+								break;
 							}
 							else if (player->getCharacterType() == ELEMENT_COLD)
 							{
-
+								break;
 							}
 							else if (player->getCharacterType() == ELEMENT_DARKNESS)
 							{
-
+								break;
 							}
 						}
-						// common
-						m_Skills[i].setUser(rEvent.playerID);
-						PushSkillCreate(i);
 						break;
 					}
-
 				}
 				break;
 			}
@@ -1180,14 +1186,40 @@ void Room::PushRoundReset()
 	}
 }
 
-void Room::PushSkillCreate(int slotNum)
+void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 {
 	STOC_Skill packet;
 	packet.size = sizeof(packet);
 	packet.type = stoc_skill;
-	packet.user = m_Skills[slotNum].getUser();
-	packet.skillType = m_Skills[slotNum].getSkillType();
-	packet.slotNum = m_Skills[slotNum].getSlotNum();
+	packet.slotNum = static_cast<unsigned char>(slotNum);
+	packet.skillType = SkillType;
+	if (SkillType == SKILL_FIREWALL)
+	{
+		packet.user = m_FireWall_Skills[slotNum].getUser();
+		packet.xmfPosition = m_FireWall_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_FireWall_Skills[slotNum].getRotate();
+	}
+	else if (SkillType == SKILL_FIRE2)
+	{
+
+	}
+	else if (SkillType == SKILL_COLD1)
+	{
+
+	}
+	else if (SkillType == SKILL_COLD2)
+	{
+
+	}
+	else if (SkillType == SKILL_DARKNESS1)
+	{
+
+	}
+	else if (SkillType == SKILL_DARKNESS2)
+	{
+
+	}
+
 	for (auto player : m_players) {
 		sendEvent_push(player->getID(), &packet);
 	}

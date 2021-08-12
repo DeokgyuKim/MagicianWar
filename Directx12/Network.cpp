@@ -670,9 +670,9 @@ void Network::packetProcessing(char* _packetBuffer)
 		cout << data->user << " °¡ ";
 		if (data->skillType == SKILL_FIREWALL) {
 			cout << "fireWallÀ» »ç¿ëÇß½À´Ï´Ù\n";
+			cout << "ÁÂÇ¥ - " << data->xmfPosition.x << ", " << data->xmfPosition.y << ", " << data->xmfPosition.z << "\n";
 		}
-		else
-			cout << "³Í ¹¹ ›§´Ï \n";
+
 
 		break;
 	}

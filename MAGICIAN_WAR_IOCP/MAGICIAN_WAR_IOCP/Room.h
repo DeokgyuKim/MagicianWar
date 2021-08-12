@@ -4,6 +4,7 @@
 #include "Global.h"
 #include "Bullet.h"
 #include "Skill.h"
+#include "FireWall.h"
 
 class Bullet;
 class Player;
@@ -64,7 +65,7 @@ public:
 	void SendRoundResetTime();
 	void PushRoundReset();
 	
-	void PushSkillCreate(int slotNum);
+	void PushSkillCreate(int slotNum,unsigned char SkillType);
 public:
 	// Get
 	bool isGameStart() { return m_isGameStart; }
@@ -82,7 +83,7 @@ private:
 	mutex m_player_mutex;
 	list<Player*> m_players;
 	array<Bullet, MAX_BULLET> m_Bullets;
-	array<Skill, MAX_SKILL> m_Skills;
+	array<FireWall, MAX_SKILL> m_FireWall_Skills;
 	mutex m_bullet_mutex;
 	mutex m_physic_mutex;
 

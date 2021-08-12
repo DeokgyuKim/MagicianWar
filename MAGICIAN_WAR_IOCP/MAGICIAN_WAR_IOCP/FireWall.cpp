@@ -13,7 +13,7 @@ FireWall::~FireWall()
 int FireWall::Update(const float& fTime)
 {
     Skill::Update(fTime);
-    cout << "FireWall Update\n";
+
     return 0;
 }
 

@@ -23,7 +23,18 @@ int Skill::Update(const float& fTime)
 
 void Skill::LateUpdate(const float& fTime)
 {
+	XMMATRIX scale, rotateX, rotateY, rotateZ, transform;
 
+	scale = XMMatrixScalingFromVector(XMLoadFloat3(&m_Info.xmfScale));
+	
+	rotateX = XMMatrixRotationX(XMConvertToRadians(m_Info.xmfRotate.x));
+	rotateY = XMMatrixRotationY(XMConvertToRadians(m_Info.xmfRotate.y));
+	rotateZ = XMMatrixRotationZ(XMConvertToRadians(m_Info.xmfRotate.z));
+
+	transform = XMMatrixTranslationFromVector(XMLoadFloat3(&m_Info.xmfPosition));
+
+	XMMATRIX world = scale * rotateX * rotateY * rotateZ * transform;
+	XMStoreFloat4x4(&m_Info.xmmWorld, world);
 }
 
 void Skill::setPosition(XMFLOAT3 pos)

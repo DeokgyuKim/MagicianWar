@@ -102,7 +102,5 @@ void Bullet::setElementType(unsigned char _element)
 
 void Bullet::setWorldMatrix(XMFLOAT4X4 _matWorld)
 {
-	m_mutex.lock();
-	m_Info.matWorld = _matWorld;
-	m_mutex.unlock();
+	m_Info.matWorld = _matWorld;	
 }
