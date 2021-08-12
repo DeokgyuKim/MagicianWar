@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "Player.h"
 #include "Network.h"
+#include "Transform.h"
 
 #include "PlayerFSM.h"
 
@@ -163,6 +164,16 @@ void Camera::Render(const float& fTimeDelta, int _instanceCount)
 	m_pCmdLst->SetGraphicsRootConstantBufferView(1, m_ObjectCB->Resource()->GetGPUVirtualAddress());
 }
 
+void Camera::SetPlayer(Player* pPlayer)
+{ 
+	m_pPlayer = pPlayer;
+	XMFLOAT3 pos = dynamic_cast<Transform*>(m_pPlayer->GetTransController())->GetPosition();
+	pos.y += 2.f;
+	XMFLOAT3 look = dynamic_cast<Transform*>(m_pPlayer->GetTransController())->GetForwardVector();
+	XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&pos) - XMLoadFloat3(&look) * 3.f);
+	m_xmfLookVec = look;
+}
+
 void Camera::SetMode(CAMERA_MODE eMode)
 { 
 	m_eCamMode = eMode;
@@ -212,11 +223,11 @@ void Camera::Initialize()
 	SetCursorPos(WINCX / 2, WINCY / 2);
 	m_ptOld.x = WINCX / 2; m_ptOld.y = WINCY / 2;
 
-	m_xmfPosition = XMFLOAT3(0.f, 3.f, 0.f);
+	m_xmfPosition = XMFLOAT3(0.f, 10.f, 0.f);
 
 	m_xmfRightVec = XMFLOAT3(1.f, 0.f, 0.f);
 	m_xmfUpVec = XMFLOAT3(0.f, 1.f, 0.f);
-	m_xmfLookVec = XMFLOAT3(0.f, 0.f, 1.f);
+	m_xmfLookVec = XMFLOAT3(0.f, 0.f, 1.f);	
 	
 	XMStoreFloat3(&m_xmfTarget, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&m_xmfLookVec));
 	m_bInstanced = false;

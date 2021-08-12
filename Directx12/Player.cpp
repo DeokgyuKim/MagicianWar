@@ -113,6 +113,9 @@ HRESULT Player::BuildConstantBuffer()
 int Player::Update(const float& fTimeDelta)
 {
 	Object::Update(fTimeDelta);
+
+	m_fCoolTime = max(m_fCoolTime - fTimeDelta, 0.f);
+
 	if (m_pCamera != NULL)
 	{
 		if (m_pCamera->GetMode() == CAMERA_MODE::CAMERA_THIRD)
@@ -223,6 +226,17 @@ XMFLOAT4X4 Player::GetWorld()
 XMFLOAT3 Player::GetRotate()
 {
 	return dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
+}
+
+bool Player::GetAbleAttack()
+{
+	if (m_fCoolTime <= 0)
+	{
+		m_fCoolTime = 1.f;
+		return true;
+	}
+
+	return false;
 }
 
 void Player::SetPosition(XMFLOAT3 xmfPos)
