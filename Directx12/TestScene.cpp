@@ -257,9 +257,9 @@ void TestScene::Initialize()
 		m_pObjects[OBJ_STATIC].push_back(pObj);
 	}
 
-	pObj = new Flames(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT3(20.f, 2.f, 20.f), XMFLOAT3(0.f, 0.f, 0.f));
-	m_pObjects[OBJ_SKILL].push_back(pObj);
+	//pObj = new Flames(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT3(20.f, 2.f, 20.f), XMFLOAT3(0.f, 0.f, 0.f));
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
 	//
 	//pObj = new FireShock(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
@@ -271,13 +271,13 @@ void TestScene::Initialize()
 	//	XMFLOAT3(20.f, 1.f, 10.f), XMFLOAT3(0.f, 180.f, 0.f), 0.f);
 	//m_pObjects[OBJ_BULLET].push_back(pObj);
 	//
-	pObj = new IceBolt(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 2.f, 15.f));
-	m_pObjects[OBJ_SKILL].push_back(pObj);
-	//
-	pObj = new Meteor(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 5.f, 15.f));
-	m_pObjects[OBJ_SKILL].push_back(pObj);
+	//pObj = new IceBolt(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 2.f, 15.f));
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
+	////
+	//pObj = new Meteor(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 5.f, 15.f));
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
 
 
 

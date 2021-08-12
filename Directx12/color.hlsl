@@ -177,14 +177,31 @@ PSOut PS_FireBall(VertexOut_Default_FIREBALL pin)
 
 	float4 color = float4(0.f, 0.f, 0.f, 0.f);
 	if (instObjData.Attribute == 1)
+	{
 		color = Texture.Sample(gsamLinear, pin.TexC);
+		color *= saturate(pow(NoiseTex.Sample(gsamLinear, tex).x * 1.5f, 3.f));
+		color.a = 1.f;
+		vout.Emmissive = color * 10.f;
+		vout.Emmissive.a = 1.f;
+	}
 	else if (instObjData.Attribute == 2)
-		color = SkillEffTex1.Sample(gsamLinear, pin.TexC);
+	{
+		color = SkillEffTex1.Sample(gsamLinear, pin.TexC) * 0.5f;
+		color *= saturate(pow(NoiseTex.Sample(gsamLinear, tex).x * 1.5f, 3.f));
+		color.a = 1.f;
+		vout.Emmissive = color * 5.f;
+		vout.Emmissive.a = 1.f;
+	}
 	else if (instObjData.Attribute == 3)
-		color = SkillEffTex2.Sample(gsamLinear, pin.TexC);
+	{
+		color = SkillEffTex2.Sample(gsamLinear, pin.TexC) * 0.5f;
+		color *= saturate(pow(NoiseTex.Sample(gsamLinear, tex).x * 1.5f, 3.f));
+		color.a = 1.f;
+		vout.Emmissive = color * 3.f;
+		vout.Emmissive.a = 1.f;
+	}
 
-	color *= saturate(pow(NoiseTex.Sample(gsamLinear, tex).x * 1.5f, 3.f));
-	color.a = 1.f;
+	
 
 	vout.Diffuse = color ;//*  materialData.gDiffuse;
 	vout.Ambient = color ;//*  materialData.gAmbient;
@@ -192,8 +209,8 @@ PSOut PS_FireBall(VertexOut_Default_FIREBALL pin)
 	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
 	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
 	vout.Position = float4(pin.ViewPos, 1.f);
-	vout.Emmissive = color * 30.f;
-	vout.Emmissive.a = 1.f;
+	//vout.Emmissive = color * 0.f;
+	//vout.Emmissive.a = 0.f;
 
 	return vout;
 }
