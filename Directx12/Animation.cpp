@@ -149,12 +149,8 @@ void AnimationCom::ChangeAnimation(int _Ani, bool upper)
 		m_bAttackEnd = false;
 	}
 
-	if (upper) 
+	if (upper)
 	{
-		if (nextAni == ANIMATION_TYPE::ATTACK) {
-			if (curAnimation->eType == nextAni)
-				return;
-		}
 		if (nextAni == ANIMATION_TYPE::ATTACK)
 		{
 			Network::GetInstance()->CallEvent(EVENT_CREATE_BULLET_REQUEST, 0);

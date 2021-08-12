@@ -51,7 +51,7 @@ void PlayerFSM::Enter(int _State, int _Ani)
 
 			break;
 		case STATE_ATTACK:
-			m_bAttackCool = false;
+
 			break;
 		case STATE_JUMP:
 			m_beforejump = false;
