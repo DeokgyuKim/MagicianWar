@@ -5,7 +5,7 @@ class Meteor_FireEff :
 {
 public:
     Meteor_FireEff(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer,
-        Object* pParent = NULL);
+        Object* pParent = NULL, XMFLOAT3 rotate = XMFLOAT3(0.f, 0.f, 0.f));
     ~Meteor_FireEff();
 private:
     // SkillEff을(를) 통해 상속됨

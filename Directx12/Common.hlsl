@@ -77,6 +77,7 @@ struct InstanceObject
 	row_major matrix	gWorld;
 	uint		MaterialIndex;
 	uint		gboolBone;
+	uint		Attribute;
 };
 
 struct MaterialData

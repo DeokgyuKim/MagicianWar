@@ -192,6 +192,22 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["FireBall2"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "IceBall", L"../Resources/IceBall.dds");
+	m_mapTextures["IceBall"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "BlackBall", L"../Resources/BlackBall.dds");
+	m_mapTextures["BlackBall"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "MagicCircle", L"../Resources/MagicCircle.dds");
+	m_mapTextures["MagicCircle"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "MagicCircleNoise", L"../Resources/MagicCircleNoise.dds");
+	m_mapTextures["MagicCircleNoise"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall2", L"../Resources/Flames_FireEff.dds");
 	m_mapTextures["Flames_FireEff"] = pTexture;
 	pLoading->AddCount();

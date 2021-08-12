@@ -31,6 +31,7 @@ public:
 	void BuildInstanceBuffers();
 	void UpdateInstanceBuffer(Object* _obj);
 	void UpdateInstanceBuffer(UINT uiIdx, string instname, XMMATRIX world);
+	void UpdateInstanceBuffer(UINT uiIdx, string instname, XMMATRIX world, UINT attribute);
 
 	void SetInstaneCount(string instname, UINT iCnt);
 	
