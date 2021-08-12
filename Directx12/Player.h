@@ -36,6 +36,7 @@ public:
     XMFLOAT3    GetRotate();
     PlayerInfo  GetNetworkInfo() { return m_tNetInfo; }
     int         GetKillCount() { return m_iKillCnt; }
+    bool        GetAbleAttack();
     void        SetPosition(XMFLOAT3 xmfPos);
     void        SetRotate(XMFLOAT3 xmfRotate);
     void        SetWorld(XMFLOAT4X4 world);
@@ -79,5 +80,7 @@ protected:
 
     Weapon* m_pWeapon;
     int m_iKillCnt = 0;
+
+    float m_fCoolTime = 1.f;
 };
 

@@ -29,7 +29,7 @@ Portrait::~Portrait()
 int Portrait::Update(const float& fTimeDelta)
 {
 	if (m_pPlayer->GetNetworkInfo().iHp <= 0)
-		m_xmfRatio.x = 0.5f;
+		m_xmfRatio.x = 0.3f;
 	else
 		m_xmfRatio.x = 1.f;
 	return 0;
@@ -38,7 +38,7 @@ int Portrait::Update(const float& fTimeDelta)
 void Portrait::LateUpdate(const float& fTimeDelta)
 {
 	Object::LateUpdate(fTimeDelta);
-	m_pRenderer->PushObject(RENDER_TYPE::RENDER_UI, this);
+	m_pRenderer->PushObject(RENDER_TYPE::RENDER_UI_PORTRAIT, this);
 	UiCB uicb;
 	uicb.ratio = m_xmfRatio;
 	m_UiCB->CopyData(0, uicb);

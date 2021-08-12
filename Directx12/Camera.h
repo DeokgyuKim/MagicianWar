@@ -16,7 +16,7 @@ public:
     virtual void LateUpdate(const float& fTimeDelta) override;
     virtual void Render(const float& fTimeDelta, int _instanceCount = 1) override;
 
-    void        SetPlayer(Player* pPlayer) { m_pPlayer = pPlayer; }
+    void        SetPlayer(Player* pPlayer);
     void        SetMode(CAMERA_MODE eMode);
     CAMERA_MODE GetMode() { return m_eCamMode; }
     float       GetRotX() { return m_fRotY; }
