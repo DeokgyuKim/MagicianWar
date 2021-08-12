@@ -170,6 +170,7 @@
     <ClInclude Include="InstanceInfo.h" />
     <ClInclude Include="InstanceMgr.h" />
     <ClInclude Include="LobbyScene.h" />
+    <ClInclude Include="MagicCircle.h" />
     <ClInclude Include="Meteor.h" />
     <ClInclude Include="Meteor_Body.h" />
     <ClInclude Include="Meteor_FireEff.h" />
@@ -269,6 +270,7 @@
     <ClCompile Include="InstanceInfo.cpp" />
     <ClCompile Include="InstanceMgr.cpp" />
     <ClCompile Include="LobbyScene.cpp" />
+    <ClCompile Include="MagicCircle.cpp" />
     <ClCompile Include="Meteor.cpp" />
     <ClCompile Include="Meteor_Body.cpp" />
     <ClCompile Include="Meteor_FireEff.cpp" />

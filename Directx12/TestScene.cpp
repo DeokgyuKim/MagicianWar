@@ -18,6 +18,7 @@
 #include "FireRing.h"
 #include "IceBolt.h"
 #include "Meteor.h"
+#include "MagicCircle.h"
 
 #include "StaticMeshMgr.h"
 #include "InstanceMgr.h"
@@ -278,6 +279,18 @@ void TestScene::Initialize()
 	//pObj = new Meteor(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 	//	XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 5.f, 15.f));
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
+
+	pObj = new MagicCircle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT3(20.f, 1.f, 10.f), 1);
+	m_pObjects[OBJ_SKILL].push_back(pObj);
+
+	pObj = new MagicCircle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT3(22.f, 1.f, 10.f), 2);
+	m_pObjects[OBJ_SKILL].push_back(pObj);
+
+	pObj = new MagicCircle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		XMFLOAT3(24.f, 1.f, 10.f), 3);
+	m_pObjects[OBJ_SKILL].push_back(pObj);
 
 
 
