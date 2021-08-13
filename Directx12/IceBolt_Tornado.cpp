@@ -5,9 +5,10 @@
 #include "Shader.h"
 
 #include "Renderer.h"
-IceBolt_Tornado::IceBolt_Tornado(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Object* pParent)
+IceBolt_Tornado::IceBolt_Tornado(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 rotate, Object* pParent)
     : SkillEff(device, cmdLst, pRenderer, pParent)
 {
+	m_rotate = rotate;
     Initialize();
     m_eRenderType = RENDER_TYPE::RENDER_DEFFSKILL;
 }
@@ -18,13 +19,13 @@ IceBolt_Tornado::~IceBolt_Tornado()
 
 void IceBolt_Tornado::BuildComponent()
 {
-	Component* pComponent = new Transform(XMFLOAT3(0.07f, 0.07f, 0.07f), XMFLOAT3(90.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(0.021f, 0.021f, 0.021f), m_rotate, XMFLOAT3(0.f, -1.9f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetParentMatrix(dynamic_cast<Transform*>(m_pParent->GetTransController())->GetWorldMatrixPointer());
 
 
-	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), "Eff_TwistMesh");
+	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), "Eff_45mini");
 	m_mapComponent["Mesh"] = pComponent;
 	pComponent = new MaterialCom("IceBoltTornadoEff", XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 0.f));
 	m_mapComponent["Material"] = pComponent;
@@ -34,7 +35,9 @@ void IceBolt_Tornado::BuildComponent()
 
 void IceBolt_Tornado::AddTexturesName()
 {
+	m_lstTextureName.push_back("Lava");
 	m_lstTextureName.push_back("Ice2");
+	m_lstTextureName.push_back("Noise4");
 }
 
 void IceBolt_Tornado::BuildShaders()
@@ -47,8 +50,8 @@ void IceBolt_Tornado::BuildShaders()
 		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
-	m_pShader->BuildShadersAndInputLayout(L"Skill.hlsl", "VS_ICESphere_MESH", L"Skill.hlsl", "PS_IceBolt_Body", layout);
-	m_pShader->BuildPipelineState(m_pDevice, m_pRenderer->GetRootSignature(), 7, true, true, false, 4);
+	m_pShader->BuildShadersAndInputLayout(L"Skill.hlsl", "VS_DEFFSKILL_MESH", L"Skill.hlsl", "PS_IceBolt_Tornado", layout);
+	m_pShader->BuildPipelineState(m_pDevice, m_pRenderer->GetRootSignature(), 7, true, true, true, 4);
 }
 
 void IceBolt_Tornado::BuildConstantBuffers()

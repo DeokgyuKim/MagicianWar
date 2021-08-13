@@ -19,7 +19,7 @@ IceBolt_Body::~IceBolt_Body()
 
 void IceBolt_Body::BuildComponent()
 {
-	Component* pComponent = new Transform(XMFLOAT3(0.07f, 0.07f, 0.07f), XMFLOAT3(90.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(0.35f, 0.35f, 0.35f), XMFLOAT3(90.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetParentMatrix(dynamic_cast<Transform*>(m_pParent->GetTransController())->GetWorldMatrixPointer());
