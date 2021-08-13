@@ -319,6 +319,12 @@
     <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\05.BlackHole\00.BlackHole_Body">
       <UniqueIdentifier>{b70fa3a4-919c-4d33-a0ec-6ef83a1b87a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\03.IceBolt\01.Body">
+      <UniqueIdentifier>{e0bfc54c-0e74-4fb1-9e6a-2fcd709eb2fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\03.IceBolt\02.Tornado">
+      <UniqueIdentifier>{20486b28-7241-43ec-8eb2-005fbc3d067d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -618,6 +624,12 @@
     <ClInclude Include="BlackHole_Body.h">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\05.BlackHole\00.BlackHole_Body</Filter>
     </ClInclude>
+    <ClInclude Include="IceBolt_Body.h">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\03.IceBolt\01.Body</Filter>
+    </ClInclude>
+    <ClInclude Include="IceBolt_Tornado.h">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\03.IceBolt\02.Tornado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -889,6 +901,12 @@
     </ClCompile>
     <ClCompile Include="BlackHole_Body.cpp">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\05.BlackHole\00.BlackHole_Body</Filter>
+    </ClCompile>
+    <ClCompile Include="IceBolt_Body.cpp">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\03.IceBolt\01.Body</Filter>
+    </ClCompile>
+    <ClCompile Include="IceBolt_Tornado.cpp">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\03.IceBolt\02.Tornado</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
