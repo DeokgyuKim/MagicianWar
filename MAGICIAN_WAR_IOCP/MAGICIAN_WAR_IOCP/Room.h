@@ -53,7 +53,7 @@ public:
 	void PushRoundStartEvent(int Cur_Round);
 	void PushIngame_PlayerInfo_Start(int id);
 	void Push_SceneChange(int id,char sceneType);
-	void Push_UpdatePlayerInfoPacket(Player* _player);
+	void Send_UpdatePlayerInfoPacket(Player* _player);
 
 	void PushBullet_Update(int Bullet_Index);
 	void PushBullet_Delete(int Bullet_Index);

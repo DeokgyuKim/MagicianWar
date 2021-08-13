@@ -36,6 +36,7 @@ public:
     XMFLOAT3    GetRotate();
     PlayerInfo  GetNetworkInfo() { return m_tNetInfo; }
     int         GetKillCount() { return m_iKillCnt; }
+    Weapon* GetStaff();
     bool        GetAbleAttack();
     void        SetPosition(XMFLOAT3 xmfPos);
     void        SetRotate(XMFLOAT3 xmfRotate);

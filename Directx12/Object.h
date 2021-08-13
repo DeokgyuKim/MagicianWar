@@ -27,6 +27,8 @@ public: // Get
 
 	virtual Component* GetTransController();
 	Component* GetComponent(string strCom);
+	//Set
+	void		SetIndex(UINT index) { m_Index = index; }
 public:
 	void		SetPoolingValue(bool bPool, bool bPoolRender) { m_bPooling = bPool; m_bPoolRender = bPoolRender; }
 	void		SetTextureName(string strTexture) { m_strTextureName = strTexture; }

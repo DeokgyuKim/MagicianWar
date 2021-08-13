@@ -20,6 +20,8 @@ public:
 	void	RemoveObject(Object* pobj, OBJ_TYPE eType);
 	Object* GetUIForTag(int iTag);
 	Object* GetPlayerForID(int id);
+	void SetPlayerIndex(string InstName, int index);
+	void SetPlayerStaffIndex(string InstName, int index);
 	Object* GetPlayer(); 
 	Object* GetCamera();
 	Object* GetSkillForSlot(SKILL_TYPE eSkill, unsigned char cSlot);

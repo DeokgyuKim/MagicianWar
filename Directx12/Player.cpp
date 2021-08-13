@@ -235,6 +235,13 @@ XMFLOAT3 Player::GetRotate()
 	return dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetRotate();
 }
 
+Weapon* Player::GetStaff()
+{
+	if (m_pWeapon != nullptr)
+		return m_pWeapon;
+	return nullptr;
+}
+
 bool Player::GetAbleAttack()
 {
 	if (m_fCoolTime <= 0)

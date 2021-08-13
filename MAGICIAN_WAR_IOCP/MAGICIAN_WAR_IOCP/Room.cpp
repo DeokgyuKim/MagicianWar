@@ -330,7 +330,7 @@ void Room::InGame_Update(float fTime)
 
 		player->LateUpdate(fTime);
 
-		Push_UpdatePlayerInfoPacket(player);
+		Send_UpdatePlayerInfoPacket(player);
 	}
 
 
@@ -1016,7 +1016,7 @@ void Room::Push_SceneChange(int id, char sceneType)
 	sendEvent_push(id, &packet);
 }
 
-void Room::Push_UpdatePlayerInfoPacket(Player* _player)
+void Room::Send_UpdatePlayerInfoPacket(Player* _player)
 {
 	if (this == nullptr) return;
 
@@ -1032,9 +1032,11 @@ void Room::Push_UpdatePlayerInfoPacket(Player* _player)
 	packet.bAttackEnd = _player->IsAttackEnded();
 	packet.playerInfo.iHp = _player->getHp();
 
+	m_player_mutex.lock();
 	for (auto player : m_players) {
-		sendEvent_push(player->getID(), &packet);
+		Server::GetInstance()->SendIngamePlayerInfo(player->getID(), packet);
 	}
+	m_player_mutex.unlock();
 }
 
 void Room::PushBullet_Update(int Bullet_Index)
