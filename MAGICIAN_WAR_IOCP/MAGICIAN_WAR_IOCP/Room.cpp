@@ -31,7 +31,7 @@ void Room::Initalize(int room_num, int host)
 	m_isRoundReset = false;
 	m_prev_time = chrono::system_clock::now();
 
-	m_TotalShoppingTime = 5;//SHOPPING_TIME;
+	m_TotalShoppingTime = 0;//SHOPPING_TIME;
 	m_ShoppingTime = 0;
 	m_TotalRestTime = 5;
 	m_ResetTime = 0;

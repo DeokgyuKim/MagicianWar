@@ -313,6 +313,12 @@
     <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\99.MagicCircle">
       <UniqueIdentifier>{c43d9b18-0f0b-4528-8892-9579a836bf78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\03.IceBolt\01.Body">
+      <UniqueIdentifier>{5eeced7c-d49e-452e-a8d5-d92e746f3179}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\03.IceBolt\02.Tornado">
+      <UniqueIdentifier>{7cede5d8-dd08-4834-833e-37ca52b4c4ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -609,6 +615,10 @@
     <ClInclude Include="MagicCircle.h">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\99.MagicCircle</Filter>
     </ClInclude>
+    <ClInclude Include="IceBolt_Body.h">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\03.IceBolt\01.Body</Filter>
+    </ClInclude>
+    <ClInclude Include="IceBolt_Tornado.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -878,6 +888,10 @@
     <ClCompile Include="MagicCircle.cpp">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\99.MagicCircle</Filter>
     </ClCompile>
+    <ClCompile Include="IceBolt_Body.cpp">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\03.IceBolt\01.Body</Filter>
+    </ClCompile>
+    <ClCompile Include="IceBolt_Tornado.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

@@ -166,7 +166,9 @@
     <ClInclude Include="Flames_FireEff.h" />
     <ClInclude Include="HpBar.h" />
     <ClInclude Include="IceBolt.h" />
+    <ClInclude Include="IceBolt_Body.h" />
     <ClInclude Include="IceBolt_Ice.h" />
+    <ClInclude Include="IceBolt_Tornado.h" />
     <ClInclude Include="InstanceInfo.h" />
     <ClInclude Include="InstanceMgr.h" />
     <ClInclude Include="LobbyScene.h" />
@@ -266,7 +268,9 @@
     <ClCompile Include="Flames_FireEff.cpp" />
     <ClCompile Include="HpBar.cpp" />
     <ClCompile Include="IceBolt.cpp" />
+    <ClCompile Include="IceBolt_Body.cpp" />
     <ClCompile Include="IceBolt_Ice.cpp" />
+    <ClCompile Include="IceBolt_Tornado.cpp" />
     <ClCompile Include="InstanceInfo.cpp" />
     <ClCompile Include="InstanceMgr.cpp" />
     <ClCompile Include="LobbyScene.cpp" />
