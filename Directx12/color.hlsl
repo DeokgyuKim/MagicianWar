@@ -357,6 +357,12 @@ struct SkyboxOut
 	float3 TexC : TEXCOORD;
 };
 
+struct PSOut_SkyBox
+{
+	float4 Diffuse		: SV_TARGET0;
+	float4 Distortion : SV_TARGET1;
+};
+
 SkyboxOut VS_Skybox(SkyboxIn vin, uint instanceID : SV_InstanceID)
 {
 	SkyboxOut vout;
@@ -372,7 +378,10 @@ SkyboxOut VS_Skybox(SkyboxIn vin, uint instanceID : SV_InstanceID)
 	return vout;
 }
 
-float4 PS_Skybox(SkyboxOut pin) : SV_Target
+PSOut_SkyBox PS_Skybox(SkyboxOut pin)
 {
-	return CubeMapTex.Sample(gsamLinear, pin.TexC);
+	PSOut_SkyBox pout;
+	pout.Diffuse = CubeMapTex.Sample(gsamLinear, pin.TexC);
+	pout.Distortion = float4(0.f, 0.f, 0.f, 0.f);
+	return pout;
 }

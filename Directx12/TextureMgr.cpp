@@ -159,22 +159,6 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["Kill"] = pTexture;
 	pLoading->AddCount();
 
-	pTexture = new DDSTexture(device, cmdLst, heap, "Noise", L"../Resources/Noise.dds", false, 12);
-	m_mapTextures["Noise"] = pTexture;
-	pLoading->AddCount();
-
-	pTexture = new DDSTexture(device, cmdLst, heap, "Noise2", L"../Resources/Noise2.dds", false, 12);
-	m_mapTextures["Noise2"] = pTexture;
-	pLoading->AddCount();
-
-	pTexture = new DDSTexture(device, cmdLst, heap, "Noise3", L"../Resources/Noise3.dds", false, 12);
-	m_mapTextures["Noise3"] = pTexture;
-	pLoading->AddCount();
-
-	pTexture = new DDSTexture(device, cmdLst, heap, "Noise4", L"../Resources/Noise4.dds", false, 12);
-	m_mapTextures["Noise4"] = pTexture;
-	pLoading->AddCount();
-
 	pTexture = new DDSTexture(device, cmdLst, heap, "BoomParticle", L"../Resources/BoomParticle.dds", false, 12);
 	m_mapTextures["BoomParticle"] = pTexture;
 	pLoading->AddCount();
@@ -295,6 +279,15 @@ void TextureMgr::BuildInitTextures(ID3D12Device* device, ID3D12GraphicsCommandLi
 	m_mapTextures["Ui_Text_No"] = pTexture;
 	pTexture = new DDSTexture(device, cmdLst, heap, "Cursor", L"../Resources/UI/Cursor.dds");
 	m_mapTextures["Cursor"] = pTexture;
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "Noise", L"../Resources/Noise.dds", false, 12);
+	m_mapTextures["Noise"] = pTexture;
+	pTexture = new DDSTexture(device, cmdLst, heap, "Noise2", L"../Resources/Noise2.dds", false, 12);
+	m_mapTextures["Noise2"] = pTexture;
+	pTexture = new DDSTexture(device, cmdLst, heap, "Noise3", L"../Resources/Noise3.dds", false, 12);
+	m_mapTextures["Noise3"] = pTexture;
+	pTexture = new DDSTexture(device, cmdLst, heap, "Noise4", L"../Resources/Noise4.dds", false, 12);
+	m_mapTextures["Noise4"] = pTexture;
 }
 
 DDSTexture* TextureMgr::GetTexture(string textureName)

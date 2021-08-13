@@ -100,6 +100,14 @@ void RenderTargetMgr::BuildRenderTarget(ID3D12Device* device, Renderer* pRendere
 	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
 	m_mapRenderTarget["Blend"] = Rt;
 	m_mapMRT["Blend"].push_back(Rt);
+
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
+	m_mapRenderTarget["Distortion"] = Rt;
+	m_mapMRT["Blend"].push_back(Rt);
+
+	Rt = new RenderTarget(device, pRenderer, WINCX, WINCY, clear);
+	m_mapRenderTarget["Post"] = Rt;
+	m_mapMRT["PostProcess"].push_back(Rt);
 }
 
 void RenderTargetMgr::SetMultiRenderTarget(ID3D12GraphicsCommandList* cmdLst, string tagMRT, D3D12_CPU_DESCRIPTOR_HANDLE DsvHandle)

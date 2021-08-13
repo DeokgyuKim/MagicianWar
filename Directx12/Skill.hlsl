@@ -16,11 +16,8 @@ struct Out_Skill
 
 struct PSOut_Skill
 {
-	float4 Diffuse : SV_TARGET0;
-	float4 Ambient : SV_TARGET1;
-	float4 Specular : SV_TARGET2;
-	float4 Normal : SV_TARGET3;
-	float4 Depth : SV_TARGET4;
+	float4 Diffuse		: SV_TARGET0;
+	float4 Distortion	: SV_TARGET1;
 };
 
 struct PSOut_Skill_DEFF
@@ -91,11 +88,7 @@ PSOut_Skill PS_Flames_FireEff(Out_Skill pin)
 
 	vout.Diffuse = fire;
 	vout.Diffuse.a = saturate(vout.Diffuse.r + 0.1f);
-	//vout.Diffuse = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gDiffuse;
-	//vout.Ambient = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gAmbient;
-	//vout.Specular = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gSpecular;
-	vout.Normal = float4(0.f, 0.f, 0.f, 0.f);
-	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+	vout.Distortion = float4(0.f, 0.f, 0.f, 0.f);
 
 	return vout;
 }
@@ -116,11 +109,7 @@ PSOut_Skill PS_Magic_Circle(Out_Skill pin)
 		color.rgb *= float3(0.5f, 0.2f, 1.f);
 
 	vout.Diffuse = color;
-	//vout.Diffuse = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gDiffuse;
-	//vout.Ambient = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gAmbient;
-	//vout.Specular = SkillEffTex1.Sample(gsamLinear, pin.UV) * materialData.gSpecular;
-	vout.Normal = float4(0.f, 0.f, 0.f, 0.f);
-	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+	vout.Distortion = float4(0.f, 0.f, 0.f, 0.f);
 
 	return vout;
 }
@@ -195,12 +184,7 @@ PSOut_Skill PS_FireShock_FireCylinder(Out_Skill_Static pin)
 	
 
 	vout.Diffuse = float4(diffuse, c);
-	//vout.Diffuse = float4(diff1, 1);
-
-	//vout.Diffuse = float4(diff2.rgb, diff2.r);
-	
-
-	//vout.Diffuse = float4(diff1.rgb, diff2.r);
+	vout.Distortion = float4(0.f, 0.f, 0.f, 0.f);
 
 	return vout;
 }
@@ -262,8 +246,7 @@ PSOut_Skill PS_FireShock_FireParticle(Out_Skill_Static pin)
 	float3 diffuse = (Ke * float3(0.f, 1.f, 0.f) + diff1);
 	//diffuse.r = diffuse.r * sin(gSkillTime);
 	vout.Diffuse = float4(diffuse, c);
-
-	//vout.Diffuse = float4(diff2.rgb, diff2.r);
+	vout.Distortion = float4(0.f, 0.f, 0.f, 0.f);
 
 	return vout;
 }
@@ -328,6 +311,7 @@ PSOut_Skill PS_FireRing_FireCylinder(Out_Skill_Static pin)
 	float3 diffuse = (Ke * float3(0.f, 1.f, 0.f) + diff1);
 	//diffuse.r = diffuse.r * sin(gSkillTime);
 	vout.Diffuse = float4(diffuse, c);
+	vout.Distortion = float4(0.f, 0.f, 0.f, 0.f);
 
 	
 
@@ -430,9 +414,7 @@ PSOut_Skill PS_Meteor_FireEff(Out_Skill_Static pin)
 	float4 fire = SkillEffTex1.Sample(gsamClamp, newUV);// *SkillEffTex2.Sample(gsamClamp, noiseCoord);
 
 	vout.Diffuse = float4(fire.rgb, fire.r);
-	vout.Ambient = fire;
-	vout.Specular = fire;
-	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
-	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+	vout.Distortion = float4(0.f, 0.f, 0.f, 0.f);
+
 	return vout;
 }

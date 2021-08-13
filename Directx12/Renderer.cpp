@@ -151,6 +151,15 @@ void Renderer::Render(const float& fTimeDelta)
 		pObject->Render(fTimeDelta);
 	}
 
+	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "PostProcess");
+	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "PostProcess", m_pCore->GetDSVForShadeCpuHandle());
+	m_mapShaders[RENDER_TYPE::RENDER_POST]->PreRender(m_pCmdLst);
+	m_pRTMgr->GetRenderTarget("Blend")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 5);
+	m_pRTMgr->GetRenderTarget("Distortion")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 6);
+	m_pBlendGeo->Render(fTimeDelta);
+
+
+	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "PostProcess", m_pCore->GetDSVCpuHandle());
 	m_mapShaders[RENDER_TYPE::RENDER_UI]->PreRender(m_pCmdLst);
 	for (auto pObject : m_lstObjects[RENDER_TYPE::RENDER_UI])
 	{
@@ -560,7 +569,7 @@ void Renderer::BuildShader()
 	};
 	pShader = new Shader;
 	pShader->BuildShadersAndInputLayout(L"color.hlsl", "VS_Skybox", L"color.hlsl", "PS_Skybox", layout);
-	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, false);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 2, false);
 	m_mapShaders[RENDER_TYPE::RENDER_SKYBOX] = pShader;
 
 
@@ -625,6 +634,11 @@ void Renderer::BuildShader()
 	pShader->BuildShadersAndInputLayout(L"Blend.hlsl", "VS_BLEND", L"Blend.hlsl", "PS_BLEND", layout);
 	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
 	m_mapShaders[RENDER_TYPE::RENDER_BLEND] = pShader;
+
+	pShader = new Shader;
+	pShader->BuildShadersAndInputLayout(L"Blend.hlsl", "VS_POST", L"Blend.hlsl", "PS_POST", layout);
+	pShader->BuildPipelineState(m_pDevice, m_ptrRootSignature.Get(), 1, true, false);
+	m_mapShaders[RENDER_TYPE::RENDER_POST] = pShader;
 }
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 {

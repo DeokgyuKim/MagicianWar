@@ -273,7 +273,30 @@ PS_BLEND_OUT PS_BLEND(Blend_Out pin)
 	pOut.Blend.a = 1.f;
 	return pOut;
 }
+Blend_Out VS_POST(Blend_In pin)
+{
+	Blend_Out vOut;
+	//vOut.PosH = mul(mul(float4(pin.PosL, 1.0f), gView), gProj);
+	float4 depth = DepthTex.SampleLevel(gsamLinear, pin.UV, 0);
+	vOut.PosH = float4(pin.PosL.x, pin.PosL.y, 0.f, 1.f);
+	vOut.UV = pin.UV;
 
+	return vOut;
+}
+PS_BLEND_OUT PS_POST(Blend_Out pin)
+{
+	PS_BLEND_OUT pOut;
+	//pOut.Shade = float4(1.f, 1.f, 1.f, 1.f);
+
+	float4 distortion = AmbiTex.Sample(gsamLinear, pin.UV);
+
+	float2 UV = pin.UV + distortion.rg;
+
+	float4 color = DiffTex.Sample(gsamLinear, UV);
+	pOut.Blend = color;
+	pOut.Blend.a = 1.f;
+	return pOut;
+}
 
 Shade_Out VS_UI(Shade_In pin)
 {

@@ -48,7 +48,7 @@ private:
 	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
 
 	void	DebugKeyInput();
-	string	DebugInput = "Blend";
+	string	DebugInput = "Post";
 private:
 	Core*								m_pCore = NULL;
 	ID3D12Device*						m_pDevice = NULL;
