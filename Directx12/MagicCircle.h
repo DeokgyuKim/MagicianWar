@@ -5,7 +5,7 @@ class MagicCircle :
 {
 public:
     MagicCircle(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, 
-        XMFLOAT3 pos = XMFLOAT3(0.f, 0.f, 0.f), UINT idx = 0);
+        XMFLOAT3 pos = XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3 rot = XMFLOAT3(0.f, 90.f, 0.f), UINT idx = 0);
     ~MagicCircle();
 private:
     // SkillEff을(를) 통해 상속됨

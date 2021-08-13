@@ -31,6 +31,8 @@
 #include "MainApp.h"
 #include "Portrait.h"
 
+#include "Transform.h"
+
 TestScene::TestScene()
 {
 	Initialize();
@@ -280,17 +282,15 @@ void TestScene::Initialize()
 	//	XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 5.f, 15.f));
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
 
-	pObj = new MagicCircle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT3(20.f, 1.f, 10.f), 1);
-	m_pObjects[OBJ_SKILL].push_back(pObj);
 
-	pObj = new MagicCircle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT3(22.f, 1.f, 10.f), 2);
-	m_pObjects[OBJ_SKILL].push_back(pObj);
 
-	pObj = new MagicCircle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT3(24.f, 1.f, 10.f), 3);
-	m_pObjects[OBJ_SKILL].push_back(pObj);
+	//pObj = new MagicCircle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT3(22.f, 1.f, 10.f), XMFLOAT3(0.f, 90.f, 0.f), 2);
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
+	//
+	//pObj = new MagicCircle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT3(24.f, 1.f, 10.f), XMFLOAT3(0.f, 90.f, 0.f), 3);
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
 
 
 
@@ -397,4 +397,20 @@ void TestScene::MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot,
 
 	pSkill->SetSlotNum(slot);
 	m_pObjects[OBJ_SKILL].push_back(pSkill);
+}
+
+void TestScene::MakeSKillCircle(Player* pPlayer)
+{
+	XMFLOAT3 pos = dynamic_cast<Transform*>(pPlayer->GetTransController())->GetPosition();
+	XMFLOAT3 forward = dynamic_cast<Transform*>(pPlayer->GetTransController())->GetForwardVector();
+	pos.y += 1.f;
+	XMStoreFloat3(&pos, XMLoadFloat3(&pos) + XMLoadFloat3(&forward) * 0.8f);
+	XMFLOAT3 rot = dynamic_cast<Transform*>(pPlayer->GetTransController())->GetRotate();
+	UINT type = dynamic_cast<Player*>(pPlayer)->GetNetworkInfo().CharacterType;
+
+	//cout << "type : " << type << endl;
+
+	Object* pObj = new MagicCircle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		pos, rot, type);
+	m_pObjects[OBJ_MAGICCIRCLE].push_back(pObj);
 }

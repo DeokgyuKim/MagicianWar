@@ -9,11 +9,13 @@
 #include "Shader.h"
 
 MagicCircle::MagicCircle(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, 
-	XMFLOAT3 pos, UINT idx)
+	XMFLOAT3 pos, XMFLOAT3 rot, UINT idx)
 	: SkillEff(device, cmdLst, pRenderer, NULL)
 {
 	Initialize();
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetPosition(pos);
+	rot.y += 90.f;
+	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rot);
 	m_iSkillIdx = idx;
 }
 

@@ -577,11 +577,13 @@ void Network::packetProcessing(char* _packetBuffer)
 		if (data->playerInfo.Client_Num == m_tMyInfo.Client_Num) {
 			m_tMyInfo.PlayerState = data->ePlayerState;
 		}
-		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.Client_Num = data->playerInfo.Client_Num;
-		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.TeamType = data->playerInfo.TeamType;
-		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
-		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.iHp = data->playerInfo.iHp;
-		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.CameraY = data->playerInfo.CameraY;
+		m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo = data->playerInfo;
+		//m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.TeamType = data->playerInfo.TeamType;
+		//m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.xmfPosition = data->playerInfo.xmfPosition;
+		//m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.iHp = data->playerInfo.iHp;
+		//m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.CharacterType = data->playerInfo.CharacterType;
+		//m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo. = data->playerInfo.CharacterType;
+		//m_mapRecvPlayerInfos[data->playerInfo.Client_Num].playerInfo.CameraY = data->playerInfo.CameraY;
 		//cout << "HP: " << data->playerInfo.iHp << endl;
 		//cout << data->playerInfo.iHp << endl;
 
@@ -687,6 +689,8 @@ void Network::packetProcessing(char* _packetBuffer)
 			printf("server pos x %f y %f z %f\n", data->xmfPosition.x, data->xmfPosition.y, data->xmfPosition.z);
 			dynamic_cast<TestScene*>(MainApp::GetInstance()->GetScene())->MakeSkillForPacket(
 				(SKILL_TYPE)data->skillType, data->xmfPosition, data->xmfRotate, data->slotNum);
+			Player* player = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayerForID(data->user));
+			dynamic_cast<TestScene*>(MainApp::GetInstance()->GetScene())->MakeSKillCircle(player);
 		}
 
 
@@ -915,7 +919,7 @@ void Network::ServerKeyInput()
 	{
 		dwKeyInput |= ctos_KEY_LBUTTON;
 	}
-	if (KeyMgr::GetInstance()->KeyPressing('Q'))// && SkillController::GetInstance()->UseSkill(SKILL_Q))
+	if (KeyMgr::GetInstance()->KeyPressing('Q') && SkillController::GetInstance()->UseSkill(SKILL_Q))
 	{
 		cout << "Use Q Skill" << endl;
 		XMFLOAT3 Pos = SkillController::GetInstance()->GeneratePositionForPacket(0);
@@ -924,7 +928,7 @@ void Network::ServerKeyInput()
 		printf("client pos x %f y %f z %f\n", Pos.x, Pos.y, Pos.z);
 		SendSkillPacket_Request(SKILL_Q, Pos, Rot);
 	}
-	if (KeyMgr::GetInstance()->KeyPressing('E'))// && SkillController::GetInstance()->UseSkill(SKILL_E))
+	if (KeyMgr::GetInstance()->KeyPressing('E') && SkillController::GetInstance()->UseSkill(SKILL_E))
 	{
 		cout << "Use E Skill" << endl;
 		XMFLOAT3 Pos = SkillController::GetInstance()->GeneratePositionForPacket(1);

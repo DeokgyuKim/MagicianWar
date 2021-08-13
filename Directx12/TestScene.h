@@ -3,6 +3,7 @@
 #include "TextController.h"
 
 class Camera;
+class Player;
 class TestScene :
     public Scene
 {
@@ -18,6 +19,7 @@ private:
 public:
     void SetGameEndForPanelCreate(bool _bCreate) { GameEndForPanelCreate = _bCreate; }
     void MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot, unsigned char slot);
+    void MakeSKillCircle(Player* pPlayer);
 private:
     bool        ToolMode = false;
     Camera*     m_pCamera;
