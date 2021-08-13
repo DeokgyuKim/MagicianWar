@@ -104,6 +104,7 @@ void ShopController::SetRendering(bool On)
 					m_pScene->PushObject(m_pSkillOn[i][j], OBJ_TYPE::OBJ_UI);
 				}
 				m_pScene->PushObject(m_pButton[i], OBJ_TYPE::OBJ_UI);
+				m_pScene->PushObject(m_pCursor, OBJ_TYPE::OBJ_UI);
 			}
 		}
 
@@ -121,6 +122,7 @@ void ShopController::SetRendering(bool On)
 					m_pScene->RemoveObject(m_pSkillOn[i][j], OBJ_TYPE::OBJ_UI);
 				}
 				m_pScene->RemoveObject(m_pButton[i], OBJ_TYPE::OBJ_UI);
+				m_pScene->RemoveObject(m_pCursor, OBJ_TYPE::OBJ_UI);
 			}
 		}
 	}
