@@ -30,6 +30,7 @@ cbuffer cbSkill : register(b5)
 	float	gSkillTime;
 	uint	gSkillIdx;
 	float	gDissolveC;
+	float3	gPos;
 }
 
 cbuffer cbObject : register(b6)

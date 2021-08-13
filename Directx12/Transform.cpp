@@ -58,6 +58,13 @@ void Transform::LateUpdate(const float& fTimeDelta)
 
 
 
+XMFLOAT3 Transform::GetPositionForMatrix()
+{
+	XMFLOAT3 pos;
+	memcpy(&pos, &m_xmmOriginWorld._41, sizeof(XMFLOAT3));
+	return pos;
+}
+
 XMFLOAT3 Transform::GetLook()
 {
 	XMFLOAT3 lookVector = { m_xmmWorld._31,m_xmmWorld._32, m_xmmWorld._33 };

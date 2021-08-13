@@ -272,6 +272,12 @@ void MeshMgr::BuildModels(Loading* pLoading)
 	pLoading->AddCount();
 	BuildModel("Eff_Wall", MESH_TYPE::TILE);
 	pLoading->AddCount();
+	BuildModel("Eff_HalfSphere1", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_Sphere", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	BuildModel("Eff_Circle_Explosion", MESH_TYPE::TILE);
+	pLoading->AddCount();
 
 	cout << "Load Model Complete!" << endl;
 }

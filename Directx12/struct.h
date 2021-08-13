@@ -105,6 +105,7 @@ struct SkillCB
 	float fTime = 0.f;
 	UINT  SkillIdx = 0;
 	float DissolveC = 0.f;
+	XMFLOAT3 SkillPos = XMFLOAT3(0.f, 0.f, 0.f);
 };
 
 

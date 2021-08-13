@@ -19,6 +19,7 @@
 #include "IceBolt.h"
 #include "Meteor.h"
 #include "MagicCircle.h"
+#include "BlackHole_Body.h"
 
 #include "StaticMeshMgr.h"
 #include "InstanceMgr.h"
@@ -292,6 +293,9 @@ void TestScene::Initialize()
 	//	XMFLOAT3(24.f, 1.f, 10.f), XMFLOAT3(0.f, 90.f, 0.f), 3);
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
 
+	pObj = new BlackHole_Body(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+		nullptr);
+	m_pObjects[OBJ_SKILL].push_back(pObj);
 
 
 	//Core::GetInstance()->CmdLstReset();

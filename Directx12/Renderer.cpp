@@ -154,8 +154,17 @@ void Renderer::Render(const float& fTimeDelta)
 	m_pRTMgr->ClearMultiRenderTarget(m_pCmdLst, "PostProcess");
 	m_pRTMgr->SetMultiRenderTarget(m_pCmdLst, "PostProcess", m_pCore->GetDSVForShadeCpuHandle());
 	m_mapShaders[RENDER_TYPE::RENDER_POST]->PreRender(m_pCmdLst);
-	m_pRTMgr->GetRenderTarget("Blend")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 5);
-	m_pRTMgr->GetRenderTarget("Distortion")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 6);
+	m_pRTMgr->GetRenderTarget("Shade")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 5);
+	m_pRTMgr->GetRenderTarget("Specular")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 6);
+	m_pRTMgr->GetRenderTarget("RimLight")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 7);
+	m_pRTMgr->GetRenderTarget("OutLine")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 8);
+	m_pRTMgr->GetRenderTarget("Depth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 9);
+	m_pRTMgr->GetRenderTarget("LightDepth")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 21);
+	m_pRTMgr->GetRenderTarget("Normal")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 13);
+	m_pRTMgr->GetRenderTarget("Bloom")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 15);
+	m_pRTMgr->GetRenderTarget("BloomAlpha")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 16);
+	m_pRTMgr->GetRenderTarget("Distortion")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 12);
+	m_pRTMgr->GetRenderTarget("Blend")->SetShaderVariable(m_pCmdLst, m_ptrDescriptorHeap.Get(), 22);
 	m_pBlendGeo->Render(fTimeDelta);
 
 
