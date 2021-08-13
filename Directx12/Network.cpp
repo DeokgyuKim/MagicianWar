@@ -18,7 +18,9 @@
 
 #include "RadioButton.h"
 #include "RoomRadioController.h"
-
+#include "InstanceInfo.h"
+#include "InstanceMgr.h"
+#include "Weapon.h"
 
 Network* Network::m_pInstance = NULL;
 
@@ -670,7 +672,24 @@ void Network::packetProcessing(char* _packetBuffer)
 
 		STOC_INGAME_OUTPLAYER* data = reinterpret_cast<STOC_INGAME_OUTPLAYER*>(_packetBuffer);
 		int id = data->outPlayer_id;
-
+		Object* pobj = MainApp::GetInstance()->GetScene()->GetPlayerForID(id);
+		Weapon* staff = dynamic_cast<Player*>(pobj)->GetStaff();
+		string staff_InstName = "";
+		if (staff != nullptr) {
+			staff_InstName = staff->GetInstName();
+		}
+		if (staff_InstName != "") {
+			UINT Staff_Count = InstanceMgr::GetInstnace()->m_InstanceObjects[staff_InstName]->GetInstanceCount();
+			InstanceMgr::GetInstnace()->m_InstanceObjects[staff_InstName]->SetInstanceCount(--Staff_Count);
+			delete staff;
+			MainApp::GetInstance()->GetScene()->SetPlayerStaffIndex(staff_InstName, Staff_Count);
+		}
+		string InstName = pobj->GetInstName();
+		MainApp::GetInstance()->GetScene()->RemoveObject(pobj, OBJ_PLAYER);
+		delete pobj;
+		UINT Count = InstanceMgr::GetInstnace()->m_InstanceObjects[InstName]->GetInstanceCount();
+		InstanceMgr::GetInstnace()->m_InstanceObjects[InstName]->SetInstanceCount(--Count);
+		MainApp::GetInstance()->GetScene()->SetPlayerIndex(InstName, Count);
 		m_mapRecvPlayerInfos[id].playerInfo.iHp = 0;
 		///*MainApp::GetInstance()->GetScene()->RemoveObject(pobj, OBJ_PLAYER);*/
 		//delete pobj;

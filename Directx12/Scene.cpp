@@ -6,6 +6,7 @@
 
 #include "UI.h"
 #include "Player.h"
+#include "Weapon.h"
 #include "Skill.h"
 
 Scene::~Scene()
@@ -105,6 +106,32 @@ Object* Scene::GetPlayerForID(int id)
 			return (*iter);
 	}
 	return nullptr;
+}
+
+void Scene::SetPlayerIndex(string InstName, int index)
+{
+	int Minus_Index = index;
+	for (auto iter = m_pObjects[OBJ_PLAYER].begin(); iter != m_pObjects[OBJ_PLAYER].end(); ++iter)
+	{
+		if ((*iter)->GetInstName() == InstName) 
+		{
+			(*iter)->SetIndex(index - Minus_Index);
+			--Minus_Index;
+		}
+		
+	}
+}
+
+void Scene::SetPlayerStaffIndex(string InstName, int index)
+{
+	int Minus_Index = index;
+	for (auto iter = m_pObjects[OBJ_PLAYER].begin(); iter != m_pObjects[OBJ_PLAYER].end(); ++iter)
+	{
+		if (dynamic_cast<Player*>((*iter))->GetStaff() != nullptr) {
+			dynamic_cast<Player*>((*iter))->GetStaff()->SetIndex(index - Minus_Index);
+			--Minus_Index;
+		}
+	}
 }
 
 Object* Scene::GetPlayer()
