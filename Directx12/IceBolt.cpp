@@ -29,16 +29,17 @@ void IceBolt::BuildSkillEffects()
 	//m_vecSkillEff.push_back(pEff);
 	SkillEff* pEff = new IceBolt_Body(m_pDevice, m_pCmdLst, m_pRenderer, this);
 	m_vecSkillEff.push_back(pEff);
-	pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer,XMFLOAT3(180.f,0.f,0.f), this);
+	//pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer,XMFLOAT3(180.f,0.f,0.f), XMFLOAT3(0.06f, 0.06f, 0.06f), this);
+	//m_vecSkillEff.push_back(pEff);
+	//pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(180.f, 110.f, 0.f), XMFLOAT3(0.06f, 0.06f, 0.06f), this);
+	//m_vecSkillEff.push_back(pEff);
+	//pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(180.f, 220.f, 0.f), XMFLOAT3(0.06f, 0.06f, 0.06f), this);
+	//m_vecSkillEff.push_back(pEff);
+	pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(90.f, 0.f, 0.f), XMFLOAT3(0.005f, 0.005f, 0.005f), this);
 	m_vecSkillEff.push_back(pEff);
-	pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(180.f, 70.f, 0.f), this);
-	m_vecSkillEff.push_back(pEff);
-	pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(180.f, 140.f, 0.f), this);
-	m_vecSkillEff.push_back(pEff);
-	pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(180.f, 210.f, 0.f), this);
-	m_vecSkillEff.push_back(pEff);
-	pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(180.f, 280.f, 0.f), this);
-	m_vecSkillEff.push_back(pEff);
+
+	//pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(180.f, 280.f, 0.f), this);
+	//m_vecSkillEff.push_back(pEff);
 
 }
 

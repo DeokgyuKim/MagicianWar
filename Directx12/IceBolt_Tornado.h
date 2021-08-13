@@ -4,7 +4,7 @@ class IceBolt_Tornado :
     public SkillEff
 {
 public:
-    IceBolt_Tornado(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer,XMFLOAT3 rotate = XMFLOAT3(0.f,0.f,0.f),
+    IceBolt_Tornado(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer,XMFLOAT3 rotate = XMFLOAT3(0.f,0.f,0.f), XMFLOAT3 Scale = XMFLOAT3(0.f, 0.f, 0.f),
         Object* pParent = NULL);
     ~IceBolt_Tornado();
 private:
@@ -22,4 +22,5 @@ public:
 private:
 
     XMFLOAT3 m_rotate;
+    XMFLOAT3 m_Scale;
 };

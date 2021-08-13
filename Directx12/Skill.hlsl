@@ -449,9 +449,13 @@ PSOut_Skill_DEFF PS_IceBolt_Tornado(Out_Skill_Static pin)
 	float2 uv2 = pin.TexC * 2.f;
 	float2 uv3 = pin.TexC * 3.f;
 
-	uv1.y += gSkillTime * 0.5f * 0.1f;
-	uv2.y += gSkillTime * 2.2f * 0.1f;
-	uv3.y += gSkillTime * 3.8f * 0.1f;
+	uv1.y -= gSkillTime * 0.5f * 0.1f;
+	uv2.y -= gSkillTime * 2.2f * 0.1f;
+	uv3.y -= gSkillTime * 3.8f * 0.1f;
+
+	uv1.x -= gSkillTime * 0.5f * 0.1f;
+	uv2.x -= gSkillTime * 2.2f * 0.1f;
+	//uv3.x -= gSkillTime * 3.8f * 0.1f;
 
 	float4 noise1 = SkillEffTex3.Sample(gsamLinear, uv1);
 	float4 noise2 = SkillEffTex3.Sample(gsamLinear, uv2);

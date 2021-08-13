@@ -5,10 +5,11 @@
 #include "Shader.h"
 
 #include "Renderer.h"
-IceBolt_Tornado::IceBolt_Tornado(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 rotate, Object* pParent)
+IceBolt_Tornado::IceBolt_Tornado(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 rotate, XMFLOAT3 Scale, Object* pParent)
     : SkillEff(device, cmdLst, pRenderer, pParent)
 {
 	m_rotate = rotate;
+	m_Scale = Scale;
     Initialize();
     m_eRenderType = RENDER_TYPE::RENDER_DEFFSKILL;
 }
@@ -19,13 +20,13 @@ IceBolt_Tornado::~IceBolt_Tornado()
 
 void IceBolt_Tornado::BuildComponent()
 {
-	Component* pComponent = new Transform(XMFLOAT3(0.021f, 0.021f, 0.021f), m_rotate, XMFLOAT3(0.f, -1.9f, 0.f));
+	Component* pComponent = new Transform(m_Scale, m_rotate, XMFLOAT3(0.f, -1.9f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetParentMatrix(dynamic_cast<Transform*>(m_pParent->GetTransController())->GetWorldMatrixPointer());
 
 
-	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), "Eff_45mini");
+	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), "Eff_Circle_Explosion");
 	m_mapComponent["Mesh"] = pComponent;
 	pComponent = new MaterialCom("IceBoltTornadoEff", XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 0.f));
 	m_mapComponent["Material"] = pComponent;

@@ -27,12 +27,12 @@ void Meteor::BuildSkillEffects()
 {
 	SkillEff* pEff = new Meteor_Body(m_pDevice, m_pCmdLst, m_pRenderer, this);
 	m_vecSkillEff.push_back(pEff);
-	pEff = new Meteor_FireEff(m_pDevice, m_pCmdLst, m_pRenderer, this, XMFLOAT3(0.f, 0.f, 0.f));
-	m_vecSkillEff.push_back(pEff);
+	//pEff = new Meteor_FireEff(m_pDevice, m_pCmdLst, m_pRenderer, this, XMFLOAT3(0.f, 0.f, 0.f));
+	//m_vecSkillEff.push_back(pEff);
 	pEff = new Meteor_FireEff(m_pDevice, m_pCmdLst, m_pRenderer, this, XMFLOAT3(0.f, 0.f, 45.f));
 	m_vecSkillEff.push_back(pEff);
-	pEff = new Meteor_FireEff2(m_pDevice, m_pCmdLst, m_pRenderer, this);
-	m_vecSkillEff.push_back(pEff);
+	//pEff = new Meteor_FireEff2(m_pDevice, m_pCmdLst, m_pRenderer, this);
+	//m_vecSkillEff.push_back(pEff);
 }
 
 int Meteor::Update(const float& fTimeDelta)
