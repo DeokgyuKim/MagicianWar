@@ -249,6 +249,14 @@ void Server::SendRoomPlayerInfo(int id, int slot_num)
 {
 }
 
+void Server::SendIngamePlayerInfo(int receiver, STOC_PlayerInfo _packet)
+{
+	STOC_PlayerInfo packet = _packet;
+	if (!SendPacket(receiver, &packet)) {
+		cout << "SendIngamePlayerInfo() Failed \n";
+	};
+}
+
 void Server::SendRoomEnter(int id,int room_num)
 {
 	STOC_ROOM_ENTER packet;
