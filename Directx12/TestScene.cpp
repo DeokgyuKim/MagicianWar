@@ -275,9 +275,9 @@ void TestScene::Initialize()
 	//	XMFLOAT3(20.f, 1.f, 10.f), XMFLOAT3(0.f, 180.f, 0.f), 0.f);
 	//m_pObjects[OBJ_BULLET].push_back(pObj);
 	//
-	pObj = new IceBolt(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 2.f, 15.f));
-	m_pObjects[OBJ_SKILL].push_back(pObj);
+	//pObj = new IceBolt(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 2.f, 15.f));
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
 	//
 	pObj = new Meteor(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 		XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 5.f, 15.f));
@@ -293,9 +293,9 @@ void TestScene::Initialize()
 	//	XMFLOAT3(24.f, 1.f, 10.f), XMFLOAT3(0.f, 90.f, 0.f), 3);
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
 
-	pObj = new BlackHole_Body(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		nullptr);
-	m_pObjects[OBJ_SKILL].push_back(pObj);
+	//pObj = new BlackHole_Body(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
+	//	nullptr);
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
 
 
 	//Core::GetInstance()->CmdLstReset();
@@ -386,8 +386,10 @@ void TestScene::MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot,
 		pSkill = new Flames(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), pos, rot);
 		break;
 	case SKILL_FIRE2:
+		
 		break;
 	case SKILL_COLD1:
+		pSkill = new IceBolt(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), pos, rot);
 		break;
 	case SKILL_COLD2:
 		break;

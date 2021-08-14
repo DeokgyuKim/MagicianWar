@@ -181,6 +181,13 @@ void WorkThread::Join()
 void WorkThread::Disconnect_Client(int client_Num, SOCKET client)
 {
 	int room_num = g_Clients[client_Num]->Room_num;
+	g_Client_mutex.lock();
+	ZeroMemory(g_Clients[client_Num], sizeof(CLIENT_INFO));
+	g_Clients[client_Num]->IsConnected = false;
+	g_Clients[client_Num]->Socket = NULL;
+	g_ConnectedClients_Number.erase(client_Num);
+	g_Client_mutex.unlock();
+
 	int playerCount = 1;
 	if (room_num != NO_ROOM) { // 방에 소속되어 있다면
 		g_Rooms[room_num]->ExitRoom(client_Num);
@@ -190,12 +197,6 @@ void WorkThread::Disconnect_Client(int client_Num, SOCKET client)
 		}
 	}
 
-	g_Client_mutex.lock();
-	ZeroMemory(g_Clients[client_Num], sizeof(CLIENT_INFO));
-	g_Clients[client_Num]->IsConnected = false;
-	g_Clients[client_Num]->Socket = NULL;
-	g_ConnectedClients_Number.erase(client_Num);
-	g_Client_mutex.unlock();
 
 
 

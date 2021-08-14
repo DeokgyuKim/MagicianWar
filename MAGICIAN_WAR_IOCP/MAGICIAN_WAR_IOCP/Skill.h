@@ -10,7 +10,7 @@ public:
 	virtual ~Skill();
 
 public:
-	virtual int Update(const float& fTime);
+	virtual bool Update(const float& fTime);
 	virtual void LateUpdate(const float& fTime);
 
 public:
@@ -22,6 +22,8 @@ public:
 	void setLifeTime(float time) { m_Info.LifeTime = time; }
 	void setSkillType(unsigned char skill_type) { m_Info.SkillType = skill_type; }
 	void setSlotNum(unsigned char _slotNum) { slotNum = _slotNum; }
+	void setDead(bool _isDead) { m_Info.Dead = _isDead; }
+	void setTeam(char _TeamType) { m_Info.TeamType = _TeamType; }
 
 	XMFLOAT3 getRotate() { return m_Info.xmfRotate; }
 	XMFLOAT3 getPosition() { return m_Info.xmfPosition; }
@@ -29,8 +31,10 @@ public:
 	XMFLOAT4X4 getWorld() { return m_Info.xmmWorld; }
 	float getLifeTime() { return m_Info.LifeTime; }
 	int getUser() { return m_Info.user; }
+	bool getDead() { return m_Info.Dead; }
 	unsigned char getSlotNum() { return slotNum; }
 	unsigned char getSkillType() { return m_Info.SkillType; }
+	char getTeamType() { return m_Info.TeamType; }
 protected:
 	SkillInfo m_Info;
 	unsigned char slotNum;

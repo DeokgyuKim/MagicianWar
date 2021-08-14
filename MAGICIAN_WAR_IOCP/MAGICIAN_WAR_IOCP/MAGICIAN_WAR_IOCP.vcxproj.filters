@@ -79,7 +79,7 @@
     <Filter Include="02.Object\03.Skill\03.Cold">
       <UniqueIdentifier>{5b9024fe-f5c8-462d-b8c7-74ab91345028}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Object\03.Skill\03.Cold\01.">
+    <Filter Include="02.Object\03.Skill\03.Cold\01.IceAgeBall">
       <UniqueIdentifier>{94b21814-d687-451a-8dfc-272a905f9e09}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -128,6 +128,9 @@
     </ClCompile>
     <ClCompile Include="FireWall.cpp">
       <Filter>02.Object\03.Skill\01.Fire\01.FireWall</Filter>
+    </ClCompile>
+    <ClCompile Include="IcaAgeBall.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +193,9 @@
     </ClInclude>
     <ClInclude Include="FireWall.h">
       <Filter>02.Object\03.Skill\01.Fire\01.FireWall</Filter>
+    </ClInclude>
+    <ClInclude Include="IcaAgeBall.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

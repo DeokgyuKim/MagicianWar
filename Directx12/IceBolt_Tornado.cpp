@@ -51,7 +51,7 @@ void IceBolt_Tornado::BuildShaders()
 		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
-	m_pShader->BuildShadersAndInputLayout(L"Skill.hlsl", "VS_DEFFSKILL_MESH", L"Skill.hlsl", "PS_IceBolt_Tornado", layout);
+	m_pShader->BuildShadersAndInputLayout(L"SkillBD.hlsl", "VS_DEFFSKILL_MESH", L"Skill.hlsl", "PS_IceBolt_Tornado", layout);
 	m_pShader->BuildPipelineState(m_pDevice, m_pRenderer->GetRootSignature(), 7, true, true, true, 4);
 }
 

@@ -300,6 +300,17 @@ void Room::InGame_Update(float fTime)
 				PushSkillUpdate(i, SKILL_FIREWALL);
 			}
 		}
+		if (m_IceBall_Skills[i].getUser() != NO_PLAYER) {
+			bool dead = m_IceBall_Skills[i].Update(fTime);
+			if (dead) {
+				m_IceBall_Skills[i].setUser(NO_PLAYER);
+				PushSkillDelete(i, SKILL_COLD1);
+			}
+			else {
+				m_IceBall_Skills[i].LateUpdate(fTime);
+				PushSkillUpdate(i, SKILL_COLD1);
+			}
+		}
 	}
 
 
@@ -566,6 +577,10 @@ void Room::ResetSkill()
 		{
 			m_FireWall_Skills[i].setUser(NO_PLAYER);
 		}
+		if (m_IceBall_Skills[i].getUser() != NO_PLAYER)
+		{
+			m_IceBall_Skills[i].setUser(NO_PLAYER);
+		}
 	}
 }
 
@@ -584,7 +599,7 @@ void Room::roomslot_Clear(int roomSlot_num)
 void Room::Player_Disconnect(int id)
 {
 	if (this == nullptr) return;
-	m_player_mutex.lock();
+	//m_player_mutex.lock();
 	for (auto iter = m_players.begin(); iter != m_players.end();)
 	{
 		if ((*iter)->getID() == id) {
@@ -596,7 +611,7 @@ void Room::Player_Disconnect(int id)
 		else
 			++iter;
 	}
-	m_player_mutex.unlock();
+	//m_player_mutex.unlock();
 
 
 	g_Client_mutex.lock();
@@ -827,12 +842,22 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 							m_FireWall_Skills[i].setUser(rEvent.playerID);
 							m_FireWall_Skills[i].setPosition(rEvent.xmfPosition);
 							m_FireWall_Skills[i].setRotate(rEvent.xmfRotate);
+							m_FireWall_Skills[i].setTeam(player->getTeam());
 							unsigned char Skilltype =  m_FireWall_Skills[i].getSkillType();
 							PushSkillCreate(i, Skilltype);
 							break;
 							}
 							else if (player->getCharacterType() == ELEMENT_COLD)
 							{
+								IcaAgeBall iceBall{};
+								m_IceBall_Skills[i] = iceBall;
+								m_IceBall_Skills[i].setSkillType(SKILL_COLD1);
+								m_IceBall_Skills[i].setUser(rEvent.playerID);
+								m_IceBall_Skills[i].setPosition(rEvent.xmfPosition);
+								m_IceBall_Skills[i].setRotate(rEvent.xmfRotate);
+								m_IceBall_Skills[i].setTeam(player->getTeam());
+								unsigned char Skilltype = m_IceBall_Skills[i].getSkillType();
+								PushSkillCreate(i, Skilltype);
 								break;
 							}
 							else if (player->getCharacterType() == ELEMENT_DARKNESS)
@@ -1243,7 +1268,9 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 	}
 	else if (SkillType == SKILL_COLD1)
 	{
-
+		packet.user = m_IceBall_Skills[slotNum].getUser();
+		packet.xmfPosition = m_IceBall_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_IceBall_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_COLD2)
 	{
@@ -1284,7 +1311,9 @@ void Room::PushSkillUpdate(int slotNum, unsigned char SkillType)
 	}
 	else if (SkillType == SKILL_COLD1)
 	{
-
+		packet.user = m_IceBall_Skills[slotNum].getUser();
+		packet.xmfPosition = m_IceBall_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_IceBall_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_COLD2)
 	{
