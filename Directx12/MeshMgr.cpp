@@ -278,6 +278,9 @@ void MeshMgr::BuildModels(Loading* pLoading)
 	pLoading->AddCount();
 	BuildModel("Eff_Circle_Explosion", MESH_TYPE::TILE);
 	pLoading->AddCount();
+	BuildModel("Eff_Ground_Explo_Ring", MESH_TYPE::TILE);
+	pLoading->AddCount();
+	
 
 	cout << "Load Model Complete!" << endl;
 }

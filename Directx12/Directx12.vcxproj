@@ -152,7 +152,10 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Bar.h" />
+    <ClInclude Include="BillBoardEff.h" />
+    <ClInclude Include="BlackHole.h" />
     <ClInclude Include="BlackHole_Body.h" />
+    <ClInclude Include="BlackHole_Inner.h" />
     <ClInclude Include="CharInfo.h" />
     <ClInclude Include="CharInfoController.h" />
     <ClInclude Include="ClickerButton.h" />
@@ -165,6 +168,8 @@
     <ClInclude Include="FireShock_FireParticle.h" />
     <ClInclude Include="Flames.h" />
     <ClInclude Include="Flames_FireEff.h" />
+    <ClInclude Include="HatredChain.h" />
+    <ClInclude Include="HatredChain_Body.h" />
     <ClInclude Include="HpBar.h" />
     <ClInclude Include="IceBolt.h" />
     <ClInclude Include="IceBolt_Body.h" />
@@ -255,7 +260,10 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Bar.cpp" />
+    <ClCompile Include="BillBoardEff.cpp" />
+    <ClCompile Include="BlackHole.cpp" />
     <ClCompile Include="BlackHole_Body.cpp" />
+    <ClCompile Include="BlackHole_Inner.cpp" />
     <ClCompile Include="CharInfo.cpp" />
     <ClCompile Include="CharInfoController.cpp" />
     <ClCompile Include="ClickerButton.cpp" />
@@ -268,6 +276,8 @@
     <ClCompile Include="FireShock_FireParticle.cpp" />
     <ClCompile Include="Flames.cpp" />
     <ClCompile Include="Flames_FireEff.cpp" />
+    <ClCompile Include="HatredChain.cpp" />
+    <ClCompile Include="HatredChain_Body.cpp" />
     <ClCompile Include="HpBar.cpp" />
     <ClCompile Include="IceBolt.cpp" />
     <ClCompile Include="IceBolt_Body.cpp" />

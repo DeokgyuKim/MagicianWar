@@ -28,7 +28,7 @@ void Terrain::Initialize()
 
 	XMFLOAT3 scale = XMFLOAT3(50.f, 1.f, 100.f);
 	XMStoreFloat4x4(&m_xmmWorld, XMMatrixScalingFromVector(XMLoadFloat3(&scale)) * XMMatrixTranslation(25.f, 0.f, 50.f));
-	m_strTextureName = "Stone01";
+	m_strTextureName = "Terrain";
 	m_mapComponent["Transform"] = new Transform(scale, XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(25.f, 0.f, 50.f));
 
 	m_mapComponent["Material"] = new MaterialCom("Stone01",XMFLOAT4(0.588f, 0.588f, 0.588f, 1.f), XMFLOAT4(0.588f, 0.588f, 0.588f, 1.f), 

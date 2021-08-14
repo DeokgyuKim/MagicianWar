@@ -59,7 +59,7 @@ PSOut PS_Main(Out pin)
 {
 	PSOut vout;
 
-	float2 terrainsize = float2(25.f, 50.f);
+	float2 terrainsize = float2(12.5f, 25.f);
 	MaterialData materialData = gMaterialData[pin.MaterialIndex];
 
 	vout.Diffuse = pow(Texture.Sample(gsamLinear, pin.UV * terrainsize), 2.2f) * materialData.gDiffuse;

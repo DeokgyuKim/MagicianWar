@@ -11,6 +11,11 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["Stone01"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "Terrain", L"../Resources/Terrain.dds");
+	m_mapTextures["Terrain"] = pTexture;
+	pLoading->AddCount();
+	
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "Tree02", L"../Resources/Tree02.dds");
 	m_mapTextures["Tree02"] = pTexture;
 	pLoading->AddCount();
@@ -195,6 +200,11 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	pTexture = new DDSTexture(device, cmdLst, heap, "FireBall2", L"../Resources/Flames_FireEff.dds");
 	m_mapTextures["Flames_FireEff"] = pTexture;
 	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "FlameWall", L"../Resources/FlameWall.dds");
+	m_mapTextures["FlameWall"] = pTexture;
+	pLoading->AddCount();
+	
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "FireMake", L"../Resources/FireMake.dds");
 	m_mapTextures["FireMake"] = pTexture;
