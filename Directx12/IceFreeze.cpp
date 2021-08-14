@@ -1,6 +1,6 @@
 #include "IceFreeze.h"
 
-#include "IceBort_IceDorm.h"
+#include "IceFreeze_IceDorm.h"
 #include "Transform.h"
 
 
@@ -25,7 +25,7 @@ void IceFreeze::BuildComponents()
 
 void IceFreeze::BuildSkillEffects()
 {
-	SkillEff* pEff = new IceBort_IceDorm(m_pDevice, m_pCmdLst, m_pRenderer, this);
+	SkillEff* pEff = new IceFreeze_IceDorm(m_pDevice, m_pCmdLst, m_pRenderer, this);
 	m_vecSkillEff.push_back(pEff);
 }
 

@@ -3,6 +3,7 @@
 #include "IceBolt_Ice.h"
 #include "IceBolt_Body.h"
 #include "IceBolt_Tornado.h"
+#include "IceBolt_Crevasses.h"
 
 #include "Transform.h"
 
@@ -32,9 +33,25 @@ void IceBolt::BuildSkillEffects()
 
 	SkillEff* pEff = new IceBolt_Body(m_pDevice, m_pCmdLst, m_pRenderer, this);
 	m_vecSkillEff.push_back(pEff);
+
+	//pEff = new IceBolt_Ice(m_pDevice, m_pCmdLst, m_pRenderer, this);
+	//m_vecSkillEff.push_back(pEff);
 	
-	pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(90.f, 0.f, 0.f), XMFLOAT3(0.005f, 0.005f, 0.005f), this);
+	pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, this);
 	m_vecSkillEff.push_back(pEff);
+
+	pEff = new IceBolt_Crevasses(m_pDevice, m_pCmdLst, m_pRenderer, this);
+	//dynamic_cast<Transform*>(pEff->GetComponent("Transform"))->SetPosition(XMFLOAT3(1.f, -2.3f, 0.7f));	
+	m_vecSkillEff.push_back(pEff);
+
+	//pEff = new IceBolt_Crevasses(m_pDevice, m_pCmdLst, m_pRenderer, this);
+	//dynamic_cast<Transform*>(pEff->GetComponent("Transform"))->SetRotate(XMFLOAT3(0.f, 120.f, 0.f));
+	//m_vecSkillEff.push_back(pEff);
+
+	//pEff = new IceBolt_Crevasses(m_pDevice, m_pCmdLst, m_pRenderer, this);
+	//dynamic_cast<Transform*>(pEff->GetComponent("Transform"))->SetRotate(XMFLOAT3(0.f, 240.f, 0.f));
+	//m_vecSkillEff.push_back(pEff);
+
 
 
 
@@ -45,6 +62,9 @@ void IceBolt::BuildSkillEffects()
 int IceBolt::Update(const float& fTimeDelta)
 {
 	Skill::Update(fTimeDelta);
+
+	//XMFLOAT3 playerPos = dynamic_cast<Transform*>(MainApp::GetInstance()->GetScene()->GetPlayer()->GetComponent("Transform"))->GetPosition();
+	//dynamic_cast<Transform*>(GetTransController())->SetPosition(XMFLOAT3(playerPos.x, 2.f, playerPos.z));
 	return 0;
 }
 

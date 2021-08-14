@@ -262,6 +262,8 @@ void MeshMgr::BuildModels(Loading* pLoading)
 	pLoading->AddCount();
 	BuildModel("Eff_IceBottom", MESH_TYPE::TILE);
 	pLoading->AddCount();
+	BuildModel("Eff_IceBottom2", MESH_TYPE::TILE);
+	pLoading->AddCount();
 	BuildModel("Eff_Mesh_FireTail", MESH_TYPE::TILE);
 	pLoading->AddCount();
 	BuildModel("Eff_Meteor_Stone", MESH_TYPE::TILE);

@@ -173,9 +173,10 @@
     <ClInclude Include="HpBar.h" />
     <ClInclude Include="IceBolt.h" />
     <ClInclude Include="IceBolt_Body.h" />
+    <ClInclude Include="IceBolt_Crevasses.h" />
     <ClInclude Include="IceBolt_Ice.h" />
     <ClInclude Include="IceBolt_Tornado.h" />
-    <ClInclude Include="IceBort_IceDorm.h" />
+    <ClInclude Include="IceFreeze_IceDorm.h" />
     <ClInclude Include="IceFreeze.h" />
     <ClInclude Include="InstanceInfo.h" />
     <ClInclude Include="InstanceMgr.h" />
@@ -283,9 +284,10 @@
     <ClCompile Include="HpBar.cpp" />
     <ClCompile Include="IceBolt.cpp" />
     <ClCompile Include="IceBolt_Body.cpp" />
+    <ClCompile Include="IceBolt_Crevasses.cpp" />
     <ClCompile Include="IceBolt_Ice.cpp" />
     <ClCompile Include="IceBolt_Tornado.cpp" />
-    <ClCompile Include="IceBort_IceDorm.cpp" />
+    <ClCompile Include="IceFreeze_IceDorm.cpp" />
     <ClCompile Include="IceFreeze.cpp" />
     <ClCompile Include="InstanceInfo.cpp" />
     <ClCompile Include="InstanceMgr.cpp" />
