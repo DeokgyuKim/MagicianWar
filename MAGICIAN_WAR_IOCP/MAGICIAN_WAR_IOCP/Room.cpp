@@ -853,8 +853,8 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 								m_IceBall_Skills[i] = iceBall;
 								m_IceBall_Skills[i].setSkillType(SKILL_COLD1);
 								m_IceBall_Skills[i].setUser(rEvent.playerID);
-								m_IceBall_Skills[i].setPosition(rEvent.xmfPosition);
-								m_IceBall_Skills[i].setRotate(rEvent.xmfRotate);
+								m_IceBall_Skills[i].setPosition(XMFLOAT3(player->getPosition().x, player->getPosition().y + 2.f, player->getPosition().z));
+								m_IceBall_Skills[i].setRotate(XMFLOAT3(0.f,0.f,0.f));
 								m_IceBall_Skills[i].setTeam(player->getTeam());
 								unsigned char Skilltype = m_IceBall_Skills[i].getSkillType();
 								PushSkillCreate(i, Skilltype);
@@ -1057,11 +1057,12 @@ void Room::Send_UpdatePlayerInfoPacket(Player* _player)
 	packet.bAttackEnd = _player->IsAttackEnded();
 	packet.playerInfo.iHp = _player->getHp();
 
-	m_player_mutex.lock();
+	//m_player_mutex.lock();
 	for (auto player : m_players) {
-		Server::GetInstance()->SendIngamePlayerInfo(player->getID(), packet);
+		sendEvent_push(player->getID(), &packet);
+		//Server::GetInstance()->SendIngamePlayerInfo(player->getID(), packet);
 	}
-	m_player_mutex.unlock();
+	//m_player_mutex.unlock();
 }
 
 void Room::PushBullet_Update(int Bullet_Index)

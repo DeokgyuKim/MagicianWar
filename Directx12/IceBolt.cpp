@@ -3,8 +3,9 @@
 #include "IceBolt_Ice.h"
 #include "IceBolt_Body.h"
 #include "IceBolt_Tornado.h"
+
 #include "Transform.h"
-#include "MainApp.h"
+
 
 
 IceBolt::IceBolt(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 rotate, XMFLOAT3 pos)
@@ -31,10 +32,10 @@ void IceBolt::BuildSkillEffects()
 
 	SkillEff* pEff = new IceBolt_Body(m_pDevice, m_pCmdLst, m_pRenderer, this);
 	m_vecSkillEff.push_back(pEff);
+	
+	pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(90.f, 0.f, 0.f), XMFLOAT3(0.005f, 0.005f, 0.005f), this);
+	m_vecSkillEff.push_back(pEff);
 
-
-	//pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(90.f, 0.f, 0.f), XMFLOAT3(0.005f, 0.005f, 0.005f), this);
-	//m_vecSkillEff.push_back(pEff);
 
 
 

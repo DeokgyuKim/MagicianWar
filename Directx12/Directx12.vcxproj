@@ -175,6 +175,8 @@
     <ClInclude Include="IceBolt_Body.h" />
     <ClInclude Include="IceBolt_Ice.h" />
     <ClInclude Include="IceBolt_Tornado.h" />
+    <ClInclude Include="IceBort_IceDorm.h" />
+    <ClInclude Include="IceFreeze.h" />
     <ClInclude Include="InstanceInfo.h" />
     <ClInclude Include="InstanceMgr.h" />
     <ClInclude Include="LobbyScene.h" />
@@ -283,6 +285,8 @@
     <ClCompile Include="IceBolt_Body.cpp" />
     <ClCompile Include="IceBolt_Ice.cpp" />
     <ClCompile Include="IceBolt_Tornado.cpp" />
+    <ClCompile Include="IceBort_IceDorm.cpp" />
+    <ClCompile Include="IceFreeze.cpp" />
     <ClCompile Include="InstanceInfo.cpp" />
     <ClCompile Include="InstanceMgr.cpp" />
     <ClCompile Include="LobbyScene.cpp" />

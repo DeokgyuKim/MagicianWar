@@ -63,6 +63,8 @@ void IceBolt_Ice::BuildConstantBuffers()
 int IceBolt_Ice::Update(const float& fTimeDelta)
 {
 	SkillEff::Update(fTimeDelta);
+
+
 	return 0;
 }
 
