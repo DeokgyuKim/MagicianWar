@@ -26,15 +26,25 @@ void Flames::BuildComponents()
 
 void Flames::BuildSkillEffects()
 {
-	SkillEff* pEff = new Flames_FireEff(m_pDevice, m_pCmdLst, m_pRenderer, this, XMFLOAT3(0.f, 0.f, 0.01f), 3);
+	SkillEff* pEff = new Flames_FireEff(m_pDevice, m_pCmdLst, m_pRenderer, this, XMFLOAT3(0.f, 2.f, 0.01f), 3);
 	m_vecSkillEff.push_back(pEff);
-	pEff = new Flames_FireEff(m_pDevice, m_pCmdLst, m_pRenderer, this, XMFLOAT3(0.f, 0.f, -0.01f), 2);
+	pEff = new Flames_FireEff(m_pDevice, m_pCmdLst, m_pRenderer, this, XMFLOAT3(0.f, 2.f, -0.01f), 2);
 	m_vecSkillEff.push_back(pEff);
 }
 
 int Flames::Update(const float& fTimeDelta)
 {
 	Skill::Update(fTimeDelta);
+	m_fMake = min(m_fMake + fTimeDelta * 4.f, 2.f);
+	
+
+	for (auto skilleff : m_vecSkillEff)
+	{
+		XMFLOAT3 pos = dynamic_cast<Transform*>(skilleff->GetTransController())->GetPosition();
+		pos.y = m_fMake;
+		dynamic_cast<Transform*>(skilleff->GetTransController())->SetPosition(pos);
+	}
+
 	return 0;
 }
 

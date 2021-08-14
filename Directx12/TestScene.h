@@ -19,6 +19,7 @@ private:
 public:
     void SetGameEndForPanelCreate(bool _bCreate) { GameEndForPanelCreate = _bCreate; }
     void MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot, unsigned char slot);
+    void UpdateSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot, unsigned char slot);
     void MakeSKillCircle(Player* pPlayer);
 private:
     bool        ToolMode = false;

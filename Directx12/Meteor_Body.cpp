@@ -19,7 +19,7 @@ Meteor_Body::~Meteor_Body()
 
 void Meteor_Body::BuildComponent()
 {
-	Component* pComponent = new Transform(XMFLOAT3(0.07f, 0.07f, 0.07f), XMFLOAT3(90.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT3(90.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetParentMatrix(dynamic_cast<Transform*>(m_pParent->GetTransController())->GetWorldMatrixPointer());
@@ -63,6 +63,9 @@ int Meteor_Body::Update(const float& fTimeDelta)
 {
 	SkillEff::Update(fTimeDelta);
 	m_fTime += fTimeDelta;
+	XMFLOAT3 fRotate = dynamic_cast<Transform*>(GetTransController())->GetRotate();
+	fRotate.z += fTimeDelta * 50.f;
+	dynamic_cast<Transform*>(GetTransController())->SetRotate(fRotate);
 	return 0;
 }
 

@@ -1,6 +1,7 @@
 #include "HatredChain.h"
 
 #include "HatredChain_Body.h"
+#include "HatredChain_Outter.h"
 #include "Transform.h"
 
 HatredChain::HatredChain(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 pos)
@@ -22,12 +23,14 @@ void HatredChain::BuildComponents()
 
 void HatredChain::BuildSkillEffects()
 {
-	SkillEff* pEff = new HatredChain_Body(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(0.f, 0.f, 0.5f), this);
+	SkillEff* pEff = new HatredChain_Body(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(0.f, 0.f, 0.f), this);
 	m_vecSkillEff.push_back(pEff);
-	pEff = new HatredChain_Body(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(0.f, 0.f, 2.5f), this);
+	pEff = new HatredChain_Outter(m_pDevice, m_pCmdLst, m_pRenderer, this);
 	m_vecSkillEff.push_back(pEff);
-	pEff = new HatredChain_Body(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(0.f, 0.f, 4.5f), this);
-	m_vecSkillEff.push_back(pEff);
+	//pEff = new HatredChain_Body(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(0.f, 0.f, 2.5f), this);
+	//m_vecSkillEff.push_back(pEff);
+	//pEff = new HatredChain_Body(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(0.f, 0.f, 4.5f), this);
+	//m_vecSkillEff.push_back(pEff);
 
 }
 

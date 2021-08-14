@@ -19,7 +19,8 @@
 #include "IceBolt.h"
 #include "Meteor.h"
 #include "MagicCircle.h"
-#include "BlackHole_Body.h"
+#include "BlackHole.h"
+#include "HatredChain.h"
 
 #include "StaticMeshMgr.h"
 #include "InstanceMgr.h"
@@ -268,8 +269,8 @@ void TestScene::Initialize()
 	//pObj = new FireShock(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
 
-	pObj = new FireRing(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
-	m_pObjects[OBJ_SKILL].push_back(pObj);
+	//pObj = new FireRing(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
 	//
 	//pObj = new Bullet(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), "FireBall",
 	//	XMFLOAT3(20.f, 1.f, 10.f), XMFLOAT3(0.f, 180.f, 0.f), 0.f);
@@ -279,8 +280,7 @@ void TestScene::Initialize()
 	//	XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 2.f, 15.f));
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
 	//
-	pObj = new Meteor(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-		XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 5.f, 15.f));
+	pObj = new HatredChain(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT3(20.f, 3.f, 10.f));
 	m_pObjects[OBJ_SKILL].push_back(pObj);
 
 
@@ -383,17 +383,18 @@ void TestScene::MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot,
 	switch (etype)
 	{
 	case SKILL_FIRE1:
+		rot.x = 0.f;
 		pSkill = new Flames(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), pos, rot);
 		break;
 	case SKILL_FIRE2:
-		
+		pSkill = new Meteor(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), rot, pos);
 		break;
 	case SKILL_COLD1:
-		pSkill = new IceBolt(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), pos, rot);
 		break;
 	case SKILL_COLD2:
 		break;
 	case SKILL_DARKNESS1:
+		pSkill = new BlackHole(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), pos);
 		break;
 	case SKILL_DARKNESS2:
 		break;
@@ -403,6 +404,43 @@ void TestScene::MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot,
 
 	pSkill->SetSlotNum(slot);
 	m_pObjects[OBJ_SKILL].push_back(pSkill);
+}
+
+void TestScene::UpdateSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot, unsigned char slot)
+{
+	Object* pObj = GetSkillForSlot(etype, slot);
+	if (pObj == nullptr)
+	{
+		cout << "TestScene::UpdateSkillForPacket:해당 슬롯 스킬 없음." << endl;
+		return;
+	}
+	switch (etype)
+	{
+	case SKILL_FIRE1: 
+		rot.x = 0.f;
+		dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(pos);
+		dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(rot);
+		break;
+	case SKILL_FIRE2:
+		dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(pos);
+		dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(rot);
+		break;
+	case SKILL_COLD1:
+		break;
+	case SKILL_COLD2:
+		break;
+	case SKILL_DARKNESS1:
+		dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(pos);
+		dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(rot);
+		break;
+	case SKILL_DARKNESS2:
+		dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(pos);
+		dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(rot);
+		break;
+	default:
+		return;
+	}
+
 }
 
 void TestScene::MakeSKillCircle(Player* pPlayer)

@@ -205,6 +205,10 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["FlameWall"] = pTexture;
 	pLoading->AddCount();
 	
+	pTexture = new DDSTexture(device, cmdLst, heap, "Distortion1", L"../Resources/Distortion1.dds");
+	m_mapTextures["Distortion1"] = pTexture;
+	pLoading->AddCount();
+	
 
 	pTexture = new DDSTexture(device, cmdLst, heap, "FireMake", L"../Resources/FireMake.dds");
 	m_mapTextures["FireMake"] = pTexture;
