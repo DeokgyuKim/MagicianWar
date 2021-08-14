@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="FireWall.cpp" />
+    <ClCompile Include="IcaAgeBall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshMgr.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="FireWall.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="IcaAgeBall.h" />
     <ClInclude Include="InterfaceFSM.h" />
     <ClInclude Include="MeshMgr.h" />
     <ClInclude Include="Player.h" />

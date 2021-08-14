@@ -1,11 +1,11 @@
 #pragma once
 #include "Skill.h"
-class FireWall :
+class IcaAgeBall :
     public Skill
 {
 public:
-    FireWall();
-    virtual ~FireWall();
+    IcaAgeBall();
+    virtual ~IcaAgeBall();
 public:
     virtual bool Update(const float& fTime);
     virtual void LateUpdate(const float& fTime);

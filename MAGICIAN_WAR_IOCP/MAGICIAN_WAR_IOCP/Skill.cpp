@@ -7,6 +7,7 @@ Skill::Skill()
 	m_Info.xmfScale = XMFLOAT3(1.f, 1.f, 1.f);
 	m_Info.xmfRotate = XMFLOAT3(0.f, 0.f, 0.f);
 	m_Info.LifeTime = 0.f;
+	m_Info.Dead = false;
 	XMStoreFloat4x4(&m_Info.xmmWorld, XMMatrixIdentity());
 
 }
@@ -15,7 +16,7 @@ Skill::~Skill()
 {
 }
 
-int Skill::Update(const float& fTime)
+bool Skill::Update(const float& fTime)
 {
 
 	return 0;

@@ -109,6 +109,8 @@ struct SkillInfo {
 	float LifeTime;
 	float TotalLifeTime;
 	float fSpeed;
+	bool	Dead;
 	unsigned char SkillType;
+	char TeamType;
 
 };

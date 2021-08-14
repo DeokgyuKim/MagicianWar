@@ -5,6 +5,7 @@
 #include "Bullet.h"
 #include "Skill.h"
 #include "FireWall.h"
+#include "IcaAgeBall.h"
 
 class Bullet;
 class Player;
@@ -89,6 +90,8 @@ private:
 	list<Player*> m_players;
 	array<Bullet, MAX_BULLET> m_Bullets;
 	array<FireWall, MAX_SKILL> m_FireWall_Skills;
+	array<IcaAgeBall, MAX_SKILL> m_IceBall_Skills;
+
 	mutex m_bullet_mutex;
 	mutex m_physic_mutex;
 

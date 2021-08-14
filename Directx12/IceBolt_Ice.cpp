@@ -11,6 +11,7 @@ IceBolt_Ice::IceBolt_Ice(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst
 {
 	Initialize();
 	m_eRenderType = RENDER_TYPE::RENDER_DEFFSKILL;
+
 }
 
 IceBolt_Ice::~IceBolt_Ice()

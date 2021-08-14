@@ -10,20 +10,20 @@ FireWall::~FireWall()
 {
 }
 
-int FireWall::Update(const float& fTime)
+bool FireWall::Update(const float& fTime)
 {
 	Skill::Update(fTime);
 
 	m_Info.LifeTime += fTime;
 
 	if (m_Info.TotalLifeTime <= m_Info.LifeTime) {
-
-		return 1;
+		m_Info.Dead = true;
+		return m_Info.Dead;
 	}
 
 	memcpy(&m_Info.xmfPosition, &m_Info.xmmWorld._41, sizeof(XMFLOAT3));
 
-	return 0;
+	return m_Info.Dead;
 
 }
 
