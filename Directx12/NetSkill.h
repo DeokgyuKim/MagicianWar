@@ -3,7 +3,7 @@
 
 class Object;
 class Camera;
-enum SKILL_GENTYPE { SKILL_BULLET, SKILL_RAYCAST, SKILL_METEOR };
+enum SKILL_GENTYPE { SKILL_BULLET, SKILL_RAYCAST, SKILL_METEOR, SKILL_ENCHAN };
 class NetSkill :
     public Component
 {

@@ -5,9 +5,10 @@
 #include "Boom_Inner.h"
 
 
-Boom::Boom(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 goalScale, XMFLOAT3 pos)
+Boom::Boom(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 goalScale, XMFLOAT3 pos, string ColorTexture)
 	: Skill(device, cmdLst, pRenderer)
 {
+	m_strColorTex = ColorTexture;
 	Initialize();
 	dynamic_cast<Transform*>(GetTransController())->SetPosition(pos);
 	m_xmfGoalScale = goalScale;
@@ -36,7 +37,7 @@ void Boom::BuildSkillEffects()
 	//dynamic_cast<Transform*>(pEff->GetComponent("Transform"))->SetRotate(XMFLOAT3(0.f, 240.f, 0.f));
 	//m_vecSkillEff.push_back(pEff);
 
-	SkillEff *pEff = new Boom_Sphere(m_pDevice, m_pCmdLst, m_pRenderer, 3.f, this);
+	SkillEff *pEff = new Boom_Sphere(m_pDevice, m_pCmdLst, m_pRenderer, 3.f, m_strColorTex, this);
 	m_vecSkillEff.push_back(pEff);
 
 	//pEff = new Boom_Inner(m_pDevice, m_pCmdLst, m_pRenderer, 1.f, this);

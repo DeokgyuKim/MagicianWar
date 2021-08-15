@@ -279,8 +279,8 @@ void TestScene::Initialize()
 	//
 	//pObj = new HatredChain(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT3(20.f, 3.f, 10.f));
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
-	pObj = new Boom(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(20.f, 2.f, 10.f));
-	m_pObjects[OBJ_SKILL].push_back(pObj);
+	//pObj = new Boom(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(20.f, 2.f, 10.f));
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
 
 
 	//pObj = new MagicCircle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
@@ -436,7 +436,6 @@ void TestScene::UpdateSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 ro
 		break;
 	case SKILL_DARKNESS1:
 		dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(pos);
-		dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(rot);
 		break;
 	case SKILL_DARKNESS2:
 		dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(pos);
