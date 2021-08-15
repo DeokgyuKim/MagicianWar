@@ -98,6 +98,7 @@ void HatredChain_Outter::LateUpdate(const float& fTimeDelta)
 	SkillCB skillcb;
 	skillcb.fTime = m_fTime;
 	skillcb.SkillIdx = m_iSkillIdx;
+	skillcb.SkillPos = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetPosition();
 	m_SkillCB->CopyData(0, skillcb);
 
 }

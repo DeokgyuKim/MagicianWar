@@ -10,6 +10,7 @@ struct In_Skill
 struct Out_Skill
 {
 	float4 PosH  : SV_POSITION;
+	float3 WorldPos : POSITION;
 	float2 TexC : TEXCOORD;
 	float4 Normal : NORMAL;
 };
@@ -37,7 +38,7 @@ Out_Skill VS_Flames_FireEff(In_Skill vin)
 
 	// Transform to homogeneous clip space.
 	vout.PosH = mul(mul(mul(float4(vin.PosL, 1.0f), gWorldNoInstanced), gView), gProj);
-
+	vout.WorldPos = mul(float4(vin.PosL, 1.0f), gWorldNoInstanced);
 	// Just pass vertex color into the pixel shader.
 	vout.TexC = vin.TexC;
 	vout.Normal = normalize(mul(float4(vin.Normal, 0.f), gWorldNoInstanced));
@@ -801,8 +802,13 @@ PSOut_Skill PS_HatredChain_Outter(Out_Skill pin)
 	PSOut_Skill vout = (PSOut_Skill)0;
 
 	vout.Diffuse = float4(0.f, 0.f, 0.f, 0.f);
-	vout.Diffuse = 
-	vout.Distortion = SkillEffTex1.Sample(gsamLinear, pin.TexC);
+	//vout.Distortion = SkillEffTex1.Sample(gsamLinear, pin.TexC);
+	float2 Dist = pin.TexC - float2(0.5f, 0.5f);
+	//Dist.y *= -1.f;
+	
+	Dist *= 0.1f;
+	Dist = Dist * 0.5f + 0.5f;
 
+	vout.Distortion = float4(Dist, 0.f, 1.f);
 	return vout;
 }
