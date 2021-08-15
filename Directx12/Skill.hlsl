@@ -800,15 +800,65 @@ PSOut_Skill_DEFF PS_HatredChain_Body(Out_Skill_Static pin)
 PSOut_Skill PS_HatredChain_Outter(Out_Skill pin)
 {
 	PSOut_Skill vout = (PSOut_Skill)0;
-
 	vout.Diffuse = float4(0.f, 0.f, 0.f, 0.f);
+	//if (distance(pin.TexC, float2(0.5f, 0.5f)) > 0.4f && distance(pin.TexC, float2(0.5f, 0.5f)) < 0.45f)
+	//{
+	//	vout.Diffuse = float4(0.3f, 0.f, 0.3f, 1.f);
+	//}
 	//vout.Distortion = SkillEffTex1.Sample(gsamLinear, pin.TexC);
+	if (distance(pin.TexC, float2(0.5f, 0.5f)) > 0.45f)
+	{
+		vout.Distortion = float4(0.f, 0.f, 0.f, 0.f);
+		return vout;
+	}
+
+
 	float2 Dist = pin.TexC - float2(0.5f, 0.5f);
+
 	//Dist.y *= -1.f;
 	
 	Dist *= 0.1f;
+	
+	float2 uv1 = pin.TexC;
+	float2 uv2 = pin.TexC * 2.f;
+	float2 uv3 = pin.TexC * 3.f;
+
+	float fOffset = 0.7f;
+
+	uv1.y += gSkillTime * 0.5f * fOffset;
+	uv2.y += gSkillTime * 1.2f * fOffset;
+	uv3.y += gSkillTime * 1.8f * fOffset;
+	uv1.x *= 5.f;
+	uv2.x *= 5.f;
+	uv3.x *= 5.f;
+
+	float4 noise1 = SkillEffTex2.Sample(gsamLinear, uv1);
+	float4 noise2 = SkillEffTex2.Sample(gsamLinear, uv2);
+	float4 noise3 = SkillEffTex2.Sample(gsamLinear, uv3);
+
+	noise1 = (noise1 - 0.5f) * 2.f;
+	noise2 = (noise2 - 0.5f) * 2.f;
+	noise3 = (noise3 - 0.5f) * 2.f;
+
+	float2 distortion1 = float2(0.1f, 0.2f);
+	float2 distortion2 = float2(0.1f, 0.3f);
+	float2 distortion3 = float2(0.1f, 0.1f);
+
+	noise1.xy = noise1.xy * distortion1.xy;
+	noise2.xy = noise2.xy * distortion2.xy;
+	noise3.xy = noise3.xy * distortion3.xy;
+
+	float4 noise = noise1 + noise2 + noise3;
+
+	float perturb = ((1.f - pin.TexC.y) * 0.8f) + 0.5f;
+
+	float2 noiseCoord = (noise.xy * perturb) + pin.TexC.xy;
+	float4 fire = SkillEffTex1.Sample(gsamClamp, noiseCoord);
+
+	Dist *= fire;
+
 	Dist = Dist * 0.5f + 0.5f;
 
-	vout.Distortion = float4(Dist, 0.f, 1.f);
+	vout.Distortion = float4(Dist, 0.f, Dist.r);
 	return vout;
 }

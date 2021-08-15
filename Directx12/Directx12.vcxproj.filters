@@ -358,6 +358,18 @@
     <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\01.IceDorm">
       <UniqueIdentifier>{f2b9d073-ee9e-4d63-beb5-bec94dedeee6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\06.HatredChain\02.Ball">
+      <UniqueIdentifier>{a8c3cab5-d679-4d66-8ba7-1b0244c0f31f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\08.Boom">
+      <UniqueIdentifier>{1d5c19c5-a97b-46d8-9b42-734f43969a1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\08.Boom">
+      <UniqueIdentifier>{918771d1-e274-41d5-a972-238311275270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\08.Boom\00.BoomSphere">
+      <UniqueIdentifier>{01f08835-8cf5-4426-89b9-3757baa89eda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -690,6 +702,12 @@
     <ClInclude Include="IceFreeze_IceDorm.h">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\01.IceDorm</Filter>
     </ClInclude>
+    <ClInclude Include="HatredChain_Ball.h">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\06.HatredChain\02.Ball</Filter>
+    </ClInclude>
+    <ClInclude Include="Boom.h">
+      <Filter>00.Game\02.Object\06.Skill\08.Boom</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -994,6 +1012,12 @@
     </ClCompile>
     <ClCompile Include="IceFreeze_IceDorm.cpp">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\01.IceDorm</Filter>
+    </ClCompile>
+    <ClCompile Include="HatredChain_Ball.cpp">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\06.HatredChain\02.Ball</Filter>
+    </ClCompile>
+    <ClCompile Include="Boom.cpp">
+      <Filter>00.Game\02.Object\06.Skill\08.Boom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

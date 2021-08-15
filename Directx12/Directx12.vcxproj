@@ -156,6 +156,7 @@
     <ClInclude Include="BlackHole.h" />
     <ClInclude Include="BlackHole_Body.h" />
     <ClInclude Include="BlackHole_Inner.h" />
+    <ClInclude Include="Boom.h" />
     <ClInclude Include="CharInfo.h" />
     <ClInclude Include="CharInfoController.h" />
     <ClInclude Include="ClickerButton.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Flames.h" />
     <ClInclude Include="Flames_FireEff.h" />
     <ClInclude Include="HatredChain.h" />
+    <ClInclude Include="HatredChain_Ball.h" />
     <ClInclude Include="HatredChain_Body.h" />
     <ClInclude Include="HatredChain_Outter.h" />
     <ClInclude Include="HpBar.h" />
@@ -268,6 +270,7 @@
     <ClCompile Include="BlackHole.cpp" />
     <ClCompile Include="BlackHole_Body.cpp" />
     <ClCompile Include="BlackHole_Inner.cpp" />
+    <ClCompile Include="Boom.cpp" />
     <ClCompile Include="CharInfo.cpp" />
     <ClCompile Include="CharInfoController.cpp" />
     <ClCompile Include="ClickerButton.cpp" />
@@ -281,6 +284,7 @@
     <ClCompile Include="Flames.cpp" />
     <ClCompile Include="Flames_FireEff.cpp" />
     <ClCompile Include="HatredChain.cpp" />
+    <ClCompile Include="HatredChain_Ball.cpp" />
     <ClCompile Include="HatredChain_Body.cpp" />
     <ClCompile Include="HatredChain_Outter.cpp" />
     <ClCompile Include="HpBar.cpp" />

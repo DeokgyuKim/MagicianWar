@@ -599,7 +599,7 @@ void Room::roomslot_Clear(int roomSlot_num)
 void Room::Player_Disconnect(int id)
 {
 	if (this == nullptr) return;
-	//m_player_mutex.lock();
+	m_player_mutex.lock();
 	for (auto iter = m_players.begin(); iter != m_players.end();)
 	{
 		if ((*iter)->getID() == id) {
@@ -611,7 +611,7 @@ void Room::Player_Disconnect(int id)
 		else
 			++iter;
 	}
-	//m_player_mutex.unlock();
+	m_player_mutex.unlock();
 
 
 	g_Client_mutex.lock();
