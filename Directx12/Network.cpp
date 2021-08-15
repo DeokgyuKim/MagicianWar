@@ -945,16 +945,22 @@ void Network::ServerKeyInput()
 		cout << "Use Q Skill" << endl;
 		XMFLOAT3 Pos = SkillController::GetInstance()->GeneratePositionForPacket(0);
 		XMFLOAT3 Rot = SkillController::GetInstance()->GenerateRotateForPacket(0);
-		
-		printf("client pos x %f y %f z %f\n", Pos.x, Pos.y, Pos.z);
-		SendSkillPacket_Request(SKILL_Q, Pos, Rot);
+
+		if (!(Pos.x == -99.f && Pos.y == -99.f && Pos.z == -99.f))
+			SendSkillPacket_Request(SKILL_Q, Pos, Rot);
+		else
+			SkillController::GetInstance()->UseSkillFailed(0);
 	}
 	if (KeyMgr::GetInstance()->KeyPressing('E') && SkillController::GetInstance()->UseSkill(SKILL_E))
 	{
 		cout << "Use E Skill" << endl;
 		XMFLOAT3 Pos = SkillController::GetInstance()->GeneratePositionForPacket(1);
 		XMFLOAT3 Rot = SkillController::GetInstance()->GenerateRotateForPacket(1);
-		SendSkillPacket_Request(SKILL_E, Pos, Rot);
+
+		if (!(Pos.x == -99.f && Pos.y == -99.f && Pos.z == -99.f))
+			SendSkillPacket_Request(SKILL_E, Pos, Rot);
+		else
+			SkillController::GetInstance()->UseSkillFailed(1);
 	}
 
 	if (m_prevKey != dwKeyInput) {

@@ -4,7 +4,7 @@ class Boom_Sphere :
     public SkillEff
 {
 public:
-    Boom_Sphere(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, float goalScale,
+    Boom_Sphere(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, float goalScale, string ColorTexture,
         Object* pParent = NULL);
     ~Boom_Sphere();
 private:
@@ -21,4 +21,5 @@ public:
 private:
     float m_fCurScale = 0.f;
     float m_fGoalScale = 1.f;
+    string m_strColorTex = "";
 };

@@ -5,9 +5,10 @@
 #include "Shader.h"
 
 #include "Renderer.h"
-Boom_Sphere::Boom_Sphere(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, float goalScale, Object* pParent)
+Boom_Sphere::Boom_Sphere(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, float goalScale, string ColorTexture, Object* pParent)
     : SkillEff(device, cmdLst, pRenderer, pParent)
 {
+	m_strColorTex = ColorTexture;
     Initialize();
     m_eRenderType = RENDER_TYPE::RENDER_POSTSKILL;
 	m_fGoalScale = goalScale;
@@ -35,7 +36,7 @@ void Boom_Sphere::BuildComponent()
 
 void Boom_Sphere::AddTexturesName()
 {
-	m_lstTextureName.push_back("IceBall");
+	m_lstTextureName.push_back(m_strColorTex);
 	m_lstTextureName.push_back("Noise5");
 }
 

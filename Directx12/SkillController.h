@@ -27,6 +27,7 @@ public:
 	void SetSkillCnt(int idx, int cnt);
 	int GetSkillCnt(int idx) { return m_iSkillCnt[idx]; }
 	bool UseSkill(int idx);
+	void UseSkillFailed(int idx);
 	XMFLOAT3 GeneratePositionForPacket(int idx);
 	XMFLOAT3 GenerateRotateForPacket(int idx);
 public:
