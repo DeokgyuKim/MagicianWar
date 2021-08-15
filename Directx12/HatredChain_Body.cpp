@@ -19,13 +19,13 @@ HatredChain_Body::~HatredChain_Body()
 
 void HatredChain_Body::BuildComponent()
 {
-	Component* pComponent = new Transform(XMFLOAT3(0.01f, 0.01f, 0.01f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetParentMatrix(dynamic_cast<Transform*>(m_pParent->GetTransController())->GetWorldMatrixPointer());
 
 
-	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), "Eff_Arrow_Effect01");
+	pComponent = new Mesh(m_pDevice, m_pCmdLst, m_pRenderer->GetHeap(), "Sphere");
 	m_mapComponent["Mesh"] = pComponent;
 	pComponent = new MaterialCom("BlackHoleInnerEff", XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(1.f, 1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 0.f));
 	m_mapComponent["Material"] = pComponent;
@@ -36,6 +36,8 @@ void HatredChain_Body::BuildComponent()
 void HatredChain_Body::AddTexturesName()
 {
 	m_lstTextureName.push_back("BlackBall");
+	m_lstTextureName.push_back("Noise4");
+	m_lstTextureName.push_back("Lava");
 }
 
 void HatredChain_Body::BuildShaders()
@@ -48,7 +50,7 @@ void HatredChain_Body::BuildShaders()
 		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
-	m_pShader->BuildShadersAndInputLayout(L"Skill.hlsl", "VS_DEFFSKILL_MESH", L"Skill.hlsl", "PS_HatredChain_Body", layout);
+	m_pShader->BuildShadersAndInputLayout(L"Skill.hlsl", "VS_ICESphere_MESH", L"Skill.hlsl", "PS_HatredChain_Body", layout);
 	m_pShader->BuildPipelineState(m_pDevice, m_pRenderer->GetRootSignature(), 7, true, true, true, 4);
 }
 

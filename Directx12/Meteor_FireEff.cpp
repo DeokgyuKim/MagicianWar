@@ -6,11 +6,12 @@
 
 #include "Renderer.h"
 
-Meteor_FireEff::Meteor_FireEff(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Object* pParent, XMFLOAT3 rotate)
+Meteor_FireEff::Meteor_FireEff(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Object* pParent, XMFLOAT3 rotate, int dir)
 	: SkillEff(device, cmdLst, pRenderer, pParent)
 {
 	Initialize();
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(rotate);
+	m_iRotate = dir;
 	//m_eRenderType = RENDER_TYPE::RENDER_DEFFSKILL;
 }
 
@@ -20,7 +21,7 @@ Meteor_FireEff::~Meteor_FireEff()
 
 void Meteor_FireEff::BuildComponent()
 {
-	Component* pComponent = new Transform(XMFLOAT3(0.05f, 0.05f, 0.03f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, -1.f));
+	Component* pComponent = new Transform(XMFLOAT3(0.05f, 0.05f, 0.05f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, -2.f));
 	m_mapComponent["Transform"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetParentMatrix(dynamic_cast<Transform*>(m_pParent->GetTransController())->GetWorldMatrixPointer());
@@ -36,7 +37,7 @@ void Meteor_FireEff::BuildComponent()
 
 void Meteor_FireEff::AddTexturesName()
 {
-	m_lstTextureName.push_back("Lava");
+	m_lstTextureName.push_back("FireMake");
 	m_lstTextureName.push_back("Noise4");
 }
 
@@ -50,7 +51,7 @@ void Meteor_FireEff::BuildShaders()
 		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
-	m_pShader->BuildShadersAndInputLayout(L"Skill.hlsl", "VS_DEFFSKILL_MESH", L"Skill.hlsl", "PS_Meteor_FireEff", layout);
+	m_pShader->BuildShadersAndInputLayout(L"Skill.hlsl", "VS_DEFFSKILL_MESH", L"Skill.hlsl", "PS_Meteor_FireEff2", layout);
 	m_pShader->BuildPipelineState(m_pDevice, m_pRenderer->GetRootSignature(), 5, true, true, true);
 }
 
@@ -65,7 +66,7 @@ int Meteor_FireEff::Update(const float& fTimeDelta)
 	SkillEff::Update(fTimeDelta);
 	m_fTime += fTimeDelta;
 	XMFLOAT3 fRotate = dynamic_cast<Transform*>(GetTransController())->GetRotate();
-	fRotate.z -= fTimeDelta * -360.f;
+	fRotate.z += fTimeDelta * 100.f * m_iRotate;
 	dynamic_cast<Transform*>(GetTransController())->SetRotate(fRotate);
 
 	return 0;

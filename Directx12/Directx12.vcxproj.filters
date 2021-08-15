@@ -343,17 +343,8 @@
     <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\06.HatredChain\00.Body">
       <UniqueIdentifier>{1a316593-08b7-43f4-a281-8030293aa1f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\07.Ice">
-      <UniqueIdentifier>{60055b5e-3299-4fea-ad0a-20401de05ad6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\07.Ice\03.Dome">
-      <UniqueIdentifier>{758328f4-09ef-45df-afa7-3dcaae95321c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\03.IceBolt\03.Crevasses">
-      <UniqueIdentifier>{e3192535-b707-49f5-b133-e9cc89269de5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\03.IceBolt\04.">
-      <UniqueIdentifier>{ca1fcac1-abc4-468f-902b-7a05353af311}</UniqueIdentifier>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\06.HatredChain\01.Outter">
+      <UniqueIdentifier>{28081e7b-e6ad-4f58-8559-cf716963fbe1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -675,11 +666,9 @@
     <ClInclude Include="HatredChain.h">
       <Filter>00.Game\02.Object\06.Skill\06.HatredChain</Filter>
     </ClInclude>
-    <ClInclude Include="IceFreeze_IceDorm.h">
-      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\07.Ice\03.Dome</Filter>
+    <ClInclude Include="HatredChain_Outter.h">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\06.HatredChain\01.Outter</Filter>
     </ClInclude>
-    <ClInclude Include="IceFreeze.h" />
-    <ClInclude Include="IceBolt_Crevasses.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -973,11 +962,9 @@
     <ClCompile Include="HatredChain.cpp">
       <Filter>00.Game\02.Object\06.Skill\06.HatredChain</Filter>
     </ClCompile>
-    <ClCompile Include="IceFreeze_IceDorm.cpp">
-      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\07.Ice\03.Dome</Filter>
+    <ClCompile Include="HatredChain_Outter.cpp">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\06.HatredChain\01.Outter</Filter>
     </ClCompile>
-    <ClCompile Include="IceFreeze.cpp" />
-    <ClCompile Include="IceBolt_Crevasses.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

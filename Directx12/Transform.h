@@ -19,6 +19,8 @@ public:
     XMFLOAT3    GetPositionForMatrix();
     XMFLOAT3    GetLook();
     XMMATRIX    GetWorldMatrix();
+    XMMATRIX    GetScaleMatrix() { return XMMatrixScalingFromVector(XMLoadFloat3(&m_xmfScale)); }
+    XMMATRIX    GetInvScaleMatrix() { return XMMatrixInverse(nullptr, XMMatrixScalingFromVector(XMLoadFloat3(&m_xmfScale))); }
     XMFLOAT4X4* GetWorldMatrixPointer() { return &m_xmmWorld; }
 public:
     void        SetScale(XMFLOAT3 xmfSclae) { m_xmfScale = xmfSclae; }

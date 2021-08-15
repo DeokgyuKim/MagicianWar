@@ -66,11 +66,9 @@ void MagicCircle::BuildConstantBuffers()
 
 int MagicCircle::Update(const float& fTimeDelta)
 {
-	m_fTime += fTimeDelta;
-	if (m_fTime >= 2.f)
-	{
-		m_fTime -= 2.f;
-	}
+	m_fTime += fTimeDelta * 2.f;
+	if (m_fTime >= 1.1f)
+		return -1;
 	SkillEff::Update(fTimeDelta);
 	return 0;
 }

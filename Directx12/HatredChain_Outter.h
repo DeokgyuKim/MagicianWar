@@ -1,12 +1,11 @@
 #pragma once
 #include "SkillEff.h"
-class Meteor_FireEff :
+class HatredChain_Outter :
     public SkillEff
 {
 public:
-    Meteor_FireEff(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer,
-        Object* pParent = NULL, XMFLOAT3 rotate = XMFLOAT3(0.f, 0.f, 0.f), int dir = 1);
-    ~Meteor_FireEff();
+    HatredChain_Outter(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Object* pParent = NULL);
+    ~HatredChain_Outter();
 private:
     // SkillEff을(를) 통해 상속됨
     virtual void BuildComponent() override;
@@ -18,8 +17,7 @@ public:
     virtual int Update(const float& fTimeDelta) override;
     virtual void LateUpdate(const float& fTimeDelta) override;
     virtual void Render(const float& fTimeDelta, int _instanceCount = 1) override;
-
 private:
-    int m_iRotate = 1;
+    UINT m_iSkillIdx = 0;
 };
 

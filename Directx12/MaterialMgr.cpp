@@ -38,7 +38,6 @@ void MaterialMgr::BuildMaterial(const string& MaterialName, Material Mat)
 {
 
 	if (m_Materials.count(MaterialName)) {
-		cout << "동일 Material 존재" << endl;
 		return;
 	}
 

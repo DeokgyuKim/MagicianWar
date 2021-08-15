@@ -23,7 +23,7 @@ Flames_FireEff::~Flames_FireEff()
 
 void Flames_FireEff::BuildComponent()
 {
-	Component* pComponent = new Transform(XMFLOAT3(1.f, 4.f, 6.f), XMFLOAT3(0.f, 90.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(1.f, 4.f, 10.f), XMFLOAT3(0.f, 90.f, 0.f), XMFLOAT3(0.f, 2.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetParentMatrix(dynamic_cast<Transform*>(m_pParent->GetTransController())->GetWorldMatrixPointer());

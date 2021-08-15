@@ -720,9 +720,11 @@ void Network::packetProcessing(char* _packetBuffer)
 		STOC_Skill* data = reinterpret_cast<STOC_Skill*>(_packetBuffer);
 		if (MainApp::GetInstance()->GetScene()->GetSceneType() == SCENE_TYPE::MAIN)
 		{
-			Object* pObj = MainApp::GetInstance()->GetScene()->GetSkillForSlot((SKILL_TYPE)data->skillType, data->slotNum);
-			dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(data->xmfPosition);
-			dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(data->xmfRotate);
+			//Object* pObj = MainApp::GetInstance()->GetScene()->GetSkillForSlot((SKILL_TYPE)data->skillType, data->slotNum);
+			//dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(data->xmfPosition);
+			//dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(data->xmfRotate);
+			dynamic_cast<TestScene*>(MainApp::GetInstance()->GetScene())->UpdateSkillForPacket((SKILL_TYPE)data->skillType,
+				data->xmfPosition, data->xmfRotate, data->slotNum);
 		}
 
 		break;
