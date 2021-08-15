@@ -3,7 +3,7 @@
 Meteor::Meteor()
 	:Skill()
 {
-	m_Info.TotalLifeTime = 5.f;
+	m_Info.TotalLifeTime = 10.f;
 }
 
 Meteor::~Meteor()

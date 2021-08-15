@@ -3,7 +3,7 @@
 FireWall::FireWall()
 	:Skill()
 {
-	m_Info.TotalLifeTime = 5.f;
+	m_Info.TotalLifeTime = 10.f;
 }
 
 FireWall::~FireWall()

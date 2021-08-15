@@ -3,6 +3,7 @@
 Enchantress::Enchantress()
 	:Skill()
 {
+	m_Info.TotalLifeTime = 10.f;
 }
 
 Enchantress::~Enchantress()

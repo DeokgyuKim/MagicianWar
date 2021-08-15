@@ -9,6 +9,7 @@ BlackHole::BlackHole(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Re
 {
 	Initialize();
 	dynamic_cast<Transform*>(GetTransController())->SetPosition(pos);
+	m_eSkillType = SKILL_TYPE::SKILL_DARKNESS1;
 }
 
 BlackHole::~BlackHole()

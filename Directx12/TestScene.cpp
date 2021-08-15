@@ -17,6 +17,7 @@
 #include "FireShock.h"
 #include "FireRing.h"
 #include "IceBolt.h"
+#include "IceFreeze.h"
 #include "Meteor.h"
 #include "MagicCircle.h"
 #include "BlackHole.h"
@@ -390,13 +391,16 @@ void TestScene::MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot,
 		pSkill = new Meteor(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), rot, pos);
 		break;
 	case SKILL_COLD1:
+		pSkill = new IceBolt(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), rot, pos);
 		break;
 	case SKILL_COLD2:
+		pSkill = new IceFreeze(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), rot, pos);
 		break;
 	case SKILL_DARKNESS1:
 		pSkill = new BlackHole(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), pos);
 		break;
 	case SKILL_DARKNESS2:
+		pSkill = new HatredChain(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), pos);
 		break;
 	default:
 		return;
@@ -426,8 +430,12 @@ void TestScene::UpdateSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 ro
 		dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(rot);
 		break;
 	case SKILL_COLD1:
+		dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(pos);
+		dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(rot);
 		break;
 	case SKILL_COLD2:
+		dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(pos);
+		dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(rot);
 		break;
 	case SKILL_DARKNESS1:
 		dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(pos);

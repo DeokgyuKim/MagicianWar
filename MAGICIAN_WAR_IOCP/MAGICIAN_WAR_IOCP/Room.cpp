@@ -31,7 +31,7 @@ void Room::Initalize(int room_num, int host)
 	m_isRoundReset = false;
 	m_prev_time = chrono::system_clock::now();
 
-	m_TotalShoppingTime = 0;//SHOPPING_TIME;
+	m_TotalShoppingTime = 5;//SHOPPING_TIME;
 	m_ShoppingTime = 0;
 	m_TotalRestTime = 5;
 	m_ResetTime = 0;
@@ -48,10 +48,7 @@ void Room::Initalize(int room_num, int host)
 		m_roomPlayerSlots[i].slot_num = i;
 	}
 
-	for (int i = 0; i < MAX_SKILL; ++i) {
-		m_FireWall_Skills[i].setUser(NO_PLAYER);
-		m_FireWall_Skills[i].setSlotNum(i);
-	}
+	SkillInit();
 
 	m_isRoundEnd = false;
 	m_isRoundStart = false;
@@ -326,8 +323,8 @@ void Room::BulletUpdate(float fTime)
 void Room::SkillUpdate(float fTime)
 {
 	for (int i = 0; i < MAX_SKILL; ++i) {
-		// Fire
-		if (m_FireWall_Skills[i].getUser() != NO_PLAYER) {
+		// FIRE
+		if (m_FireWall_Skills[i].getUser() != NO_PLAYER) { // FIREWALL
 			int dead = m_FireWall_Skills[i].Update(fTime);
 			if (dead) {
 				m_FireWall_Skills[i].setUser(NO_PLAYER);
@@ -338,6 +335,21 @@ void Room::SkillUpdate(float fTime)
 				PushSkillUpdate(i, SKILL_FIREWALL);
 			}
 		}
+
+		if (m_FireMeteor_Skills[i].getUser() != NO_PLAYER) { // METEOR
+			int dead = m_FireMeteor_Skills[i].Update(fTime);
+			cout << (int)dead << endl;
+			if (dead) {
+				m_FireMeteor_Skills[i].setUser(NO_PLAYER);
+				PushSkillDelete(i, SKILL_FIRE2);
+			}
+			else {
+				m_FireMeteor_Skills[i].LateUpdate(fTime);
+				PushSkillUpdate(i, SKILL_FIRE2);
+			}
+		}
+
+		// ICE
 		if (m_IceBall_Skills[i].getUser() != NO_PLAYER) {
 			bool dead = m_IceBall_Skills[i].Update(fTime);
 			if (dead) {
@@ -347,6 +359,41 @@ void Room::SkillUpdate(float fTime)
 			else {
 				m_IceBall_Skills[i].LateUpdate(fTime);
 				PushSkillUpdate(i, SKILL_COLD1);
+			}
+		}
+		if (m_IceFreeze_Skills[i].getUser() != NO_PLAYER) {
+			bool dead = m_IceFreeze_Skills[i].Update(fTime);
+			if (dead) {
+				m_IceFreeze_Skills[i].setUser(NO_PLAYER);
+				PushSkillDelete(i, SKILL_COLD2);
+			}
+			else {
+				m_IceFreeze_Skills[i].LateUpdate(fTime);
+				PushSkillUpdate(i, SKILL_COLD2);
+			}
+		}
+
+		// DARKNESS
+		if (m_Darkness_Enchantress_Skills[i].getUser() != NO_PLAYER) {
+			bool dead = m_Darkness_Enchantress_Skills[i].Update(fTime);
+			if (dead) {
+				m_Darkness_Enchantress_Skills[i].setUser(NO_PLAYER);
+				PushSkillDelete(i, SKILL_DARKNESS1);
+			}
+			else {
+				m_Darkness_Enchantress_Skills[i].LateUpdate(fTime);
+				PushSkillUpdate(i, SKILL_DARKNESS1);
+			}
+		}
+		if (m_Darkness_DistortionPearl_Skills[i].getUser() != NO_PLAYER) {
+			bool dead = m_Darkness_DistortionPearl_Skills[i].Update(fTime);
+			if (dead) {
+				m_Darkness_DistortionPearl_Skills[i].setUser(NO_PLAYER);
+				PushSkillDelete(i, SKILL_DARKNESS2);
+			}
+			else {
+				m_Darkness_DistortionPearl_Skills[i].LateUpdate(fTime);
+				PushSkillUpdate(i, SKILL_DARKNESS2);
 			}
 		}
 	}
@@ -519,6 +566,7 @@ void Room::ExitRoom(int id)
 
 	for (int i = 0; i < MAX_PLAYER; ++i) {
 		if (m_roomPlayerSlots[i].id == id) { // 나가는 친구 체크
+			m_Disconnect_ID = id;
 			ishost = m_roomPlayerSlots[i].ishost;
 			islotNum = i;
 			break;
@@ -586,6 +634,33 @@ void Room::InGame_Init()
 
 }
 
+void Room::SkillInit()
+{
+	for (int i = 0; i < MAX_SKILL; ++i)
+	{
+		// FIRE
+		m_FireWall_Skills[i].setUser(NO_PLAYER);
+		m_FireWall_Skills[i].setSlotNum(i);
+
+		m_FireMeteor_Skills[i].setUser(NO_PLAYER);
+		m_FireMeteor_Skills[i].setSlotNum(i);
+
+		// ICE
+		m_IceBall_Skills[i].setUser(NO_PLAYER);
+		m_IceBall_Skills[i].setSlotNum(i);
+
+		m_IceFreeze_Skills[i].setUser(NO_PLAYER);
+		m_IceFreeze_Skills[i].setSlotNum(i);
+
+		// DARKNESS
+		m_Darkness_DistortionPearl_Skills[i].setUser(NO_PLAYER);
+		m_Darkness_DistortionPearl_Skills[i].setSlotNum(i);
+
+		m_Darkness_Enchantress_Skills[i].setUser(NO_PLAYER);
+		m_Darkness_Enchantress_Skills[i].setSlotNum(i);
+	}
+}
+
 void Room::ResetSkill()
 {
 	for (int i = 0; i < MAX_SKILL; ++i)
@@ -645,7 +720,6 @@ void Room::Player_Disconnect(int id)
 	for (auto iter = m_players.begin(); iter != m_players.end();)
 	{
 		if ((*iter)->getID() == id) {
-			m_Disconnect_ID = (*iter)->getID();
 			while ((*iter)->CanDisconnect());
 			if ((*iter) != nullptr)
 				delete* iter;
@@ -875,11 +949,11 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 			{
 				for (int i = 0; i < MAX_SKILL; ++i)
 				{
-					if (m_FireWall_Skills[i].getUser() == NO_PLAYER)
+					if (rEvent.ucType1 == SKILL_Q)
 					{
-						if (rEvent.ucType1 == SKILL_Q)
+						if (player->getCharacterType() == ELEMENT_FIRE)
 						{
-							if (player->getCharacterType() == ELEMENT_FIRE)
+							if (m_FireWall_Skills[i].getUser() == NO_PLAYER)
 							{
 								FireWall fireWall{};
 								m_FireWall_Skills[i] = fireWall;
@@ -892,46 +966,97 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 								PushSkillCreate(i, Skilltype);
 								break;
 							}
-							else if (player->getCharacterType() == ELEMENT_COLD)
+						}
+
+						else if (player->getCharacterType() == ELEMENT_COLD)
+						{
+							if (m_IceBall_Skills[i].getUser() == NO_PLAYER)
 							{
 								IcaAgeBall iceBall{};
 								m_IceBall_Skills[i] = iceBall;
 								m_IceBall_Skills[i].setSkillType(SKILL_COLD1);
 								m_IceBall_Skills[i].setUser(rEvent.playerID);
-								m_IceBall_Skills[i].setPosition(XMFLOAT3(player->getPosition().x, player->getPosition().y + 2.f, player->getPosition().z));
-								m_IceBall_Skills[i].setRotate(XMFLOAT3(0.f, 0.f, 0.f));
+								m_IceBall_Skills[i].setPosition(rEvent.xmfPosition);
+								m_IceBall_Skills[i].setRotate(rEvent.xmfRotate);
 								m_IceBall_Skills[i].setTeam(player->getTeam());
 								unsigned char Skilltype = m_IceBall_Skills[i].getSkillType();
 								PushSkillCreate(i, Skilltype);
 								break;
 							}
-							else if (player->getCharacterType() == ELEMENT_DARKNESS)
-							{
-								break;
-							}
 						}
-						else if (rEvent.ucType1 == SKILL_E)
+						else if (player->getCharacterType() == ELEMENT_DARKNESS)
 						{
-							if (player->getCharacterType() == ELEMENT_FIRE)
+							if (m_Darkness_Enchantress_Skills[i].getUser() == NO_PLAYER)
 							{
-								break;
-							}
-							else if (player->getCharacterType() == ELEMENT_COLD)
-							{
-								break;
-							}
-							else if (player->getCharacterType() == ELEMENT_DARKNESS)
-							{
+								Enchantress enchantress{};
+								m_Darkness_Enchantress_Skills[i] = enchantress;
+								m_Darkness_Enchantress_Skills[i].setSkillType(SKILL_DARKNESS1);
+								m_Darkness_Enchantress_Skills[i].setUser(rEvent.playerID);
+								m_Darkness_Enchantress_Skills[i].setPosition(rEvent.xmfPosition);
+								m_Darkness_Enchantress_Skills[i].setRotate(rEvent.xmfRotate);
+								m_Darkness_Enchantress_Skills[i].setTeam(player->getTeam());
+								unsigned char Skilltype = m_Darkness_Enchantress_Skills[i].getSkillType();
+								PushSkillCreate(i, Skilltype);
 								break;
 							}
 						}
-						break;
 					}
+					else if (rEvent.ucType1 == SKILL_E)
+					{
+						if (player->getCharacterType() == ELEMENT_FIRE)
+						{
+							if (m_FireMeteor_Skills[i].getUser() == NO_PLAYER)
+							{
+								Meteor meteor{};
+								m_FireMeteor_Skills[i] = meteor;
+								m_FireMeteor_Skills[i].setSkillType(SKILL_FIRE2);
+								m_FireMeteor_Skills[i].setUser(rEvent.playerID);
+								m_FireMeteor_Skills[i].setPosition(rEvent.xmfPosition);
+								m_FireMeteor_Skills[i].setRotate(rEvent.xmfRotate);
+								m_FireMeteor_Skills[i].setTeam(player->getTeam());
+								unsigned char Skilltype = m_FireMeteor_Skills[i].getSkillType();
+								PushSkillCreate(i, Skilltype);
+								break;
+							}
+						}
+						else if (player->getCharacterType() == ELEMENT_COLD)
+						{
+							if (m_IceFreeze_Skills[i].getUser() == NO_PLAYER)
+							{
+								IceFreeze ice_freeze{};
+								m_IceFreeze_Skills[i] = ice_freeze;
+								m_IceFreeze_Skills[i].setSkillType(SKILL_COLD2);
+								m_IceFreeze_Skills[i].setUser(rEvent.playerID);
+								m_IceFreeze_Skills[i].setPosition(rEvent.xmfPosition);
+								m_IceFreeze_Skills[i].setRotate(rEvent.xmfRotate);
+								m_IceFreeze_Skills[i].setTeam(player->getTeam());
+								unsigned char Skilltype = m_IceFreeze_Skills[i].getSkillType();
+								PushSkillCreate(i, Skilltype);
+								break;
+							}
+						}
+						else if (player->getCharacterType() == ELEMENT_DARKNESS)
+						{
+							if (m_Darkness_DistortionPearl_Skills[i].getUser() == NO_PLAYER)
+							{
+								DistortionPearl distortion_pearl{};
+								m_Darkness_DistortionPearl_Skills[i] = distortion_pearl;
+								m_Darkness_DistortionPearl_Skills[i].setSkillType(SKILL_DARKNESS2);
+								m_Darkness_DistortionPearl_Skills[i].setUser(rEvent.playerID);
+								m_Darkness_DistortionPearl_Skills[i].setPosition(rEvent.xmfPosition);
+								m_Darkness_DistortionPearl_Skills[i].setRotate(rEvent.xmfRotate);
+								m_Darkness_DistortionPearl_Skills[i].setTeam(player->getTeam());
+								unsigned char Skilltype = m_Darkness_DistortionPearl_Skills[i].getSkillType();
+								PushSkillCreate(i, Skilltype);
+								break;
+							}
+						}
+					}
+
 				}
 				break;
 			}
 		}
-		break;
 	default:
 		break;
 	}
@@ -978,6 +1103,11 @@ void Room::Send_sendEvent_Packet()
 		if (!Server::GetInstance()->SendPacket(SP_RoomInfo.playerID, SP_RoomInfo.buffer)) {
 			cout << "Error - Send_RoomInfo_Packet()\n";
 		}
+
+	}
+
+	for (auto player : m_players) {
+		player->SetCanDisconnect(true); // 이제 삭제가능
 	}
 
 }
@@ -1315,7 +1445,9 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 	}
 	else if (SkillType == SKILL_FIRE2)
 	{
-
+		packet.user = m_FireMeteor_Skills[slotNum].getUser();
+		packet.xmfPosition = m_FireMeteor_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_FireMeteor_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_COLD1)
 	{
@@ -1325,15 +1457,21 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 	}
 	else if (SkillType == SKILL_COLD2)
 	{
-
+		packet.user = m_IceFreeze_Skills[slotNum].getUser();
+		packet.xmfPosition = m_IceFreeze_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_IceFreeze_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_DARKNESS1)
 	{
-
+		packet.user = m_Darkness_Enchantress_Skills[slotNum].getUser();
+		packet.xmfPosition = m_Darkness_Enchantress_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_Darkness_Enchantress_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_DARKNESS2)
 	{
-
+		packet.user = m_Darkness_DistortionPearl_Skills[slotNum].getUser();
+		packet.xmfPosition = m_Darkness_DistortionPearl_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_Darkness_DistortionPearl_Skills[slotNum].getRotate();
 	}
 
 	for (auto player : m_players) {
@@ -1358,7 +1496,9 @@ void Room::PushSkillUpdate(int slotNum, unsigned char SkillType)
 	}
 	else if (SkillType == SKILL_FIRE2)
 	{
-
+		packet.user = m_FireMeteor_Skills[slotNum].getUser();
+		packet.xmfPosition = m_FireMeteor_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_FireMeteor_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_COLD1)
 	{
@@ -1368,15 +1508,21 @@ void Room::PushSkillUpdate(int slotNum, unsigned char SkillType)
 	}
 	else if (SkillType == SKILL_COLD2)
 	{
-
+		packet.user = m_IceFreeze_Skills[slotNum].getUser();
+		packet.xmfPosition = m_IceFreeze_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_IceFreeze_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_DARKNESS1)
 	{
-
+		packet.user = m_Darkness_Enchantress_Skills[slotNum].getUser();
+		packet.xmfPosition = m_Darkness_Enchantress_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_Darkness_Enchantress_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_DARKNESS2)
 	{
-
+		packet.user = m_Darkness_DistortionPearl_Skills[slotNum].getUser();
+		packet.xmfPosition = m_Darkness_DistortionPearl_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_Darkness_DistortionPearl_Skills[slotNum].getRotate();
 	}
 
 	for (auto player : m_players) {

@@ -3,7 +3,7 @@
 DistortionPearl::DistortionPearl()
     :Skill()
 {
-    m_Info.TotalLifeTime = 5.f;
+    m_Info.TotalLifeTime = 10.f;
 }
 
 DistortionPearl::~DistortionPearl()

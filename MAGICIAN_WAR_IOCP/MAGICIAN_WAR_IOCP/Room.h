@@ -43,6 +43,7 @@ public:
 	void ExitRoom(int id);
 
 	void InGame_Init();
+	void SkillInit();
 	void ResetSkill();
 
 	void roomslot_Clear(int roomSlot_num);

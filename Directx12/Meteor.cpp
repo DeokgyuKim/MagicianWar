@@ -11,6 +11,7 @@ Meteor::Meteor(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer
 	Initialize();
 	dynamic_cast<Transform*>(GetTransController())->SetRotate(rotate);
 	dynamic_cast<Transform*>(GetTransController())->SetPosition(pos);
+	m_eSkillType = SKILL_TYPE::SKILL_FIRE2;
 }
 
 Meteor::~Meteor()
