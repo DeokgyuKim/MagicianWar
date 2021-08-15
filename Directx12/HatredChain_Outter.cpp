@@ -41,7 +41,8 @@ void HatredChain_Outter::BuildComponent()
 
 void HatredChain_Outter::AddTexturesName()
 {
-	m_lstTextureName.push_back("Distortion1");
+	m_lstTextureName.push_back("Noise2");
+	m_lstTextureName.push_back("Noise4");
 }
 
 void HatredChain_Outter::BuildShaders()
