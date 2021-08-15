@@ -1,5 +1,21 @@
 #include "Player.h"
+//#include "InterfaceFSM.h"
 #include "PlayerFSM.h"
+
+Player::Player(const Player& _rhs)
+{
+	//m_Info.PlayerState = _rhs.m_RootBody->GetState();
+	m_Root_eAnimType = _rhs.m_Root_eAnimType;
+	m_Upper_eAnimType = _rhs.m_Upper_eAnimType;
+	m_Info = _rhs.m_Info;
+	m_bAttackEnd = _rhs.m_bAttackEnd;
+	m_Info.iHp = _rhs.m_Info.iHp;
+}
+
+Player::Player()
+{
+	InitArray();
+}
 
 Player::Player(int client_num, int room_num)
 {
@@ -13,8 +29,19 @@ Player::~Player()
 	{
 		CPhysXMgr::GetInstance()->gScene->removeActor(*m_pCapsuleCon->getActor());
 		m_pCapsuleCon->release();
+		m_pCapsuleCon = nullptr;
 	}
+}
 
+void Player::Release()
+{
+	cout << "플레이어 데이터 지우기\n";
+	if (m_pCapsuleCon != NULL)
+	{
+		CPhysXMgr::GetInstance()->gScene->removeActor(*m_pCapsuleCon->getActor());
+		m_pCapsuleCon->release();
+		m_pCapsuleCon = nullptr;
+	}
 }
 
 void Player::Initialize(int client_num, int room_num)
@@ -57,6 +84,45 @@ void Player::Initialize(int client_num, int room_num)
 
 
 }
+
+void Player::InitArray()
+{
+	ZeroMemory(&m_Info, sizeof(PlayerInfo));
+
+	m_Camera.CamX = 0.f;
+	m_Camera.CamY = 0.f;
+	m_xmfScale = XMFLOAT3(0.01f, 0.01f, 0.01f);
+	m_xmfRotate = XMFLOAT3(0.f, 0.f, 0.f);
+	m_xmfMeshRotate = XMFLOAT3(-90.f, 0.f, 0.f);
+	XMStoreFloat4x4(&m_xmmWorld, XMMatrixIdentity());
+
+
+	m_Info.PlayerState = STATE_IDLE;
+	m_Info.CharacterType = ELEMENT_FIRE;
+	m_Info.Client_Num = NO_PLAYER;
+	m_Info.isRoom_Host = false;
+	m_Info.Room_Num = NO_ROOM;
+	m_Info.iHp = 100;
+	m_keyInput = 0;
+	m_Ready = false;
+	m_Bullet = 0;
+	m_Room_JoinState = false;
+
+	m_Root_eAnimType = ANIM_IDLE;
+	m_Root_fAnimTime = 0.f;
+	m_Root_eAnimBlendType = ANIM_IDLE;
+	m_Root_fWeight = 0.f;
+
+	m_Upper_eAnimType = ANIM_IDLE;
+	m_Upper_fAnimTime = 0.f;
+	m_Upper_eAnimBlendType = ANIM_IDLE;
+	m_Upper_fWeight = 0.f;
+	m_LateInit = false;
+
+	m_pCapsuleCon = nullptr;
+}
+
+
 
 void Player::LateInit()
 {
@@ -226,7 +292,8 @@ XMFLOAT4X4 Player::getBulletStartWorld()
 
 int Player::getState()
 {
-	return m_RootBody->GetState(); 
+	m_Info.PlayerState = m_RootBody->GetState();
+	return m_Info.PlayerState; 
 }
 
 InterfaceFSM* Player::GetRootFSM()

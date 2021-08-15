@@ -1,7 +1,7 @@
 #pragma once
 
 #include "framework.h"
-#include "extern.h"
+#include "Global.h"
 #include "protocol.h"
 class InterfaceFSM;
 
@@ -9,11 +9,26 @@ class InterfaceFSM;
 class Player
 {
 public:
+	Player();
+	Player(const Player& _rhs);
 	Player(int client_num, int room_num);
+
+	Player& operator=(Player& rhs) 
+	{
+		Initialize(rhs.m_Info.Client_Num, rhs.m_Info.Room_Num);
+		setHp(rhs.m_Info.iHp);
+		setPosition(rhs.m_Info.xmfPosition);
+		setCharacterType(rhs.m_Info.CharacterType);
+		setTeam(rhs.m_Info.TeamType);
+		return *this;
+	}
+
 	~Player();
 
 public:
-	void Initialize(int client_num, int room_num);
+	void Release();
+	void Initialize(int client_num = NO_PLAYER, int room_num = NO_ROOM);
+	void InitArray();
 	void LateInit();
 	void ReInit();
 	void Update(float fTime);
@@ -56,6 +71,7 @@ public:
 	char getTeam() { return m_Info.TeamType; }
 	int getSlotNum() { return m_slot_num; }
 	Camera getCamera() { return m_Camera; }
+	bool getUsed() { return m_Used; }
 
 	InterfaceFSM* GetRootFSM();
 	InterfaceFSM* GetUpperFSM();
@@ -83,6 +99,7 @@ public:
 	void setHost(bool bHost);
 	void setSlotNum(int num) { m_slot_num = num; }
 	void setCamera(float x, float y) { m_Camera.CamX = x; m_Camera.CamY = y; }
+	void setUsed(bool _use) { m_Used = _use; }
 
 public:
 	void SetScale(XMFLOAT3 xmfSclae) { m_xmfScale = xmfSclae; }
@@ -106,6 +123,8 @@ private: //
 	bool m_Ready;
 	bool m_Room_JoinState;
 	bool m_LateInit;
+
+	bool m_Used = false;
 
 	// √ ±‚»≠
 	XMFLOAT4X4		m_matRealWorld;

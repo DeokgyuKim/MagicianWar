@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "protocol.h"
 #include "Global.h"
+#include "Player.h"
 #include "Bullet.h"
 #include "Skill.h"
 #include "FireWall.h"
@@ -11,8 +12,7 @@
 #include "Enchantress.h"
 #include "DistortionPearl.h"
 
-class Bullet;
-class Player;
+
 
 class Room
 {
@@ -65,7 +65,7 @@ public:
 	void PushRoundStartEvent(int Cur_Round);
 	void PushIngame_PlayerInfo_Start(int id);
 	void Push_SceneChange(int id,char sceneType);
-	void Send_UpdatePlayerInfoPacket(Player* _player);
+	void Send_UpdatePlayerInfoPacket(Player& _player);
 
 	void PushBullet_Update(int Bullet_Index);
 	void PushBullet_Delete(int Bullet_Index);
@@ -98,7 +98,8 @@ private:
 
 	int	m_WinnerTeam;
 	mutex m_player_mutex;
-	list<Player*> m_players;
+
+	array<Player, MAX_PLAYER> m_players;
 	array<Bullet, MAX_BULLET> m_Bullets;
 	array<FireWall, MAX_SKILL> m_FireWall_Skills;
 	array<Meteor, MAX_SKILL> m_FireMeteor_Skills;
@@ -135,7 +136,6 @@ private:
 	bool m_isGameStart;
 	bool m_istEnterable;
 
-	int m_Disconnect_ID = -3;
 
 	int	m_BlueTeam_Alive_Count;
 	int m_RedTeam_Alive_Count;

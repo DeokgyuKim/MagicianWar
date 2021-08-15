@@ -1,8 +1,9 @@
 #include "Room.h"
-#include "Player.h"
+
 #include "PlayerFSM.h"
 #include "Server.h"
 #include "FireWall.h"
+#include "extern.h"
 
 
 Room::Room(int room_num, int host)
@@ -79,13 +80,15 @@ void Room::ReInit()
 	m_player_mutex.lock();
 
 	// m_players는 인게임에서만 씀
-	for (auto& player : m_players)
+	for (int i = 0; i < MAX_PLAYER; ++i)
 	{
-		if (player != nullptr)
-			delete player;
-		player = nullptr;
+		if (m_players[i].getUsed()) {
+			m_players[i].Release();
+			m_players[i].setUsed(false);
+		}
+		
 	}
-	m_players.clear();
+
 
 	m_player_mutex.unlock();
 
@@ -128,22 +131,24 @@ void Room::RoundSetting()
 {
 	m_WinnerTeam = TEAM_NONE;
 	// 상점 끝나고 라운드 시작할때 해줄것
-	for (auto player : m_players) { // 초기 위치 재설정
-		int spawnPos = player->getSlotNum();
-		cout << "spawnPos - " << spawnPos << "\n";
-		if (spawnPos == 0) player->setPosition(XMFLOAT3(20.f, 0.f, 10.f));
-		else if (spawnPos == 1) player->setPosition(XMFLOAT3(15.f, 0.f, 10.f));
-		else if (spawnPos == 2) player->setPosition(XMFLOAT3(10.f, 0.f, 10.f));
-		else if (spawnPos == 3) player->setPosition(XMFLOAT3(5.f, 0.f, 10.f));
-		else if (spawnPos == 4) player->setPosition(XMFLOAT3(40.f, 0.f, 90.f));
-		else if (spawnPos == 5) player->setPosition(XMFLOAT3(45.f, 0.f, 90.f));
-		else if (spawnPos == 6) player->setPosition(XMFLOAT3(50.f, 0.f, 90.f));
-		else if (spawnPos == 7) player->setPosition(XMFLOAT3(55.f, 0.f, 90.f));
+	for (int i = 0; i < MAX_PLAYER; ++i) { // 초기 위치 재설정
+		if (m_players[i].getUsed()) {
+			int spawnPos = m_players[i].getSlotNum();
+			cout << "spawnPos - " << spawnPos << "\n";
+			if (spawnPos == 0) m_players[i].setPosition(XMFLOAT3(20.f, 0.f, 10.f));
+			else if (spawnPos == 1) m_players[i].setPosition(XMFLOAT3(15.f, 0.f, 10.f));
+			else if (spawnPos == 2) m_players[i].setPosition(XMFLOAT3(10.f, 0.f, 10.f));
+			else if (spawnPos == 3) m_players[i].setPosition(XMFLOAT3(5.f, 0.f, 10.f));
+			else if (spawnPos == 4) m_players[i].setPosition(XMFLOAT3(40.f, 0.f, 90.f));
+			else if (spawnPos == 5) m_players[i].setPosition(XMFLOAT3(45.f, 0.f, 90.f));
+			else if (spawnPos == 6) m_players[i].setPosition(XMFLOAT3(50.f, 0.f, 90.f));
+			else if (spawnPos == 7) m_players[i].setPosition(XMFLOAT3(55.f, 0.f, 90.f));
 
-		player->setHp(100);
-		player->SetRotate(XMFLOAT3(0.f, 0.f, 0.f));
-		player->GetUpperFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
-		player->GetRootFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
+			m_players[i].setHp(100);
+			m_players[i].SetRotate(XMFLOAT3(0.f, 0.f, 0.f));
+			m_players[i].GetUpperFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
+			m_players[i].GetRootFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
+		}
 	}
 
 	// Bullet초기화
@@ -160,14 +165,14 @@ void Room::RoundSetting()
 
 void Room::Release()
 {
-	// Player
-	for (auto& player : m_players)
-	{
-		if (player != nullptr)
-			delete player;
-		player = nullptr;
-	}
-	m_players.clear();
+	//// Player
+	//for (int i = 0; i < MAX_PLAYER; ++i)
+	//{
+	//	if (m_players[i].getUsed()) {
+	//		m_players[i].Release();
+	//	}
+	//}
+	
 
 	for (int i = 0; i < BulletCB_Count; ++i) {
 		if (m_Bullets[i].getUser() != NO_PLAYER)
@@ -258,12 +263,17 @@ void Room::InGame_Update(float fTime)
 	}
 
 
-	for (auto player : m_players) {
-
-		player->LateUpdate(fTime);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) {
+			m_players[i].LateUpdate(fTime);
+		}
 	}
-	for (auto player : m_players) {
-		Send_UpdatePlayerInfoPacket(player);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) {
+			Send_UpdatePlayerInfoPacket(m_players[i]);
+		}
 	}
 
 
@@ -274,26 +284,28 @@ void Room::PlayerUpdate(float fTime)
 {
 	Bullet BulletTemp;
 
-	for (auto player : m_players)
+	for (int i = 0; i < MAX_PLAYER; ++i)
 	{
-		player->Update(fTime);
-		if (player->getCreateBullet() == 1)
-		{
-			BulletTemp.SetUser(player->getID());
-			BulletTemp.setCheckUserTeam(player->getTeam());
-			BulletTemp.setElementType(player->getCharacterType());
-			BulletTemp.setWorldMatrix(player->getBulletStartWorld());
-			BulletTemp.setPosition(player->getPosition());
-			BulletTemp.setTotalLifeTime(5.f);
-			BulletTemp.setDirection(XMFLOAT3{ -player->getWorld()._21,-player->getWorld()._22 ,-player->getWorld()._23 });
+		if (m_players[i].getUsed()) {
+			m_players[i].Update(fTime);
+			if (m_players[i].getCreateBullet() == 1)
+			{
+				BulletTemp.SetUser(m_players[i].getID());
+				BulletTemp.setCheckUserTeam(m_players[i].getTeam());
+				BulletTemp.setElementType(m_players[i].getCharacterType());
+				BulletTemp.setWorldMatrix(m_players[i].getBulletStartWorld());
+				BulletTemp.setPosition(m_players[i].getPosition());
+				BulletTemp.setTotalLifeTime(5.f);
+				BulletTemp.setDirection(XMFLOAT3{ -m_players[i].getWorld()._21,-m_players[i].getWorld()._22 ,-m_players[i].getWorld()._23 });
 
-			for (int i = 0; i < BulletCB_Count; ++i) {
-				if (m_Bullets[i].getUser() == NO_PLAYER) { // 안쓰는 총알 찾아서
+				for (int i = 0; i < BulletCB_Count; ++i) {
+					if (m_Bullets[i].getUser() == NO_PLAYER) { // 안쓰는 총알 찾아서
 
-					m_Bullets[i] = BulletTemp;
+						m_Bullets[i] = BulletTemp;
 
-					player->setCreateBullet(0);
-					break;
+						m_players[i].setCreateBullet(0);
+						break;
+					}
 				}
 			}
 		}
@@ -338,7 +350,7 @@ void Room::SkillUpdate(float fTime)
 
 		if (m_FireMeteor_Skills[i].getUser() != NO_PLAYER) { // METEOR
 			int dead = m_FireMeteor_Skills[i].Update(fTime);
-			cout << (int)dead << endl;
+			
 			if (dead) {
 				m_FireMeteor_Skills[i].setUser(NO_PLAYER);
 				PushSkillDelete(i, SKILL_FIRE2);
@@ -426,48 +438,49 @@ void Room::Physics_Collision()
 
 				PushBullet_Delete(i);
 			}
-			for (auto player : m_players)
+			for (int i = 0; i < MAX_PLAYER; ++i)
 			{
+				if (m_players[i].getUsed()) {
 				// 같은 팀이 쏜 총이 아니고 죽은 플레이어가 아니고 승자가 없을때
-				if (m_Bullets[i].getCheckUserTeam() != player->getTeam()
-					&& player->getState() != STATE_DEAD && m_WinnerTeam == TEAM_NONE)
+				if (m_Bullets[i].getCheckUserTeam() != m_players[i].getTeam()
+					&& m_players[i].getState() != STATE_DEAD && m_WinnerTeam == TEAM_NONE)
 				{
-					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(player->GetPxCapsuleController()->getActor(), m_Bullets[i].GetRigidDynamic()))
+					if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(m_players[i].GetPxCapsuleController()->getActor(), m_Bullets[i].GetRigidDynamic()))
 					{
 						int Attack_Player = m_Bullets[i].getUser();
 						m_Bullets[i].SetUser(NO_PLAYER);
 						PushBullet_Delete(i);
 						//플레이어 피달고 그런거
-						player->setDamage(m_Bullets[i].getDamage());
-						if (player->getHp() <= 0)
+						m_players[i].setDamage(m_Bullets[i].getDamage());
+						if (m_players[i].getHp() <= 0)
 						{
 							PushAddKillPoint(Attack_Player); // 1킬 했음 너가
-							player->GetUpperFSM()->ChangeState(STATE_DEAD, ANIM_DEAD);
-							player->GetRootFSM()->ChangeState(STATE_DEAD, ANIM_DEAD);
-							if (player->getTeam() == TEAM_BLUE) { // 죽은 친구가 BlueTeam이면
+							m_players[i].GetUpperFSM()->ChangeState(STATE_DEAD, ANIM_DEAD);
+							m_players[i].GetRootFSM()->ChangeState(STATE_DEAD, ANIM_DEAD);
+							if (m_players[i].getTeam() == TEAM_BLUE) { // 죽은 친구가 BlueTeam이면
 								--m_BlueTeam_Alive_Count;
 								m_isRoundEnd = CheckRoundEnd(m_BlueTeam_Alive_Count);
 							}
-							else if (player->getTeam() == TEAM_RED) {
+							else if (m_players[i].getTeam() == TEAM_RED) {
 								--m_RedTeam_Alive_Count;
 								m_isRoundEnd = CheckRoundEnd(m_RedTeam_Alive_Count);
 							}
 							if (m_isRoundEnd) // 라운드가 끝나면
 							{
-								if (player->getTeam() == TEAM_RED) { // 마지막에 죽은 친구팀 파악
+								if (m_players[i].getTeam() == TEAM_RED) { // 마지막에 죽은 친구팀 파악
 									m_WinnerTeam = TEAM_BLUE;
 								}
-								else if (player->getTeam() == TEAM_BLUE) {
+								else if (m_players[i].getTeam() == TEAM_BLUE) {
 									m_WinnerTeam = TEAM_RED;
 								}
 								m_RoundWinnerCheck = true;
 							}
 						}
 						else
-							player->GetUpperFSM()->ChangeState(STATE_HIT, ANIM_HIT);
+							m_players[i].GetUpperFSM()->ChangeState(STATE_HIT, ANIM_HIT);
 					}
 				}
-
+			}
 			}
 		}
 	}
@@ -488,23 +501,29 @@ void Room::CheckWinnerTeam()
 		if (m_WinnerTeam == TEAM_BLUE) // 승자팀이 나오면
 		{
 			PushRoundEndEvent(TEAM_BLUE);
-			for (auto player : m_players) {
-				if (player->getTeam() == TEAM_BLUE)
+			for (int i = 0; i < MAX_PLAYER; ++i)
+			{
+				if (m_players[i].getUsed()) {
+				if (m_players[i].getTeam() == TEAM_BLUE)
 				{
-					player->GetUpperFSM()->ChangeState(STATE_DANCE, ANIM_DANCE);
-					player->GetRootFSM()->ChangeState(STATE_DANCE, ANIM_DANCE);
+					m_players[i].GetUpperFSM()->ChangeState(STATE_DANCE, ANIM_DANCE);
+					m_players[i].GetRootFSM()->ChangeState(STATE_DANCE, ANIM_DANCE);
 				}
+			}
 			}
 			m_RoundWinnerCheck = false;
 		}
 		else if (m_WinnerTeam == TEAM_RED)
 		{
 			PushRoundEndEvent(TEAM_RED);
-			for (auto player : m_players) {
-				if (player->getTeam() == TEAM_RED)
-				{
-					player->GetUpperFSM()->ChangeState(STATE_DANCE, ANIM_DANCE);
-					player->GetRootFSM()->ChangeState(STATE_DANCE, ANIM_DANCE);
+			for (int i = 0; i < MAX_PLAYER; ++i)
+			{
+				if (m_players[i].getUsed()) {
+					if (m_players[i].getTeam() == TEAM_RED)
+					{
+						m_players[i].GetUpperFSM()->ChangeState(STATE_DANCE, ANIM_DANCE);
+						m_players[i].GetRootFSM()->ChangeState(STATE_DANCE, ANIM_DANCE);
+					}
 				}
 			}
 			m_RoundWinnerCheck = false;
@@ -522,7 +541,6 @@ bool Room::EnterRoom(int id, bool host)
 		return false;
 
 	cout << id << " 가 방에 들어옴\n";
-	m_Disconnect_ID = -3;
 
 	g_Clients[id]->Room_num = m_Info.Room_Num;
 
@@ -566,7 +584,6 @@ void Room::ExitRoom(int id)
 
 	for (int i = 0; i < MAX_PLAYER; ++i) {
 		if (m_roomPlayerSlots[i].id == id) { // 나가는 친구 체크
-			m_Disconnect_ID = id;
 			ishost = m_roomPlayerSlots[i].ishost;
 			islotNum = i;
 			break;
@@ -588,9 +605,12 @@ void Room::ExitRoom(int id)
 	roomslot_Clear(islotNum);
 	PushRoomPlayerEvent(islotNum);
 
-	for (auto player : m_players) {
-		int receiver = player->getID();
-		PushExitPlayer(receiver, id);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) {
+			int receiver = m_players[i].getID();
+			PushExitPlayer(receiver, id);
+		}
 	}
 
 	--m_curPlayer_Count;
@@ -603,29 +623,35 @@ void Room::InGame_Init()
 	for (int i = 0; i < MAX_PLAYER; ++i) {
 		if (m_roomPlayerSlots[i].used) {
 			PushRoomPlayerEvent(i);
-			Player* _player = new Player(m_roomPlayerSlots[i].id, m_Info.Room_Num);
-			_player->setHp(100);
-			_player->setCharacterType(m_roomPlayerSlots[i].characterType);
-			_player->setSlotNum(m_roomPlayerSlots[i].slot_num);
+			Player _player = Player(m_roomPlayerSlots[i].id, m_Info.Room_Num);
+			_player.setHp(100);
+			_player.setCharacterType(m_roomPlayerSlots[i].characterType);
+			_player.setSlotNum(m_roomPlayerSlots[i].slot_num);
 			if (i <= 3) { // Blue Team
-				if (i == 0)_player->setPosition(XMFLOAT3(20.f, 0.f, 10.f));
-				else if (i == 1)_player->setPosition(XMFLOAT3(15.f, 0.f, 10.f));
-				else if (i == 2)_player->setPosition(XMFLOAT3(10.f, 0.f, 10.f));
-				else if (i == 3)_player->setPosition(XMFLOAT3(5.f, 0.f, 10.f));
+				if (i == 0)_player.setPosition(XMFLOAT3(20.f, 0.f, 10.f));
+				else if (i == 1)_player.setPosition(XMFLOAT3(15.f, 0.f, 10.f));
+				else if (i == 2)_player.setPosition(XMFLOAT3(10.f, 0.f, 10.f));
+				else if (i == 3)_player.setPosition(XMFLOAT3(5.f, 0.f, 10.f));
 
 				++m_BlueTeam_Alive_Count;
-				_player->setTeam(TEAM_BLUE);
+				_player.setTeam(TEAM_BLUE);
 			}
 			else if (i <= 7) { // Red Team
-				if (i == 4)_player->setPosition(XMFLOAT3(40.f, 0.f, 90.f));
-				else if (i == 5)_player->setPosition(XMFLOAT3(45.f, 0.f, 90.f));
-				else if (i == 6)_player->setPosition(XMFLOAT3(50.f, 0.f, 90.f));
-				else if (i == 7)_player->setPosition(XMFLOAT3(55.f, 0.f, 90.f));
+				if (i == 4)_player.setPosition(XMFLOAT3(40.f, 0.f, 90.f));
+				else if (i == 5)_player.setPosition(XMFLOAT3(45.f, 0.f, 90.f));
+				else if (i == 6)_player.setPosition(XMFLOAT3(50.f, 0.f, 90.f));
+				else if (i == 7)_player.setPosition(XMFLOAT3(55.f, 0.f, 90.f));
 
 				++m_RedTeam_Alive_Count;
-				_player->setTeam(TEAM_RED);
+				_player.setTeam(TEAM_RED);
 			}
-			m_players.emplace_back(_player);
+			for(int i=0;i<MAX_PLAYER;++i){
+				if (!m_players[i].getUsed()) { ///////////////////////////////// 시이이이발
+					m_players[i] = _player;
+					m_players[i].setUsed(true);
+					break;
+				}
+			}
 			PushGameStartEvent(m_roomPlayerSlots[i].id);
 
 		}
@@ -717,19 +743,16 @@ void Room::Player_Disconnect(int id)
 	//bool CanDisconnect = false;
 
 	m_player_mutex.lock();
-	for (auto iter = m_players.begin(); iter != m_players.end();)
+	
+	for (int i = 0; i < MAX_PLAYER; ++i)
 	{
-		if ((*iter)->getID() == id) {
-			while ((*iter)->CanDisconnect());
-			if ((*iter) != nullptr)
-				delete* iter;
-
-			*iter = nullptr;
-			iter = m_players.erase(iter);
+		if (m_players[i].getID() == id) {
+			m_players[i].setUsed(false);
+			m_players[i].Release();
+			break;
 		}
-		else
-			++iter;
 	}
+
 	m_player_mutex.unlock();
 
 
@@ -776,22 +799,28 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 	{
 	case ctos_keyInput:
 	{
-		for (auto player : m_players) {
-			if (player->getID() == rEvent.playerID) {
-				dynamic_cast<PlayerFSM*>(player->GetUpperFSM())->SetDefaultKey(rEvent.data1);
-				dynamic_cast<PlayerFSM*>(player->GetRootFSM())->SetDefaultKey(rEvent.data1);
-				break;
+		for (int i = 0; i < MAX_PLAYER; ++i)
+		{
+			if (m_players[i].getUsed()) {
+				if (m_players[i].getID() == rEvent.playerID) {
+					dynamic_cast<PlayerFSM*>(m_players[i].GetUpperFSM())->SetDefaultKey(rEvent.data1);
+					dynamic_cast<PlayerFSM*>(m_players[i].GetRootFSM())->SetDefaultKey(rEvent.data1);
+					break;
+				}
 			}
 		}
 		break;
 	}
 	case ctos_CreateBullet_Request:
 	{
-		for (auto player : m_players) {
-			if (player->getID() == rEvent.playerID) {
-				cout << "서버 총알 쏴줘\n";
-				player->setCreateBullet(1);
-				break;
+		for (int i = 0; i < MAX_PLAYER; ++i)
+		{
+			if (m_players[i].getUsed()) {
+				if (m_players[i].getID() == rEvent.playerID) {
+					cout << "서버 총알 쏴줘\n";
+					m_players[i].setCreateBullet(1);
+					break;
+				}
 			}
 		}
 		break;
@@ -902,8 +931,11 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 	// InGame
 	case ctos_IngameInfo_Request:
 	{
-		for (auto player : m_players) {
-			PushIngame_PlayerInfo_Start(player->getID());
+		for (int i = 0; i < MAX_PLAYER; ++i)
+		{
+			if (m_players[i].getUsed()) {
+				PushIngame_PlayerInfo_Start(m_players[i].getID());
+			}
 		}
 
 		Push_SceneChange(rEvent.playerID, STAGE_SCENE);
@@ -911,23 +943,29 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 	}
 	case ctos_Camera_update:
 	{
-		for (auto player : m_players) {
-			if (player->getID() == rEvent.playerID) {
-				XMFLOAT3 xmfRotate = player->getRotate();
-				xmfRotate.y = rEvent.fdata2;
-				player->setCamera(rEvent.fdata1, rEvent.fdata2);
-				player->SetRotate(xmfRotate);
-				break;
+		for (int i = 0; i < MAX_PLAYER; ++i)
+		{
+			if (m_players[i].getUsed()) {
+				if (m_players[i].getID() == rEvent.playerID) {
+					XMFLOAT3 xmfRotate = m_players[i].getRotate();
+					xmfRotate.y = rEvent.fdata2;
+					m_players[i].setCamera(rEvent.fdata1, rEvent.fdata2);
+					m_players[i].SetRotate(xmfRotate);
+					break;
+				}
 			}
 		}
 		break;
 	}
 	case ctos_AttackEnd:
 	{
-		for (auto player : m_players) {
-			if (player->getID() == rEvent.playerID) {
-				player->setAttackEnd(rEvent.bdata1);
-				break;
+		for (int i = 0; i < MAX_PLAYER; ++i)
+		{
+			if (m_players[i].getUsed()) {
+				if (m_players[i].getID() == rEvent.playerID) {
+					m_players[i].setAttackEnd(rEvent.bdata1);
+					break;
+				}
 			}
 		}
 		break;
@@ -943,15 +981,16 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 		break;
 	}
 	case ctos_skill_Request:
-		for (auto player : m_players)
+		for (int i = 0; i < MAX_PLAYER; ++i)
 		{
-			if (player->getID() == rEvent.playerID)
+			if (m_players[i].getUsed()) {
+			if (m_players[i].getID() == rEvent.playerID)
 			{
 				for (int i = 0; i < MAX_SKILL; ++i)
 				{
 					if (rEvent.ucType1 == SKILL_Q)
 					{
-						if (player->getCharacterType() == ELEMENT_FIRE)
+						if (m_players[i].getCharacterType() == ELEMENT_FIRE)
 						{
 							if (m_FireWall_Skills[i].getUser() == NO_PLAYER)
 							{
@@ -961,14 +1000,14 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 								m_FireWall_Skills[i].setUser(rEvent.playerID);
 								m_FireWall_Skills[i].setPosition(rEvent.xmfPosition);
 								m_FireWall_Skills[i].setRotate(rEvent.xmfRotate);
-								m_FireWall_Skills[i].setTeam(player->getTeam());
+								m_FireWall_Skills[i].setTeam(m_players[i].getTeam());
 								unsigned char Skilltype = m_FireWall_Skills[i].getSkillType();
 								PushSkillCreate(i, Skilltype);
 								break;
 							}
 						}
 
-						else if (player->getCharacterType() == ELEMENT_COLD)
+						else if (m_players[i].getCharacterType() == ELEMENT_COLD)
 						{
 							if (m_IceBall_Skills[i].getUser() == NO_PLAYER)
 							{
@@ -978,13 +1017,13 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 								m_IceBall_Skills[i].setUser(rEvent.playerID);
 								m_IceBall_Skills[i].setPosition(rEvent.xmfPosition);
 								m_IceBall_Skills[i].setRotate(rEvent.xmfRotate);
-								m_IceBall_Skills[i].setTeam(player->getTeam());
+								m_IceBall_Skills[i].setTeam(m_players[i].getTeam());
 								unsigned char Skilltype = m_IceBall_Skills[i].getSkillType();
 								PushSkillCreate(i, Skilltype);
 								break;
 							}
 						}
-						else if (player->getCharacterType() == ELEMENT_DARKNESS)
+						else if (m_players[i].getCharacterType() == ELEMENT_DARKNESS)
 						{
 							if (m_Darkness_Enchantress_Skills[i].getUser() == NO_PLAYER)
 							{
@@ -994,7 +1033,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 								m_Darkness_Enchantress_Skills[i].setUser(rEvent.playerID);
 								m_Darkness_Enchantress_Skills[i].setPosition(rEvent.xmfPosition);
 								m_Darkness_Enchantress_Skills[i].setRotate(rEvent.xmfRotate);
-								m_Darkness_Enchantress_Skills[i].setTeam(player->getTeam());
+								m_Darkness_Enchantress_Skills[i].setTeam(m_players[i].getTeam());
 								unsigned char Skilltype = m_Darkness_Enchantress_Skills[i].getSkillType();
 								PushSkillCreate(i, Skilltype);
 								break;
@@ -1003,7 +1042,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 					}
 					else if (rEvent.ucType1 == SKILL_E)
 					{
-						if (player->getCharacterType() == ELEMENT_FIRE)
+						if (m_players[i].getCharacterType() == ELEMENT_FIRE)
 						{
 							if (m_FireMeteor_Skills[i].getUser() == NO_PLAYER)
 							{
@@ -1013,13 +1052,13 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 								m_FireMeteor_Skills[i].setUser(rEvent.playerID);
 								m_FireMeteor_Skills[i].setPosition(rEvent.xmfPosition);
 								m_FireMeteor_Skills[i].setRotate(rEvent.xmfRotate);
-								m_FireMeteor_Skills[i].setTeam(player->getTeam());
+								m_FireMeteor_Skills[i].setTeam(m_players[i].getTeam());
 								unsigned char Skilltype = m_FireMeteor_Skills[i].getSkillType();
 								PushSkillCreate(i, Skilltype);
 								break;
 							}
 						}
-						else if (player->getCharacterType() == ELEMENT_COLD)
+						else if (m_players[i].getCharacterType() == ELEMENT_COLD)
 						{
 							if (m_IceFreeze_Skills[i].getUser() == NO_PLAYER)
 							{
@@ -1029,13 +1068,13 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 								m_IceFreeze_Skills[i].setUser(rEvent.playerID);
 								m_IceFreeze_Skills[i].setPosition(rEvent.xmfPosition);
 								m_IceFreeze_Skills[i].setRotate(rEvent.xmfRotate);
-								m_IceFreeze_Skills[i].setTeam(player->getTeam());
+								m_IceFreeze_Skills[i].setTeam(m_players[i].getTeam());
 								unsigned char Skilltype = m_IceFreeze_Skills[i].getSkillType();
 								PushSkillCreate(i, Skilltype);
 								break;
 							}
 						}
-						else if (player->getCharacterType() == ELEMENT_DARKNESS)
+						else if (m_players[i].getCharacterType() == ELEMENT_DARKNESS)
 						{
 							if (m_Darkness_DistortionPearl_Skills[i].getUser() == NO_PLAYER)
 							{
@@ -1045,7 +1084,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 								m_Darkness_DistortionPearl_Skills[i].setUser(rEvent.playerID);
 								m_Darkness_DistortionPearl_Skills[i].setPosition(rEvent.xmfPosition);
 								m_Darkness_DistortionPearl_Skills[i].setRotate(rEvent.xmfRotate);
-								m_Darkness_DistortionPearl_Skills[i].setTeam(player->getTeam());
+								m_Darkness_DistortionPearl_Skills[i].setTeam(m_players[i].getTeam());
 								unsigned char Skilltype = m_Darkness_DistortionPearl_Skills[i].getSkillType();
 								PushSkillCreate(i, Skilltype);
 								break;
@@ -1056,6 +1095,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 				}
 				break;
 			}
+		}
 		}
 	default:
 		break;
@@ -1096,9 +1136,6 @@ void Room::Send_sendEvent_Packet()
 		Send_Packet_RoomInfo SP_RoomInfo = sendEventQueue_Copied.front();
 		sendEventQueue_Copied.pop();
 
-		if (m_Disconnect_ID == SP_RoomInfo.playerID) {
-			continue;
-		}
 
 		if (!Server::GetInstance()->SendPacket(SP_RoomInfo.playerID, SP_RoomInfo.buffer)) {
 			cout << "Error - Send_RoomInfo_Packet()\n";
@@ -1106,9 +1143,6 @@ void Room::Send_sendEvent_Packet()
 
 	}
 
-	for (auto player : m_players) {
-		player->SetCanDisconnect(true); // 이제 삭제가능
-	}
 
 }
 
@@ -1183,9 +1217,12 @@ void Room::PushRoundStartEvent(int Cur_Round)
 	packet.type = stoc_roundstart;
 	packet.Cur_Round = Cur_Round;
 
-	for (auto player : m_players) { // 게임에 존재하는 모든 플레이어에게 메시지를 보내줘야한다.
-		int id = player->getID();
-		sendEvent_push(id, &packet);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) { // 게임에 존재하는 모든 플레이어에게 메시지를 보내줘야한다.
+			int id = m_players[i].getID();
+			sendEvent_push(id, &packet);
+		}
 	}
 
 }
@@ -1198,13 +1235,16 @@ void Room::PushIngame_PlayerInfo_Start(int id)
 	packet.size = sizeof(packet);
 	packet.type = stoc_InGame_StartInfo;
 
-	for (auto player : m_players) {
-		packet.CharacterType = player->getCharacterType();
-		packet.dwTeamNum = player->getTeam();
-		packet.iHp = player->getHp();
-		packet.xmfPosition = player->getPosition();
-		packet.id = player->getID();
-		sendEvent_push(id, &packet);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) {
+			packet.CharacterType = m_players[i].getCharacterType();
+			packet.dwTeamNum = m_players[i].getTeam();
+			packet.iHp = m_players[i].getHp();
+			packet.xmfPosition = m_players[i].getPosition();
+			packet.id = m_players[i].getID();
+			sendEvent_push(id, &packet);
+		}
 	}
 
 }
@@ -1220,29 +1260,33 @@ void Room::Push_SceneChange(int id, char sceneType)
 	sendEvent_push(id, &packet);
 }
 
-void Room::Send_UpdatePlayerInfoPacket(Player* _player)
+void Room::Send_UpdatePlayerInfoPacket(Player& _player)
 {
 	if (this == nullptr) return;
+
 	STOC_PlayerInfo packet;
 	packet.size = sizeof(packet);
 	packet.type = stoc_playerInfo;
-	packet.ePlayerState = _player->getState();
-	packet.Root_eAnimType = _player->getRootAnimType();
-	packet.Upper_eAnimType = _player->getUpperAnimType();
+	packet.ePlayerState = _player.getState();
+	packet.Root_eAnimType = _player.getRootAnimType();
+	packet.Upper_eAnimType = _player.getUpperAnimType();
 
 	//packet.playerInfo.x = _player->getWorld();
-	packet.playerInfo = _player->getInfo();
-	packet.bAttackEnd = _player->IsAttackEnded();
-	packet.playerInfo.iHp = _player->getHp();
+	packet.playerInfo = _player.getInfo();
+	packet.bAttackEnd = _player.IsAttackEnded();
+	packet.playerInfo.iHp = _player.getHp();
 
 	//m_player_mutex.lock();
-	for (auto player : m_players) {
-		sendEvent_push(player->getID(), &packet);
-		//Server::GetInstance()->SendIngamePlayerInfo(player->getID(), packet);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) {
+			sendEvent_push(m_players[i].getID(), &packet);
+			//Server::GetInstance()->SendIngamePlayerInfo(player->getID(), packet);
+		}
 	}
 
-	_player->SetCanDisconnect(true);
 	//m_player_mutex.unlock();
+	
 }
 
 void Room::PushBullet_Update(int Bullet_Index)
@@ -1256,8 +1300,11 @@ void Room::PushBullet_Update(int Bullet_Index)
 	packet.xmmWorld = m_Bullets[Bullet_Index].getWorld();
 	packet.index = Bullet_Index;
 
-	for (auto player : m_players) {
-		sendEvent_push(player->getID(), &packet);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) {
+			sendEvent_push(m_players[i].getID(), &packet);
+		}
 	}
 }
 
@@ -1270,8 +1317,11 @@ void Room::PushBullet_Delete(int Bullet_Index)
 	packet.type = stoc_bullet_delete;
 	packet.index = Bullet_Index;
 
-	for (auto player : m_players) {
-		sendEvent_push(player->getID(), &packet);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) {
+			sendEvent_push(m_players[i].getID(), &packet);
+		}
 	}
 
 }
@@ -1294,8 +1344,11 @@ void Room::PushRoundEndEvent(int TeamType)
 	packet.type = stoc_roundend;
 	packet.teamType = TeamType;
 
-	for (auto player : m_players) {
-		sendEvent_push(player->getID(), &packet);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) {
+			sendEvent_push(m_players[i].getID(), &packet);
+		}
 	}
 }
 
@@ -1321,10 +1374,12 @@ void Room::SendLeftShoppingTime()
 		cout << "시간 - " << (int)leftTime << "\n";
 		++m_ShoppingTime;
 
-		for (auto player : m_players) // 게임중인 플레이어들에게 쇼핑시간 보내줘야지
+		for (int i = 0; i < MAX_PLAYER; ++i)
 		{
-			int id = player->getID();
-			Server::GetInstance()->SendLeftTime(id, leftTime);
+			if (m_players[i].getUsed()) { // 게임중인 플레이어들에게 쇼핑시간 보내줘야지
+				int id = m_players[i].getID();
+				Server::GetInstance()->SendLeftTime(id, leftTime);
+			}
 		}
 
 
@@ -1357,13 +1412,13 @@ void Room::SendRoundTime()
 		cout << "라운드 진행중 - " << (int)leftTime << "\n";
 		++m_RoundTime;
 
-		for (auto player : m_players) // 게임중인 플레이어들에게 쇼핑시간 보내줘야지
+		for (int i = 0; i < MAX_PLAYER; ++i)
 		{
-			int id = player->getID();
-			Server::GetInstance()->SendLeftTime(id, leftTime);
+			if (m_players[i].getUsed()) { // 게임중인 플레이어들에게 쇼핑시간 보내줘야지
+				int id = m_players[i].getID();
+				Server::GetInstance()->SendLeftTime(id, leftTime);
+			}
 		}
-
-
 	}
 	else
 	{
@@ -1423,8 +1478,11 @@ void Room::PushRoundReset()
 	packet.size = sizeof(packet);
 	packet.type = stoc_roundreset;
 
-	for (auto player : m_players) {
-		sendEvent_push(player->getID(), &packet);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) {
+			sendEvent_push(m_players[i].getID(), &packet);
+		}
 	}
 }
 
@@ -1474,8 +1532,11 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 		packet.xmfRotate = m_Darkness_DistortionPearl_Skills[slotNum].getRotate();
 	}
 
-	for (auto player : m_players) {
-		sendEvent_push(player->getID(), &packet);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) {
+			sendEvent_push(m_players[i].getID(), &packet);
+		}
 	}
 }
 
@@ -1525,8 +1586,11 @@ void Room::PushSkillUpdate(int slotNum, unsigned char SkillType)
 		packet.xmfRotate = m_Darkness_DistortionPearl_Skills[slotNum].getRotate();
 	}
 
-	for (auto player : m_players) {
-		sendEvent_push(player->getID(), &packet);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) {
+			sendEvent_push(m_players[i].getID(), &packet);
+		}
 	}
 }
 
@@ -1540,8 +1604,11 @@ void Room::PushSkillDelete(int slotNum, unsigned char SkillType)
 	packet.skillType = static_cast<unsigned char>(SkillType);
 	packet.slotNum = slotNum;
 
-	for (auto player : m_players) {
-		sendEvent_push(player->getID(), &packet);
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		if (m_players[i].getUsed()) {
+			sendEvent_push(m_players[i].getID(), &packet);
+		}
 	}
 }
 
