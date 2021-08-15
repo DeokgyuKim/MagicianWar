@@ -5,7 +5,11 @@
 #include "Bullet.h"
 #include "Skill.h"
 #include "FireWall.h"
+#include "Meteor.h"
 #include "IcaAgeBall.h"
+#include "IceFreeze.h"
+#include "Enchantress.h"
+#include "DistortionPearl.h"
 
 class Bullet;
 class Player;
@@ -24,6 +28,12 @@ public:
 	void Release();
 	void Update();
 	void InGame_Update(float fTime);
+public:
+	void PlayerUpdate(float fTime);
+	void BulletUpdate(float fTime);
+	void SkillUpdate(float fTime);
+
+	void Physics_Simulate(float fTime);
 	void Physics_Collision();
 	bool CheckRoundEnd(int TeamCount);
 	void CheckWinnerTeam();
@@ -90,7 +100,12 @@ private:
 	list<Player*> m_players;
 	array<Bullet, MAX_BULLET> m_Bullets;
 	array<FireWall, MAX_SKILL> m_FireWall_Skills;
+	array<Meteor, MAX_SKILL> m_FireMeteor_Skills;
 	array<IcaAgeBall, MAX_SKILL> m_IceBall_Skills;
+	array<IceFreeze, MAX_SKILL> m_IceFreeze_Skills;
+	array<Enchantress, MAX_SKILL> m_Darkness_Enchantress_Skills;
+	array<DistortionPearl, MAX_SKILL> m_Darkness_DistortionPearl_Skills;
+
 
 	mutex m_bullet_mutex;
 	mutex m_physic_mutex;
@@ -118,6 +133,8 @@ private:
 	short m_TotalRoundTime;
 	bool m_isGameStart;
 	bool m_istEnterable;
+
+	int m_Disconnect_ID = -3;
 
 	int	m_BlueTeam_Alive_Count;
 	int m_RedTeam_Alive_Count;

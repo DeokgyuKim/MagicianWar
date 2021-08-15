@@ -120,7 +120,7 @@ void Room::ReInit()
 void Room::RoundStart()
 {
 	m_isRoundEnd = false;
-	
+
 	PushRoundStartEvent(++m_Info.curRound);
 	m_RoundTime = 0;
 	SendRoundTime();
@@ -239,15 +239,47 @@ void Room::Update()
 
 void Room::InGame_Update(float fTime)
 {
-	// 인게임 player 처리
+	// PlayerUPdate
+	PlayerUpdate(fTime);
+
+	// 총알 Update
+	BulletUpdate(fTime);
+
+	// Skill Update
+	SkillUpdate(fTime);
+
+	// Physics_Simulate
+	Physics_Simulate(fTime);
+
+	// Physics_Collision & WinnerCheck
+	if (!m_isRoundEnd) {
+		Physics_Collision();
+		CheckWinnerTeam();
+	}
+	else { // 라운드가 끝났을때 라운드 재시작까지의 시간
+		SendRoundResetTime();
+	}
+
+
+	for (auto player : m_players) {
+
+		player->LateUpdate(fTime);
+	}
+	for (auto player : m_players) {
+		Send_UpdatePlayerInfoPacket(player);
+	}
+
+
+
+}
+
+void Room::PlayerUpdate(float fTime)
+{
 	Bullet BulletTemp;
-	//if(m_isRoundEnd)
+
 	for (auto player : m_players)
 	{
-
 		player->Update(fTime);
-
-
 		if (player->getCreateBullet() == 1)
 		{
 			BulletTemp.SetUser(player->getID());
@@ -269,8 +301,10 @@ void Room::InGame_Update(float fTime)
 			}
 		}
 	}
+}
 
-	// 총알 Update
+void Room::BulletUpdate(float fTime)
+{
 	for (int i = 0; i < BulletCB_Count; ++i) {
 
 		if (m_Bullets[i].getUser() != NO_PLAYER) { // 사용중인 것만 update
@@ -287,8 +321,12 @@ void Room::InGame_Update(float fTime)
 		}
 
 	}
+}
 
+void Room::SkillUpdate(float fTime)
+{
 	for (int i = 0; i < MAX_SKILL; ++i) {
+		// Fire
 		if (m_FireWall_Skills[i].getUser() != NO_PLAYER) {
 			int dead = m_FireWall_Skills[i].Update(fTime);
 			if (dead) {
@@ -312,8 +350,10 @@ void Room::InGame_Update(float fTime)
 			}
 		}
 	}
+}
 
-
+void Room::Physics_Simulate(float fTime)
+{
 	if (CPhysXMgr::GetInstance()->PhysXStartTime > 10.f)
 	{
 		CPhysXMgr::GetInstance()->gScene->simulate(fTime);
@@ -323,29 +363,6 @@ void Room::InGame_Update(float fTime)
 	{
 		CPhysXMgr::GetInstance()->PhysXStartTime += fTime;
 	}
-
-	///PhysXUpdate
-	//CPhysXMgr::GetInstance()->gScene->simulate(fTime);
-	//CPhysXMgr::GetInstance()->gScene->fetchResults(true);
-
-	if (!m_isRoundEnd) {
-
-		Physics_Collision();
-		CheckWinnerTeam();
-	}
-	else { // 라운드가 끝났을때
-		SendRoundResetTime();
-	}
-
-	for (auto player : m_players) {
-
-		player->LateUpdate(fTime);
-
-		Send_UpdatePlayerInfoPacket(player);
-	}
-
-
-
 }
 
 void Room::Physics_Collision()
@@ -458,7 +475,7 @@ bool Room::EnterRoom(int id, bool host)
 		return false;
 
 	cout << id << " 가 방에 들어옴\n";
-
+	m_Disconnect_ID = -3;
 
 	g_Clients[id]->Room_num = m_Info.Room_Num;
 
@@ -571,16 +588,38 @@ void Room::InGame_Init()
 
 void Room::ResetSkill()
 {
-	for (int i = 0; i < MAX_SKILL; ++i) 
+	for (int i = 0; i < MAX_SKILL; ++i)
 	{
+		// FIRE
 		if (m_FireWall_Skills[i].getUser() != NO_PLAYER)
 		{
 			m_FireWall_Skills[i].setUser(NO_PLAYER);
 		}
+		if (m_FireMeteor_Skills[i].getUser() != NO_PLAYER)
+		{
+			m_FireMeteor_Skills[i].setUser(NO_PLAYER);
+		}
+
+		// ICE
 		if (m_IceBall_Skills[i].getUser() != NO_PLAYER)
 		{
 			m_IceBall_Skills[i].setUser(NO_PLAYER);
 		}
+		if (m_IceFreeze_Skills[i].getUser() != NO_PLAYER)
+		{
+			m_IceFreeze_Skills[i].setUser(NO_PLAYER);
+		}
+
+		// DARKNESS
+		if (m_Darkness_Enchantress_Skills[i].getUser() != NO_PLAYER)
+		{
+			m_Darkness_Enchantress_Skills[i].setUser(NO_PLAYER);
+		}
+		if (m_Darkness_DistortionPearl_Skills[i].getUser() != NO_PLAYER)
+		{
+			m_Darkness_DistortionPearl_Skills[i].setUser(NO_PLAYER);
+		}
+
 	}
 }
 
@@ -599,19 +638,25 @@ void Room::roomslot_Clear(int roomSlot_num)
 void Room::Player_Disconnect(int id)
 {
 	if (this == nullptr) return;
-	//m_player_mutex.lock();
+
+	//bool CanDisconnect = false;
+
+	m_player_mutex.lock();
 	for (auto iter = m_players.begin(); iter != m_players.end();)
 	{
 		if ((*iter)->getID() == id) {
+			m_Disconnect_ID = (*iter)->getID();
+			while ((*iter)->CanDisconnect());
 			if ((*iter) != nullptr)
 				delete* iter;
+
 			*iter = nullptr;
 			iter = m_players.erase(iter);
 		}
 		else
 			++iter;
 	}
-	//m_player_mutex.unlock();
+	m_player_mutex.unlock();
 
 
 	g_Client_mutex.lock();
@@ -824,9 +869,9 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 		break;
 	}
 	case ctos_skill_Request:
-		for (auto player : m_players) 
+		for (auto player : m_players)
 		{
-			if (player->getID() == rEvent.playerID) 
+			if (player->getID() == rEvent.playerID)
 			{
 				for (int i = 0; i < MAX_SKILL; ++i)
 				{
@@ -834,18 +879,18 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 					{
 						if (rEvent.ucType1 == SKILL_Q)
 						{
-							if (player->getCharacterType() == ELEMENT_FIRE) 
+							if (player->getCharacterType() == ELEMENT_FIRE)
 							{
-							FireWall fireWall{};
-							m_FireWall_Skills[i] = fireWall;
-							m_FireWall_Skills[i].setSkillType(SKILL_FIREWALL);
-							m_FireWall_Skills[i].setUser(rEvent.playerID);
-							m_FireWall_Skills[i].setPosition(rEvent.xmfPosition);
-							m_FireWall_Skills[i].setRotate(rEvent.xmfRotate);
-							m_FireWall_Skills[i].setTeam(player->getTeam());
-							unsigned char Skilltype =  m_FireWall_Skills[i].getSkillType();
-							PushSkillCreate(i, Skilltype);
-							break;
+								FireWall fireWall{};
+								m_FireWall_Skills[i] = fireWall;
+								m_FireWall_Skills[i].setSkillType(SKILL_FIREWALL);
+								m_FireWall_Skills[i].setUser(rEvent.playerID);
+								m_FireWall_Skills[i].setPosition(rEvent.xmfPosition);
+								m_FireWall_Skills[i].setRotate(rEvent.xmfRotate);
+								m_FireWall_Skills[i].setTeam(player->getTeam());
+								unsigned char Skilltype = m_FireWall_Skills[i].getSkillType();
+								PushSkillCreate(i, Skilltype);
+								break;
 							}
 							else if (player->getCharacterType() == ELEMENT_COLD)
 							{
@@ -854,7 +899,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 								m_IceBall_Skills[i].setSkillType(SKILL_COLD1);
 								m_IceBall_Skills[i].setUser(rEvent.playerID);
 								m_IceBall_Skills[i].setPosition(XMFLOAT3(player->getPosition().x, player->getPosition().y + 2.f, player->getPosition().z));
-								m_IceBall_Skills[i].setRotate(XMFLOAT3(0.f,0.f,0.f));
+								m_IceBall_Skills[i].setRotate(XMFLOAT3(0.f, 0.f, 0.f));
 								m_IceBall_Skills[i].setTeam(player->getTeam());
 								unsigned char Skilltype = m_IceBall_Skills[i].getSkillType();
 								PushSkillCreate(i, Skilltype);
@@ -925,6 +970,10 @@ void Room::Send_sendEvent_Packet()
 	{
 		Send_Packet_RoomInfo SP_RoomInfo = sendEventQueue_Copied.front();
 		sendEventQueue_Copied.pop();
+
+		if (m_Disconnect_ID == SP_RoomInfo.playerID) {
+			continue;
+		}
 
 		if (!Server::GetInstance()->SendPacket(SP_RoomInfo.playerID, SP_RoomInfo.buffer)) {
 			cout << "Error - Send_RoomInfo_Packet()\n";
@@ -1044,7 +1093,6 @@ void Room::Push_SceneChange(int id, char sceneType)
 void Room::Send_UpdatePlayerInfoPacket(Player* _player)
 {
 	if (this == nullptr) return;
-
 	STOC_PlayerInfo packet;
 	packet.size = sizeof(packet);
 	packet.type = stoc_playerInfo;
@@ -1062,6 +1110,8 @@ void Room::Send_UpdatePlayerInfoPacket(Player* _player)
 		sendEvent_push(player->getID(), &packet);
 		//Server::GetInstance()->SendIngamePlayerInfo(player->getID(), packet);
 	}
+
+	_player->SetCanDisconnect(true);
 	//m_player_mutex.unlock();
 }
 

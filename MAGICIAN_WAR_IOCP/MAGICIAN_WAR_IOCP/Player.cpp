@@ -95,7 +95,7 @@ void Player::ReInit()
 void Player::Update(float fTime)
 {
 	LateInit();
-
+	m_CanDisconnect = false;
 
 	m_UpperBody->Execute(fTime);
 	m_RootBody->Execute(fTime);
@@ -107,6 +107,8 @@ void Player::LateUpdate(float fTime)
 	UpdatePlayerInfo();
 	ModifyPhysXPos(fTime);
 
+
+	//m_CanDisconnect = true;
 }
 
 void Player::UpdatePlayerInfo()

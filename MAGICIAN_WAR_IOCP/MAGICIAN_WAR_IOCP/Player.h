@@ -88,6 +88,8 @@ public:
 	void SetScale(XMFLOAT3 xmfSclae) { m_xmfScale = xmfSclae; }
 	void SetRotate(XMFLOAT3 xmfRotate);
 
+	bool CanDisconnect() const { return m_CanDisconnect; }
+	void SetCanDisconnect(bool _bCan) { m_CanDisconnect = _bCan; }
 public:
 	//PhysX
 	void CreateCapsuleController();
@@ -135,6 +137,8 @@ private: //
 	PxCapsuleController* m_pCapsuleCon = nullptr;
 
 	int m_Bullet;
+
+	bool m_CanDisconnect;
 
 	//Jump
 	bool m_bJump = false;
