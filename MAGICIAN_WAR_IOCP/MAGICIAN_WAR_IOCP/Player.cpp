@@ -4,7 +4,7 @@
 
 Player::Player(const Player& _rhs)
 {
-	//m_Info.PlayerState = _rhs.m_RootBody->GetState();
+	m_Info.PlayerState = _rhs.m_RootBody->GetState();
 	m_Root_eAnimType = _rhs.m_Root_eAnimType;
 	m_Upper_eAnimType = _rhs.m_Upper_eAnimType;
 	m_Info = _rhs.m_Info;
