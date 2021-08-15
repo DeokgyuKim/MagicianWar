@@ -266,6 +266,13 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["Ice2"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "FlashInner", L"../Resources/FlashInner.dds");
+	m_mapTextures["FlashInner"] = pTexture;
+	pLoading->AddCount();
+	pTexture = new DDSTexture(device, cmdLst, heap, "FlashOutter", L"../Resources/FlashOutter.dds");
+	m_mapTextures["FlashOutter"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "weapon", L"../Resources/Models/Textures/weapon.dds");
 	m_mapTextures["weapon"] = pTexture;
 	pLoading->AddCount();
@@ -302,6 +309,8 @@ void TextureMgr::BuildInitTextures(ID3D12Device* device, ID3D12GraphicsCommandLi
 	m_mapTextures["Noise3"] = pTexture;
 	pTexture = new DDSTexture(device, cmdLst, heap, "Noise4", L"../Resources/Noise4.dds", false, 12);
 	m_mapTextures["Noise4"] = pTexture;
+	pTexture = new DDSTexture(device, cmdLst, heap, "Noise5", L"../Resources/Noise5.dds", false, 12);
+	m_mapTextures["Noise5"] = pTexture; 
 }
 
 DDSTexture* TextureMgr::GetTexture(string textureName)

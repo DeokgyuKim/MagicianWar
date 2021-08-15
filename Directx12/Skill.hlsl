@@ -862,3 +862,116 @@ PSOut_Skill PS_HatredChain_Outter(Out_Skill pin)
 	vout.Distortion = float4(Dist, 0.f, Dist.r);
 	return vout;
 }
+
+PSOut_Skill PS_Boom_Sphere(Out_Skill_Static pin)
+{
+	PSOut_Skill vout = (PSOut_Skill)0;
+
+	////float alpha = SkillEffTex2.Sample(gsamLinear, pin.TexC).r + gDissolveC;
+	//alpha = floor(alpha);
+	//color.a = color.r;
+	//
+	/////Color
+	//float2 uv1 = pin.TexC;
+	//float2 uv2 = pin.TexC * 2.f;
+	//float2 uv3 = pin.TexC * 3.f;
+	//
+	//float fOffset = 0.7f;
+	//
+	//
+	//uv1.y += gSkillTime * 0.5f * fOffset;
+	//uv2.y += gSkillTime * 1.2f * fOffset;
+	//uv3.y += gSkillTime * 1.8f * fOffset;
+	//
+	//float4 noise1 = SkillEffTex2.Sample(gsamLinear, uv1);
+	//float4 noise2 = SkillEffTex2.Sample(gsamLinear, uv2);
+	//float4 noise3 = SkillEffTex2.Sample(gsamLinear, uv3);
+	//
+	//noise1 = (noise1 - 0.5f) * 2.f;
+	//noise2 = (noise2 - 0.5f) * 2.f;
+	//noise3 = (noise3 - 0.5f) * 2.f;
+	//
+	//float2 distortion1 = float2(0.1f, 0.2f);
+	//float2 distortion2 = float2(0.1f, 0.3f);
+	//float2 distortion3 = float2(0.1f, 0.1f);
+	//
+	//noise1.xy = noise1.xy * distortion1.xy;
+	//noise2.xy = noise2.xy * distortion2.xy;
+	//noise3.xy = noise3.xy * distortion3.xy;
+	//
+	//float4 noise = noise1 + noise2 + noise3;
+	//
+	//float perturb = ((1.f - pin.TexC.y) * 0.8f) + 0.5f;
+	//
+	//float2 noiseCoord = (noise.xy * perturb) + pin.TexC.xy;
+	//float4 color = SkillEffTex1.Sample(gsamClamp, noiseCoord);
+	//
+	/////Dissolve
+	//float3 diff2 = SkillEffTex2.Sample(gsamLinear, pin.TexC).rgb;
+	//
+	//float multi1 = ((diff2.r * (1.5f - gSkillTime * 1.5)) * 2.8);
+	//float multi2 = diff2.r * (1.5f - gSkillTime * 1.5);
+	//
+	//float b = saturate(pow(multi1 + multi2, 20));
+	//
+	//float c = pow(multi1 + multi2, 20);
+	//
+	//float3 Ke;
+	//
+	//float3 diffuse = float3(0.f, 0.f, 0.f);
+	//
+	//if (0.6f >= b)
+	//{
+	//	Ke = float3(0.f, 0.f, 0.f);
+	//	c = 0.f;
+	//}
+	//else if (0.9f >= b)
+	//{
+	//	Ke = float3(0.3f, 0.3f, 0.3f);
+	//	c = 1.f;
+	//}
+	//else
+	//{
+	//	Ke = color.rgb;
+	//	c = 1.f;
+	//}
+	//
+	//
+	//
+	////float3 diffuse = (Ke * float3(0.f, 0.f, 0.f) + color);
+	//vout.Diffuse = float4(Ke, c);
+	//vout.Distortion = float4(0.f, 0.f, 0.f, 0.f);
+
+	float alpha = (SkillEffTex2.Sample(gsamLinear, pin.TexC).r + gDissolveC) * 5.f;
+	alpha = floor(alpha) - 3.f;
+	alpha /= 2.f;
+	
+	float3 color = SkillEffTex1.Sample(gsamLinear, pin.TexC).rgb;
+
+	vout.Diffuse = float4(color * alpha, alpha);
+	vout.Distortion = float4(0.f, 0.f, 0.f, 0.f);
+
+	return vout;
+}
+
+PSOut_Skill_DEFF PS_Boom_Inner(Out_Skill_Static pin)
+{
+	PSOut_Skill_DEFF vout = (PSOut_Skill_DEFF)0;
+
+
+	float4 position = mul(float4(pin.ViewPos, 1.f), gInvView);
+	float4 vLook = float4(normalize(gCamPosition.xyz - position.xyz), 0.f);
+	float fresnel = 1.f - abs(dot(pin.NormalW, -vLook.xyz));
+
+	float3 color = float3(1.f, 1.f, 1.f) * (1 - fresnel * 2.f) + SkillEffTex1.Sample(gsamLinear, pin.TexC).rgb * fresnel * 2.f;
+	
+	vout.Diffuse = float4(color, 1.f);
+	vout.Ambient = float4(color, 1.f);
+	vout.Specular = float4(color, 1.f);
+	vout.Normal = float4(pin.NormalW * 0.5f + 0.5f, 1.f);
+	vout.Depth = float4((pin.PosH.z / pin.PosH.w), pin.PosH.w * 0.001f, 0.f, 1.f);
+	vout.Positiion = float4(pin.ViewPos, 1.f);
+	vout.Emmissive = float4(color * 3.f, 1.f);
+	//vout.Emmissive = float4(0.f, 0.f, 0.f, 0.f);
+	return vout;
+}
