@@ -346,6 +346,18 @@
     <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\06.HatredChain\01.Outter">
       <UniqueIdentifier>{28081e7b-e6ad-4f58-8559-cf716963fbe1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\07.IceFreeze">
+      <UniqueIdentifier>{b834053e-c1d7-4f1c-b91d-ec8b4059edb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze">
+      <UniqueIdentifier>{599fbf0a-5918-4a80-8241-a6ae6b2896d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\00.Crevasses">
+      <UniqueIdentifier>{36ce76cf-902d-4160-83c7-27dfdf2da910}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\01.IceDorm">
+      <UniqueIdentifier>{f2b9d073-ee9e-4d63-beb5-bec94dedeee6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -669,6 +681,15 @@
     <ClInclude Include="HatredChain_Outter.h">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\06.HatredChain\01.Outter</Filter>
     </ClInclude>
+    <ClInclude Include="IceFreeze.h">
+      <Filter>00.Game\02.Object\06.Skill\07.IceFreeze</Filter>
+    </ClInclude>
+    <ClInclude Include="IceBolt_Crevasses.h">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\00.Crevasses</Filter>
+    </ClInclude>
+    <ClInclude Include="IceFreeze_IceDorm.h">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\01.IceDorm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -964,6 +985,15 @@
     </ClCompile>
     <ClCompile Include="HatredChain_Outter.cpp">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\06.HatredChain\01.Outter</Filter>
+    </ClCompile>
+    <ClCompile Include="IceFreeze.cpp">
+      <Filter>00.Game\02.Object\06.Skill\07.IceFreeze</Filter>
+    </ClCompile>
+    <ClCompile Include="IceBolt_Crevasses.cpp">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\00.Crevasses</Filter>
+    </ClCompile>
+    <ClCompile Include="IceFreeze_IceDorm.cpp">
+      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\01.IceDorm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
