@@ -351,7 +351,8 @@ void Room::SkillUpdate(float fTime)
 		if (m_FireMeteor_Skills[i].getUser() != NO_PLAYER) { // METEOR
 			int dead = m_FireMeteor_Skills[i].Update(fTime);
 			
-			if (dead) {
+			if (dead) {  
+				int a;
 				m_FireMeteor_Skills[i].setUser(NO_PLAYER);
 				PushSkillDelete(i, SKILL_FIRE2);
 			}
