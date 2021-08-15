@@ -157,6 +157,8 @@
     <ClInclude Include="BlackHole_Body.h" />
     <ClInclude Include="BlackHole_Inner.h" />
     <ClInclude Include="Boom.h" />
+    <ClInclude Include="Boom_Inner.h" />
+    <ClInclude Include="Boom_Sphere.h" />
     <ClInclude Include="CharInfo.h" />
     <ClInclude Include="CharInfoController.h" />
     <ClInclude Include="ClickerButton.h" />
@@ -271,6 +273,8 @@
     <ClCompile Include="BlackHole_Body.cpp" />
     <ClCompile Include="BlackHole_Inner.cpp" />
     <ClCompile Include="Boom.cpp" />
+    <ClCompile Include="Boom_Inner.cpp" />
+    <ClCompile Include="Boom_Sphere.cpp" />
     <ClCompile Include="CharInfo.cpp" />
     <ClCompile Include="CharInfoController.cpp" />
     <ClCompile Include="ClickerButton.cpp" />

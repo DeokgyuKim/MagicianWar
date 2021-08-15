@@ -98,13 +98,13 @@ void LobbyScene::Initialize(bool bRetry)
 	Camera* pCamera = NULL;
 
 
-	Core::GetInstance()->CmdLstReset();
+	//::GetInstance()->CmdLstReset();
 	pObj = new Camera(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());
 	m_pCamera = pCamera = dynamic_cast<Camera*>(pObj);
 	Renderer::GetInstance()->SetCamera(dynamic_cast<Camera*>(pObj));
 	m_pObjects[OBJ_CAMERA].push_back(pObj);
-	Core::GetInstance()->CmdLstExecute();
-	Core::GetInstance()->WaitForGpuComplete();
+	//Core::GetInstance()->CmdLstExecute();
+	//Core::GetInstance()->WaitForGpuComplete();
 
 	pObj = new UI(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT4(0.f, 0.f, WINCX, WINCY), "Lobby");
 	m_pObjects[OBJ_UI].push_back(pObj);

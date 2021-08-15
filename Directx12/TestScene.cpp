@@ -21,6 +21,7 @@
 #include "MagicCircle.h"
 #include "BlackHole.h"
 #include "HatredChain.h"
+#include "Boom.h"
 
 #include "StaticMeshMgr.h"
 #include "InstanceMgr.h"
@@ -162,8 +163,6 @@ void TestScene::Initialize()
 	}
 	pPlayer = dynamic_cast<Player*>(pObj);
 	m_pObjects[OBJ_PLAYER].push_back(pObj);
-	Core::GetInstance()->CmdLstExecute();
-	Core::GetInstance()->WaitForGpuComplete();
 
 	Portrait* pOur[3];
 	Portrait* pEnemy[4];
@@ -172,7 +171,6 @@ void TestScene::Initialize()
 	map<int, PlayerInfo> Others = Network::GetInstance()->GetOtherPlayerInfo();
 	for (auto iter = Others.begin(); iter != Others.end(); ++iter)
 	{
-		Core::GetInstance()->CmdLstReset();
 		pos = (*iter).second.xmfPosition;
 		switch ((*iter).second.CharacterType)
 		{
@@ -189,8 +187,6 @@ void TestScene::Initialize()
 				CHARACTER_WIZARD_DARKNESS, pos, (*iter).second, MESH_TYPE::CHARACTER);
 			break;
 		}
-		Core::GetInstance()->CmdLstExecute();
-		Core::GetInstance()->WaitForGpuComplete();
 		m_pObjects[OBJ_PLAYER].push_back(pObj);
 
 		if ((*iter).second.TeamType == pPlayer->GetNetworkInfo().TeamType)
@@ -280,9 +276,10 @@ void TestScene::Initialize()
 	//	XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 2.f, 15.f));
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
 	//
-	pObj = new HatredChain(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT3(20.f, 3.f, 10.f));
+	//pObj = new HatredChain(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT3(20.f, 3.f, 10.f));
+	//m_pObjects[OBJ_SKILL].push_back(pObj);
+	pObj = new Boom(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(20.f, 2.f, 10.f));
 	m_pObjects[OBJ_SKILL].push_back(pObj);
-
 
 
 	//pObj = new MagicCircle(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
