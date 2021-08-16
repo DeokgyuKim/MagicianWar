@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Directx12", "Directx12\Directx12.vcxproj", "{1CDF9EDF-1EB7-4125-B0A8-CEA2B9466038}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MagicianWar", "Directx12\Directx12.vcxproj", "{1CDF9EDF-1EB7-4125-B0A8-CEA2B9466038}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,8 +13,8 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1CDF9EDF-1EB7-4125-B0A8-CEA2B9466038}.Debug|x64.ActiveCfg = Debug|x64
-		{1CDF9EDF-1EB7-4125-B0A8-CEA2B9466038}.Debug|x64.Build.0 = Debug|x64
+		{1CDF9EDF-1EB7-4125-B0A8-CEA2B9466038}.Debug|x64.ActiveCfg = Release|x64
+		{1CDF9EDF-1EB7-4125-B0A8-CEA2B9466038}.Debug|x64.Build.0 = Release|x64
 		{1CDF9EDF-1EB7-4125-B0A8-CEA2B9466038}.Debug|x86.ActiveCfg = Debug|Win32
 		{1CDF9EDF-1EB7-4125-B0A8-CEA2B9466038}.Debug|x86.Build.0 = Debug|Win32
 		{1CDF9EDF-1EB7-4125-B0A8-CEA2B9466038}.Release|x64.ActiveCfg = Release|x64
