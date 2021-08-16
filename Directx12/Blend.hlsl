@@ -272,35 +272,35 @@ PS_BLEND_OUT PS_POST(Blend_Out pin)
 	pOut.Blend.a = 1.f;
 
 
-	float ratioX = 0.1f;
-	float ratioY = 0.1f;
-	if (0.f * ratioX <= pin.UV.x && pin.UV.x < 1.f * ratioX && 0.f * ratioY <= pin.UV.y && pin.UV.y < 1.f * ratioY)
-		pOut.Blend = DiffTex.Sample(gsamLinear, pin.UV / 0.1f);
-	if (0.f * ratioX <= pin.UV.x && pin.UV.x < 1.f * ratioX && 1.f * ratioY <= pin.UV.y && pin.UV.y < 2.f * ratioY)
-		pOut.Blend = AmbiTex.Sample(gsamLinear, pin.UV / 0.1f);
-	if (0.f * ratioX <= pin.UV.x && pin.UV.x < 1.f * ratioX && 2.f * ratioY <= pin.UV.y && pin.UV.y < 3.f * ratioY)
-		pOut.Blend = SpecTex.Sample(gsamLinear, pin.UV / 0.1f);
-	if (0.f * ratioX <= pin.UV.x && pin.UV.x < 1.f * ratioX && 3.f * ratioY <= pin.UV.y && pin.UV.y < 4.f * ratioY)
-		pOut.Blend = NormalTex.Sample(gsamLinear, pin.UV / 0.1f);
-	if (0.f * ratioX <= pin.UV.x && pin.UV.x < 1.f * ratioX && 4.f * ratioY <= pin.UV.y && pin.UV.y < 5.f * ratioY)
-		pOut.Blend = SkillEffTex1.Sample(gsamLinear, pin.UV / 0.1f);
-
-
-	if (1.f * ratioX <= pin.UV.x && pin.UV.x < 2.f * ratioX && 0.f * ratioY <= pin.UV.y && pin.UV.y < 1.f * ratioY)
-		pOut.Blend = DepthTex.Sample(gsamLinear, pin.UV / 0.1f);
-	if (1.f * ratioX <= pin.UV.x && pin.UV.x < 2.f * ratioX && 1.f * ratioY <= pin.UV.y && pin.UV.y < 2.f * ratioY)
-		pOut.Blend = LightDepthTex.Sample(gsamLinear, pin.UV / 0.1f);
-
-	if (2.f * ratioX <= pin.UV.x && pin.UV.x < 3.f * ratioX && 0.f * ratioY <= pin.UV.y && pin.UV.y < 1.f * ratioY)
-		pOut.Blend = SkillEffTex2.Sample(gsamLinear, pin.UV / 0.1f);
-	if (2.f * ratioX <= pin.UV.x && pin.UV.x < 3.f * ratioX && 1.f * ratioY <= pin.UV.y && pin.UV.y < 2.f * ratioY)
-		pOut.Blend = SkillEffTex4.Sample(gsamLinear, pin.UV / 0.1f);
-	if (2.f * ratioX <= pin.UV.x && pin.UV.x < 3.f * ratioX && 2.f * ratioY <= pin.UV.y && pin.UV.y < 3.f * ratioY)
-		pOut.Blend = SkillEffTex3.Sample(gsamLinear, pin.UV / 0.1f);
-
-
-	if (3.f * ratioX <= pin.UV.x && pin.UV.x < 4.f * ratioX && 0.f * ratioY <= pin.UV.y && pin.UV.y < 1.f * ratioY)
-		pOut.Blend = NoiseTex.Sample(gsamLinear, pin.UV / 0.1f);
+	//float ratioX = 0.1f;
+	//float ratioY = 0.1f;
+	//if (0.f * ratioX <= pin.UV.x && pin.UV.x < 1.f * ratioX && 0.f * ratioY <= pin.UV.y && pin.UV.y < 1.f * ratioY)
+	//	pOut.Blend = DiffTex.Sample(gsamLinear, pin.UV / 0.1f);
+	//if (0.f * ratioX <= pin.UV.x && pin.UV.x < 1.f * ratioX && 1.f * ratioY <= pin.UV.y && pin.UV.y < 2.f * ratioY)
+	//	pOut.Blend = AmbiTex.Sample(gsamLinear, pin.UV / 0.1f);
+	//if (0.f * ratioX <= pin.UV.x && pin.UV.x < 1.f * ratioX && 2.f * ratioY <= pin.UV.y && pin.UV.y < 3.f * ratioY)
+	//	pOut.Blend = SpecTex.Sample(gsamLinear, pin.UV / 0.1f);
+	//if (0.f * ratioX <= pin.UV.x && pin.UV.x < 1.f * ratioX && 3.f * ratioY <= pin.UV.y && pin.UV.y < 4.f * ratioY)
+	//	pOut.Blend = NormalTex.Sample(gsamLinear, pin.UV / 0.1f);
+	//if (0.f * ratioX <= pin.UV.x && pin.UV.x < 1.f * ratioX && 4.f * ratioY <= pin.UV.y && pin.UV.y < 5.f * ratioY)
+	//	pOut.Blend = SkillEffTex1.Sample(gsamLinear, pin.UV / 0.1f);
+	//
+	//
+	//if (1.f * ratioX <= pin.UV.x && pin.UV.x < 2.f * ratioX && 0.f * ratioY <= pin.UV.y && pin.UV.y < 1.f * ratioY)
+	//	pOut.Blend = DepthTex.Sample(gsamLinear, pin.UV / 0.1f);
+	//if (1.f * ratioX <= pin.UV.x && pin.UV.x < 2.f * ratioX && 1.f * ratioY <= pin.UV.y && pin.UV.y < 2.f * ratioY)
+	//	pOut.Blend = LightDepthTex.Sample(gsamLinear, pin.UV / 0.1f);
+	//
+	//if (2.f * ratioX <= pin.UV.x && pin.UV.x < 3.f * ratioX && 0.f * ratioY <= pin.UV.y && pin.UV.y < 1.f * ratioY)
+	//	pOut.Blend = SkillEffTex2.Sample(gsamLinear, pin.UV / 0.1f);
+	//if (2.f * ratioX <= pin.UV.x && pin.UV.x < 3.f * ratioX && 1.f * ratioY <= pin.UV.y && pin.UV.y < 2.f * ratioY)
+	//	pOut.Blend = SkillEffTex4.Sample(gsamLinear, pin.UV / 0.1f);
+	//if (2.f * ratioX <= pin.UV.x && pin.UV.x < 3.f * ratioX && 2.f * ratioY <= pin.UV.y && pin.UV.y < 3.f * ratioY)
+	//	pOut.Blend = SkillEffTex3.Sample(gsamLinear, pin.UV / 0.1f);
+	//
+	//
+	//if (3.f * ratioX <= pin.UV.x && pin.UV.x < 4.f * ratioX && 0.f * ratioY <= pin.UV.y && pin.UV.y < 1.f * ratioY)
+	//	pOut.Blend = NoiseTex.Sample(gsamLinear, pin.UV / 0.1f);
 
 	return pOut;
 }

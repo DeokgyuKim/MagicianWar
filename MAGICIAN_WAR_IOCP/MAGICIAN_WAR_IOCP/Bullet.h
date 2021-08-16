@@ -66,7 +66,7 @@ public:
 	float getSpeed() const { return m_speed; }
 	int getDamage() const { return m_Info.Damage; }
 	PxRigidDynamic* GetRigidDynamic() { return m_pRigidDynamic; }
-
+	XMFLOAT3	GetPosition() {	return m_xmfPosition; }
 private:
 	BulletInfo m_Info;
 

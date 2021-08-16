@@ -15,6 +15,7 @@ public:
     void SetTextColor(XMFLOAT3 fColor);
 public:
     void RemoveTexts(Scene* pScene);
+    void SetRender(bool bRender);
 private:
     void Release();
 protected:

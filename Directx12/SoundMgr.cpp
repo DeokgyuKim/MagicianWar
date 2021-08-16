@@ -26,20 +26,36 @@ void SoundMgr::Release()
 
 
 
-void SoundMgr::PlaySound(string pSoundKey, SOUND_ID eID)
+int SoundMgr::PlaySound(string pSoundKey, SOUND_ID eID)
 {
 	map<string, FMOD::Sound*>::iterator iter = m_mapSound.find(pSoundKey);
 	if (iter == m_mapSound.end())
-		return;
+		return -1;
 
 	bool isPlay;
 
 	if (m_pChannel[eID]->isPlaying(&isPlay))
 	{
-		m_pSystem->playSound(iter->second, NULL, FALSE, &m_pChannel[BGM]);
-
+		m_pSystem->playSound(iter->second, NULL, FALSE, &m_pChannel[eID]);
 	}
 	m_pSystem->update();
+	return eID;
+}
+
+int SoundMgr::PlaySound(string pSoundKey)
+{
+	map<string, FMOD::Sound*>::iterator iter = m_mapSound.find(pSoundKey);
+	if (iter == m_mapSound.end())
+		return -1;
+
+	bool isPlay;
+
+	if (m_pChannel[m_iEffCurChannel]->isPlaying(&isPlay))
+	{
+		m_pSystem->playSound(iter->second, NULL, FALSE, &m_pChannel[m_iEffCurChannel++]);
+	}
+	m_pSystem->update();
+	return m_iEffCurChannel - 1;
 }
 
 void SoundMgr::PlayBGM(string pSoundKey)

@@ -1,5 +1,6 @@
 #include "RadioButton.h"
 #include "KeyMgr.h"
+#include "SoundMgr.h"
 
 RadioButton::RadioButton(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT4 xmfInfo, string strBaseTextureName, string strMouseOnTextureName, string strActiveTextureName)
     : Button(device, cmdLst, pRenderer, xmfInfo, strBaseTextureName, strMouseOnTextureName, strActiveTextureName)
@@ -33,6 +34,7 @@ int RadioButton::Update(const float& fTimeDelta)
                 SetButtonState(BUTTON_STATE::ON);
                 if (ButtonOnfp != nullptr)
                     ButtonOnfp();
+                SoundMgr::GetInstance()->PlaySound("MouseClick");
             }
         }
         else
@@ -46,6 +48,7 @@ int RadioButton::Update(const float& fTimeDelta)
                 SetButtonState(BUTTON_STATE::NONE);
                 if (ButtonOfffp != nullptr)
                     ButtonOfffp();
+                SoundMgr::GetInstance()->PlaySound("MouseClick");
             }
         }
         break;

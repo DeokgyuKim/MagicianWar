@@ -2,6 +2,7 @@
 
 #include "IceFreeze_IceDorm.h"
 #include "Transform.h"
+#include "SoundMgr.h"
 
 
 IceFreeze::IceFreeze(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 rotate, XMFLOAT3 pos)
@@ -11,10 +12,12 @@ IceFreeze::IceFreeze(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Re
 	dynamic_cast<Transform*>(GetTransController())->SetRotate(rotate);
 	dynamic_cast<Transform*>(GetTransController())->SetPosition(pos);
 	m_eSkillType = SKILL_TYPE::SKILL_COLD2;
+	SoundMgr::GetInstance()->PlaySound("IceFreezeMake");
 }
 
 IceFreeze::~IceFreeze()
 {
+	SoundMgr::GetInstance()->PlaySound("IceFreezeDestroy");
 }
 
 void IceFreeze::BuildComponents()

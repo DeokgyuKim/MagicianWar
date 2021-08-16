@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "Boom_Sphere.h"
 #include "Boom_Inner.h"
+#include "SoundMgr.h"
 
 
 Boom::Boom(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 goalScale, XMFLOAT3 pos, string ColorTexture)
@@ -12,6 +13,7 @@ Boom::Boom(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pR
 	Initialize();
 	dynamic_cast<Transform*>(GetTransController())->SetPosition(pos);
 	m_xmfGoalScale = goalScale;
+	SoundMgr::GetInstance()->PlaySound("Boom");
 }
 
 Boom::~Boom()

@@ -86,6 +86,17 @@ void TextController::RemoveTexts(Scene* pScene)
 	m_vecTxt.clear();
 }
 
+void TextController::SetRender(bool bRender)
+{
+	for (auto Txt : m_vecTxt)
+	{
+		if (bRender)
+			m_pScene->PushObject(Txt, OBJ_UI);
+		else
+			m_pScene->RemoveObject(Txt, OBJ_UI);
+	}
+}
+
 void TextController::Release()
 {
 	//for (auto Txt : m_vecTxt)

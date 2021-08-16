@@ -119,6 +119,9 @@ void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList
 		pos.x = WINCX / 2.f + 145.f;
 		m_pSkillIcon[1] = new UI(device, cmdLst, pRenderer, pos, "SkillFire2");
 		pScene->PushObject(m_pSkillIcon[1], OBJ_TYPE::OBJ_UI);
+
+		SetSkillCoolTime(0, 10.f);
+		SetSkillCoolTime(1, 7.f);
 	}
 	else if (CharType == WIZARD_COLD)
 	{
@@ -135,6 +138,9 @@ void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList
 		pos.x = WINCX / 2.f + 145.f;
 		m_pSkillIcon[1] = new UI(device, cmdLst, pRenderer, pos, "SkillCold2");
 		pScene->PushObject(m_pSkillIcon[1], OBJ_TYPE::OBJ_UI);
+
+		SetSkillCoolTime(0, 15.f);
+		SetSkillCoolTime(1, 10.f);
 	}
 	else if (CharType == WIZARD_DARKNESS)
 	{
@@ -151,6 +157,9 @@ void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList
 		pos.x = WINCX / 2.f + 145.f;
 		m_pSkillIcon[1] = new UI(device, cmdLst, pRenderer, pos, "SkillDarkness2");
 		pScene->PushObject(m_pSkillIcon[1], OBJ_TYPE::OBJ_UI);
+
+		SetSkillCoolTime(0, 12.f);
+		SetSkillCoolTime(1, 7.f);
 	}
 }
 

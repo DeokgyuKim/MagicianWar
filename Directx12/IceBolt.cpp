@@ -6,6 +6,7 @@
 //#include "IceBolt_Crevasses.h"
 
 #include "Transform.h"
+#include "SoundMgr.h"
 
 
 
@@ -16,10 +17,12 @@ IceBolt::IceBolt(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Render
 	dynamic_cast<Transform*>(GetTransController())->SetRotate(rotate);
 	dynamic_cast<Transform*>(GetTransController())->SetPosition(pos);
 	m_eSkillType = SKILL_TYPE::SKILL_COLD1;
+	m_iSoundIdx = SoundMgr::GetInstance()->PlaySound("IceField");
 }
 
 IceBolt::~IceBolt()
 {
+	SoundMgr::GetInstance()->StopSound((SOUND_ID)m_iSoundIdx);
 }
 
 void IceBolt::BuildComponents()

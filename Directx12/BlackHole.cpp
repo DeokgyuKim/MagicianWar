@@ -3,6 +3,7 @@
 #include "BlackHole_Body.h"
 #include "BlackHole_Inner.h"
 #include "Transform.h"
+#include "SoundMgr.h"
 
 BlackHole::BlackHole(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 pos)
 	: Skill(device, cmdLst, pRenderer)
@@ -10,10 +11,13 @@ BlackHole::BlackHole(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Re
 	Initialize();
 	dynamic_cast<Transform*>(GetTransController())->SetPosition(pos);
 	m_eSkillType = SKILL_TYPE::SKILL_DARKNESS1;
+	
+	m_iSoundIdx = SoundMgr::GetInstance()->PlaySound("BlackHole");
 }
 
 BlackHole::~BlackHole()
 {
+	SoundMgr::GetInstance()->StopSound((SOUND_ID)m_iSoundIdx);
 }
 
 void BlackHole::BuildComponents()

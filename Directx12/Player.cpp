@@ -22,6 +22,8 @@
 
 #include "Network.h"
 
+#include "SoundMgr.h"
+
 
 Player::Player(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, string _meshName, XMFLOAT3 pos,
 	PlayerInfo playerInfo, MESH_TYPE meshType)
@@ -113,7 +115,6 @@ HRESULT Player::BuildConstantBuffer()
 int Player::Update(const float& fTimeDelta)
 {
 	Object::Update(fTimeDelta);
-
 	m_fCoolTime = max(m_fCoolTime - fTimeDelta, 0.f);
 
 	if (m_pCamera != NULL)
@@ -188,7 +189,6 @@ void Player::LateUpdate(const float& fTimeDelta)
 
 #endif
 	//}
-	cout << "Hp: " << m_tNetInfo.iHp << endl;
 	m_pWeapon->LateUpdate(fTimeDelta);
 }
 

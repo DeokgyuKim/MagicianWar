@@ -78,6 +78,7 @@ public:
 	bool getAbleDealing();
 	bool getAbleFreezeHeal();
 	bool getFreeze();
+	bool getIce();
 
 	InterfaceFSM* GetRootFSM();
 	InterfaceFSM* GetUpperFSM();
@@ -85,7 +86,7 @@ public:
 	// Set
 	void setPlayerInfo(PlayerInfo _info) { m_Info = _info; }
 	void setID(int _id) { m_Info.Client_Num = _id; }
-	void setHp(int iHp) { m_Info.iHp = iHp; }
+	void setHp(int iHp) { m_Info.iHp = min(iHp, 100); }
 	int setDamage(int damage,int type = BULLET_HIT_EVENT);
 	void setReady(bool _ready) { m_Ready = _ready; }
 	void setTeam(char _team) { m_Info.TeamType = _team; }

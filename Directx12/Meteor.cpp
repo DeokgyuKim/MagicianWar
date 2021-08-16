@@ -9,6 +9,8 @@
 #include "Scene.h"
 #include "Boom.h"
 
+#include "SoundMgr.h"
+
 Meteor::Meteor(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 rotate, XMFLOAT3 pos)
 	: Skill(device, cmdLst, pRenderer)
 {
@@ -16,6 +18,8 @@ Meteor::Meteor(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer
 	dynamic_cast<Transform*>(GetTransController())->SetRotate(rotate);
 	dynamic_cast<Transform*>(GetTransController())->SetPosition(pos);
 	m_eSkillType = SKILL_TYPE::SKILL_FIRE2;
+
+	SoundMgr::GetInstance()->PlaySound("Meteor");
 }
 
 Meteor::~Meteor()

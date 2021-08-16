@@ -1,6 +1,7 @@
 #include "Button.h"
 #include "KeyMgr.h"
 #include "Network.h"
+#include "SoundMgr.h"
 
 Button::Button(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT4 xmfInfo, string strBaseTextureName, string strMouseOnTextureName, string strActiveTextureName)
 	: UI(device, cmdLst, pRenderer, xmfInfo, strBaseTextureName)
@@ -43,6 +44,7 @@ int Button::Update(const float& fTimeDelta)
 				cout << "Button click!" << endl;
 				if (ButtonOnfp != nullptr)
 					ButtonOnfp();
+				SoundMgr::GetInstance()->PlaySound("MouseClick");
 			}
 		}
 		else
@@ -56,6 +58,7 @@ int Button::Update(const float& fTimeDelta)
 				m_eButtonState = BUTTON_STATE::NONE;
 				if (ButtonOfffp != nullptr)
 					ButtonOfffp();
+				SoundMgr::GetInstance()->PlaySound("MouseClick");
 			}
 		}
 		break;
