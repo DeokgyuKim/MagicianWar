@@ -538,7 +538,7 @@ void Room::Physics_Collision()
 			}
 		}
 	}
-
+	
 	for (int i = 0; i < MAX_SKILL; ++i)
 	{
 		for (int j = 0; j < MAX_PLAYER; ++j)
@@ -546,7 +546,7 @@ void Room::Physics_Collision()
 			if (m_players[j].getUsed() && m_players[j].getAbleDealing())
 			{
 				//FireWall
-
+	
 				if (m_FireWall_Skills[i].getUser() != NO_PLAYER)
 				{
 					for (auto rigidbody : m_FireWall_Skills[i].GetRigidDynamics())
@@ -567,8 +567,8 @@ void Room::Physics_Collision()
 			}
 		}
 	}
-
-
+	
+	
 	//Static Object or Terrain 
 	for (int i = 0; i < MAX_SKILL; ++i)
 	{
@@ -608,7 +608,7 @@ void Room::Physics_Collision()
 						}
 					}
 				}
-
+	
 				for (int j = 0; j < MAX_PLAYER; ++j)
 				{
 					if (m_players[j].getUsed() && m_players[j].getAbleDealing())
@@ -678,7 +678,7 @@ void Room::Physics_Collision()
 							{
 								if (m_Darkness_Enchantress_Skills[i].getTeamType() != m_players[j].getTeam())
 								{
-
+	
 									Player* pPlayer = GetPlayerForID(m_Darkness_Enchantress_Skills[i].getUser());
 									if (pPlayer == nullptr || !pPlayer->getUsed())
 									{
@@ -1294,6 +1294,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_FireWall_Skills[i].setPosition(rEvent.xmfPosition);
 									m_FireWall_Skills[i].setRotate(rEvent.xmfRotate);
 									m_FireWall_Skills[i].setTeam(m_players[j].getTeam());
+									m_FireWall_Skills[i].set_playerSlotNum(m_players[j].getSlotNum());
 									m_FireWall_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_FireWall_Skills[i].getSkillType();
 									PushSkillCreate(i, Skilltype);
@@ -1312,6 +1313,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_IceBall_Skills[i].setPosition(rEvent.xmfPosition);
 									m_IceBall_Skills[i].setRotate(rEvent.xmfRotate);
 									m_IceBall_Skills[i].setTeam(m_players[j].getTeam());
+									m_IceBall_Skills[i].set_playerSlotNum(m_players[j].getSlotNum());
 									m_IceBall_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_IceBall_Skills[i].getSkillType();
 									PushSkillCreate(i, Skilltype);
@@ -1329,6 +1331,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_Darkness_Enchantress_Skills[i].setPosition(rEvent.xmfPosition);
 									m_Darkness_Enchantress_Skills[i].setRotate(rEvent.xmfRotate);
 									m_Darkness_Enchantress_Skills[i].setTeam(m_players[j].getTeam());
+									m_Darkness_Enchantress_Skills[i].set_playerSlotNum(m_players[j].getSlotNum());
 									m_Darkness_Enchantress_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_Darkness_Enchantress_Skills[i].getSkillType();
 									PushSkillCreate(i, Skilltype);
@@ -1349,8 +1352,10 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_FireMeteor_Skills[i].setPosition(rEvent.xmfPosition);
 									m_FireMeteor_Skills[i].setRotate(rEvent.xmfRotate);
 									m_FireMeteor_Skills[i].setTeam(m_players[j].getTeam());
+									m_FireMeteor_Skills[i].set_playerSlotNum(m_players[j].getSlotNum());
 									m_FireMeteor_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_FireMeteor_Skills[i].getSkillType();
+
 									PushSkillCreate(i, Skilltype);
 									break;
 								}
@@ -1365,6 +1370,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_IceFreeze_Skills[i].setUser(rEvent.playerID);
 									m_IceFreeze_Skills[i].setPosition(rEvent.xmfPosition);
 									m_IceFreeze_Skills[i].setRotate(rEvent.xmfRotate);
+									m_IceFreeze_Skills[i].set_playerSlotNum(m_players[j].getSlotNum());
 									m_IceFreeze_Skills[i].setTeam(m_players[j].getTeam());
 									unsigned char Skilltype = m_IceFreeze_Skills[i].getSkillType();
 									
@@ -1383,6 +1389,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_Darkness_DistortionPearl_Skills[i].setUser(rEvent.playerID);
 									m_Darkness_DistortionPearl_Skills[i].setPosition(rEvent.xmfPosition);
 									m_Darkness_DistortionPearl_Skills[i].setRotate(rEvent.xmfRotate);
+									m_Darkness_DistortionPearl_Skills[i].set_playerSlotNum(m_players[j].getSlotNum());
 									m_Darkness_DistortionPearl_Skills[i].setTeam(m_players[j].getTeam());
 									m_Darkness_DistortionPearl_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_Darkness_DistortionPearl_Skills[i].getSkillType();
@@ -1799,7 +1806,8 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 	{
 		int user = m_FireWall_Skills[slotNum].getUser();
 		packet.user = user;
-		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
+		int playerSlotNum = m_FireWall_Skills[slotNum].getplayerSlotNum();
+		m_players[playerSlotNum].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
 		packet.xmfPosition = m_FireWall_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_FireWall_Skills[slotNum].getRotate();
 	}
@@ -1807,7 +1815,8 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 	{
 		int user = m_FireMeteor_Skills[slotNum].getUser();
 		packet.user = user;
-		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
+		int playerSlotNum = m_FireMeteor_Skills[slotNum].getplayerSlotNum();
+		m_players[playerSlotNum].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
 		packet.xmfPosition = m_FireMeteor_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_FireMeteor_Skills[slotNum].getRotate();
 	}
@@ -1815,7 +1824,8 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 	{
 		int user = m_IceBall_Skills[slotNum].getUser();
 		packet.user = user;
-		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
+		int playerSlotNum = m_IceBall_Skills[slotNum].getplayerSlotNum();
+		m_players[playerSlotNum].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
 		packet.xmfPosition = m_IceBall_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_IceBall_Skills[slotNum].getRotate();
 	}
@@ -1823,7 +1833,9 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 	{
 		int user = m_IceFreeze_Skills[slotNum].getUser();
 		packet.user = user;
-		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
+		int playerSlotNum = m_IceFreeze_Skills[slotNum].getplayerSlotNum();
+		m_players[playerSlotNum].GetUpperFSM()->ChangeState(STATE_FREEZE, ANIM_IDLE);
+		m_players[playerSlotNum].GetRootFSM()->ChangeState(STATE_FREEZE, ANIM_IDLE);
 		packet.xmfPosition = m_IceFreeze_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_IceFreeze_Skills[slotNum].getRotate();
 	}
@@ -1831,7 +1843,8 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 	{
 		int user = m_Darkness_Enchantress_Skills[slotNum].getUser();
 		packet.user = user;
-		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
+		int playerSlotNum = m_Darkness_Enchantress_Skills[slotNum].getplayerSlotNum();
+		m_players[playerSlotNum].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
 		packet.xmfPosition = m_Darkness_Enchantress_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_Darkness_Enchantress_Skills[slotNum].getRotate();
 	}
@@ -1839,7 +1852,8 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 	{
 		int user = m_Darkness_DistortionPearl_Skills[slotNum].getUser();
 		packet.user = user;
-		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
+		int playerSlotNum = m_Darkness_DistortionPearl_Skills[slotNum].getplayerSlotNum();
+		m_players[playerSlotNum].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
 		packet.xmfPosition = m_Darkness_DistortionPearl_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_Darkness_DistortionPearl_Skills[slotNum].getRotate();
 	}

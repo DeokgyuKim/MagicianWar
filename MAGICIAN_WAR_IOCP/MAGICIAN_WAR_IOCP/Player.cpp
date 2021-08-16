@@ -165,6 +165,15 @@ void Player::Update(float fTime)
 
 	m_fHpHealTime += fTime;
 	m_fHpDealTime += fTime;
+	m_fHpFreezeHealTime += fTime;
+
+	if (m_RootBody->GetState() == STATE_FREEZE) 
+	{
+		if (getAbleFreezeHeal()) 
+		{
+			m_Info.iHp += 5;
+		}
+	}
 
 	m_UpperBody->Execute(fTime);
 	m_RootBody->Execute(fTime);
@@ -336,6 +345,16 @@ bool Player::getAbleDealing()
 	return true;
 }
 
+bool Player::getAbleFreezeHeal()
+{
+	if (m_fHpFreezeHealTime >= 0.7f)
+	{
+		m_fHpFreezeHealTime = 0.f;
+		return true;
+	}
+	return false;
+}
+
 bool Player::getFreeze()
 {
 	if (m_Info.PlayerState == STATE_FREEZE)
@@ -376,7 +395,11 @@ int Player::setDamage(int damage, int type)
 			return PLAYER_DEAD_EVENT;
 		}
 		else
-			m_UpperBody->ChangeState(STATE_HIT, ANIM_HIT);
+		{
+			if (m_RootBody->GetState() != STATE_ICE) {
+				m_UpperBody->ChangeState(STATE_HIT, ANIM_HIT);
+			}
+		}
 	}
 	else if (type == ICE_FIELD_HIT_EVENT)
 	{

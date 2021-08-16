@@ -3,12 +3,12 @@
 IceFreeze::IceFreeze()
 	:Skill()
 {
-	m_Info.TotalLifeTime = 10.f;
+	m_Info.TotalLifeTime = 4.f;
 }
 
 IceFreeze::~IceFreeze()
 {
-}
+}	
 
 bool IceFreeze::Update(const float& fTime)
 {

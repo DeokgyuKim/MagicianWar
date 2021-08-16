@@ -3,7 +3,7 @@
 IcaAgeBall::IcaAgeBall()
     :Skill()
 {
-    m_Info.TotalLifeTime = 10.f;
+    m_Info.TotalLifeTime = 5.f;
     m_Info.fSpeed = 1.f;
 }
 

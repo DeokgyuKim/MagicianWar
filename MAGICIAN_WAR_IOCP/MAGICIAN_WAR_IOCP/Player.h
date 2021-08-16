@@ -76,6 +76,7 @@ public:
 	bool getAbleHeal();
 	bool getAbleDottAtt();
 	bool getAbleDealing();
+	bool getAbleFreezeHeal();
 	bool getFreeze();
 
 	InterfaceFSM* GetRootFSM();
@@ -129,6 +130,7 @@ private: //
 	bool m_Room_JoinState;
 	bool m_LateInit;
 	float m_fHpHealTime = 0.f;
+	float m_fHpFreezeHealTime = 0.f;
 	float m_fHpDealTime = 0.f;
 
 	bool m_Used = false;

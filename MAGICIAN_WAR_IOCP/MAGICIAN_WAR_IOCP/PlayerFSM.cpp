@@ -457,13 +457,14 @@ void PlayerFSM::Freeze(float fTime)
 {
 	if (m_BoneType == BONE_UPPER)
 	{ // 상체
-		if (m_fFreezeTime >= m_AnimTime) {
+		if (m_AnimTime>= m_fFreezeTime) {
 			ChangeState(STATE_IDLE, ANIM_IDLE);
 		}
 	}
 	else if (m_BoneType == BONE_ROOT)
 	{
-		if (m_fFreezeTime >= m_AnimTime) {
+		cout << "얼어붙음\n";
+		if (m_AnimTime >= m_fFreezeTime) {
 			ChangeState(STATE_IDLE, ANIM_IDLE);
 		}
 	}
@@ -473,13 +474,13 @@ void PlayerFSM::Iceing(float fTime)
 {
 	if (m_BoneType == BONE_UPPER)
 	{ // 상체
-		if (m_fIceTime >= m_AnimTime) {
+		if (m_AnimTime >= m_fIceTime) {
 			ChangeState(STATE_IDLE, ANIM_IDLE);
 		}
 	}
 	else if (m_BoneType == BONE_ROOT)
 	{
-		if (m_fIceTime >= m_AnimTime) {
+		if (m_AnimTime >= m_fIceTime) {
 			ChangeState(STATE_IDLE, ANIM_IDLE);
 		}
 	}
