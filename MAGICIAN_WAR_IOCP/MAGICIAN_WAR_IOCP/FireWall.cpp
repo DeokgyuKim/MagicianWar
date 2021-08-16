@@ -31,3 +31,7 @@ void FireWall::LateUpdate(const float& fTime)
 {
 	Skill::LateUpdate(fTime);
 }
+
+void FireWall::MakeCollision()
+{
+}

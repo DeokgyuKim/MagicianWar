@@ -103,7 +103,7 @@ void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList
 
 	if (CharType == WIZARD_FIRE)
 	{
-		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_RAYCAST);
+		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_FLAMEWALL);
 		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_METEOR);
 
 		pos.x = WINCX / 2.f - 295.f;

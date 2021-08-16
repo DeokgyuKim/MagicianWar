@@ -43,8 +43,6 @@ void SkillEff::Initialize()
 
 void SkillEff::Release()
 {
-    if (m_pShader != nullptr)
-        delete m_pShader;
     m_ObjectCB.release();
     m_SkillCB.release();
 }
@@ -65,6 +63,8 @@ void SkillEff::LateUpdate(const float& fTimeDelta)
 
 void SkillEff::Render(const float& fTimeDelta, int _instanceCount)
 {
+    if (m_pShader == nullptr)
+        m_pShader = m_pRenderer->GetSkillShader(m_strSkillName);
     m_pShader->PreRender(m_pCmdLst);
     int idx = 0;
     for (auto iter = m_lstTextureName.begin(); iter != m_lstTextureName.end(); ++iter, ++idx)

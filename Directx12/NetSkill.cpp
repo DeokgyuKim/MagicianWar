@@ -147,6 +147,10 @@ XMFLOAT3 NetSkill::GetPosition()
 		pos.y = 0.01f;
 		return pos;
 		break;
+	case SKILL_FLAMEWALL:
+		pos = GetPositionRayCastType(m_pOwner, m_pCamera);
+		return pos;
+		break;
 	default:
 		break;
 	}
@@ -155,6 +159,7 @@ XMFLOAT3 NetSkill::GetPosition()
 
 XMFLOAT3 NetSkill::GetRotate()
 {
+	XMFLOAT3 rot;
 	switch (m_eSkillType)
 	{
 	case SKILL_BULLET:
@@ -171,6 +176,11 @@ XMFLOAT3 NetSkill::GetRotate()
 		break;
 	case SKILL_ICEFIELD:
 		return XMFLOAT3(0.f, 0.f, 0.f);
+		break;
+	case SKILL_FLAMEWALL:
+		rot = GetRotateRayCastType(m_pOwner, m_pCamera);
+		rot.x = 0.f;
+		return rot;
 		break;
 	default:
 		break;

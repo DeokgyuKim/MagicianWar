@@ -41,6 +41,7 @@ protected:
     Shader*                                     m_pShader = NULL;
     Object*                                     m_pParent = NULL;
     RENDER_TYPE                                 m_eRenderType = RENDER_POSTSKILL;
+    string  m_strSkillName = "";
     float m_fTime = 0.f;
 };
 

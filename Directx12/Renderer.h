@@ -34,6 +34,7 @@ public:
 	void	Render_Shadow(const float& fTimeDelta);
 public:
 	void	PushObject(RENDER_TYPE eType, Object* pObject);
+	Shader* GetSkillShader(string strSkillName);
 public:
 	ID3D12DescriptorHeap*		GetHeap() { return m_ptrDescriptorHeap.Get(); }
 	ID3D12RootSignature*		GetRootSignature() { return m_ptrRootSignature.Get(); }
@@ -45,6 +46,7 @@ private:
 	void	BuildRootSignature();
 	void	BuildDescrpitorHeap();
 	void	BuildShader();
+	void	BuildSkillShader();
 	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
 
 	void	DebugKeyInput();
@@ -55,6 +57,7 @@ private:
 	ID3D12GraphicsCommandList*			m_pCmdLst = NULL;
 	unordered_map<RENDER_TYPE, Shader*>	m_mapShaders;
 	unordered_map<RENDER_TYPE, Shader*> m_mapShadersForShadow;
+	unordered_map<string, Shader*>		m_mapSkillShaders;
 	ComPtr<ID3D12RootSignature>			m_ptrRootSignature;
 	ComPtr<ID3D12DescriptorHeap>		m_ptrDescriptorHeap;
 

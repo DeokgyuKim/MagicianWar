@@ -21,7 +21,7 @@ bool Enchantress::Update(const float& fTime)
 		return m_Info.Dead;
 	}
 
-	memcpy(&m_Info.xmfPosition, &m_Info.xmmWorld._41, sizeof(XMFLOAT3));
+	//memcpy(&m_Info.xmfPosition, &m_Info.xmmWorld._41, sizeof(XMFLOAT3));
 
 	return m_Info.Dead;
 }

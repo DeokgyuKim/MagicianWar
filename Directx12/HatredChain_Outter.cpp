@@ -47,14 +47,7 @@ void HatredChain_Outter::AddTexturesName()
 
 void HatredChain_Outter::BuildShaders()
 {
-	m_pShader = new Shader;
-	vector<D3D12_INPUT_ELEMENT_DESC> layout = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
-	};
-	m_pShader->BuildShadersAndInputLayout(L"Skill.hlsl", "VS_Flames_FireEff", L"Skill.hlsl", "PS_HatredChain_Outter", layout);
-	m_pShader->BuildPipelineStateBlendOp(m_pDevice, m_pRenderer->GetRootSignature(), 2, true, true, false);
+	m_strSkillName = "HatredChain_Outter";
 }
 
 void HatredChain_Outter::BuildConstantBuffers()
