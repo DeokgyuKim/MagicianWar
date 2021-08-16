@@ -64,6 +64,9 @@ void AnimationMgr::BuildAnimation(string meshName, MESH_TYPE eMesh, ANIMATION_TY
 	case ANIMATION_TYPE::DEAD:
 		m_strFilePath += "Dead";
 		break;
+	case ANIMATION_TYPE::SKILLATTACK:
+		m_strFilePath += "Attack2";
+		break;
 	case ANIMATION_TYPE::NONE:
 		break;
 	}
@@ -99,6 +102,8 @@ void AnimationMgr::BuildAnimations(Loading* pLoading)
 	pLoading->AddCount();
 	BuildAnimation(CHARACTER_WIZARD_FIRE, MESH_TYPE::CHARACTER, ANIMATION_TYPE::DANCE);
 	pLoading->AddCount();
+	BuildAnimation(CHARACTER_WIZARD_FIRE, MESH_TYPE::CHARACTER, ANIMATION_TYPE::SKILLATTACK);
+	pLoading->AddCount();
 
 	BuildAnimation(CHARACTER_WIZARD_COLD, MESH_TYPE::CHARACTER, ANIMATION_TYPE::IDLE);
 	pLoading->AddCount();
@@ -120,6 +125,8 @@ void AnimationMgr::BuildAnimations(Loading* pLoading)
 	pLoading->AddCount();
 	BuildAnimation(CHARACTER_WIZARD_COLD, MESH_TYPE::CHARACTER, ANIMATION_TYPE::DANCE);
 	pLoading->AddCount();
+	BuildAnimation(CHARACTER_WIZARD_COLD, MESH_TYPE::CHARACTER, ANIMATION_TYPE::SKILLATTACK);
+	pLoading->AddCount();
 
 	BuildAnimation(CHARACTER_WIZARD_DARKNESS, MESH_TYPE::CHARACTER, ANIMATION_TYPE::IDLE);
 	pLoading->AddCount();
@@ -140,6 +147,8 @@ void AnimationMgr::BuildAnimations(Loading* pLoading)
 	BuildAnimation(CHARACTER_WIZARD_DARKNESS, MESH_TYPE::CHARACTER, ANIMATION_TYPE::DEAD);
 	pLoading->AddCount();
 	BuildAnimation(CHARACTER_WIZARD_DARKNESS, MESH_TYPE::CHARACTER, ANIMATION_TYPE::DANCE);
+	pLoading->AddCount();
+	BuildAnimation(CHARACTER_WIZARD_DARKNESS, MESH_TYPE::CHARACTER, ANIMATION_TYPE::SKILLATTACK);
 	pLoading->AddCount();
 
 

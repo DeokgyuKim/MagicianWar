@@ -118,6 +118,8 @@ void AnimationCom::BlendingAnimate(const float& fTimeDelta)
 	if (keyAnimation->Time * 1.4 > m_SkinnedModelInst->SkinnedInfo->GetClipEndTime(keyAnimation->eType)) {
 		if (keyAnimation->eType == ANIMATION_TYPE::ATTACK)
 			m_bAttackEnd = true; // 일반 공격시 공격이 끝나면 Idle로 바꾸기 위한 bool 변수
+		if (keyAnimation->eType == ANIMATION_TYPE::SKILLATTACK)
+			m_bSkillAttackEnd = true;
 
 	}
 	if (keyAnimation->eType != ANIMATION_TYPE::DEAD)
@@ -147,14 +149,15 @@ void AnimationCom::ChangeAnimation(int _Ani, bool upper)
 		keyAnimation->Time = 0.f;
 		m_fBlendTime = 1.f;
 		m_bAttackEnd = false;
+		m_bSkillAttackEnd = false;
 	}
 
 	if (upper)
 	{
-		if (nextAni == ANIMATION_TYPE::ATTACK)
-		{
-			Network::GetInstance()->CallEvent(EVENT_CREATE_BULLET_REQUEST, 0);
-		}
+		//if (nextAni == ANIMATION_TYPE::ATTACK)
+		//{
+		//	Network::GetInstance()->CallEvent(EVENT_CREATE_BULLET_REQUEST, 0);
+		//}
 	}
 }
 

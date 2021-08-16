@@ -30,6 +30,7 @@ public:
 public:
 	void ChangeAnimation(int _Ani, bool upper = false);
 	bool GetAttackEnd() { return m_bAttackEnd; }
+	bool GetSkillAttackEnd() { return m_bSkillAttackEnd; }
 	AnimData* getCurAnimation();
 	AnimData* getkeyAnimation();
 private: // 애니메이션Com은 애니메이션으로 비교를 하는게 정배지
@@ -47,6 +48,7 @@ private:
 	float	m_fMaxBlendTime;
 
 	bool m_bAttackEnd;
+	bool m_bSkillAttackEnd;
 
 };
 

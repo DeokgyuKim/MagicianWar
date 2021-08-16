@@ -399,6 +399,7 @@ void TestScene::MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot,
 		pSkill = new IceBolt(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), rot, pos);
 		break;
 	case SKILL_COLD2:
+		rot.x = 0.f;
 		pSkill = new IceFreeze(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), rot, pos);
 		break;
 	case SKILL_DARKNESS1:
