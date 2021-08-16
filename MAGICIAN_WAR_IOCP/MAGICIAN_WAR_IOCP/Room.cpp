@@ -398,6 +398,16 @@ void Room::SkillUpdate(float fTime)
 		// DARKNESS
 		if (m_Darkness_Enchantress_Skills[i].getUser() != NO_PLAYER) {
 			bool dead = m_Darkness_Enchantress_Skills[i].Update(fTime);
+			for (auto& player : m_players)
+			{
+				if (player.getUsed() == true)
+				{
+					if (player.getID() == m_Darkness_Enchantress_Skills[i].getUser())
+					{
+						m_Darkness_Enchantress_Skills[i].setPosition(player.getPosition());
+					}
+				}
+			}
 			if (dead) {
 				m_Darkness_Enchantress_Skills[i].setUser(NO_PLAYER);
 				PushSkillDelete(i, SKILL_DARKNESS1);
