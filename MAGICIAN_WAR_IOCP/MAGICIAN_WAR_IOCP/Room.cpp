@@ -135,7 +135,7 @@ void Room::RoundSetting()
 	for (int i = 0; i < MAX_PLAYER; ++i) { // 초기 위치 재설정
 		if (m_players[i].getUsed()) {
 			int spawnPos = m_players[i].getSlotNum();
-			cout << "spawnPos - " << spawnPos << "\n";
+			//cout << "spawnPos - " << spawnPos << "\n";
 			if (spawnPos == 0) m_players[i].setPosition(XMFLOAT3(20.f, 0.f, 10.f));
 			else if (spawnPos == 1) m_players[i].setPosition(XMFLOAT3(15.f, 0.f, 10.f));
 			else if (spawnPos == 2) m_players[i].setPosition(XMFLOAT3(10.f, 0.f, 10.f));
@@ -153,6 +153,8 @@ void Room::RoundSetting()
 
 			m_players[i].GetUpperFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
 			m_players[i].GetRootFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
+			dynamic_cast<PlayerFSM*>(m_players[i].GetUpperFSM())->SetDefaultKey(0);
+			dynamic_cast<PlayerFSM*>(m_players[i].GetRootFSM())->SetDefaultKey(0);
 
 			m_players[i].setCreateBullet(0);
 			m_players[i].setCreateBullet(0);
@@ -529,7 +531,7 @@ void Room::Physics_Collision()
 									else if (playerEvent == ICE_FIELD_HIT_EVENT && !m_players[j].getIce())
 									{
 										CreateSkillCressvas(j);
-										cout << "크레바스 생성" << endl;
+										//cout << "크레바스 생성" << endl;
 									}
 								}
 							}
@@ -834,7 +836,7 @@ bool Room::EnterRoom(int id, bool host)
 	if (!m_istEnterable) // 들어올 수 없는 상태
 		return false;
 
-	cout << id << " 가 방에 들어옴\n";
+	//cout << id << " 가 방에 들어옴\n";
 
 	g_Clients[id]->Room_num = m_Info.Room_Num;
 
@@ -1111,7 +1113,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 		{
 			if (m_players[i].getUsed()) {
 				if (m_players[i].getID() == rEvent.playerID) {
-					cout << "서버 총알 쏴줘\n";
+					//cout << "서버 총알 쏴줘\n";
 					m_players[i].setCreateBullet(1);
 					break;
 				}
@@ -1163,7 +1165,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 			}
 		}
 		if (gameStart) {
-			cout << "게임 시작\n";
+			//cout << "게임 시작\n";
 			InGame_Init();
 		}
 		break;
@@ -1446,7 +1448,7 @@ void Room::Send_sendEvent_Packet()
 
 
 		if (!Server::GetInstance()->SendPacket(SP_RoomInfo.playerID, SP_RoomInfo.buffer)) {
-			cout << "Error - Send_RoomInfo_Packet()\n";
+			//cout << "Error - Send_RoomInfo_Packet()\n";
 		}
 
 	}
@@ -1667,9 +1669,11 @@ void Room::SendLeftShoppingTime()
 	if (!m_isRoundReset) {
 		RoundSetting();
 		m_isRoundReset = true;
+		
 	}
 
 	if (m_ShoppingTime <= m_TotalShoppingTime) {
+		//recvEvnet_Clear();
 		EVENT roomEvent_Send;
 		roomEvent_Send.Object_ID = EVENT_KEY;
 		roomEvent_Send.Target_ID = m_Info.Room_Num;
@@ -1679,7 +1683,7 @@ void Room::SendLeftShoppingTime()
 
 
 		unsigned char leftTime = m_TotalShoppingTime - m_ShoppingTime;
-		cout << "시간 - " << (int)leftTime << "\n";
+		//cout << "쇼핑시간 - " << (int)leftTime << "\n";
 		++m_ShoppingTime;
 
 		for (int i = 0; i < MAX_PLAYER; ++i)
@@ -1694,7 +1698,7 @@ void Room::SendLeftShoppingTime()
 	}
 	else
 	{
-		cout << "라운드 시작\n";
+		//cout << "라운드 시작\n";
 		m_isShoppingStart = false;
 		m_ShoppingTime = 0;
 		RoundStart();
@@ -1717,7 +1721,7 @@ void Room::SendRoundTime()
 		Server::GetInstance()->AddTimer(roomEvent_Send);
 
 		short leftTime = m_TotalRoundTime - m_RoundTime;
-		cout << "라운드 진행중 - " << (int)leftTime << "\n";
+		//cout << "라운드 진행중 - " << (int)leftTime << "\n";
 		++m_RoundTime;
 
 		for (int i = 0; i < MAX_PLAYER; ++i)
@@ -1730,7 +1734,7 @@ void Room::SendRoundTime()
 	}
 	else
 	{
-
+		m_isRoundEnd = true;
 	}
 }
 
@@ -1763,13 +1767,13 @@ void Room::SendRoundResetTime()
 	else
 	{
 		if (m_Info.curRound < m_Info.TotalRound) { // 라운드가 남았으면 라운드 재시작
-			cout << "Win Lose 팻말 치워줘\n";
+			
 			PushRoundReset();
 			m_isRoundReset = false;
 
 		}
 		else {
-			cout << "게임 끝\n";
+			
 			ReInit();
 		}
 

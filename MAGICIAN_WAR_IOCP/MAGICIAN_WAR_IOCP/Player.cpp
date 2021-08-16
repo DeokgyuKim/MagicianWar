@@ -24,7 +24,7 @@ Player::Player(int client_num, int room_num)
 
 Player::~Player()
 {
-	cout << "플레이어 데이터 지우기\n";
+	//cout << "플레이어 데이터 지우기\n";
 	if (m_pCapsuleCon != NULL)
 	{
 		CPhysXMgr::GetInstance()->gScene->removeActor(*m_pCapsuleCon->getActor());
@@ -35,7 +35,7 @@ Player::~Player()
 
 void Player::Release()
 {
-	cout << "플레이어 데이터 지우기\n";
+	//cout << "플레이어 데이터 지우기\n";
 	if (m_pCapsuleCon != NULL)
 	{
 		CPhysXMgr::GetInstance()->gScene->removeActor(*m_pCapsuleCon->getActor());

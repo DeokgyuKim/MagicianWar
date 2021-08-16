@@ -73,7 +73,7 @@ void WorkThread::Thread_Run()
 
 					if (rEvent.type != NO_ROOM_PACKET) {
 						if (g_Clients[key]->Room_num == NO_ROOM) {
-							cout << key << " - NO_ROOM && ROOM_PACKET\n";
+							//cout << key << " - NO_ROOM && ROOM_PACKET\n";
 						}
 						else {
 							int room_num = g_Clients[key]->Room_num;
@@ -246,7 +246,7 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 		break;
 	}
 	case ctos_LoadingEnd:
-		cout << "로딩 끝이래\n";
+		//cout << "로딩 끝이래\n";
 		break;
 	case ctos_Connect_OK:
 		cout << id << " Client Connect OK\n";
@@ -313,25 +313,25 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 	}
 	case ctos_Ready_OK:
 	{
-		cout << id << " - ready ok\n";
+		//cout << id << " - ready ok\n";
 		RoomPacket.type = ctos_Ready_OK;
 		break;
 	}
 	case ctos_Ready_NONE:
 	{
-		cout << id << " - ready no\n";
+		//cout << id << " - ready no\n";
 		RoomPacket.type = ctos_Ready_NONE;
 		break;
 	}
 	case ctos_Game_Start:
 	{
-		cout << id << " - Request Game Start\n";
+		//cout << id << " - Request Game Start\n";
 		RoomPacket.type = ctos_Game_Start;
 		break;
 	}
 	case ctos_Team_Change:
 	{
-		cout << id << " - Request TeamChange\n";
+		//cout << id << " - Request TeamChange\n";
 		CTOS_TEAMSELECT_REQUEST* data = reinterpret_cast<CTOS_TEAMSELECT_REQUEST*>(packet);
 		RoomPacket.type = ctos_Team_Change;
 		RoomPacket.data1 = data->teamType;
@@ -349,7 +349,7 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 	}
 	case ctos_Character_Change:
 	{
-		cout << id << " - Request Character Change\n";
+		//cout << id << " - Request Character Change\n";
 		CTOS_CHARACTER_CHANGE* data = reinterpret_cast<CTOS_CHARACTER_CHANGE*>(packet);
 		RoomPacket.type = ctos_Character_Change;
 		RoomPacket.data1 = data->characterType;
@@ -358,7 +358,7 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 	// Stage Scene
 	case ctos_IngameInfo_Request:
 	{
-		cout << id << " - Request InGameInfo\n";
+		//cout << id << " - Request InGameInfo\n";
 		RoomPacket.type = ctos_IngameInfo_Request;
 		break;
 	}
@@ -392,7 +392,7 @@ ROOM_EVENT WorkThread::packetProcessing(int id, void* buffer)
 		break;
 	}
 	default:
-		cout << id << " 가 이상한"<< (int)packetType <<" Packet을 요청하였습니다.\n";
+		//cout << id << " 가 이상한"<< (int)packetType <<" Packet을 요청하였습니다.\n";
 		break;
 	}
 
