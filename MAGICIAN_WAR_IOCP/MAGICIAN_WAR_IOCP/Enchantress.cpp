@@ -35,5 +35,5 @@ void Enchantress::LateUpdate(const float& fTime)
 
 void Enchantress::MakeCollision()
 {
-	m_vecRigidDynamic.push_back(CPhysXMgr::GetInstance()->CreateSphere(m_Info.xmfPosition, 2.f));
+	m_vecRigidDynamic.push_back(CPhysXMgr::GetInstance()->CreateSphere(m_Info.xmfPosition, 2.5f));
 }

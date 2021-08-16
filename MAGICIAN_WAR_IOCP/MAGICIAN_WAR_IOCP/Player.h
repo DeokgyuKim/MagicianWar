@@ -75,6 +75,8 @@ public:
 	bool getUsed() { return m_Used; }
 	bool getAbleHeal();
 	bool getAbleDottAtt();
+	bool getAbleDealing();
+	bool getFreeze();
 
 	InterfaceFSM* GetRootFSM();
 	InterfaceFSM* GetUpperFSM();

@@ -37,4 +37,11 @@ bool IcaAgeBall::Update(const float& fTime)
 void IcaAgeBall::LateUpdate(const float& fTime)
 {
     Skill::LateUpdate(fTime);
+    for (auto rigidbody : m_vecRigidDynamic)
+        rigidbody->setGlobalPose(CPhysXMgr::GetInstance()->MakePxTransform(m_Info.xmmWorld));
+}
+
+void IcaAgeBall::MakeCollision()
+{
+    m_vecRigidDynamic.push_back(CPhysXMgr::GetInstance()->CreateSphere(m_Info.xmfPosition, 2.f));
 }

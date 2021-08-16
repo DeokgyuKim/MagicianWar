@@ -169,6 +169,7 @@ void Player::Update(float fTime)
 	m_UpperBody->Execute(fTime);
 	m_RootBody->Execute(fTime);
 
+	m_Info.PlayerState = m_RootBody->GetState();
 }
 
 void Player::LateUpdate(float fTime)
@@ -325,6 +326,20 @@ bool Player::getAbleDottAtt()
 		m_fHpDealTime = 0.f;
 		return true;
 	}
+	return false;
+}
+
+bool Player::getAbleDealing()
+{
+	if (m_Info.PlayerState == STATE_DANCE || m_Info.PlayerState == STATE_DEAD)
+		return false;
+	return true;
+}
+
+bool Player::getFreeze()
+{
+	if (m_Info.PlayerState == STATE_FREEZE)
+		return true;
 	return false;
 }
 

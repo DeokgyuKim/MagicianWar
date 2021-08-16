@@ -1,4 +1,4 @@
-#include "Room.h"
+ï»¿#include "Room.h"
 
 #include "PlayerFSM.h"
 #include "Server.h"
@@ -28,7 +28,7 @@ void Room::Initalize(int room_num, int host)
 	m_RedTeam_Alive_Count = 0;
 	m_curPlayer_Count = 0;
 	m_isGameStart = false;
-	m_istEnterable = true; // µé¾î¿Ã ¼ö ÀÖÀ½
+	m_istEnterable = true; // ë“¤ì–´ì˜¬ ìˆ˜ ìˆìŒ
 	m_isRoundReset = false;
 	m_prev_time = chrono::system_clock::now();
 
@@ -67,19 +67,19 @@ void Room::Initalize(int room_num, int host)
 }
 
 void Room::ReInit()
-{	// ¶ó¿îµå°¡ ´Ù ³¡³ª°í ·Îºñ·Î µ¹¾Æ¿È
+{	// ë¼ìš´ë“œê°€ ë‹¤ ëë‚˜ê³  ë¡œë¹„ë¡œ ëŒì•„ì˜´
 	m_isGameStart = false;
 	m_Info.curRound = 0;
 	m_WinnerTeam = TEAM_NONE;
 
-	if (m_curPlayer_Count <= MAX_PLAYER) { // °ÔÀÓ ³¡³µÀ¸´Ï ²ËÂù°Å ¾Æ´Ï¸é ´õ ¹ŞÀÚ
+	if (m_curPlayer_Count <= MAX_PLAYER) { // ê²Œì„ ëë‚¬ìœ¼ë‹ˆ ê½‰ì°¬ê±° ì•„ë‹ˆë©´ ë” ë°›ì
 		m_istEnterable = true;
 	}
 	m_prev_time = chrono::system_clock::now();
 
 	m_player_mutex.lock();
 
-	// m_players´Â ÀÎ°ÔÀÓ¿¡¼­¸¸ ¾¸
+	// m_playersëŠ” ì¸ê²Œì„ì—ì„œë§Œ ì”€
 	for (int i = 0; i < MAX_PLAYER; ++i)
 	{
 		if (m_players[i].getUsed()) {
@@ -92,7 +92,7 @@ void Room::ReInit()
 
 	m_player_mutex.unlock();
 
-	// BulletÃÊ±âÈ­
+	// Bulletì´ˆê¸°í™”
 	for (int i = 0; i < BulletCB_Count; ++i) {
 		if (m_Bullets[i].getUser() != NO_PLAYER)
 			m_Bullets[i].Release();
@@ -103,7 +103,7 @@ void Room::ReInit()
 	ResetSkill();
 
 	for (int i = 0; i < MAX_PLAYER; ++i) {
-		if (m_roomPlayerSlots[i].used) {// »ç¿ëÁßÀÎ ½½¸©¸¸ ·¹µğ ÇØÁ¦
+		if (m_roomPlayerSlots[i].used) {// ì‚¬ìš©ì¤‘ì¸ ìŠ¬ë¦‡ë§Œ ë ˆë”” í•´ì œ
 			m_roomPlayerSlots[i].readyState = false;
 		}
 	}
@@ -131,8 +131,8 @@ void Room::RoundSetting()
 {
 	recvEvnet_Clear();
 	m_WinnerTeam = TEAM_NONE;
-	// »óÁ¡ ³¡³ª°í ¶ó¿îµå ½ÃÀÛÇÒ¶§ ÇØÁÙ°Í
-	for (int i = 0; i < MAX_PLAYER; ++i) { // ÃÊ±â À§Ä¡ Àç¼³Á¤
+	// ìƒì  ëë‚˜ê³  ë¼ìš´ë“œ ì‹œì‘í• ë•Œ í•´ì¤„ê²ƒ
+	for (int i = 0; i < MAX_PLAYER; ++i) { // ì´ˆê¸° ìœ„ì¹˜ ì¬ì„¤ì •
 		if (m_players[i].getUsed()) {
 			int spawnPos = m_players[i].getSlotNum();
 			cout << "spawnPos - " << spawnPos << "\n";
@@ -159,7 +159,7 @@ void Room::RoundSetting()
 		}
 	}
 
-	// BulletÃÊ±âÈ­
+	// Bulletì´ˆê¸°í™”
 	for (int i = 0; i < BulletCB_Count; ++i) {
 		//if (m_Bullets[i].getUser() != NO_PLAYER)
 		//	m_Bullets[i].Release();
@@ -195,7 +195,7 @@ void Room::Update()
 {
 	if (this == nullptr) return;
 
-	//cout << "¹æ ¾÷µ¥ÀÌÆ®\n";
+	//cout << "ë°© ì—…ë°ì´íŠ¸\n";
 	m_start_time = chrono::system_clock::now();
 	m_elapsedTime = m_start_time - m_prev_time;
 	m_prev_time = m_start_time;
@@ -213,13 +213,13 @@ void Room::Update()
 		packet_processing(rEvent);
 	}
 
-	if (m_isGameStart)  // °ÔÀÓ ½ÃÀÛµÇ¸é Ã³¸®ÇÒ ºÎºĞ
+	if (m_isGameStart)  // ê²Œì„ ì‹œì‘ë˜ë©´ ì²˜ë¦¬í•  ë¶€ë¶„
 	{
 		//if(m_isRoundEnd)
 		InGame_Update(elapsedTime);
 
 	}
-	else // °ÔÀÓ ½ÃÀÛÀÌ ¾Æ´Ï¸é RoomSceneÀÌ´Ï±î
+	else // ê²Œì„ ì‹œì‘ì´ ì•„ë‹ˆë©´ RoomSceneì´ë‹ˆê¹Œ
 	{
 
 	}
@@ -254,7 +254,7 @@ void Room::InGame_Update(float fTime)
 	// PlayerUPdate
 	PlayerUpdate(fTime);
 
-	// ÃÑ¾Ë Update
+	// ì´ì•Œ Update
 	BulletUpdate(fTime);
 
 	// Skill Update
@@ -268,7 +268,7 @@ void Room::InGame_Update(float fTime)
 		Physics_Collision();
 		CheckWinnerTeam();
 	}
-	else { // ¶ó¿îµå°¡ ³¡³µÀ»¶§ ¶ó¿îµå Àç½ÃÀÛ±îÁöÀÇ ½Ã°£
+	else { // ë¼ìš´ë“œê°€ ëë‚¬ì„ë•Œ ë¼ìš´ë“œ ì¬ì‹œì‘ê¹Œì§€ì˜ ì‹œê°„
 		SendRoundResetTime();
 	}
 
@@ -311,7 +311,7 @@ void Room::PlayerUpdate(float fTime)
 
 				for (int j = 0; j < BulletCB_Count; ++j)
 				{
-					if (m_Bullets[j].getUser() == NO_PLAYER) { // ¾È¾²´Â ÃÑ¾Ë Ã£¾Æ¼­
+					if (m_Bullets[j].getUser() == NO_PLAYER) { // ì•ˆì“°ëŠ” ì´ì•Œ ì°¾ì•„ì„œ
 
 						m_Bullets[j] = BulletTemp;
 						break;
@@ -331,9 +331,9 @@ void Room::BulletUpdate(float fTime)
 {
 	for (int i = 0; i < BulletCB_Count; ++i) {
 
-		if (m_Bullets[i].getUser() != NO_PLAYER) { // »ç¿ëÁßÀÎ °Í¸¸ update
+		if (m_Bullets[i].getUser() != NO_PLAYER) { // ì‚¬ìš©ì¤‘ì¸ ê²ƒë§Œ update
 			int dead = m_Bullets[i].Update(fTime);
-			if (dead) { // ÃÑ¾ËÀÌ »ç¸ÁÃ¼Å©µÇ¸é ¸ğµç Å¬¶óÇÑÅ× ¾Ë·ÁÁà¾ßÇÔ
+			if (dead) { // ì´ì•Œì´ ì‚¬ë§ì²´í¬ë˜ë©´ ëª¨ë“  í´ë¼í•œí…Œ ì•Œë ¤ì¤˜ì•¼í•¨
 				m_Bullets[i].SetUser(NO_PLAYER);
 				PushBullet_Delete(i);
 			}
@@ -464,7 +464,7 @@ void Room::Physics_Simulate(float fTime)
 
 void Room::Physics_Collision()
 {
-	//ÃÑ¾Ë Ãæµ¹
+	//ì´ì•Œ ì¶©ëŒ
 	for (int i = 0; i < BulletCB_Count; ++i)
 	{
 		if (m_Bullets[i].getUser() != NO_PLAYER)
@@ -479,7 +479,7 @@ void Room::Physics_Collision()
 			for (int j = 0; j < MAX_PLAYER; ++j)
 			{
 				if (m_players[j].getUsed()) {
-					// °°Àº ÆÀÀÌ ½ğ ÃÑÀÌ ¾Æ´Ï°í Á×Àº ÇÃ·¹ÀÌ¾î°¡ ¾Æ´Ï°í ½ÂÀÚ°¡ ¾øÀ»¶§
+					// ê°™ì€ íŒ€ì´ ìœ ì´ì´ ì•„ë‹ˆê³  ì£½ì€ í”Œë ˆì´ì–´ê°€ ì•„ë‹ˆê³  ìŠ¹ìê°€ ì—†ì„ë•Œ
 					if (m_Bullets[i].getCheckUserTeam() != m_players[j].getTeam()
 						&& m_players[j].getState() != STATE_DEAD && m_WinnerTeam == TEAM_NONE)
 					{
@@ -488,12 +488,12 @@ void Room::Physics_Collision()
 							int Attack_Player = m_Bullets[i].getUser();
 							m_Bullets[i].SetUser(NO_PLAYER);
 							PushBullet_Delete(i);
-							//ÇÃ·¹ÀÌ¾î ÇÇ´Ş°í ±×·±°Å
+							//í”Œë ˆì´ì–´ í”¼ë‹¬ê³  ê·¸ëŸ°ê±°
 							int playerEvent = m_players[j].setDamage(m_Bullets[i].getDamage(), BULLET_HIT_EVENT);
 							CheckPlayerEvent(playerEvent, j);
 							if (playerEvent == PLAYER_DEAD_EVENT)
 							{
-								PushAddKillPoint(Attack_Player); // 1Å³ ÇßÀ½ ³Ê°¡
+								PushAddKillPoint(Attack_Player); // 1í‚¬ í–ˆìŒ ë„ˆê°€
 							}
 						}
 					}
@@ -506,25 +506,225 @@ void Room::Physics_Collision()
 	for (int i = 0; i < MAX_SKILL; ++i)
 	{
 		if (m_IceBall_Skills[i].getUser() != NO_PLAYER)
-		{ // Skill »ç¿ëÀÚ°¡ ÀÖÀ»¶§
+		{ // Skill ì‚¬ìš©ìê°€ ìˆì„ë•Œ
 			for (int j = 0; j < MAX_PLAYER; ++j)
 			{
-				if (m_players[j].getUsed())
-				{ // ÇÃ·¹ÀÌ¾î°¡ Á¸ÀçÇÒ¶§
-					{ // ÆÀ¿ø Ã¼Å© + Ã¼Å©ÇÏ°íÀÚ ÇÏ´Â ÇÃ·¹ÀÌ¾îÀÇ »óÅÂ Ã¼Å© ( Dead, Dance, Freeze )
-						{ // Ãæµ¹ Çß´Ù¸é
-							int Attack_Player = m_IceBall_Skills[i].getUser();
-							int playerEvent = m_players[j].setDamage(0, ICE_FIELD_HIT_EVENT);
-							CheckPlayerEvent(playerEvent, j);
-							if (playerEvent == PLAYER_DEAD_EVENT) 
-							{
-								PushAddKillPoint(Attack_Player);
-							}
-							else if (playerEvent == ICE_FIELD_HIT_EVENT)
-							{
-								CreateSkillCressvas(j);
+				if (m_players[j].getUsed() && m_players[j].getAbleDealing())
+				{ // í”Œë ˆì´ì–´ê°€ ì¡´ì¬í• ë•Œ
+					for (auto body : m_IceBall_Skills[i].GetRigidDynamics())
+					{
+						if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(m_players[j].GetPxCapsuleController()->getActor(), body))
+						{ // ì¶©ëŒ í–ˆë‹¤ë©´
+							if(m_players[j].getTeam() != m_IceBall_Skills[i].getTeamType())
+							{ // íŒ€ì› ì²´í¬ + ì²´í¬í•˜ê³ ì í•˜ëŠ” í”Œë ˆì´ì–´ì˜ ìƒíƒœ ì²´í¬ ( Dead, Dance, Freeze )
+								if (!m_players[j].getFreeze())
+								{
+									int Attack_Player = m_IceBall_Skills[i].getUser();
+									int playerEvent = m_players[j].setDamage(0, ICE_FIELD_HIT_EVENT);
+									CheckPlayerEvent(playerEvent, j);
+									if (playerEvent == PLAYER_DEAD_EVENT)
+									{
+										PushAddKillPoint(Attack_Player);
+									}
+									else if (playerEvent == ICE_FIELD_HIT_EVENT)
+									{
+										CreateSkillCressvas(j);
+									}
+								}
 							}
 						}
+					}
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < MAX_SKILL; ++i)
+	{
+		for (int j = 0; j < MAX_PLAYER; ++j)
+		{
+			if (m_players[j].getUsed() && m_players[j].getAbleDealing())
+			{
+				//FireWall
+
+				if (m_FireWall_Skills[i].getUser() != NO_PLAYER)
+				{
+					for (auto rigidbody : m_FireWall_Skills[i].GetRigidDynamics())
+					{
+						if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(m_players[j].GetPxCapsuleController()->getActor(), rigidbody))
+						{
+							if (m_players[j].getTeam() == m_FireWall_Skills[i].getTeamType())
+							{
+								if (m_players[j].getAbleHeal())
+								{
+									m_players[j].setHp(m_players[j].getHp() + 5);
+								}
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	//Static Object or Terrain 
+	for (int i = 0; i < MAX_SKILL; ++i)
+	{
+		if (m_FireMeteor_Skills[i].getUser() != NO_PLAYER)
+		{
+			for (auto rigidbody : m_FireMeteor_Skills[i].GetRigidDynamics())
+			{
+				//Static Object or Terrain
+				if (CPhysXMgr::GetInstance()->CollisionForStaticObjects(rigidbody) || m_FireMeteor_Skills[i].getPosition().y <= 2.5f)
+				{
+					m_FireMeteor_Skills[i].setDead(true);
+					for (int j = 0; j < MAX_PLAYER; ++j)
+					{
+						if (m_players[j].getUsed() && m_players[j].getAbleDealing())
+						{
+							if (m_FireMeteor_Skills[i].getTeamType() != m_players[j].getTeam())
+							{
+								if (!m_players[j].getFreeze())
+								{
+									XMFLOAT3 xmflen, playerpos, skillpos;
+									playerpos = m_players[j].getPosition();
+									skillpos = m_FireMeteor_Skills[i].getPosition();
+									XMVECTOR length = XMVector3Length(XMLoadFloat3(&playerpos) - XMLoadFloat3(&skillpos));
+									XMStoreFloat3(&xmflen, length);
+									if (xmflen.x < 5.f)
+									{
+										int Attack_Player = m_FireMeteor_Skills[i].getUser();
+										int playerEvent = m_players[j].setDamage(40, BULLET_HIT_EVENT);
+										CheckPlayerEvent(playerEvent, j);
+										if (playerEvent == PLAYER_DEAD_EVENT)
+										{
+											PushAddKillPoint(Attack_Player);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				for (int j = 0; j < MAX_PLAYER; ++j)
+				{
+					if (m_players[j].getUsed() && m_players[j].getAbleDealing())
+					{
+						if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(m_players[j].GetPxCapsuleController()->getActor(), rigidbody))
+						{
+							if (!m_players[j].getFreeze())
+							{
+								if (m_FireMeteor_Skills[i].getTeamType() != m_players[j].getTeam())
+								{
+									m_FireMeteor_Skills[i].setDead(true);
+									int Attack_Player = m_FireMeteor_Skills[i].getUser();
+									int playerEvent = m_players[j].setDamage(40, BULLET_HIT_EVENT);
+									CheckPlayerEvent(playerEvent, j);
+									if (playerEvent == PLAYER_DEAD_EVENT)
+									{
+										PushAddKillPoint(Attack_Player);
+									}
+									for (int k = 0; k < MAX_PLAYER; ++k)
+									{
+										if (m_players[k].getUsed())
+										{
+											if (!m_players[k].getFreeze())
+											{
+												if (m_FireMeteor_Skills[i].getTeamType() != m_players[k].getTeam())
+												{
+													XMFLOAT3 xmflen, playerpos, skillpos;
+													playerpos = m_players[k].getPosition();
+													skillpos = m_FireMeteor_Skills[i].getPosition();
+													XMVECTOR length = XMVector3Length(XMLoadFloat3(&playerpos) - XMLoadFloat3(&skillpos));
+													XMStoreFloat3(&xmflen, length);
+													if (xmflen.x < 5.f)
+													{
+														int Attack_Player = m_FireMeteor_Skills[i].getUser();
+														int playerEvent = m_players[k].setDamage(40, BULLET_HIT_EVENT);
+														CheckPlayerEvent(playerEvent, k);
+														if (playerEvent == PLAYER_DEAD_EVENT)
+														{
+															PushAddKillPoint(Attack_Player);
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	for (int i = 0; i < MAX_SKILL; ++i)
+	{
+		if (m_Darkness_Enchantress_Skills[i].getUser() != NO_PLAYER)
+		{
+			for (auto rigidbody : m_Darkness_Enchantress_Skills[i].GetRigidDynamics())
+			{
+				for (int j = 0; j < MAX_PLAYER; ++j)
+				{
+					if (m_players[j].getUsed() && m_players[j].getAbleDealing())
+					{
+						if (!m_players[j].getFreeze())
+						{
+							if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(m_players[j].GetPxCapsuleController()->getActor(), rigidbody))
+							{
+								if (m_Darkness_Enchantress_Skills[i].getTeamType() != m_players[j].getTeam())
+								{
+
+									Player* pPlayer = GetPlayerForID(m_Darkness_Enchantress_Skills[i].getUser());
+									if (pPlayer == nullptr || !pPlayer->getUsed())
+									{
+										cout << "No Player." << endl;
+										m_Darkness_Enchantress_Skills[i].setDead(true);
+									}
+									else
+									{
+										if (m_players[j].getAbleDottAtt())
+										{
+											int Attack_Player = m_FireMeteor_Skills[i].getUser();
+											int playerEvent = m_players[j].setDamage(10, BULLET_HIT_EVENT);
+											CheckPlayerEvent(playerEvent, j);
+											if (playerEvent == PLAYER_DEAD_EVENT)
+											{
+												PushAddKillPoint(Attack_Player);
+											}
+											pPlayer->setHp(pPlayer->getHp() + 5);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	for (int i = 0; i < MAX_SKILL; ++i)
+	{
+		if (m_Darkness_DistortionPearl_Skills[i].getUser() != NO_PLAYER)
+		{
+			for (auto rigidbody : m_Darkness_DistortionPearl_Skills[i].GetRigidDynamics())
+			{
+				//Static Object or Terrain
+				if (CPhysXMgr::GetInstance()->CollisionForStaticObjectsNotQuail(rigidbody) || m_Darkness_DistortionPearl_Skills[i].getPosition().y <= 0.5f)
+				{
+					m_Darkness_DistortionPearl_Skills[i].setDead(true);
+					Player* pPlayer = GetPlayerForID(m_Darkness_DistortionPearl_Skills[i].getUser());
+					if (pPlayer == nullptr)
+					{
+						cout << "No Player" << endl;
+					}
+					else
+					{
+						pPlayer->setPosition(m_Darkness_DistortionPearl_Skills[i].getPosition());
 					}
 				}
 			}
@@ -543,9 +743,9 @@ bool Room::CheckRoundEnd(int TeamCount)
 
 void Room::CheckWinnerTeam()
 {
-	if (m_RoundWinnerCheck) // ¶ó¿îµå°¡ ³¡³µÀ»¶§
+	if (m_RoundWinnerCheck) // ë¼ìš´ë“œê°€ ëë‚¬ì„ë•Œ
 	{
-		if (m_WinnerTeam == TEAM_BLUE) // ½ÂÀÚÆÀÀÌ ³ª¿À¸é
+		if (m_WinnerTeam == TEAM_BLUE) // ìŠ¹ìíŒ€ì´ ë‚˜ì˜¤ë©´
 		{
 			PushRoundEndEvent(TEAM_BLUE);
 			for (int i = 0; i < MAX_PLAYER; ++i)
@@ -580,9 +780,9 @@ void Room::CheckWinnerTeam()
 
 void Room::CheckPlayerEvent(int _playerEvent, int slotNum)
 {
-	if (_playerEvent == PLAYER_DEAD_EVENT) // ÇÃ·¹ÀÌ¾î°¡ Á×¾úÀ»¶§ Ã¼Å©ÇØ¾ßÇÒ°Í
+	if (_playerEvent == PLAYER_DEAD_EVENT) // í”Œë ˆì´ì–´ê°€ ì£½ì—ˆì„ë•Œ ì²´í¬í•´ì•¼í• ê²ƒ
 	{
-		if (m_players[slotNum].getTeam() == TEAM_BLUE) { // Á×Àº Ä£±¸°¡ BlueTeamÀÌ¸é
+		if (m_players[slotNum].getTeam() == TEAM_BLUE) { // ì£½ì€ ì¹œêµ¬ê°€ BlueTeamì´ë©´
 			--m_BlueTeam_Alive_Count;
 			m_isRoundEnd = CheckRoundEnd(m_BlueTeam_Alive_Count);
 		}
@@ -590,9 +790,9 @@ void Room::CheckPlayerEvent(int _playerEvent, int slotNum)
 			--m_RedTeam_Alive_Count;
 			m_isRoundEnd = CheckRoundEnd(m_RedTeam_Alive_Count);
 		}
-		if (m_isRoundEnd) // ¶ó¿îµå°¡ ³¡³ª¸é
+		if (m_isRoundEnd) // ë¼ìš´ë“œê°€ ëë‚˜ë©´
 		{
-			if (m_players[slotNum].getTeam() == TEAM_RED) { // ¸¶Áö¸·¿¡ Á×Àº Ä£±¸ÆÀ ÆÄ¾Ç
+			if (m_players[slotNum].getTeam() == TEAM_RED) { // ë§ˆì§€ë§‰ì— ì£½ì€ ì¹œêµ¬íŒ€ íŒŒì•…
 				m_WinnerTeam = TEAM_BLUE;
 			}
 			else if (m_players[slotNum].getTeam() == TEAM_BLUE) {
@@ -628,12 +828,12 @@ bool Room::EnterRoom(int id, bool host)
 {
 	if (m_curPlayer_Count >= MAX_PLAYER)
 		return false;
-	if (m_isGameStart) // °ÔÀÓÁß
+	if (m_isGameStart) // ê²Œì„ì¤‘
 		return false;
-	if (!m_istEnterable) // µé¾î¿Ã ¼ö ¾ø´Â »óÅÂ
+	if (!m_istEnterable) // ë“¤ì–´ì˜¬ ìˆ˜ ì—†ëŠ” ìƒíƒœ
 		return false;
 
-	cout << id << " °¡ ¹æ¿¡ µé¾î¿È\n";
+	cout << id << " ê°€ ë°©ì— ë“¤ì–´ì˜´\n";
 
 	g_Clients[id]->Room_num = m_Info.Room_Num;
 
@@ -642,9 +842,9 @@ bool Room::EnterRoom(int id, bool host)
 
 	for (int i = 0; i < MAX_PLAYER; ++i) {
 		if (!m_roomPlayerSlots[i].used) {
-			m_roomPlayerSlots[i].used = true; // »ç¿ëÁßÀ¸·Î ¹Ù²Ù°í
+			m_roomPlayerSlots[i].used = true; // ì‚¬ìš©ì¤‘ìœ¼ë¡œ ë°”ê¾¸ê³ 
 			m_roomPlayerSlots[i].id = id;
-			m_roomPlayerSlots[i].slot_num = i; // ³» ½½¸©³Ñ¹ö ±â¾ïÇØ¾ßÇÔ
+			m_roomPlayerSlots[i].slot_num = i; // ë‚´ ìŠ¬ë¦‡ë„˜ë²„ ê¸°ì–µí•´ì•¼í•¨
 			m_roomPlayerSlots[i].ishost = host;
 			sendSlot = i;
 
@@ -656,11 +856,11 @@ bool Room::EnterRoom(int id, bool host)
 
 	++m_curPlayer_Count;
 
-	PushRoomPlayerEvent(sendSlot); // ·ë ÇÃ·¹ÀÌ¾î°¡ º¯È­µÉ¶§¸¶´Ù È£ÃâÇÒ °Í
-	Server::GetInstance()->SendRoomEnter(id, m_Info.Room_Num); // room_num ¹æ¿¡ id°¡ µé¾î°¨
+	PushRoomPlayerEvent(sendSlot); // ë£¸ í”Œë ˆì´ì–´ê°€ ë³€í™”ë ë•Œë§ˆë‹¤ í˜¸ì¶œí•  ê²ƒ
+	Server::GetInstance()->SendRoomEnter(id, m_Info.Room_Num); // room_num ë°©ì— idê°€ ë“¤ì–´ê°
 
 
-	//for (int i = 0; i < MAX_PLAYER; ++i) { // ·ë¿¡ Á¢¼ÓÇÑ ¸ğµç ÇÃ·¹ÀÌ¾î¿¡°Ô º¸³»Áà¾ßÇØ ·ëµ¥ÀÌÅÍ ¹Ğ¾îÁà¾ßÇØ
+	//for (int i = 0; i < MAX_PLAYER; ++i) { // ë£¸ì— ì ‘ì†í•œ ëª¨ë“  í”Œë ˆì´ì–´ì—ê²Œ ë³´ë‚´ì¤˜ì•¼í•´ ë£¸ë°ì´í„° ë°€ì–´ì¤˜ì•¼í•´
 	//	if (m_roomPlayerSlots[i].used) {
 	//		Server::GetInstance()->SendRoomPlayerInfo(m_roomPlayerSlots[i].id, i);
 	//	}
@@ -676,7 +876,7 @@ void Room::ExitRoom(int id)
 	bool ishost = false;
 
 	for (int i = 0; i < MAX_PLAYER; ++i) {
-		if (m_roomPlayerSlots[i].id == id) { // ³ª°¡´Â Ä£±¸ Ã¼Å©
+		if (m_roomPlayerSlots[i].id == id) { // ë‚˜ê°€ëŠ” ì¹œêµ¬ ì²´í¬
 			ishost = m_roomPlayerSlots[i].ishost;
 			islotNum = i;
 			break;
@@ -684,7 +884,7 @@ void Room::ExitRoom(int id)
 	}
 
 
-	if (ishost) { // ³ª°£ ÇÃ·¹ÀÌ¾î°¡ host¸é ´Ù¸¥ ÇÃ·¹ÀÌ¾î°¡ host°¡ µÈ´Ù.
+	if (ishost) { // ë‚˜ê°„ í”Œë ˆì´ì–´ê°€ hostë©´ ë‹¤ë¥¸ í”Œë ˆì´ì–´ê°€ hostê°€ ëœë‹¤.
 		for (int i = 0; i < MAX_PLAYER; ++i) {
 			if (m_roomPlayerSlots[i].used && m_roomPlayerSlots[i].id != id) {
 				m_roomPlayerSlots[i].ishost = true;
@@ -853,7 +1053,7 @@ void Room::Player_Disconnect(int id)
 	g_Clients[id]->Room_num = NO_ROOM;
 	g_Client_mutex.unlock();
 
-	if (g_Clients[id]->IsConnected) // connectµÇ¾î ÀÖ³Ä ¾ê?
+	if (g_Clients[id]->IsConnected) // connectë˜ì–´ ìˆëƒ ì–˜?
 		Server::GetInstance()->SendRoomExit(id);
 
 }
@@ -910,7 +1110,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 		{
 			if (m_players[i].getUsed()) {
 				if (m_players[i].getID() == rEvent.playerID) {
-					cout << "¼­¹ö ÃÑ¾Ë ½÷Áà\n";
+					cout << "ì„œë²„ ì´ì•Œ ì´ì¤˜\n";
 					m_players[i].setCreateBullet(1);
 					break;
 				}
@@ -921,7 +1121,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 	case ctos_RoomInfo_Request:
 	{
 		for (int i = 0; i < MAX_PLAYER; ++i) {
-			PushRoomPlayerEvent_Byid(rEvent.playerID, i); // playerID ¿¡°Ô i¹ø ½½¸©ÀÇ Á¤º¸ º¸³»±â
+			PushRoomPlayerEvent_Byid(rEvent.playerID, i); // playerID ì—ê²Œ ië²ˆ ìŠ¬ë¦‡ì˜ ì •ë³´ ë³´ë‚´ê¸°
 		}
 		break;
 	}
@@ -952,9 +1152,9 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 	{
 		bool gameStart = true;
 		for (int i = 0; i < MAX_PLAYER; ++i) {
-			if (m_roomPlayerSlots[i].used) { // »ç¿ëÁßÀÎ ½½¸©¿¡
-				if (!m_roomPlayerSlots[i].ishost) { // ¹æÀåÀÌ ¾Æ´Ñ Ä£±¸°¡
-					if (!m_roomPlayerSlots[i].readyState) { // ·¹µğ¾ÈÇÑ Ä£±¸°¡ ÀÖÀ¸¸é
+			if (m_roomPlayerSlots[i].used) { // ì‚¬ìš©ì¤‘ì¸ ìŠ¬ë¦‡ì—
+				if (!m_roomPlayerSlots[i].ishost) { // ë°©ì¥ì´ ì•„ë‹Œ ì¹œêµ¬ê°€
+					if (!m_roomPlayerSlots[i].readyState) { // ë ˆë””ì•ˆí•œ ì¹œêµ¬ê°€ ìˆìœ¼ë©´
 						gameStart = false;
 						break;
 					}
@@ -962,7 +1162,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 			}
 		}
 		if (gameStart) {
-			cout << "°ÔÀÓ ½ÃÀÛ\n";
+			cout << "ê²Œì„ ì‹œì‘\n";
 			InGame_Init();
 		}
 		break;
@@ -1001,8 +1201,8 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 
 		if (clearSlot != Roomdata.slot_num)  // 
 		{
-			PushRoomPlayerEvent(clearSlot); // ºñ¿öÁø Slot
-			PushRoomPlayerEvent(Roomdata.slot_num); // Ã¤¿öÁø Slot
+			PushRoomPlayerEvent(clearSlot); // ë¹„ì›Œì§„ Slot
+			PushRoomPlayerEvent(Roomdata.slot_num); // ì±„ì›Œì§„ Slot
 		}
 
 		break;
@@ -1066,8 +1266,8 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 	case ctos_ShoppingStart_Request:
 	{
 
-		recvEvnet_Clear(); // ¶ó¿îµå ½ÃÀÛÀü¿¡ ¹Ş¾Æ¿Â µ¥ÀÌÅÍ ºñ¿ö¾ßÁö
-		m_isRoundStart = true; // ¶ó¿îµå ½ÃÀÛ ÀÏ´Ü ½ÃÄÑÁÖ°í
+		recvEvnet_Clear(); // ë¼ìš´ë“œ ì‹œì‘ì „ì— ë°›ì•„ì˜¨ ë°ì´í„° ë¹„ì›Œì•¼ì§€
+		m_isRoundStart = true; // ë¼ìš´ë“œ ì‹œì‘ ì¼ë‹¨ ì‹œì¼œì£¼ê³ 
 		m_ShoppingTime = 0;
 		m_isShoppingStart = true;
 		SendLeftShoppingTime();
@@ -1094,6 +1294,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_FireWall_Skills[i].setPosition(rEvent.xmfPosition);
 									m_FireWall_Skills[i].setRotate(rEvent.xmfRotate);
 									m_FireWall_Skills[i].setTeam(m_players[j].getTeam());
+									m_FireWall_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_FireWall_Skills[i].getSkillType();
 									PushSkillCreate(i, Skilltype);
 									break;
@@ -1111,6 +1312,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_IceBall_Skills[i].setPosition(rEvent.xmfPosition);
 									m_IceBall_Skills[i].setRotate(rEvent.xmfRotate);
 									m_IceBall_Skills[i].setTeam(m_players[j].getTeam());
+									m_IceBall_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_IceBall_Skills[i].getSkillType();
 									PushSkillCreate(i, Skilltype);
 									break;
@@ -1127,6 +1329,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_Darkness_Enchantress_Skills[i].setPosition(rEvent.xmfPosition);
 									m_Darkness_Enchantress_Skills[i].setRotate(rEvent.xmfRotate);
 									m_Darkness_Enchantress_Skills[i].setTeam(m_players[j].getTeam());
+									m_Darkness_Enchantress_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_Darkness_Enchantress_Skills[i].getSkillType();
 									PushSkillCreate(i, Skilltype);
 									break;
@@ -1146,6 +1349,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_FireMeteor_Skills[i].setPosition(rEvent.xmfPosition);
 									m_FireMeteor_Skills[i].setRotate(rEvent.xmfRotate);
 									m_FireMeteor_Skills[i].setTeam(m_players[j].getTeam());
+									m_FireMeteor_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_FireMeteor_Skills[i].getSkillType();
 									PushSkillCreate(i, Skilltype);
 									break;
@@ -1180,6 +1384,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_Darkness_DistortionPearl_Skills[i].setPosition(rEvent.xmfPosition);
 									m_Darkness_DistortionPearl_Skills[i].setRotate(rEvent.xmfRotate);
 									m_Darkness_DistortionPearl_Skills[i].setTeam(m_players[j].getTeam());
+									m_Darkness_DistortionPearl_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_Darkness_DistortionPearl_Skills[i].getSkillType();
 									PushSkillCreate(i, Skilltype);
 									break;
@@ -1268,7 +1473,7 @@ void Room::PushRoomPlayerEvent(int roomSlot_num)
 	packet.id = m_roomPlayerSlots[roomSlot_num].id;
 
 	for (int i = 0; i < MAX_PLAYER; ++i) {
-		if (m_roomPlayerSlots[i].used) { // »ç¿ëÁß
+		if (m_roomPlayerSlots[i].used) { // ì‚¬ìš©ì¤‘
 			int id = m_roomPlayerSlots[i].id;
 			sendEvent_push(id, &packet);
 		}
@@ -1314,7 +1519,7 @@ void Room::PushRoundStartEvent(int Cur_Round)
 
 	for (int i = 0; i < MAX_PLAYER; ++i)
 	{
-		if (m_players[i].getUsed()) { // °ÔÀÓ¿¡ Á¸ÀçÇÏ´Â ¸ğµç ÇÃ·¹ÀÌ¾î¿¡°Ô ¸Ş½ÃÁö¸¦ º¸³»Áà¾ßÇÑ´Ù.
+		if (m_players[i].getUsed()) { // ê²Œì„ì— ì¡´ì¬í•˜ëŠ” ëª¨ë“  í”Œë ˆì´ì–´ì—ê²Œ ë©”ì‹œì§€ë¥¼ ë³´ë‚´ì¤˜ì•¼í•œë‹¤.
 			int id = m_players[i].getID();
 			sendEvent_push(id, &packet);
 		}
@@ -1460,18 +1665,18 @@ void Room::SendLeftShoppingTime()
 		EVENT roomEvent_Send;
 		roomEvent_Send.Object_ID = EVENT_KEY;
 		roomEvent_Send.Target_ID = m_Info.Room_Num;
-		roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::seconds(1); // 1ÃÊ¿¡ ÇÑ¹ø
+		roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::seconds(1); // 1ì´ˆì— í•œë²ˆ
 		roomEvent_Send.opType = OP_ROOM_SHOPPING_TIME;
 		Server::GetInstance()->AddTimer(roomEvent_Send);
 
 
 		unsigned char leftTime = m_TotalShoppingTime - m_ShoppingTime;
-		cout << "½Ã°£ - " << (int)leftTime << "\n";
+		cout << "ì‹œê°„ - " << (int)leftTime << "\n";
 		++m_ShoppingTime;
 
 		for (int i = 0; i < MAX_PLAYER; ++i)
 		{
-			if (m_players[i].getUsed()) { // °ÔÀÓÁßÀÎ ÇÃ·¹ÀÌ¾îµé¿¡°Ô ¼îÇÎ½Ã°£ º¸³»Áà¾ßÁö
+			if (m_players[i].getUsed()) { // ê²Œì„ì¤‘ì¸ í”Œë ˆì´ì–´ë“¤ì—ê²Œ ì‡¼í•‘ì‹œê°„ ë³´ë‚´ì¤˜ì•¼ì§€
 				int id = m_players[i].getID();
 				Server::GetInstance()->SendLeftTime(id, leftTime);
 			}
@@ -1481,7 +1686,7 @@ void Room::SendLeftShoppingTime()
 	}
 	else
 	{
-		cout << "¶ó¿îµå ½ÃÀÛ\n";
+		cout << "ë¼ìš´ë“œ ì‹œì‘\n";
 		m_isShoppingStart = false;
 		m_ShoppingTime = 0;
 		RoundStart();
@@ -1499,17 +1704,17 @@ void Room::SendRoundTime()
 		EVENT roomEvent_Send;
 		roomEvent_Send.Object_ID = EVENT_KEY;
 		roomEvent_Send.Target_ID = m_Info.Room_Num;
-		roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::seconds(1); // 1ÃÊ¿¡ ÇÑ¹ø
+		roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::seconds(1); // 1ì´ˆì— í•œë²ˆ
 		roomEvent_Send.opType = OP_ROOM_TIME;
 		Server::GetInstance()->AddTimer(roomEvent_Send);
 
 		short leftTime = m_TotalRoundTime - m_RoundTime;
-		cout << "¶ó¿îµå ÁøÇàÁß - " << (int)leftTime << "\n";
+		cout << "ë¼ìš´ë“œ ì§„í–‰ì¤‘ - " << (int)leftTime << "\n";
 		++m_RoundTime;
 
 		for (int i = 0; i < MAX_PLAYER; ++i)
 		{
-			if (m_players[i].getUsed()) { // °ÔÀÓÁßÀÎ ÇÃ·¹ÀÌ¾îµé¿¡°Ô ¼îÇÎ½Ã°£ º¸³»Áà¾ßÁö
+			if (m_players[i].getUsed()) { // ê²Œì„ì¤‘ì¸ í”Œë ˆì´ì–´ë“¤ì—ê²Œ ì‡¼í•‘ì‹œê°„ ë³´ë‚´ì¤˜ì•¼ì§€
 				int id = m_players[i].getID();
 				Server::GetInstance()->SendLeftTime(id, leftTime);
 			}
@@ -1531,15 +1736,15 @@ void Room::SendRoundResetTime()
 		EVENT roomEvent_Send;
 		roomEvent_Send.Object_ID = EVENT_KEY;
 		roomEvent_Send.Target_ID = m_Info.Room_Num;
-		roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::seconds(1); // 1ÃÊ¿¡ ÇÑ¹ø
+		roomEvent_Send.wakeup_time = chrono::system_clock::now() + chrono::seconds(1); // 1ì´ˆì— í•œë²ˆ
 		roomEvent_Send.opType = OP_ROOM_RESET;
 		Server::GetInstance()->AddTimer(roomEvent_Send);
 
 		unsigned char leftTime = m_TotalRestTime - m_ResetTime;
-		cout << "¶ó¿îµå Àç½ÃÀÛ - " << (int)leftTime << "\n";
+		cout << "ë¼ìš´ë“œ ì¬ì‹œì‘ - " << (int)leftTime << "\n";
 		++m_ResetTime;
 
-		//for (auto player : m_players) // °ÔÀÓÁßÀÎ ÇÃ·¹ÀÌ¾îµé¿¡°Ô ¼îÇÎ½Ã°£ º¸³»Áà¾ßÁö
+		//for (auto player : m_players) // ê²Œì„ì¤‘ì¸ í”Œë ˆì´ì–´ë“¤ì—ê²Œ ì‡¼í•‘ì‹œê°„ ë³´ë‚´ì¤˜ì•¼ì§€
 		//{
 		//	int id = player->getID();
 		//	Server::GetInstance()->SendRoundResetTime(id, leftTime);
@@ -1549,14 +1754,14 @@ void Room::SendRoundResetTime()
 	}
 	else
 	{
-		if (m_Info.curRound < m_Info.TotalRound) { // ¶ó¿îµå°¡ ³²¾ÒÀ¸¸é ¶ó¿îµå Àç½ÃÀÛ
-			cout << "Win Lose ÆÖ¸» Ä¡¿öÁà\n";
+		if (m_Info.curRound < m_Info.TotalRound) { // ë¼ìš´ë“œê°€ ë‚¨ì•˜ìœ¼ë©´ ë¼ìš´ë“œ ì¬ì‹œì‘
+			cout << "Win Lose íŒ»ë§ ì¹˜ì›Œì¤˜\n";
 			PushRoundReset();
 			m_isRoundReset = false;
 
 		}
 		else {
-			cout << "°ÔÀÓ ³¡\n";
+			cout << "ê²Œì„ ë\n";
 			ReInit();
 		}
 
@@ -1726,3 +1931,10 @@ void Room::PushSkillDelete(int slotNum, unsigned char SkillType)
 	}
 }
 
+Player* Room::GetPlayerForID(int id)
+{
+	for (auto& player : m_players)
+		if (player.getID() == id)
+			return &player;
+	return nullptr;
+}
