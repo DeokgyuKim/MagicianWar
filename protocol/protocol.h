@@ -132,7 +132,8 @@
 #define ANIM_HIT			7
 #define ANIM_DEAD			8
 #define ANIM_DANCE			9
-#define ANIM_COUNT			10
+#define ANIM_SKILL_ATTACK	10
+#define ANIM_COUNT			11
 
 // Bone Type
 #define BONE_UPPER			0

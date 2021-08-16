@@ -250,6 +250,7 @@
     <ClInclude Include="SkinnedModelInstance.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="SkyBoxCube.h" />
+    <ClInclude Include="SoundMgr.h" />
     <ClInclude Include="StaticMeshMgr.h" />
     <ClInclude Include="StaticObject.h" />
     <ClInclude Include="struct.h" />
@@ -360,6 +361,7 @@
     <ClCompile Include="SkinnedModelInstance.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SkyBoxCube.cpp" />
+    <ClCompile Include="SoundMgr.cpp" />
     <ClCompile Include="StaticMeshMgr.cpp" />
     <ClCompile Include="StaticObject.cpp" />
     <ClCompile Include="Terrain.cpp" />

@@ -373,6 +373,9 @@
     <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\08.Boom\01.BoomInner">
       <UniqueIdentifier>{7a08c041-ae15-4279-86d7-7719f4e8b31a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Engine\99.Manager\08.SoundMgr">
+      <UniqueIdentifier>{fc8b619f-4b44-4bd1-871e-d4e0eaa49df5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -717,6 +720,7 @@
     <ClInclude Include="Boom_Inner.h">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\08.Boom\01.BoomInner</Filter>
     </ClInclude>
+    <ClInclude Include="SoundMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -1034,6 +1038,7 @@
     <ClCompile Include="Boom_Inner.cpp">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\08.Boom\01.BoomInner</Filter>
     </ClCompile>
+    <ClCompile Include="SoundMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

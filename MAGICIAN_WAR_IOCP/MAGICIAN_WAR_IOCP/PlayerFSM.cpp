@@ -9,7 +9,7 @@ PlayerFSM::PlayerFSM(Player* user, int _bone)
 
 	m_fHitTime = 1.0f;
 	m_fAttackTime = 1.f;
-	m_fFreezeTime = 3.f;
+	m_fFreezeTime = 5.f;
 }
 
 void PlayerFSM::ChangeState(int _State, int _Ani)
@@ -307,8 +307,7 @@ void PlayerFSM::Attack(float fTime)
 	{ // »óÃ¼
 		if (m_User->IsAttackEnded()) {
 			ChangeState(STATE_IDLE, ANIM_IDLE);
-			
-
+		
 		}
 		
 		//NoJump

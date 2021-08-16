@@ -90,7 +90,7 @@ int IceFreeze_IceDorm::Update(const float& fTimeDelta)
 {
 	SkillEff::Update(fTimeDelta);
 
-	m_fTime += fTimeDelta*0.3f;
+	m_fTime += fTimeDelta;
 
 	return 0;
 }

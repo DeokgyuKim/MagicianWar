@@ -120,7 +120,7 @@ void Room::ReInit()
 void Room::RoundStart()
 {
 	m_isRoundEnd = false;
-
+	recvEvnet_Clear();
 	PushRoundStartEvent(++m_Info.curRound);
 	m_RoundTime = 0;
 	SendRoundTime();
@@ -129,6 +129,7 @@ void Room::RoundStart()
 
 void Room::RoundSetting()
 {
+	recvEvnet_Clear();
 	m_WinnerTeam = TEAM_NONE;
 	// 상점 끝나고 라운드 시작할때 해줄것
 	for (int i = 0; i < MAX_PLAYER; ++i) { // 초기 위치 재설정
@@ -152,6 +153,9 @@ void Room::RoundSetting()
 
 			m_players[i].GetUpperFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
 			m_players[i].GetRootFSM()->ChangeState(STATE_IDLE, ANIM_IDLE);
+
+			m_players[i].setCreateBullet(0);
+			m_players[i].setCreateBullet(0);
 		}
 	}
 
@@ -309,11 +313,13 @@ void Room::PlayerUpdate(float fTime)
 				{
 					if (m_Bullets[j].getUser() == NO_PLAYER) { // 안쓰는 총알 찾아서
 
-						m_Bullets[j] = BulletTemp;
-
-						
+						m_Bullets[j] = BulletTemp;					
 						break;
 					}
+				}
+				m_players[i].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_ATTACK);
+				if (m_players[i].GetRootFSM()->GetState() == STATE_IDLE) {
+					m_players[i].GetRootFSM()->ChangeState(STATE_ATTACK, ANIM_ATTACK);
 				}
 				m_players[i].setCreateBullet(0);
 			}
@@ -1513,37 +1519,49 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 	packet.skillType = SkillType;
 	if (SkillType == SKILL_FIREWALL)
 	{
-		packet.user = m_FireWall_Skills[slotNum].getUser();
+		int user = m_FireWall_Skills[slotNum].getUser();
+		packet.user = user;
+		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
 		packet.xmfPosition = m_FireWall_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_FireWall_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_FIRE2)
 	{
-		packet.user = m_FireMeteor_Skills[slotNum].getUser();
+		int user = m_FireMeteor_Skills[slotNum].getUser();
+		packet.user = user;
+		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
 		packet.xmfPosition = m_FireMeteor_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_FireMeteor_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_COLD1)
 	{
-		packet.user = m_IceBall_Skills[slotNum].getUser();
+		int user = m_IceBall_Skills[slotNum].getUser();
+		packet.user = user;
+		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
 		packet.xmfPosition = m_IceBall_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_IceBall_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_COLD2)
 	{
-		packet.user = m_IceFreeze_Skills[slotNum].getUser();
+		int user = m_IceFreeze_Skills[slotNum].getUser();
+		packet.user = user;
+		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
 		packet.xmfPosition = m_IceFreeze_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_IceFreeze_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_DARKNESS1)
 	{
-		packet.user = m_Darkness_Enchantress_Skills[slotNum].getUser();
+		int user = m_Darkness_Enchantress_Skills[slotNum].getUser();
+		packet.user = user;
+		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
 		packet.xmfPosition = m_Darkness_Enchantress_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_Darkness_Enchantress_Skills[slotNum].getRotate();
 	}
 	else if (SkillType == SKILL_DARKNESS2)
 	{
-		packet.user = m_Darkness_DistortionPearl_Skills[slotNum].getUser();
+		int user = m_Darkness_DistortionPearl_Skills[slotNum].getUser();
+		packet.user = user;
+		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
 		packet.xmfPosition = m_Darkness_DistortionPearl_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_Darkness_DistortionPearl_Skills[slotNum].getRotate();
 	}

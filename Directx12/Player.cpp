@@ -173,6 +173,12 @@ void Player::LateUpdate(const float& fTimeDelta)
 		{
 			m_bAttackEnd = dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetAttackEnd();
 			Network::GetInstance()->CallEvent(EVENT_STAGE_PLAYER_ANIMATE, 1, m_bAttackEnd);
+			
+		}
+		else if (m_bSkillAttackEnd != dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetSkillAttackEnd())
+		{
+			m_bSkillAttackEnd = dynamic_cast<AnimationCom*>(m_mapComponent["Upper_Animation"])->GetSkillAttackEnd();
+			Network::GetInstance()->CallEvent(EVENT_STAGE_PLAYER_ANIMATE, 1, m_bSkillAttackEnd);
 		}
 	}
 	else {
