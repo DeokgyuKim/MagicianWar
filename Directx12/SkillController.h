@@ -30,11 +30,14 @@ public:
 	void UseSkillFailed(int idx);
 	XMFLOAT3 GeneratePositionForPacket(int idx);
 	XMFLOAT3 GenerateRotateForPacket(int idx);
+private:
+	void Release();
 public:
 	void Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Scene* pScene, int CharType);
 	void Update(const float& fTimeDelta);
 private:
 	UI* m_pSkillBase[2];
+	UI* m_pSkillIcon[2];
 	UI* m_pSkillOn[2][4];
 	int m_iSkillCnt[2] = { 0, 0 };
 	float m_fSkillCoolTime[2] = { 0.f, 0.f };

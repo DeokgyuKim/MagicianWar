@@ -10,6 +10,7 @@ SkillController::SkillController()
 
 SkillController::~SkillController()
 {
+	Release();
 }
 void SkillController::SetSkillCnt(int idx, int cnt)
 { 
@@ -49,6 +50,16 @@ XMFLOAT3 SkillController::GeneratePositionForPacket(int idx)
 XMFLOAT3 SkillController::GenerateRotateForPacket(int idx)
 {
 	return m_pNetSkill[idx]->GetRotate();
+}
+void SkillController::Release()
+{
+	for (int i = 0; i < 2; ++i)
+	{
+		delete m_pSkillBase[i];
+		for (int j = 0; j < 4; ++j)
+			delete m_pSkillOn[i][j];
+		delete m_pNetSkill[i];
+	}
 }
 void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Scene* pScene, int CharType)
 {
@@ -94,16 +105,49 @@ void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList
 	{
 		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_RAYCAST);
 		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_METEOR);
+
+		pos.x = WINCX / 2.f - 295.f;
+		pos.y = WINCY - 195.f;
+		pos.z = 118.f;
+		pos.w = 118.f;
+		m_pSkillIcon[0] = new UI(device, cmdLst, pRenderer, pos, "SkillFire1");
+		pScene->PushObject(m_pSkillIcon[0], OBJ_TYPE::OBJ_UI);
+
+		pos.x = WINCX / 2.f + 145.f;
+		m_pSkillIcon[1] = new UI(device, cmdLst, pRenderer, pos, "SkillFire2");
+		pScene->PushObject(m_pSkillIcon[1], OBJ_TYPE::OBJ_UI);
 	}
 	else if (CharType == WIZARD_COLD)
 	{
-		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_BULLET);
+		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_ICEFIELD);
 		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_BULLET);
+
+		pos.x = WINCX / 2.f - 295.f;
+		pos.y = WINCY - 195.f;
+		pos.z = 118.f;
+		pos.w = 118.f;
+		m_pSkillIcon[0] = new UI(device, cmdLst, pRenderer, pos, "SkillCold1");
+		pScene->PushObject(m_pSkillIcon[0], OBJ_TYPE::OBJ_UI);
+
+		pos.x = WINCX / 2.f + 145.f;
+		m_pSkillIcon[1] = new UI(device, cmdLst, pRenderer, pos, "SkillCold2");
+		pScene->PushObject(m_pSkillIcon[1], OBJ_TYPE::OBJ_UI);
 	}
 	else if (CharType == WIZARD_DARKNESS)
 	{
 		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_ENCHAN);
 		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_BULLET);
+
+		pos.x = WINCX / 2.f - 295.f;
+		pos.y = WINCY - 195.f;
+		pos.z = 118.f;
+		pos.w = 118.f;
+		m_pSkillIcon[0] = new UI(device, cmdLst, pRenderer, pos, "SkillDarkness1");
+		pScene->PushObject(m_pSkillIcon[0], OBJ_TYPE::OBJ_UI);
+
+		pos.x = WINCX / 2.f + 145.f;
+		m_pSkillIcon[1] = new UI(device, cmdLst, pRenderer, pos, "SkillDarkness2");
+		pScene->PushObject(m_pSkillIcon[1], OBJ_TYPE::OBJ_UI);
 	}
 }
 

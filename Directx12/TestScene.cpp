@@ -344,7 +344,7 @@ void TestScene::Initialize()
 
 
 	ShopController* pShopCtrl = ShopController::GetInstance();
-	pShopCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this);
+	pShopCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this, (int)pPlayer->GetNetworkInfo().CharacterType);
 	pShopCtrl->SetSkillCtrl(pSkillCtrl);
 	pShopCtrl->SetRendering(true);
 
@@ -369,6 +369,14 @@ void TestScene::LateInit()
 
 #endif // NETWORK
 	m_LateInit = true;
+}
+
+void TestScene::Release()
+{
+	SkillController::DestroyInstance();
+	ShopController::DestroyInstance();
+	delete m_pTimeTextCtrl;
+	delete m_pKillTextCtrl;
 }
 
 void TestScene::MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot, unsigned char slot)

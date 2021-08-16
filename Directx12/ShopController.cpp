@@ -16,7 +16,7 @@ ShopController::~ShopController()
 {
 }
 
-void ShopController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Scene* pScene)
+void ShopController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Scene* pScene, int CharType)
 {
 	m_pScene = pScene;
 
@@ -46,6 +46,19 @@ void ShopController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList*
 	buttonpos.z = 236.f;
 	buttonpos.w = 236.f;
 
+	if (CharType == WIZARD_FIRE)
+	{
+		m_pSkillIcon[0] = new UI(device, cmdLst, pRenderer, buttonpos, "SkillFire1");
+	}
+	else if (CharType == WIZARD_COLD)
+	{
+		m_pSkillIcon[0] = new UI(device, cmdLst, pRenderer, buttonpos, "SkillCold1");
+	}
+	else if (CharType == WIZARD_DARKNESS)
+	{
+		m_pSkillIcon[0] = new UI(device, cmdLst, pRenderer, buttonpos, "SkillDarkness1");
+	}
+
 	m_pButton[0] = new ClickerButton(device, cmdLst, pRenderer, buttonpos, "ShopNone", "ShopMouse", "ShopOn");
 	m_pButton[0]->SetEventButtonOn(buyskillQ);
 
@@ -68,8 +81,23 @@ void ShopController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList*
 	buttonpos.z = 236.f;
 	buttonpos.w = 236.f;
 
+	if (CharType == WIZARD_FIRE)
+	{
+		m_pSkillIcon[1] = new UI(device, cmdLst, pRenderer, buttonpos, "SkillFire2");
+	}
+	else if (CharType == WIZARD_COLD)
+	{
+		m_pSkillIcon[1] = new UI(device, cmdLst, pRenderer, buttonpos, "SkillCold2");
+	}
+	else if (CharType == WIZARD_DARKNESS)
+	{
+		m_pSkillIcon[1] = new UI(device, cmdLst, pRenderer, buttonpos, "SkillDarkness2");
+	}
+
 	m_pButton[1] = new ClickerButton(device, cmdLst, pRenderer, buttonpos, "ShopNone", "ShopMouse", "ShopOn");
 	m_pButton[1]->SetEventButtonOn(buyskillE);
+
+
 
 	m_pGoldTxtCtrl = new TextController(device, cmdLst, pRenderer, XMFLOAT4(280.f, 67.f, 60.f, 60.f), "0", pScene);
 }
@@ -103,6 +131,7 @@ void ShopController::SetRendering(bool On)
 				{
 					m_pScene->PushObject(m_pSkillOn[i][j], OBJ_TYPE::OBJ_UI);
 				}
+				m_pScene->PushObject(m_pSkillIcon[i], OBJ_TYPE::OBJ_UI);
 				m_pScene->PushObject(m_pButton[i], OBJ_TYPE::OBJ_UI);
 				m_pScene->PushObject(m_pCursor, OBJ_TYPE::OBJ_UI);
 			}
@@ -121,6 +150,7 @@ void ShopController::SetRendering(bool On)
 				{
 					m_pScene->RemoveObject(m_pSkillOn[i][j], OBJ_TYPE::OBJ_UI);
 				}
+				m_pScene->RemoveObject(m_pSkillIcon[i], OBJ_TYPE::OBJ_UI);
 				m_pScene->RemoveObject(m_pButton[i], OBJ_TYPE::OBJ_UI);
 				m_pScene->RemoveObject(m_pCursor, OBJ_TYPE::OBJ_UI);
 			}
@@ -140,6 +170,19 @@ bool ShopController::AddCoin(int coin)
 	m_pGoldTxtCtrl->Initialize(XMFLOAT4(280.f, 67.f, 60.f, 60.f), gold.c_str(), m_pScene);
 
 	return true;
+}
+
+void ShopController::Release()
+{
+	for (int i = 0; i < 2; ++i)
+	{
+		delete m_pSkillBase[i];
+		for (int j = 0; j < 4; ++j)
+			delete m_pSkillOn[i][j];
+		delete m_pButton[i];
+
+	}
+	delete m_pGoldTxtCtrl;
 }
 
 void buyskillQ()

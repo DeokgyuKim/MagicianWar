@@ -139,7 +139,12 @@ XMFLOAT3 NetSkill::GetPosition()
 		return pos;
 	case SKILL_ENCHAN:
 		pos = GetPositionBulletType(m_pOwner, m_pCamera);
-		pos.y -= 1.f;
+		pos.y = 0.01f;
+		return pos;
+		break;
+	case SKILL_ICEFIELD:
+		pos = GetPositionRayCastType(m_pOwner, m_pCamera);
+		pos.y = 0.01f;
 		return pos;
 		break;
 	default:
@@ -160,8 +165,13 @@ XMFLOAT3 NetSkill::GetRotate()
 		break;
 	case SKILL_METEOR:
 		return XMFLOAT3(-90.f, 0.f, 0.f);
+		break;
 	case SKILL_ENCHAN:
 		return XMFLOAT3(0.f, 0.f, 0.f);
+		break;
+	case SKILL_ICEFIELD:
+		return XMFLOAT3(0.f, 0.f, 0.f);
+		break;
 	default:
 		break;
 	}
