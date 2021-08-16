@@ -37,7 +37,7 @@ public:
 	void Physics_Collision();
 	bool CheckRoundEnd(int TeamCount);
 	void CheckWinnerTeam();
-
+	void CheckPlayerEvent(int _playerEvent, int slotNum);
 public:
 	bool EnterRoom(int id,bool host = false);
 	void ExitRoom(int id);

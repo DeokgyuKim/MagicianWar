@@ -23,6 +23,8 @@ constexpr int SHOPPING_TIME = 10;
 constexpr int ACTIVATE = 1;
 constexpr int DISABLED = -1;
 
+constexpr int PLAYER_DEAD_EVENT = 10;
+constexpr int PLAYER_HIT_EVENT = 20;
 // Character Default MoveSpeed
 #define P_MoveForward_Speed 3.f
 #define P_MoveLeft_Speed 3.f

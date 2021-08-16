@@ -9,7 +9,7 @@
 #include "StaticMeshMgr.h"
 #include "MaterialMgr.h"
 #include "InstanceMgr.h"
-#include "SoundMgr.h"
+
 #include "Network.h"
 
 #include "LobbyScene.h"
@@ -32,7 +32,6 @@ void MainApp::Initialize()
 	m_InstanceMgr = InstanceMgr::GetInstnace();
 	m_InstanceMgr->InitInstanceMgr(m_pCore, m_pCore->GetDevice(), m_pCore->GetCmdLst());
 
-	SoundMgr::GetInstance()->Initalize();
 
 #ifdef PHYSX
 	CPhysXMgr::GetInstance()->Initialize();

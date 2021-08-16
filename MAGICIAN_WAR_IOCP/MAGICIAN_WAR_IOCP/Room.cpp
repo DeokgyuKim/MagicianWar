@@ -313,7 +313,7 @@ void Room::PlayerUpdate(float fTime)
 				{
 					if (m_Bullets[j].getUser() == NO_PLAYER) { // 안쓰는 총알 찾아서
 
-						m_Bullets[j] = BulletTemp;					
+						m_Bullets[j] = BulletTemp;
 						break;
 					}
 				}
@@ -477,39 +477,39 @@ void Room::Physics_Collision()
 							m_Bullets[i].SetUser(NO_PLAYER);
 							PushBullet_Delete(i);
 							//플레이어 피달고 그런거
-							m_players[j].setDamage(m_Bullets[i].getDamage());
-							if (m_players[j].getHp() <= 0)
+							int playerEvent = m_players[j].setDamage(m_Bullets[i].getDamage());
+							CheckPlayerEvent(playerEvent, j);
+							if (playerEvent == PLAYER_DEAD_EVENT)
 							{
 								PushAddKillPoint(Attack_Player); // 1킬 했음 너가
-								m_players[j].GetUpperFSM()->ChangeState(STATE_DEAD, ANIM_DEAD);
-								m_players[j].GetRootFSM()->ChangeState(STATE_DEAD, ANIM_DEAD);
-								if (m_players[j].getTeam() == TEAM_BLUE) { // 죽은 친구가 BlueTeam이면
-									--m_BlueTeam_Alive_Count;
-									m_isRoundEnd = CheckRoundEnd(m_BlueTeam_Alive_Count);
-								}
-								else if (m_players[j].getTeam() == TEAM_RED) {
-									--m_RedTeam_Alive_Count;
-									m_isRoundEnd = CheckRoundEnd(m_RedTeam_Alive_Count);
-								}
-								if (m_isRoundEnd) // 라운드가 끝나면
-								{
-									if (m_players[j].getTeam() == TEAM_RED) { // 마지막에 죽은 친구팀 파악
-										m_WinnerTeam = TEAM_BLUE;
-									}
-									else if (m_players[j].getTeam() == TEAM_BLUE) {
-										m_WinnerTeam = TEAM_RED;
-									}
-									m_RoundWinnerCheck = true;
-								}
 							}
-							else
-								m_players[j].GetUpperFSM()->ChangeState(STATE_HIT, ANIM_HIT);
 						}
 					}
 				}
 			}
 		}
 	}
+
+
+	for (int i = 0; i < MAX_SKILL; ++i)
+	{
+		if (m_IceBall_Skills[i].getUser() != NO_PLAYER)
+		{ // Skill 사용자가 있을때
+			for (int j = 0; j < MAX_PLAYER; ++j)
+			{
+				if (m_players[j].getUsed())
+				{ // 플레이어가 존재할때
+					{ // 팀원 체크  체크하고자 하는 플레이어의 상태 체크 ( Dead, Dance, Freeze )
+						{ // 충돌 했다면
+
+						}
+
+					}
+				}
+			}
+		}
+	}
+
 }
 
 bool Room::CheckRoundEnd(int TeamCount)
@@ -553,6 +553,31 @@ void Room::CheckWinnerTeam()
 				}
 			}
 			m_RoundWinnerCheck = false;
+		}
+	}
+}
+
+void Room::CheckPlayerEvent(int _playerEvent, int slotNum)
+{
+	if (_playerEvent == PLAYER_DEAD_EVENT)
+	{
+		if (m_players[slotNum].getTeam() == TEAM_BLUE) { // 죽은 친구가 BlueTeam이면
+			--m_BlueTeam_Alive_Count;
+			m_isRoundEnd = CheckRoundEnd(m_BlueTeam_Alive_Count);
+		}
+		else if (m_players[slotNum].getTeam() == TEAM_RED) {
+			--m_RedTeam_Alive_Count;
+			m_isRoundEnd = CheckRoundEnd(m_RedTeam_Alive_Count);
+		}
+		if (m_isRoundEnd) // 라운드가 끝나면
+		{
+			if (m_players[slotNum].getTeam() == TEAM_RED) { // 마지막에 죽은 친구팀 파악
+				m_WinnerTeam = TEAM_BLUE;
+			}
+			else if (m_players[slotNum].getTeam() == TEAM_BLUE) {
+				m_WinnerTeam = TEAM_RED;
+			}
+			m_RoundWinnerCheck = true;
 		}
 	}
 }

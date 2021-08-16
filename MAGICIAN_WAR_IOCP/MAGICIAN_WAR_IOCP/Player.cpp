@@ -319,9 +319,21 @@ InterfaceFSM* Player::GetUpperFSM()
 	return m_UpperBody.get();
 }
 
-void Player::setDamage(int damage)
+int Player::setDamage(int damage)
 {
 	m_Info.iHp -= damage;
+	int playerEvent = 0;
+	if (m_Info.iHp <= 0)
+	{
+		playerEvent = PLAYER_DEAD_EVENT;
+		m_UpperBody->ChangeState(STATE_DEAD, ANIM_DEAD);
+		m_RootBody->ChangeState(STATE_DEAD, ANIM_DEAD);
+	}
+	else
+		m_UpperBody->ChangeState(STATE_HIT, ANIM_HIT);
+
+	return playerEvent;
+	
 }
 
 void Player::setKeyInput(DWORD _key)
