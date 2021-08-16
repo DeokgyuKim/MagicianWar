@@ -9,7 +9,7 @@ PlayerFSM::PlayerFSM(Player* user, int _bone)
 
 	m_fHitTime = 1.0f;
 	m_fAttackTime = 1.f;
-	m_fFreezeTime = 5.f;
+	m_fFreezeTime = 4.f;
 	m_fIceTime = 5.f;
 }
 

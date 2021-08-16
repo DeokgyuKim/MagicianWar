@@ -59,9 +59,9 @@ int IceBolt_Tornado::Update(const float& fTimeDelta)
 
 	m_Scale = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetScale();
 	if (m_Scale.x <= 0.005f) {
-		m_Scale.x += 0.001*fTimeDelta;
-		m_Scale.y += 0.001*fTimeDelta;
-		m_Scale.z += 0.001*fTimeDelta;
+		m_Scale.x += 0.004*fTimeDelta;
+		m_Scale.y += 0.004*fTimeDelta;
+		m_Scale.z += 0.004*fTimeDelta;
 		
 	}
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetScale(m_Scale);
