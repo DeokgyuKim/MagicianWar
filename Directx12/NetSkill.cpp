@@ -89,15 +89,15 @@ XMFLOAT3 GetPositionRayCastType(Object* pOwner, Camera* Cam)
 	XMFLOAT3 Pos = XMFLOAT3(0.f, 0.f, 0.f);
 	XMFLOAT3 CamPos = Cam->GetPosition();
 	XMFLOAT3 CamDir = Cam->GetLookVector();
-	if (CPhysXMgr::GetInstance()->ShotRay(XMLoadFloat3(&CamPos), XMLoadFloat3(&CamDir), 100.f, btemp1, btemp2, Pos))
-	{
-		XMFLOAT3 fDist1, fDist2;
-		XMStoreFloat3(&fDist1, XMVector3Length(XMLoadFloat3(&vRayPos) - XMLoadFloat3(&Pos)));
-		XMStoreFloat3(&fDist2, XMVector3Length(XMLoadFloat3(&vRayPos) - XMLoadFloat3(&Coll)));
-		
-		if(fDist1.x < fDist2.x || vRayDir.y >= 0.f)
-			return XMFLOAT3(-99.f, -99.f, -99.f);
-	}
+	//if (CPhysXMgr::GetInstance()->ShotRay(XMLoadFloat3(&CamPos), XMLoadFloat3(&CamDir), 100.f, btemp1, btemp2, Pos))
+	//{
+	//	XMFLOAT3 fDist1, fDist2;
+	//	XMStoreFloat3(&fDist1, XMVector3Length(XMLoadFloat3(&vRayPos) - XMLoadFloat3(&Pos)));
+	//	XMStoreFloat3(&fDist2, XMVector3Length(XMLoadFloat3(&vRayPos) - XMLoadFloat3(&Coll)));
+	//	
+	//	if(fDist1.x < fDist2.x || vRayDir.y >= 0.f)
+	//		return XMFLOAT3(-99.f, -99.f, -99.f);
+	//}
 	if (vRayDir.y >= 0.f)
 		return XMFLOAT3(-99.f, -99.f, -99.f);
 	return Coll;

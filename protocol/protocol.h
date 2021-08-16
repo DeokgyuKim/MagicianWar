@@ -118,7 +118,8 @@
 #define STATE_HIT		4
 #define STATE_DEAD		5
 #define STATE_DANCE		6
-#define STATE_COUNT		7 
+#define STATE_FREEZE	7
+#define STATE_COUNT		8 
 
 // Anim
 #define ANIM_IDLE			0

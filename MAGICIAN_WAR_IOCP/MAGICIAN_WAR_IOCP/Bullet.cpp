@@ -14,6 +14,8 @@ Bullet::Bullet()
 	m_xmfScale = XMFLOAT3{ 0.3f,0.3f, 0.3f };
 	m_xmfRotate = XMFLOAT3{ 0.f,0.f,0.f };
 	m_pRigidDynamic = nullptr;
+
+	m_Dead = false;
 	//Initialize();
 }
 
@@ -31,7 +33,7 @@ Bullet::Bullet(const Bullet& rhs)
 	m_xmfScale = rhs.m_xmfScale;
 	m_xmfRotate = rhs.m_xmfRotate;
 	m_xmfPosition = rhs.m_xmfPosition;
-
+	m_Dead = false;
 	Initialize();
 }
 
@@ -53,9 +55,9 @@ int Bullet::Update(const float gTime)
 {
 	m_lifeTime += gTime;
 	if (m_TotalLifeTime <= m_lifeTime) {
-		Release();
-
-		return 1; // dead
+		//Release();
+		m_Dead = true;
+		return m_Dead; // dead
 	}
 
 	memcpy(&m_xmfPosition, &m_Info.matWorld._41, sizeof(XMFLOAT3));
@@ -63,7 +65,7 @@ int Bullet::Update(const float gTime)
 	XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&dir)));
 	XMStoreFloat3(&m_xmfPosition, XMLoadFloat3(&m_xmfPosition) + XMLoadFloat3(&dir) * m_speed * gTime);
 
-	return 0;
+	return m_Dead;
 }
 
 void Bullet::LateUpdate(const float gTime)

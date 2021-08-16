@@ -18,7 +18,7 @@ IceBolt_Tornado::~IceBolt_Tornado()
 
 void IceBolt_Tornado::BuildComponent()
 {
-	Component* pComponent = new Transform(XMFLOAT3(0.0005f, 0.0005f, 0.0005f), XMFLOAT3(90.f, 0.f, 0.f), XMFLOAT3(0.f, -1.99f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(0.0005f, 0.0005f, 0.0005f), XMFLOAT3(90.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 
 	m_Scale = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetScale();
