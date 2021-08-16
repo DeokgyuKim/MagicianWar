@@ -5,6 +5,10 @@
 #include "Meteor_FireEff2.h"
 #include "Transform.h"
 
+#include "MainApp.h"
+#include "Scene.h"
+#include "Boom.h"
+
 Meteor::Meteor(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 rotate, XMFLOAT3 pos)
 	: Skill(device, cmdLst, pRenderer)
 {
@@ -16,6 +20,8 @@ Meteor::Meteor(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer
 
 Meteor::~Meteor()
 {
+	XMFLOAT3 pos = dynamic_cast<Transform*>(GetTransController())->GetPosition();
+	MainApp::GetInstance()->GetScene()->PushObject(new Boom(m_pDevice, m_pCmdLst, m_pRenderer, XMFLOAT3(5.f, 5.f, 5.f), pos, "FireBall2"), OBJ_TYPE::OBJ_SKILL);
 }
 
 void Meteor::BuildComponents()

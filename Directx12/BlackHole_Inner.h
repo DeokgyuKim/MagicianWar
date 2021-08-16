@@ -22,5 +22,5 @@ public:
 private:
 
     XMFLOAT3 m_rotate;
-    XMFLOAT3 m_Scale;
+    float m_fScale = 0.f;
 };

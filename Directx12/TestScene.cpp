@@ -37,6 +37,7 @@
 #include "Portrait.h"
 
 #include "Transform.h"
+#include "SoundMgr.h"
 
 TestScene::TestScene()
 {
@@ -452,7 +453,6 @@ void TestScene::UpdateSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 ro
 		break;
 	case SKILL_DARKNESS2:
 		dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(pos);
-		dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(rot);
 		break;
 	//case SKILL_CRESSVAS:
 	default:

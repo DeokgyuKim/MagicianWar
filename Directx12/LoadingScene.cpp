@@ -27,6 +27,9 @@
 LoadingScene::LoadingScene()
 {
 	Initialize();
+	SoundMgr::GetInstance()->Initalize();
+	SoundMgr::GetInstance()->PlayBGM("nextlevel");
+	SoundMgr::GetInstance()->SoundControlbyChannel(SOUND_ID::BGM, 0.1f);
 }
 
 int LoadingScene::Update(const float& fTimeDelta)
@@ -66,8 +69,6 @@ void LoadingScene::Initialize()
 	Object* pObj = NULL;
 	Player* pPlayer = NULL;
 	Camera* pCamera = NULL;
-	SoundMgr::GetInstance()->Initalize();
-
 
 	Core::GetInstance()->CmdLstReset();
 	pObj = new Camera(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance());

@@ -56,7 +56,7 @@ int Boom_Sphere::Update(const float& fTimeDelta)
 	SkillEff::Update(fTimeDelta);
 	m_fTime += fTimeDelta * 4.f ;
 	if (m_fTime >= 2.f)
-		m_fTime -= 2.f;
+		return -1;
 
 	m_fCurScale = (1.f - cos(min(m_fTime, 1.f) * XMConvertToRadians(90.f))) * m_fGoalScale * 2.f;
 	m_fCurScale = min(m_fCurScale, m_fGoalScale);

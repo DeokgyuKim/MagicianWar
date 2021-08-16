@@ -18,7 +18,7 @@ HatredChain::~HatredChain()
 
 void HatredChain::BuildComponents()
 {
-	Component* pComponent = new Transform(XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 }
 
@@ -38,6 +38,9 @@ void HatredChain::BuildSkillEffects()
 int HatredChain::Update(const float& fTimeDelta)
 {
 	Skill::Update(fTimeDelta);
+	m_fScale += fTimeDelta * 1.f * 2.f;
+	m_fScale = min(m_fScale, 1.f);
+	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetScale(XMFLOAT3(m_fScale, m_fScale, m_fScale));
 	return 0;
 }
 
