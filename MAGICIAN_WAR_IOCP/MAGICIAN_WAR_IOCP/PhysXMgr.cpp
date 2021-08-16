@@ -889,6 +889,7 @@ PxCapsuleController* CPhysXMgr::CreateCapsuleController(DWORD dwPlayerNum, XMFLO
 
 bool CPhysXMgr::OverlapBetweenTwoObject(PxRigidActor* pBody0, PxRigidActor* pBody1)
 {
+	if (pBody0 == nullptr || pBody1 == nullptr) return false;
 	PxShape* Shape[2];
 	pBody0->getShapes(&Shape[0], 1);
 	pBody1->getShapes(&Shape[1], 1);
@@ -1839,6 +1840,7 @@ PxTransform CPhysXMgr::MakePxTransform(XMFLOAT4X4 world)
 
 bool CPhysXMgr::CollisionForStaticObjects(PxRigidActor* pBody)
 {
+	if (pBody == nullptr) return false;
 	PxTransform pxtrans = pBody->getGlobalPose();
 	int idxX = min(max(int(pxtrans.p.x / 10.f), 0), 4);
 	int idxZ = min(max(int(pxtrans.p.z / 10.f), 0), 9);

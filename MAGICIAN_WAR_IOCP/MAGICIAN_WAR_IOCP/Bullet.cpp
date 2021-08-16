@@ -37,8 +37,10 @@ Bullet::Bullet(const Bullet& rhs)
 
 void Bullet::Release()
 {
-	if (m_pRigidDynamic != NULL)
+	if (m_pRigidDynamic != NULL) {
 		m_pRigidDynamic->release();
+		m_pRigidDynamic = nullptr;
+	}
 }
 
 void Bullet::Initialize()
@@ -52,7 +54,7 @@ int Bullet::Update(const float gTime)
 	m_lifeTime += gTime;
 	if (m_TotalLifeTime <= m_lifeTime) {
 		Release();
-		
+
 		return 1; // dead
 	}
 
@@ -79,8 +81,8 @@ void Bullet::LateUpdate(const float gTime)
 	XMMATRIX world = scale * rotateX * rotateY * rotateZ * transform;
 	XMStoreFloat4x4(&m_Info.matWorld, world);
 
-
-	m_pRigidDynamic->setGlobalPose(CPhysXMgr::GetInstance()->MakePxTransform(m_Info.matWorld));
+	if (m_pRigidDynamic != nullptr)
+		m_pRigidDynamic->setGlobalPose(CPhysXMgr::GetInstance()->MakePxTransform(m_Info.matWorld));
 }
 
 void Bullet::setElementType(unsigned char _element)
@@ -102,5 +104,5 @@ void Bullet::setElementType(unsigned char _element)
 
 void Bullet::setWorldMatrix(XMFLOAT4X4 _matWorld)
 {
-	m_Info.matWorld = _matWorld;	
+	m_Info.matWorld = _matWorld;
 }
