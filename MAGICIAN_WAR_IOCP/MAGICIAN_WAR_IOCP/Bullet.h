@@ -10,13 +10,13 @@ public:
 	Bullet(const Bullet& rhs);
 	Bullet operator=(Bullet& rhs)
 	{
-		m_Info.user = rhs.getUser();
-		m_Info.Damage = rhs.getDamage();
-		m_Info.ElementType = rhs.getElementType();
-		m_Info.matWorld = rhs.getWorld();
-		m_Info.Team = rhs.getCheckUserTeam();
-		m_TotalLifeTime = rhs.getTotalLifeTime();
-		m_lifeTime = rhs.getLifeTime();
+		m_Info.user = rhs.m_Info.user;
+		m_Info.Damage = rhs.m_Info.Damage;
+		m_Info.ElementType = rhs.m_Info.ElementType;
+		m_Info.matWorld = rhs.m_Info.matWorld;
+		m_Info.Team = rhs.m_Info.Team;
+		m_TotalLifeTime = rhs.m_TotalLifeTime;
+		m_lifeTime = rhs.m_lifeTime;
 		m_speed = rhs.m_speed;
 
 		m_xmfScale = rhs.m_xmfScale;

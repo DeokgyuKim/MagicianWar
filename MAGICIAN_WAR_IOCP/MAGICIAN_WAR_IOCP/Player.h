@@ -46,6 +46,7 @@ public:
 	XMFLOAT3 getPosition() { return m_Info.xmfPosition; }
 	XMFLOAT3   getRotate() { return m_xmfRotate; }
 	XMFLOAT4X4 getWorld() { return m_xmmWorld; }
+	XMFLOAT4X4 getDirWorld() { return m_xmmCamDir; }
 	XMFLOAT4X4 getBulletStartWorld();
 	PlayerInfo getInfo() { return m_Info; }
 	int getState(); 
@@ -132,6 +133,8 @@ private: //
 	XMFLOAT3		m_xmfRotate;
 	XMFLOAT3		m_xmfMeshRotate;
 	XMFLOAT4X4		m_xmmWorld;
+	XMFLOAT4X4		m_xmmCamDir;
+
 
 	// 하체 ( 기준 )
 	int				m_Root_eAnimType;

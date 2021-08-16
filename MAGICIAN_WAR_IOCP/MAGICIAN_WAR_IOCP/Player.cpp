@@ -195,6 +195,15 @@ void Player::UpdatePlayerInfo()
 
 	XMStoreFloat4x4(&m_xmmWorld, world);
 
+	XMMATRIX camX, camY;
+	camX = XMMatrixRotationX(XMConvertToRadians(m_Camera.CamX));
+	camY = XMMatrixRotationY(XMConvertToRadians(m_Camera.CamY));
+
+	XMMATRIX camWolrd;
+	camWolrd = camX * camY;
+	XMStoreFloat4x4(&m_xmmCamDir, camWolrd);
+
+
 }
 
 

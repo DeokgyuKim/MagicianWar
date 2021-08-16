@@ -303,7 +303,7 @@ void Room::PlayerUpdate(float fTime)
 				BulletTemp.setWorldMatrix(m_players[i].getBulletStartWorld());
 				BulletTemp.setPosition(m_players[i].getPosition());
 				BulletTemp.setTotalLifeTime(5.f);
-				BulletTemp.setDirection(XMFLOAT3{ -m_players[i].getWorld()._21,-m_players[i].getWorld()._22 ,-m_players[i].getWorld()._23 });
+				BulletTemp.setDirection(XMFLOAT3{ m_players[i].getDirWorld()._31,m_players[i].getDirWorld()._32 ,m_players[i].getDirWorld()._33 });
 
 				for (int j = 0; j < BulletCB_Count; ++j)
 				{
@@ -311,10 +311,11 @@ void Room::PlayerUpdate(float fTime)
 
 						m_Bullets[j] = BulletTemp;
 
-						m_players[i].setCreateBullet(0);
+						
 						break;
 					}
 				}
+				m_players[i].setCreateBullet(0);
 			}
 		}
 	}
