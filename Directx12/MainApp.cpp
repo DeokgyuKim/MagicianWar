@@ -32,7 +32,7 @@ void MainApp::Initialize()
 	m_InstanceMgr = InstanceMgr::GetInstnace();
 	m_InstanceMgr->InitInstanceMgr(m_pCore, m_pCore->GetDevice(), m_pCore->GetCmdLst());
 
-	SoundMgr::GetInstance()->Initalize();
+	//SoundMgr::GetInstance()->Initalize();
 
 #ifdef PHYSX
 	CPhysXMgr::GetInstance()->Initialize();
@@ -73,6 +73,8 @@ void MainApp::Render(const float& fTimeDelta)
 void MainApp::Release()
 {
 	StaticMeshMgr::DestoryInstance();
+	SoundMgr::GetInstance()->StopAll();
+	SoundMgr::GetInstance()->DestroyInstance();
 }
 
 void MainApp::ChangeScene(Scene* pScene)

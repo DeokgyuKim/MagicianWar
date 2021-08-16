@@ -22,6 +22,8 @@
 
 #include "Loading.h"
 
+#include "SoundMgr.h"
+
 LoadingScene::LoadingScene()
 {
 	Initialize();
@@ -64,6 +66,7 @@ void LoadingScene::Initialize()
 	Object* pObj = NULL;
 	Player* pPlayer = NULL;
 	Camera* pCamera = NULL;
+	SoundMgr::GetInstance()->Initalize();
 
 
 	Core::GetInstance()->CmdLstReset();

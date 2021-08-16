@@ -1,104 +1,84 @@
 #include "SoundMgr.h"
-#include <io.h>
-//#include "Fmod/"
 
 SoundMgr* SoundMgr::m_pInstance = nullptr;
 
 void SoundMgr::Initalize()
 {
 	m_pSystem = nullptr;
+	
+	System_Create(&m_pSystem);
+	m_pSystem->init(32, FMOD_INIT_NORMAL, NULL);
 
-	FMOD_System_Create(&m_pSystem);
-	FMOD_System_Init(m_pSystem, 32, FMOD_INIT_NORMAL, NULL);
-
-	LoadSoundFile();
+	LoadSoundFiles();
 }
 
 void SoundMgr::Release()
 {
 	for (auto& Pair : m_mapSound)
 	{
-		delete[] Pair.first;
-		FMOD_Sound_Release(Pair.second);
+		//delete[] Pair.first;
+		Pair.second->release();
 	}
 	m_mapSound.clear();
-	FMOD_System_Release(m_pSystem);
-	FMOD_System_Close(m_pSystem);
+	m_pSystem->release();
+	m_pSystem->close();
 }
 
 
 
-void SoundMgr::PlaySound(TCHAR* pSoundKey, SOUND_ID eID)
+void SoundMgr::PlaySound(string pSoundKey, SOUND_ID eID)
 {
-	map<TCHAR*, FMOD_SOUND*>::iterator iter = find_if(m_mapSound.begin(), m_mapSound.end(), CStrCmp(pSoundKey));
+	map<string, FMOD::Sound*>::iterator iter = m_mapSound.find(pSoundKey);
 	if (iter == m_mapSound.end())
 		return;
 
-	FMOD_BOOL isPlay;
+	bool isPlay;
 
-	if (FMOD_Channel_IsPlaying(m_pChannel[eID], &isPlay))
+	if (m_pChannel[eID]->isPlaying(&isPlay))
 	{
-		FMOD_System_PlaySound(m_pSystem, FMOD_CHANNEL_FREE, iter->second, FALSE, &m_pChannel[eID]);
+		m_pSystem->playSound(iter->second, NULL, FALSE, &m_pChannel[BGM]);
 
 	}
-	FMOD_System_Update(m_pSystem);
+	m_pSystem->update();
 }
 
-void SoundMgr::PlayBGM(TCHAR* pSoundKey)
+void SoundMgr::PlayBGM(string pSoundKey)
 {
-	map<TCHAR*, FMOD_SOUND*>::iterator iter = find_if(m_mapSound.begin(), m_mapSound.end(), CStrCmp(pSoundKey));
+	map<string, FMOD::Sound*>::iterator iter = m_mapSound.find(pSoundKey);
 	if (iter == m_mapSound.end())
 		return;
 
-	FMOD_System_PlaySound(m_pSystem, FMOD_CHANNEL_FREE, iter->second, FALSE, &m_pChannel[BGM]);
-	FMOD_Channel_SetMode(m_pChannel[BGM], FMOD_LOOP_NORMAL);
-	FMOD_System_Update(m_pSystem);
+	m_pSystem->playSound(iter->second, NULL, FALSE, &m_pChannel[BGM]);
+	m_pChannel[BGM]->setMode(FMOD_LOOP_NORMAL);
+	m_pSystem->update();
 }
 
 void SoundMgr::StopSound(SOUND_ID eID)
 {
-	FMOD_Channel_Stop(m_pChannel[eID]);
+	m_pChannel[eID]->stop();
 }
 
 void SoundMgr::StopAll()
 {
 	for (int i = 0; i < MAXCHANNEL; ++i)
-		FMOD_Channel_Stop(m_pChannel[i]);
+		m_pChannel[i]->stop();
 }
 
-void SoundMgr::LoadSoundFile()
+void SoundMgr::LoadSoundFile(string FileName, string FilePath)
 {
-	_finddata_t fd;
+	
+	FMOD::Sound* pSound = nullptr;
+	FMOD_RESULT eRes = m_pSystem->createSound(FilePath.c_str(), FMOD_DEFAULT, 0, &pSound);
 
-	long Handle = _findfirst("../Sound/*.*", &fd);
-
-	if (Handle == -1)
-		return;
-
-	int iResult = 0;
-
-	char szCurPath[128] = "../Sound/";
-	char szFullPath[128] = "";
-
-	while (iResult != -1)
+	if (eRes == FMOD_OK)
 	{
-		strcpy_s(szFullPath, szCurPath);
-		strcat_s(szFullPath, fd.name);
-
-		FMOD_SOUND* pSound = nullptr;
-		FMOD_RESULT eRes = FMOD_System_CreateSound(m_pSystem, szFullPath, FMOD_HARDWARE, 0, &pSound);
-
-		if (eRes == FMOD_OK)
-		{
-			int iLen = strlen(fd.name) + 1;
-			TCHAR* pSoundKey = new TCHAR[iLen];
-			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLen);
-
-			MultiByteToWideChar(CP_ACP, 0, fd.name, iLen, pSoundKey, iLen);
-
-			m_mapSound.emplace(pSoundKey, pSound);
-		}
-		iResult = _findnext(Handle, &fd);
+		m_mapSound.emplace(FileName, pSound);
 	}
-	FMOD_System_Update(m_pSystem);
+	m_pSystem->update();
+}
+
+void SoundMgr::LoadSoundFiles()
+{
+	LoadSoundFile("nextlevel", "../Resources/Sound/nextlevel.mp3");
+	LoadSoundFile("blackmamba", "../Resources/Sound/blackmamba.mp3");
 }
