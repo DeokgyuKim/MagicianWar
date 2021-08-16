@@ -182,6 +182,7 @@ void Player::LateUpdate(const float& fTimeDelta)
 
 #endif
 	//}
+	cout << "Hp: " << m_tNetInfo.iHp << endl;
 	m_pWeapon->LateUpdate(fTimeDelta);
 }
 

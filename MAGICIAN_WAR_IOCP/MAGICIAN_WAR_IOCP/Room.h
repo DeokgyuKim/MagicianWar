@@ -81,6 +81,8 @@ public:
 	void PushSkillCreate(int slotNum, unsigned char SkillType);
 	void PushSkillUpdate(int slotNum, unsigned char SkillType);
 	void PushSkillDelete(int slotNum, unsigned char SkillType);
+
+	Player* GetPlayerForID(int id);
 public:
 	// Get
 	bool isGameStart() { return m_isGameStart; }

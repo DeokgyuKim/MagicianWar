@@ -34,4 +34,15 @@ void FireWall::LateUpdate(const float& fTime)
 
 void FireWall::MakeCollision()
 {
+	LateUpdate(0.f);
+	XMFLOAT3 pos, offset;
+	pos = m_Info.xmfPosition;
+	memcpy(&offset, &m_Info.xmmWorld._11, sizeof(XMFLOAT3));
+
+	for (int i = -2; i <= 2; ++i)
+	{
+		XMFLOAT3 position;
+		XMStoreFloat3(&position, XMLoadFloat3(&pos) + XMLoadFloat3(&offset) * i * 2.f);
+		m_vecRigidDynamic.push_back(CPhysXMgr::GetInstance()->CreateSphere(position, 1.f));
+	}
 }

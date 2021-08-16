@@ -32,8 +32,11 @@ bool SkillController::UseSkill(int idx)
 		return false;
 	if (m_iSkillCnt[idx] <= 0)
 		return false;
+	if (m_fSkillLeft > 0)
+		return false;
 
 	m_fSkillCurCool[idx] = m_fSkillCoolTime[idx];
+	m_fSkillLeft = 1.4f;
 	SetSkillCnt(idx, m_iSkillCnt[idx] - 1);
 
 	return true;
@@ -120,7 +123,7 @@ void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList
 	else if (CharType == WIZARD_COLD)
 	{
 		m_pNetSkill[0] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_ICEFIELD);
-		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_BULLET);
+		m_pNetSkill[1] = new NetSkill(pScene->GetPlayer(), dynamic_cast<Camera*>(pScene->GetCamera()), SKILL_GENTYPE::SKILL_FREEZE);
 
 		pos.x = WINCX / 2.f - 295.f;
 		pos.y = WINCY - 195.f;
@@ -155,5 +158,6 @@ void SkillController::Update(const float& fTimeDelta)
 {
 	m_fSkillCurCool[0] = max(m_fSkillCurCool[0] - fTimeDelta, 0.f);
 	m_fSkillCurCool[1] = max(m_fSkillCurCool[1] - fTimeDelta, 0.f);
+	m_fSkillLeft = max(m_fSkillLeft - fTimeDelta, 0.f);
 }
 

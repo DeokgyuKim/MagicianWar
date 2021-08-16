@@ -73,6 +73,8 @@ public:
 	int getSlotNum() { return m_slot_num; }
 	Camera getCamera() { return m_Camera; }
 	bool getUsed() { return m_Used; }
+	bool getAbleHeal();
+	bool getAbleDottAtt();
 
 	InterfaceFSM* GetRootFSM();
 	InterfaceFSM* GetUpperFSM();
@@ -124,6 +126,8 @@ private: //
 	bool m_Ready;
 	bool m_Room_JoinState;
 	bool m_LateInit;
+	float m_fHpHealTime = 0.f;
+	float m_fHpDealTime = 0.f;
 
 	bool m_Used = false;
 

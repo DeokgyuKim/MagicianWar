@@ -914,6 +914,9 @@ void Network::ServerKeyInput()
 	// 라운드 시작 아니면 키입력 안받음
 	if (!m_isRoundStart) return;
 
+	if (ShopController::GetInstance()->GetShopTime())
+		return;
+
 	DWORD dwKeyInput = 0;
 
 	if (KeyMgr::GetInstance()->KeyPressing('W'))

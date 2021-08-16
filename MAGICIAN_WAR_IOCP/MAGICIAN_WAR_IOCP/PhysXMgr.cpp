@@ -1868,5 +1868,15 @@ bool CPhysXMgr::CollisionForStaticObjects(PxRigidActor* pBody)
 	return false;
 }
 
+bool CPhysXMgr::CollisionForStaticObjectsNotQuail(PxRigidActor* pBody)
+{
+	for (auto staticObj : PStaticlist)
+	{
+		if (OverlapBetweenTwoObject(pBody, staticObj))
+			return true;
+	}
+	return false;
+}
+
 
 

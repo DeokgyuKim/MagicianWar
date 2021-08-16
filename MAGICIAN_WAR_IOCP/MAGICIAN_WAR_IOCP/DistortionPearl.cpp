@@ -34,4 +34,11 @@ bool DistortionPearl::Update(const float& fTime)
 void DistortionPearl::LateUpdate(const float& fTime)
 {
 	Skill::LateUpdate(fTime);
+	for (auto rigidbody : m_vecRigidDynamic)
+		rigidbody->setGlobalPose(CPhysXMgr::GetInstance()->MakePxTransform(m_Info.xmmWorld));
+}
+
+void DistortionPearl::MakeCollision()
+{
+	m_vecRigidDynamic.push_back(CPhysXMgr::GetInstance()->CreateSphere(m_Info.xmfPosition, 0.5f));
 }

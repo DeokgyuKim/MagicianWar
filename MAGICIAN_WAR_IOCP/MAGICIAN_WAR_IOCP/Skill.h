@@ -35,10 +35,14 @@ public:
 	unsigned char getSlotNum() { return slotNum; }
 	unsigned char getSkillType() { return m_Info.SkillType; }
 	char getTeamType() { return m_Info.TeamType; }
+public:
+	virtual void MakeCollision() {}
+	vector<PxRigidDynamic*>& GetRigidDynamics() { return m_vecRigidDynamic; }
 protected:
 	SkillInfo m_Info;
 	unsigned char slotNum;
 
+	vector<PxRigidDynamic*> m_vecRigidDynamic;
 
 };
 

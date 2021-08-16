@@ -504,6 +504,163 @@ void Room::Physics_Collision()
 			}
 		}
 	}
+
+	//스킬 충돌
+	for (int i = 0; i < MAX_SKILL; ++i)
+	{
+		for (int j = 0; j < MAX_PLAYER; ++j)
+		{
+			if (m_players[j].getUsed())
+			{
+				//FireWall
+				
+				if (m_FireWall_Skills[i].getUser() != NO_PLAYER)
+				{
+					for (auto rigidbody : m_FireWall_Skills[i].GetRigidDynamics())
+					{
+						if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(m_players[j].GetPxCapsuleController()->getActor(), rigidbody))
+						{
+							if (m_players[j].getTeam() == m_FireWall_Skills[i].getTeamType())
+							{
+								if (m_players[j].getAbleHeal())
+								{
+									m_players[j].setHp(m_players[j].getHp() + 5);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	//Static Object or Terrain 충돌
+	for (int i = 0; i < MAX_SKILL; ++i)
+	{
+		if (m_FireMeteor_Skills[i].getUser() != NO_PLAYER)
+		{
+			for (auto rigidbody : m_FireMeteor_Skills[i].GetRigidDynamics())
+			{
+				//Static Object or Terrain
+				if (CPhysXMgr::GetInstance()->CollisionForStaticObjects(rigidbody) || m_FireMeteor_Skills[i].getPosition().y <= 2.5f)
+				{
+					m_FireMeteor_Skills[i].setDead(true);
+					for (int j = 0; j < MAX_PLAYER; ++j)
+					{
+						if (m_players[j].getUsed())
+						{
+							//플레이어가 아군인지 적군인지 탐색해야댐
+							if (m_FireMeteor_Skills[i].getTeamType() != m_players[j].getTeam())
+							{
+								XMFLOAT3 xmflen, playerpos, skillpos;
+								playerpos = m_players[j].getPosition();
+								skillpos = m_FireMeteor_Skills[i].getPosition();
+								XMVECTOR length = XMVector3Length(XMLoadFloat3(&playerpos) - XMLoadFloat3(&skillpos));
+								XMStoreFloat3(&xmflen, length);
+								if (xmflen.x < 5.f)
+								{
+									m_players[j].setHp(m_players[j].getHp() - 20);
+								}
+							}
+						}
+					}
+				}
+
+				for (int j = 0; j < MAX_PLAYER; ++j)
+				{
+					if (m_players[j].getUsed())
+					{
+						if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(m_players[j].GetPxCapsuleController()->getActor(), rigidbody))
+						{
+							if (m_FireMeteor_Skills[i].getTeamType() != m_players[j].getTeam())
+							{
+								m_FireMeteor_Skills[i].setDead(true);
+								m_players[j].setHp(m_players[j].getHp() - 40);
+								for (int k = 0; k < MAX_PLAYER; ++k)
+								{
+									if (m_players[k].getUsed())
+									{
+										if (m_FireMeteor_Skills[i].getTeamType() != m_players[k].getTeam())
+										{
+											XMFLOAT3 xmflen, playerpos, skillpos;
+											playerpos = m_players[k].getPosition();
+											skillpos = m_FireMeteor_Skills[i].getPosition();
+											XMVECTOR length = XMVector3Length(XMLoadFloat3(&playerpos) - XMLoadFloat3(&skillpos));
+											XMStoreFloat3(&xmflen, length);
+											if (xmflen.x < 5.f)
+											{
+												m_players[k].setHp(m_players[k].getHp() - 40);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	for (int i = 0; i < MAX_SKILL; ++i)
+	{
+		if (m_Darkness_Enchantress_Skills[i].getUser() != NO_PLAYER)
+		{
+			for (auto rigidbody : m_Darkness_Enchantress_Skills[i].GetRigidDynamics())
+			{
+				for (int j = 0; j < MAX_PLAYER; ++j)
+				{
+					if (m_players[j].getUsed())
+					{
+						if (CPhysXMgr::GetInstance()->OverlapBetweenTwoObject(m_players[j].GetPxCapsuleController()->getActor(), rigidbody))
+						{
+							if (m_Darkness_Enchantress_Skills[i].getTeamType() != m_players[j].getTeam())
+							{
+								
+								Player* pPlayer = GetPlayerForID(m_Darkness_Enchantress_Skills[i].getUser());
+								if (pPlayer == nullptr || !pPlayer->getUsed())
+								{
+									cout << "만든 플레이어가 없습니다." << endl;
+									m_Darkness_Enchantress_Skills[i].setDead(true);
+								}
+								else
+								{
+									if (m_players[j].getAbleDottAtt())
+									{
+										m_players[j].setHp(m_players[j].getHp() - 10);
+										pPlayer->setHp(pPlayer->getHp() + 5);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	for (int i = 0; i < MAX_SKILL; ++i)
+	{
+		if (m_Darkness_DistortionPearl_Skills[i].getUser() != NO_PLAYER)
+		{
+			for (auto rigidbody : m_Darkness_DistortionPearl_Skills[i].GetRigidDynamics())
+			{
+				//Static Object or Terrain
+				if (CPhysXMgr::GetInstance()->CollisionForStaticObjectsNotQuail(rigidbody) || m_Darkness_DistortionPearl_Skills[i].getPosition().y <= 0.5f)
+				{
+					m_Darkness_DistortionPearl_Skills[i].setDead(true);
+					Player* pPlayer = GetPlayerForID(m_Darkness_DistortionPearl_Skills[i].getUser());
+					if (pPlayer == nullptr)
+					{
+						cout << "플레이어 없음" << endl;
+					}
+					else
+					{
+						pPlayer->setPosition(m_Darkness_DistortionPearl_Skills[i].getPosition());
+					}
+				}
+			}
+		}
+	}
 }
 
 bool Room::CheckRoundEnd(int TeamCount)
@@ -1017,6 +1174,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_FireWall_Skills[i].setPosition(rEvent.xmfPosition);
 									m_FireWall_Skills[i].setRotate(rEvent.xmfRotate);
 									m_FireWall_Skills[i].setTeam(m_players[j].getTeam());
+									m_FireWall_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_FireWall_Skills[i].getSkillType();
 									PushSkillCreate(i, Skilltype);
 									break;
@@ -1050,6 +1208,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_Darkness_Enchantress_Skills[i].setPosition(rEvent.xmfPosition);
 									m_Darkness_Enchantress_Skills[i].setRotate(rEvent.xmfRotate);
 									m_Darkness_Enchantress_Skills[i].setTeam(m_players[j].getTeam());
+									m_Darkness_Enchantress_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_Darkness_Enchantress_Skills[i].getSkillType();
 									PushSkillCreate(i, Skilltype);
 									break;
@@ -1069,6 +1228,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_FireMeteor_Skills[i].setPosition(rEvent.xmfPosition);
 									m_FireMeteor_Skills[i].setRotate(rEvent.xmfRotate);
 									m_FireMeteor_Skills[i].setTeam(m_players[j].getTeam());
+									m_FireMeteor_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_FireMeteor_Skills[i].getSkillType();
 									PushSkillCreate(i, Skilltype);
 									break;
@@ -1101,6 +1261,7 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_Darkness_DistortionPearl_Skills[i].setPosition(rEvent.xmfPosition);
 									m_Darkness_DistortionPearl_Skills[i].setRotate(rEvent.xmfRotate);
 									m_Darkness_DistortionPearl_Skills[i].setTeam(m_players[j].getTeam());
+									m_Darkness_DistortionPearl_Skills[i].MakeCollision();
 									unsigned char Skilltype = m_Darkness_DistortionPearl_Skills[i].getSkillType();
 									PushSkillCreate(i, Skilltype);
 									break;
@@ -1626,5 +1787,13 @@ void Room::PushSkillDelete(int slotNum, unsigned char SkillType)
 			sendEvent_push(m_players[i].getID(), &packet);
 		}
 	}
+}
+
+Player* Room::GetPlayerForID(int id)
+{
+	for (auto& player : m_players)
+		if (player.getID() == id)
+			return &player;
+	return nullptr;
 }
 

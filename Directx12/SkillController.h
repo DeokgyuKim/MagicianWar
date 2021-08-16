@@ -42,6 +42,7 @@ private:
 	int m_iSkillCnt[2] = { 0, 0 };
 	float m_fSkillCoolTime[2] = { 0.f, 0.f };
 	float m_fSkillCurCool[2] = { 0.f, 0.f };
+	float m_fSkillLeft = 0.f;
 
 	NetSkill* m_pNetSkill[2];
 };

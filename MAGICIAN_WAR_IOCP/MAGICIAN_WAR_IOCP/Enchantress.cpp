@@ -29,4 +29,11 @@ bool Enchantress::Update(const float& fTime)
 void Enchantress::LateUpdate(const float& fTime)
 {
 	Skill::LateUpdate(fTime);
+	for (auto rigidbody : m_vecRigidDynamic)
+		rigidbody->setGlobalPose(CPhysXMgr::GetInstance()->MakePxTransform(m_Info.xmmWorld));
+}
+
+void Enchantress::MakeCollision()
+{
+	m_vecRigidDynamic.push_back(CPhysXMgr::GetInstance()->CreateSphere(m_Info.xmfPosition, 2.f));
 }

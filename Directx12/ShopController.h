@@ -29,6 +29,7 @@ public:
 	void SetSkillCtrl(SkillController* pCtrl) { m_pSkillCtrl = pCtrl; }
 	void SetRendering(bool On);
 	bool AddCoin(int coin);
+	bool GetShopTime() { return m_bShopTime; }
 private:
 	void Release();
 protected:

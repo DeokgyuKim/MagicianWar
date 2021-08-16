@@ -171,6 +171,7 @@ public:
 	PxTransform MakePxTransform(XMFLOAT4X4 world);
 public:
 	bool CollisionForStaticObjects(PxRigidActor* pBody);
+	bool CollisionForStaticObjectsNotQuail(PxRigidActor* pBody);
 private:
 	//LPDIRECT3DDEVICE9 m_pGraphicDev = nullptr;
 	//Engine::CLayer* m_StaticLayer = nullptr;

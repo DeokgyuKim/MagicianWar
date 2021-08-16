@@ -163,6 +163,9 @@ void Player::Update(float fTime)
 	LateInit();
 	m_CanDisconnect = false;
 
+	m_fHpHealTime += fTime;
+	m_fHpDealTime += fTime;
+
 	m_UpperBody->Execute(fTime);
 	m_RootBody->Execute(fTime);
 
@@ -303,6 +306,26 @@ int Player::getState()
 {
 	m_Info.PlayerState = m_RootBody->GetState();
 	return m_Info.PlayerState; 
+}
+
+bool Player::getAbleHeal()
+{ 
+	if (m_fHpHealTime >= 1.f)
+	{
+		m_fHpHealTime = 0.f;
+		return true;
+	}
+	return false;
+}
+
+bool Player::getAbleDottAtt()
+{
+	if (m_fHpDealTime >= 1.f)
+	{
+		m_fHpDealTime = 0.f;
+		return true;
+	}
+	return false;
 }
 
 InterfaceFSM* Player::GetRootFSM()

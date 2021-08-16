@@ -14,6 +14,14 @@ XMFLOAT3 GetPositionBulletType(Object* pOwner, Camera* Camera)
 	XMStoreFloat3(&pos, XMLoadFloat3(&pos) + XMLoadFloat3(&offsetY) + XMLoadFloat3(&offsetLook));
 	return pos;
 }
+XMFLOAT3 GetPositionMyPosType(Object* pOwner, Camera* Camera)
+{
+	XMFLOAT3 pos = dynamic_cast<Transform*>(pOwner->GetTransController())->GetPosition();
+	XMFLOAT3 offsetY = XMFLOAT3(0.f, 2.f, 0.f);
+
+	XMStoreFloat3(&pos, XMLoadFloat3(&pos) + XMLoadFloat3(&offsetY));
+	return pos;
+}
 XMFLOAT3 GetRotateBulletType(Object* pOwner, Camera* Camera)
 {
 	XMFLOAT3 Rotate;
@@ -151,6 +159,9 @@ XMFLOAT3 NetSkill::GetPosition()
 		pos = GetPositionRayCastType(m_pOwner, m_pCamera);
 		return pos;
 		break;
+	case SKILL_FREEZE:
+		return GetPositionMyPosType(m_pOwner, m_pCamera);
+		break;
 	default:
 		break;
 	}
@@ -182,6 +193,10 @@ XMFLOAT3 NetSkill::GetRotate()
 		rot.x = 0.f;
 		return rot;
 		break;
+	case SKILL_FREEZE:
+		rot = GetRotateBulletType(m_pOwner, m_pCamera);
+		rot.x = 0.f;
+		return rot;
 	default:
 		break;
 	}

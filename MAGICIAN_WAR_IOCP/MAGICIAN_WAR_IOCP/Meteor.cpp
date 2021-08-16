@@ -31,4 +31,11 @@ bool Meteor::Update(const float& fTime)
 void Meteor::LateUpdate(const float& fTime)
 {
 	Skill::LateUpdate(fTime);
+	for (auto rigidbody : m_vecRigidDynamic)
+		rigidbody->setGlobalPose(CPhysXMgr::GetInstance()->MakePxTransform(m_Info.xmmWorld));
+}
+
+void Meteor::MakeCollision()
+{
+	m_vecRigidDynamic.push_back(CPhysXMgr::GetInstance()->CreateSphere(m_Info.xmfPosition, 1.5f));
 }
