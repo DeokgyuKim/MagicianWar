@@ -401,6 +401,18 @@ void Room::SkillUpdate(float fTime)
 			}
 		}
 
+		if (m_IceCressvas_Skills[i].getUser() != NO_PLAYER) {
+			bool dead = m_IceCressvas_Skills[i].Update(fTime);
+			if (dead) {
+				m_IceCressvas_Skills[i].setUser(NO_PLAYER);
+				PushSkillDelete(i, SKILL_CRESSVAS);
+			}
+			else {
+				m_IceCressvas_Skills[i].LateUpdate(fTime);
+				//PushSkillUpdate(i, SKILL_COLD2);
+			}
+		}
+
 		// DARKNESS
 		if (m_Darkness_Enchantress_Skills[i].getUser() != NO_PLAYER) {
 			bool dead = m_Darkness_Enchantress_Skills[i].Update(fTime);
@@ -477,7 +489,7 @@ void Room::Physics_Collision()
 							m_Bullets[i].SetUser(NO_PLAYER);
 							PushBullet_Delete(i);
 							//플레이어 피달고 그런거
-							int playerEvent = m_players[j].setDamage(m_Bullets[i].getDamage());
+							int playerEvent = m_players[j].setDamage(m_Bullets[i].getDamage(), BULLET_HIT_EVENT);
 							CheckPlayerEvent(playerEvent, j);
 							if (playerEvent == PLAYER_DEAD_EVENT)
 							{
@@ -499,11 +511,20 @@ void Room::Physics_Collision()
 			{
 				if (m_players[j].getUsed())
 				{ // 플레이어가 존재할때
-					{ // 팀원 체크  체크하고자 하는 플레이어의 상태 체크 ( Dead, Dance, Freeze )
+					{ // 팀원 체크 + 체크하고자 하는 플레이어의 상태 체크 ( Dead, Dance, Freeze )
 						{ // 충돌 했다면
-
+							int Attack_Player = m_IceBall_Skills[i].getUser();
+							int playerEvent = m_players[j].setDamage(0, ICE_FIELD_HIT_EVENT);
+							CheckPlayerEvent(playerEvent, j);
+							if (playerEvent == PLAYER_DEAD_EVENT) 
+							{
+								PushAddKillPoint(Attack_Player);
+							}
+							else if (playerEvent == ICE_FIELD_HIT_EVENT)
+							{
+								CreateSkillCressvas(j);
+							}
 						}
-
 					}
 				}
 			}
@@ -559,7 +580,7 @@ void Room::CheckWinnerTeam()
 
 void Room::CheckPlayerEvent(int _playerEvent, int slotNum)
 {
-	if (_playerEvent == PLAYER_DEAD_EVENT)
+	if (_playerEvent == PLAYER_DEAD_EVENT) // 플레이어가 죽었을때 체크해야할것
 	{
 		if (m_players[slotNum].getTeam() == TEAM_BLUE) { // 죽은 친구가 BlueTeam이면
 			--m_BlueTeam_Alive_Count;
@@ -578,6 +599,27 @@ void Room::CheckPlayerEvent(int _playerEvent, int slotNum)
 				m_WinnerTeam = TEAM_RED;
 			}
 			m_RoundWinnerCheck = true;
+		}
+	}
+
+}
+
+void Room::CreateSkillCressvas(int player_slotNum)
+{
+	for (int i = 0; i < MAX_SKILL; ++i)
+	{
+		if (m_IceCressvas_Skills[i].getUser() == NO_PLAYER)
+		{
+			IceCressvas IceCressvas{};
+			m_IceCressvas_Skills[i] = IceCressvas;
+			m_IceCressvas_Skills[i].setSkillType(SKILL_CRESSVAS);
+			m_IceCressvas_Skills[i].setUser(m_players[player_slotNum].getID());
+			m_IceCressvas_Skills[i].setPosition(m_players[player_slotNum].getPosition());
+			m_IceCressvas_Skills[i].setRotate(m_players[player_slotNum].getRotate());
+			m_IceCressvas_Skills[i].setTeam(m_players[player_slotNum].getTeam());
+			unsigned char Skilltype = m_IceCressvas_Skills[i].getSkillType();
+			PushSkillCreate(i, Skilltype);
+			break;
 		}
 	}
 }
@@ -756,6 +798,10 @@ void Room::ResetSkill()
 		if (m_IceFreeze_Skills[i].getUser() != NO_PLAYER)
 		{
 			m_IceFreeze_Skills[i].setDead(true);
+		}
+		if (m_IceCressvas_Skills[i].getUser() != NO_PLAYER)
+		{
+			m_IceCressvas_Skills[i].setDead(true);
 		}
 
 		// DARKNESS
@@ -1117,6 +1163,8 @@ void Room::packet_processing(ROOM_EVENT rEvent)
 									m_IceFreeze_Skills[i].setRotate(rEvent.xmfRotate);
 									m_IceFreeze_Skills[i].setTeam(m_players[j].getTeam());
 									unsigned char Skilltype = m_IceFreeze_Skills[i].getSkillType();
+									
+									
 									PushSkillCreate(i, Skilltype);
 									break;
 								}
@@ -1589,6 +1637,13 @@ void Room::PushSkillCreate(int slotNum, unsigned char SkillType)
 		m_players[user].GetUpperFSM()->ChangeState(STATE_ATTACK, ANIM_SKILL_ATTACK);
 		packet.xmfPosition = m_Darkness_DistortionPearl_Skills[slotNum].getPosition();
 		packet.xmfRotate = m_Darkness_DistortionPearl_Skills[slotNum].getRotate();
+	}
+	else if (SkillType == SKILL_CRESSVAS)
+	{
+		int user = m_IceCressvas_Skills[slotNum].getUser();
+		packet.user = user;
+		packet.xmfPosition = m_IceCressvas_Skills[slotNum].getPosition();
+		packet.xmfRotate = m_IceCressvas_Skills[slotNum].getRotate();
 	}
 
 	for (int i = 0; i < MAX_PLAYER; ++i)

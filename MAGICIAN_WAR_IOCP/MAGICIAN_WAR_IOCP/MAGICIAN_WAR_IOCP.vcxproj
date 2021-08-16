@@ -163,6 +163,7 @@
     <ClCompile Include="Enchantress.cpp" />
     <ClCompile Include="FireWall.cpp" />
     <ClCompile Include="IcaAgeBall.cpp" />
+    <ClCompile Include="IceCressvas.cpp" />
     <ClCompile Include="IceFreeze.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshMgr.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="IcaAgeBall.h" />
+    <ClInclude Include="IceCressvas.h" />
     <ClInclude Include="IceFreeze.h" />
     <ClInclude Include="InterfaceFSM.h" />
     <ClInclude Include="MeshMgr.h" />

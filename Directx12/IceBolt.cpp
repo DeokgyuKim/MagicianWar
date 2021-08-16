@@ -3,7 +3,7 @@
 #include "IceBolt_Ice.h"
 #include "IceBolt_Body.h"
 #include "IceBolt_Tornado.h"
-#include "IceBolt_Crevasses.h"
+//#include "IceBolt_Crevasses.h"
 
 #include "Transform.h"
 
@@ -40,9 +40,9 @@ void IceBolt::BuildSkillEffects()
 	pEff = new IceBolt_Tornado(m_pDevice, m_pCmdLst, m_pRenderer, this);
 	m_vecSkillEff.push_back(pEff);
 
-	pEff = new IceBolt_Crevasses(m_pDevice, m_pCmdLst, m_pRenderer, this);
+	//pEff = new IceBolt_Crevasses(m_pDevice, m_pCmdLst, m_pRenderer, this);
+	//m_vecSkillEff.push_back(pEff);
 	//dynamic_cast<Transform*>(pEff->GetComponent("Transform"))->SetPosition(XMFLOAT3(1.f, -2.3f, 0.7f));	
-	m_vecSkillEff.push_back(pEff);
 
 	//pEff = new IceBolt_Crevasses(m_pDevice, m_pCmdLst, m_pRenderer, this);
 	//dynamic_cast<Transform*>(pEff->GetComponent("Transform"))->SetRotate(XMFLOAT3(0.f, 120.f, 0.f));

@@ -94,6 +94,9 @@
     <Filter Include="02.Object\03.Skill\03.Darkness\02.DistortionPearl">
       <UniqueIdentifier>{2b8feb2c-fc1b-47e8-ad25-ccf43dcd83b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Object\03.Skill\03.Cold\03.IceCressvas">
+      <UniqueIdentifier>{68950df5-0e31-446c-b4a3-7584b5ce6d6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -155,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="IceFreeze.cpp">
       <Filter>02.Object\03.Skill\03.Cold\02.IceFreeze</Filter>
+    </ClCompile>
+    <ClCompile Include="IceCressvas.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +238,9 @@
     </ClInclude>
     <ClInclude Include="IceFreeze.h">
       <Filter>02.Object\03.Skill\03.Cold\02.IceFreeze</Filter>
+    </ClInclude>
+    <ClInclude Include="IceCressvas.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -29,6 +29,7 @@ private:
 	void Dance(float fTime);
 	void Dead(float fTime);
 	void Freeze(float fTime);
+	void Iceing(float fTime);
 
 private:
 	Player* m_User;
@@ -50,4 +51,5 @@ private:
 	float m_AnimTime;
 	float m_fHitTime;
 	float m_fFreezeTime;
+	float m_fIceTime;
 };
