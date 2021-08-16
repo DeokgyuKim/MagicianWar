@@ -3,6 +3,11 @@
 #include "Loading.h"
 
 TextureMgr* TextureMgr::m_pInstance = NULL;
+void TextureMgr::Release()
+{
+	for (auto texture : m_mapTextures)
+		delete texture.second;
+}
 void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap, Loading* pLoading)
 {
 	DDSTexture* pTexture = NULL;

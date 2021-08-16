@@ -72,7 +72,7 @@ void Scene::BuildInstanceCBs()
 	InstanceMgr::GetInstnace()->BuildInstanceBuffers();
 }
 
-void Scene::RemoveObject(Object* pobj, OBJ_TYPE eType)
+bool Scene::RemoveObject(Object* pobj, OBJ_TYPE eType)
 {
 	auto eraseiter = m_pObjects[eType].end();
 	for (auto iter = m_pObjects[eType].begin(); iter != m_pObjects[eType].end(); ++iter)
@@ -84,8 +84,9 @@ void Scene::RemoveObject(Object* pobj, OBJ_TYPE eType)
 		}
 	}
 	if (eraseiter == m_pObjects[eType].end())
-		return;
+		return false;
 	m_pObjects[eType].erase(eraseiter);
+	return true;
 }
 
 Object* Scene::GetUIForTag(int iTag)

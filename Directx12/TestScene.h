@@ -9,13 +9,14 @@ class TestScene :
 {
 public:
     TestScene();
-    virtual ~TestScene() {}
+    virtual ~TestScene() { Release(); }
 public:
     virtual int		Update(const float& fTimeDelta) override;
     virtual void    LateUpdate(const float& fTimeDelta) override;
 private:
     void Initialize();
     void LateInit();
+    void Release();
 public:
     void SetGameEndForPanelCreate(bool _bCreate) { GameEndForPanelCreate = _bCreate; }
     void MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot, unsigned char slot);

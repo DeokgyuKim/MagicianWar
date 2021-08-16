@@ -17,7 +17,7 @@ public:
 
 public:
 	void	PushObject(Object* pobj, OBJ_TYPE eType) { m_pObjects[eType].push_back(pobj); }
-	void	RemoveObject(Object* pobj, OBJ_TYPE eType);
+	bool	RemoveObject(Object* pobj, OBJ_TYPE eType);
 	Object* GetUIForTag(int iTag);
 	Object* GetPlayerForID(int id);
 	void SetPlayerIndex(string InstName, int index);

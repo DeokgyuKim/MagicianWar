@@ -142,6 +142,19 @@ bool ShopController::AddCoin(int coin)
 	return true;
 }
 
+void ShopController::Release()
+{
+	for (int i = 0; i < 2; ++i)
+	{
+		delete m_pSkillBase[i];
+		for (int j = 0; j < 4; ++j)
+			delete m_pSkillOn[i][j];
+		delete m_pButton[i];
+
+	}
+	delete m_pGoldTxtCtrl;
+}
+
 void buyskillQ()
 {
 	int cnt = SkillController::GetInstance()->GetSkillCnt(0);

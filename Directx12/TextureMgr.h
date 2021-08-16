@@ -8,7 +8,7 @@ class TextureMgr
 private:
 	TextureMgr() {}
 	TextureMgr(const TextureMgr& rhs) {}
-	~TextureMgr() {}
+	~TextureMgr() { Release(); }
 public:
 	static TextureMgr* GetInstance()
 	{
@@ -24,7 +24,8 @@ public:
 	}
 private:
 	static TextureMgr* m_pInstance;
-
+private:
+	void Release();
 public:
 	void		BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap, Loading* pLoading);
 	void		BuildInitTextures(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, ID3D12DescriptorHeap* heap);

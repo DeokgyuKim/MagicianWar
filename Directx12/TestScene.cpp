@@ -371,6 +371,14 @@ void TestScene::LateInit()
 	m_LateInit = true;
 }
 
+void TestScene::Release()
+{
+	SkillController::DestroyInstance();
+	ShopController::DestroyInstance();
+	delete m_pTimeTextCtrl;
+	delete m_pKillTextCtrl;
+}
+
 void TestScene::MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot, unsigned char slot)
 {
 	Skill* pSkill = nullptr;

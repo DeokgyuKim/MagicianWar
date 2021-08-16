@@ -30,6 +30,8 @@ public:
 	void UseSkillFailed(int idx);
 	XMFLOAT3 GeneratePositionForPacket(int idx);
 	XMFLOAT3 GenerateRotateForPacket(int idx);
+private:
+	void Release();
 public:
 	void Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Scene* pScene, int CharType);
 	void Update(const float& fTimeDelta);

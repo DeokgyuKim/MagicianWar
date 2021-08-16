@@ -29,6 +29,8 @@ public:
 	void SetSkillCtrl(SkillController* pCtrl) { m_pSkillCtrl = pCtrl; }
 	void SetRendering(bool On);
 	bool AddCoin(int coin);
+private:
+	void Release();
 protected:
 	UI*					m_pSkillBase[2];
 	UI*					m_pSkillOn[2][4];

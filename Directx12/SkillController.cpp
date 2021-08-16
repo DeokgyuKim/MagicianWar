@@ -10,6 +10,7 @@ SkillController::SkillController()
 
 SkillController::~SkillController()
 {
+	Release();
 }
 void SkillController::SetSkillCnt(int idx, int cnt)
 { 
@@ -49,6 +50,16 @@ XMFLOAT3 SkillController::GeneratePositionForPacket(int idx)
 XMFLOAT3 SkillController::GenerateRotateForPacket(int idx)
 {
 	return m_pNetSkill[idx]->GetRotate();
+}
+void SkillController::Release()
+{
+	for (int i = 0; i < 2; ++i)
+	{
+		delete m_pSkillBase[i];
+		for (int j = 0; j < 4; ++j)
+			delete m_pSkillOn[i][j];
+		delete m_pNetSkill[i];
+	}
 }
 void SkillController::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Scene* pScene, int CharType)
 {

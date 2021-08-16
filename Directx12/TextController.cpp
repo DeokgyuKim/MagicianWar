@@ -6,11 +6,13 @@ TextController::TextController(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_pDevice = device;
 	m_pCmdLst = cmdLst;
 	m_pRenderer = pRenderer;
+	m_pScene = pScene;
 	Initialize(xmfInfo, pText, pScene);
 }
 
 TextController::~TextController()
 {
+	Release();
 }
 
 void TextController::Initialize(XMFLOAT4 xmfInfo, const char* pText, Scene* pScene)
@@ -80,6 +82,16 @@ void TextController::RemoveTexts(Scene* pScene)
 	{
 		pScene->RemoveObject(Txt, OBJ_UI);
 		delete Txt;
+	}
+	m_vecTxt.clear();
+}
+
+void TextController::Release()
+{
+	for (auto Txt : m_vecTxt)
+	{
+		if (m_pScene->RemoveObject(Txt, OBJ_UI))
+			delete Txt;
 	}
 	m_vecTxt.clear();
 }

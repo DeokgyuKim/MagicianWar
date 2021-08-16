@@ -43,7 +43,10 @@ void SkillEff::Initialize()
 
 void SkillEff::Release()
 {
-    delete m_pShader;
+    if (m_pShader != nullptr)
+        delete m_pShader;
+    m_ObjectCB.release();
+    m_SkillCB.release();
 }
 
 int SkillEff::Update(const float& fTimeDelta)
