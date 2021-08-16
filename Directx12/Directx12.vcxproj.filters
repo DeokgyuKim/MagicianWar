@@ -1046,12 +1046,10 @@
     <ClCompile Include="IceCrevasses.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Directx12.ico">
-      <Filter>99.Default\99.Default</Filter>
-    </Image>
     <Image Include="small.ico">
       <Filter>99.Default\99.Default</Filter>
     </Image>
+    <Image Include="..\Fire.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="color.hlsl">

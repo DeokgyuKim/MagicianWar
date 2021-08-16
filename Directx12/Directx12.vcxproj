@@ -381,7 +381,7 @@
     <ResourceCompile Include="Directx12.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Directx12.ico" />
+    <Image Include="..\Fire.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
