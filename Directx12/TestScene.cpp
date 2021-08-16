@@ -23,6 +23,7 @@
 #include "BlackHole.h"
 #include "HatredChain.h"
 #include "Boom.h"
+#include "IceCrevasses.h"
 
 #include "StaticMeshMgr.h"
 #include "InstanceMgr.h"
@@ -408,6 +409,9 @@ void TestScene::MakeSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 rot,
 	case SKILL_DARKNESS2:
 		pSkill = new HatredChain(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), pos);
 		break;
+	case SKILL_CRESSVAS:
+		pSkill = new IceCrevasses(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), rot, pos);
+		break;
 	default:
 		return;
 	}
@@ -450,6 +454,7 @@ void TestScene::UpdateSkillForPacket(SKILL_TYPE etype, XMFLOAT3 pos, XMFLOAT3 ro
 		dynamic_cast<Transform*>(pObj->GetTransController())->SetPosition(pos);
 		dynamic_cast<Transform*>(pObj->GetTransController())->SetRotate(rot);
 		break;
+	//case SKILL_CRESSVAS:
 	default:
 		return;
 	}

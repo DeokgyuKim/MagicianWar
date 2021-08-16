@@ -119,7 +119,8 @@
 #define STATE_DEAD		5
 #define STATE_DANCE		6
 #define STATE_FREEZE	7
-#define STATE_COUNT		8 
+#define STATE_ICE		8
+#define STATE_COUNT		9 
 
 // Anim
 #define ANIM_IDLE			0
@@ -162,6 +163,7 @@
 
 #define SKILL_DARKNESS1			6
 #define SKILL_DARKNESS2			7
+#define SKILL_CRESSVAS			8
 
 struct PlayerInfo
 {

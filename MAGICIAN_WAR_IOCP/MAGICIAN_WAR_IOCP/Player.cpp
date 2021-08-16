@@ -54,7 +54,7 @@ void Player::Initialize(int client_num, int room_num)
 	m_xmfRotate = XMFLOAT3(0.f, 0.f, 0.f);
 	m_xmfMeshRotate = XMFLOAT3(-90.f, 0.f, 0.f);
 	XMStoreFloat4x4(&m_xmmWorld, XMMatrixIdentity());
-	
+
 
 	m_Info.PlayerState = STATE_IDLE;
 	m_Info.CharacterType = ELEMENT_FIRE;
@@ -305,7 +305,7 @@ XMFLOAT4X4 Player::getBulletStartWorld()
 int Player::getState()
 {
 	m_Info.PlayerState = m_RootBody->GetState();
-	return m_Info.PlayerState; 
+	return m_Info.PlayerState;
 }
 
 bool Player::getAbleHeal()
@@ -342,9 +342,59 @@ InterfaceFSM* Player::GetUpperFSM()
 	return m_UpperBody.get();
 }
 
-void Player::setDamage(int damage)
+int Player::setDamage(int damage, int type)
 {
+	int playerEvent = 0;
+
+	if (m_RootBody->GetState() == STATE_FREEZE)  // 무적
+		return FREEZE_HIT_EVENT;
+
 	m_Info.iHp -= damage;
+
+	if (type == BULLET_HIT_EVENT)
+	{
+		// 체크 후 사망 체크
+		if (m_Info.iHp <= 0)
+		{
+			m_UpperBody->ChangeState(STATE_DEAD, ANIM_DEAD);
+			m_RootBody->ChangeState(STATE_DEAD, ANIM_DEAD);
+			return PLAYER_DEAD_EVENT;
+		}
+		else
+			m_UpperBody->ChangeState(STATE_HIT, ANIM_HIT);
+	}
+	else if (type == ICE_FIELD_HIT_EVENT)
+	{
+		if (m_RootBody->GetState() == STATE_ICE)
+		{ // Ice상태면 냅두고
+			if (m_Info.iHp <= 0)
+			{
+				m_UpperBody->ChangeState(STATE_DEAD, ANIM_DEAD);
+				m_RootBody->ChangeState(STATE_DEAD, ANIM_DEAD);
+				return PLAYER_DEAD_EVENT;
+			}
+		}
+		else
+		{ // 다른 상태면
+			if (m_Info.iHp <= 0)
+			{
+				m_UpperBody->ChangeState(STATE_DEAD, ANIM_DEAD);
+				m_RootBody->ChangeState(STATE_DEAD, ANIM_DEAD);
+				return PLAYER_DEAD_EVENT;
+			}
+			else
+			{
+				m_UpperBody->ChangeState(STATE_ICE, ANIM_IDLE);
+				m_RootBody->ChangeState(STATE_ICE, ANIM_IDLE);
+				return ICE_FIELD_HIT_EVENT;
+			}
+		}
+	}
+
+
+
+	return playerEvent;
+
 }
 
 void Player::setKeyInput(DWORD _key)
@@ -360,7 +410,7 @@ void Player::setPosition(XMFLOAT3 pos)
 	m_xmmWorld._41 = pos.x;
 	m_xmmWorld._42 = pos.y;
 	m_xmmWorld._43 = pos.z;
-	
+
 	CreateCapsuleController();
 }
 

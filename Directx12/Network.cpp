@@ -702,17 +702,16 @@ void Network::packetProcessing(char* _packetBuffer)
 	case stoc_skill:
 	{
 		STOC_Skill* data = reinterpret_cast<STOC_Skill*>(_packetBuffer);
-		
+
 		if (MainApp::GetInstance()->GetScene()->GetSceneType() == SCENE_TYPE::MAIN)
 		{
 			printf("server pos x %f y %f z %f\n", data->xmfPosition.x, data->xmfPosition.y, data->xmfPosition.z);
 			dynamic_cast<TestScene*>(MainApp::GetInstance()->GetScene())->MakeSkillForPacket(
 				(SKILL_TYPE)data->skillType, data->xmfPosition, data->xmfRotate, data->slotNum);
 			Player* player = dynamic_cast<Player*>(MainApp::GetInstance()->GetScene()->GetPlayerForID(data->user));
-			dynamic_cast<TestScene*>(MainApp::GetInstance()->GetScene())->MakeSKillCircle(player);
+			if (data->skillType != SKILL_CRESSVAS)
+				dynamic_cast<TestScene*>(MainApp::GetInstance()->GetScene())->MakeSKillCircle(player);
 		}
-
-
 		break;
 	}
 	case stoc_skillUpdate:
@@ -738,7 +737,7 @@ void Network::packetProcessing(char* _packetBuffer)
 			MainApp::GetInstance()->GetScene()->RemoveObject(pObj, OBJ_SKILL);
 			delete pObj;
 		}
-		
+
 		break;
 	}
 	default:
@@ -911,7 +910,8 @@ void Network::ServerKeyInput()
 	// 죽으면 키입력 안받음
 	if (m_tMyInfo.PlayerState == STATE_DEAD ||
 		m_tMyInfo.PlayerState == STATE_DANCE
-		|| m_tMyInfo.PlayerState == STATE_FREEZE) return;
+		|| m_tMyInfo.PlayerState == STATE_FREEZE
+		|| m_tMyInfo.PlayerState == STATE_ICE) return;
 	// 라운드 시작 아니면 키입력 안받음
 	if (!m_isRoundStart) return;
 
@@ -941,7 +941,7 @@ void Network::ServerKeyInput()
 	{
 		CallEvent(EVENT_CREATE_BULLET_REQUEST, 0);
 	}
-	if (KeyMgr::GetInstance()->KeyPressing('Q')&& SkillController::GetInstance()->UseSkill(SKILL_Q))
+	if (KeyMgr::GetInstance()->KeyPressing('Q') && SkillController::GetInstance()->UseSkill(SKILL_Q))
 	{
 		cout << "Use Q Skill" << endl;
 		XMFLOAT3 Pos = SkillController::GetInstance()->GeneratePositionForPacket(0);
@@ -952,7 +952,7 @@ void Network::ServerKeyInput()
 		else
 			SkillController::GetInstance()->UseSkillFailed(0);
 	}
-	if (KeyMgr::GetInstance()->KeyPressing('E')&& SkillController::GetInstance()->UseSkill(SKILL_E))
+	if (KeyMgr::GetInstance()->KeyPressing('E') && SkillController::GetInstance()->UseSkill(SKILL_E))
 	{
 		cout << "Use E Skill" << endl;
 		XMFLOAT3 Pos = SkillController::GetInstance()->GeneratePositionForPacket(1);

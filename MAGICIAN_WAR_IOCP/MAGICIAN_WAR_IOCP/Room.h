@@ -11,6 +11,7 @@
 #include "IceFreeze.h"
 #include "Enchantress.h"
 #include "DistortionPearl.h"
+#include "IceCressvas.h"
 
 
 
@@ -37,7 +38,8 @@ public:
 	void Physics_Collision();
 	bool CheckRoundEnd(int TeamCount);
 	void CheckWinnerTeam();
-
+	void CheckPlayerEvent(int _playerEvent, int slotNum);
+	void CreateSkillCressvas(int player_slotNum);
 public:
 	bool EnterRoom(int id,bool host = false);
 	void ExitRoom(int id);
@@ -109,6 +111,7 @@ private:
 	array<IceFreeze, MAX_SKILL> m_IceFreeze_Skills;
 	array<Enchantress, MAX_SKILL> m_Darkness_Enchantress_Skills;
 	array<DistortionPearl, MAX_SKILL> m_Darkness_DistortionPearl_Skills;
+	array<IceCressvas, MAX_SKILL> m_IceCressvas_Skills;
 
 
 	mutex m_bullet_mutex;

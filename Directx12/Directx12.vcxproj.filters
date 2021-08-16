@@ -352,9 +352,6 @@
     <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze">
       <UniqueIdentifier>{599fbf0a-5918-4a80-8241-a6ae6b2896d4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\00.Crevasses">
-      <UniqueIdentifier>{36ce76cf-902d-4160-83c7-27dfdf2da910}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\01.IceDorm">
       <UniqueIdentifier>{f2b9d073-ee9e-4d63-beb5-bec94dedeee6}</UniqueIdentifier>
     </Filter>
@@ -375,6 +372,12 @@
     </Filter>
     <Filter Include="01.Engine\99.Manager\08.SoundMgr">
       <UniqueIdentifier>{fc8b619f-4b44-4bd1-871e-d4e0eaa49df5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\09.IceCrevass">
+      <UniqueIdentifier>{0ae37ed8-b318-4e32-9ebc-12a7f7c5ec72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Game\02.Object\06.Skill\09.IceCrevass\00.Crevasses">
+      <UniqueIdentifier>{36ce76cf-902d-4160-83c7-27dfdf2da910}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -703,7 +706,7 @@
       <Filter>00.Game\02.Object\06.Skill\07.IceFreeze</Filter>
     </ClInclude>
     <ClInclude Include="IceBolt_Crevasses.h">
-      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\00.Crevasses</Filter>
+      <Filter>00.Game\02.Object\06.Skill\09.IceCrevass\00.Crevasses</Filter>
     </ClInclude>
     <ClInclude Include="IceFreeze_IceDorm.h">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\01.IceDorm</Filter>
@@ -721,6 +724,7 @@
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\08.Boom\01.BoomInner</Filter>
     </ClInclude>
     <ClInclude Include="SoundMgr.h" />
+    <ClInclude Include="IceCrevasses.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -1021,7 +1025,7 @@
       <Filter>00.Game\02.Object\06.Skill\07.IceFreeze</Filter>
     </ClCompile>
     <ClCompile Include="IceBolt_Crevasses.cpp">
-      <Filter>00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\00.Crevasses</Filter>
+      <Filter>00.Game\02.Object\06.Skill\09.IceCrevass\00.Crevasses</Filter>
     </ClCompile>
     <ClCompile Include="IceFreeze_IceDorm.cpp">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\07.IceFreeze\01.IceDorm</Filter>
@@ -1039,6 +1043,7 @@
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\08.Boom\01.BoomInner</Filter>
     </ClCompile>
     <ClCompile Include="SoundMgr.cpp" />
+    <ClCompile Include="IceCrevasses.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

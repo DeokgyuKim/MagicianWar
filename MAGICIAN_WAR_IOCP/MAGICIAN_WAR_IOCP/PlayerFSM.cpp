@@ -10,6 +10,7 @@ PlayerFSM::PlayerFSM(Player* user, int _bone)
 	m_fHitTime = 1.0f;
 	m_fAttackTime = 1.f;
 	m_fFreezeTime = 5.f;
+	m_fIceTime = 5.f;
 }
 
 void PlayerFSM::ChangeState(int _State, int _Ani)
@@ -95,6 +96,9 @@ void PlayerFSM::Execute(float fTime)
 			break;
 		case STATE_FREEZE:
 			Freeze(fTime);
+			break;
+		case STATE_ICE:
+			Iceing(fTime);
 			break;
 		case STATE_DEAD:
 			Dead(fTime);
@@ -460,6 +464,22 @@ void PlayerFSM::Freeze(float fTime)
 	else if (m_BoneType == BONE_ROOT)
 	{
 		if (m_fFreezeTime >= m_AnimTime) {
+			ChangeState(STATE_IDLE, ANIM_IDLE);
+		}
+	}
+}
+
+void PlayerFSM::Iceing(float fTime)
+{
+	if (m_BoneType == BONE_UPPER)
+	{ // »óÃ¼
+		if (m_fIceTime >= m_AnimTime) {
+			ChangeState(STATE_IDLE, ANIM_IDLE);
+		}
+	}
+	else if (m_BoneType == BONE_ROOT)
+	{
+		if (m_fIceTime >= m_AnimTime) {
 			ChangeState(STATE_IDLE, ANIM_IDLE);
 		}
 	}

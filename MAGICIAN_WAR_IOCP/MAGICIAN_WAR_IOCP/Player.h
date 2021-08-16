@@ -83,7 +83,7 @@ public:
 	void setPlayerInfo(PlayerInfo _info) { m_Info = _info; }
 	void setID(int _id) { m_Info.Client_Num = _id; }
 	void setHp(int iHp) { m_Info.iHp = iHp; }
-	void setDamage(int damage);
+	int setDamage(int damage,int type = BULLET_HIT_EVENT);
 	void setReady(bool _ready) { m_Ready = _ready; }
 	void setTeam(char _team) { m_Info.TeamType = _team; }
 	
