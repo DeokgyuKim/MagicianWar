@@ -19,7 +19,7 @@ IceBolt_Crevasses::~IceBolt_Crevasses()
 
 void IceBolt_Crevasses::BuildComponent()
 {
-	Component* pComponent = new Transform(XMFLOAT3(0.006f, 0.005f, 0.006f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, -2.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(0.006f, 0.005f, 0.006f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 
 	m_Scale = dynamic_cast<Transform*>(m_mapComponent["Transform"])->GetScale();

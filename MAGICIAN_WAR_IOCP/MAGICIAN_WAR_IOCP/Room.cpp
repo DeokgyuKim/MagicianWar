@@ -1283,8 +1283,8 @@ void Room::RoundSetting()
 		for (int i = 0; i < MAX_PLAYER; ++i)
 		{
 			if (m_players[i].getUsed()) {
-				sendEvent_push(m_players[i].getID(), &packet);
-				//Server::GetInstance()->SendIngamePlayerInfo(player->getID(), packet);
+				//sendEvent_push(m_players[i].getID(), &packet);
+				Server::GetInstance()->SendIngamePlayerInfo(m_players[i].getID(), packet);
 			}
 		}
 
