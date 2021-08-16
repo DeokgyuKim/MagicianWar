@@ -29,7 +29,7 @@ void CreatePlayerSocket(int _size);
 int main()
 {
 	// 사전에 오버헤드 많이 드는 작업들은 다 해놔야함
-	StaticMeshMgr::GetInstance()->LoadMeshInfo("../../Data/Map1Data.txt");
+	StaticMeshMgr::GetInstance()->LoadMeshInfo("../Data/Map1Data.txt");
 	MeshMgr::GetInstnace()->BuildModels();
 	CPhysXMgr::GetInstance()->Initialize();
 

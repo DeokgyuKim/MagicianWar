@@ -14,7 +14,7 @@ void MeshMgr::BuildModel(string meshName)
 		return;
 	}
 
-	m_strFilePath = "..//..//Resources//Models//";
+	m_strFilePath = "..//Resources//Models//";
 
 	m_strFilePath += meshName;
 
