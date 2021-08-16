@@ -940,7 +940,7 @@ void Network::ServerKeyInput()
 	{
 		dwKeyInput |= ctos_KEY_LBUTTON;
 	}
-	if (KeyMgr::GetInstance()->KeyPressing('Q')) SkillController::GetInstance()->UseSkill(SKILL_Q))
+	if (KeyMgr::GetInstance()->KeyPressing('Q') && SkillController::GetInstance()->UseSkill(SKILL_Q))
 	{
 		cout << "Use Q Skill" << endl;
 		XMFLOAT3 Pos = SkillController::GetInstance()->GeneratePositionForPacket(0);
@@ -951,7 +951,7 @@ void Network::ServerKeyInput()
 		else
 			SkillController::GetInstance()->UseSkillFailed(0);
 	}
-	if (KeyMgr::GetInstance()->KeyPressing('E')) SkillController::GetInstance()->UseSkill(SKILL_E))
+	if (KeyMgr::GetInstance()->KeyPressing('E') && SkillController::GetInstance()->UseSkill(SKILL_E))
 	{
 		cout << "Use E Skill" << endl;
 		XMFLOAT3 Pos = SkillController::GetInstance()->GeneratePositionForPacket(1);

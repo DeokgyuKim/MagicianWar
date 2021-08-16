@@ -88,11 +88,11 @@ void TextController::RemoveTexts(Scene* pScene)
 
 void TextController::Release()
 {
-	for (auto Txt : m_vecTxt)
-	{
-		if (m_pScene->RemoveObject(Txt, OBJ_UI))
-			delete Txt;
-	}
-	m_vecTxt.clear();
+	//for (auto Txt : m_vecTxt)
+	//{
+	//	if (m_pScene->RemoveObject(Txt, OBJ_UI))
+	//		delete Txt;
+	//}
+	//m_vecTxt.clear();
 }
 
