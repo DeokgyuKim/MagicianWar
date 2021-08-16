@@ -23,7 +23,7 @@ public:
 		m_xmfRotate = rhs.m_xmfRotate;
 		m_xmfPosition = rhs.m_xmfPosition;
 		m_dir = rhs.m_dir;
-
+		m_Dead = false;
 		Initialize();
 
 		return *this;
@@ -51,6 +51,7 @@ public:
 	void setSpeed(float _speed) { m_speed = _speed; }
 	void setScale(XMFLOAT3 _scale) { m_xmfScale = _scale; }
 	void setRotate(XMFLOAT3 _rotate) { m_xmfRotate = _rotate; }
+	void SetDead(bool _dead) { m_Dead = _dead; }
 	void setPosition(XMFLOAT3 _position) { m_xmfPosition = _position; }
 	void setDirection(XMFLOAT3 _dir) { m_dir = _dir; }
 	void setDamage(int _damage) { m_Info.Damage = _damage; }
@@ -68,6 +69,8 @@ public:
 
 private:
 	BulletInfo m_Info;
+
+	bool m_Dead = false;
 	float m_lifeTime;
 	float m_TotalLifeTime;
 	float m_speed;
