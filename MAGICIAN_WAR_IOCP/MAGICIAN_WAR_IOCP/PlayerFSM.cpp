@@ -463,7 +463,7 @@ void PlayerFSM::Freeze(float fTime)
 	}
 	else if (m_BoneType == BONE_ROOT)
 	{
-		cout << "얼어붙음\n";
+		//cout << "얼어붙음\n";
 		if (m_AnimTime >= m_fFreezeTime) {
 			ChangeState(STATE_IDLE, ANIM_IDLE);
 		}

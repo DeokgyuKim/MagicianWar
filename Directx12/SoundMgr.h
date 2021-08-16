@@ -4,6 +4,15 @@
 #include "fmod.hpp"
 #include "fmod_errors.h"
 
+enum SOUND_ID {
+	BGM = 0,
+	PLAYERMOVE,
+	BUTTON_CLICK,
+	EFFSTART,
+
+	MAXCHANNEL = 100
+};
+
 class SoundMgr
 {
 private:
@@ -29,7 +38,8 @@ private:
 public:
 	void Initalize();
 public:
-	void PlaySound(string pSoundKey, SOUND_ID eID);
+	int  PlaySound(string pSoundKey, SOUND_ID eID);
+	int  PlaySound(string pSoundKey);
 	void PlayBGM(string pSoundKey);
 	void StopSound(SOUND_ID eID);
 	bool IsPlaying(SOUND_ID eID);
@@ -46,4 +56,5 @@ private:
 	FMOD::Channel* m_pChannel[MAXCHANNEL];
 	// 사운드 채널 객체 및 장치를 관리하는 객체. 
 	FMOD::System* m_pSystem;
+	int m_iEffCurChannel = EFFSTART;
 };

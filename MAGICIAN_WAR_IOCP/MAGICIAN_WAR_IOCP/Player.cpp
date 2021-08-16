@@ -171,7 +171,7 @@ void Player::Update(float fTime)
 	{
 		if (getAbleFreezeHeal()) 
 		{
-			m_Info.iHp += 5;
+			setHp(m_Info.iHp + 5);
 		}
 	}
 
@@ -358,6 +358,13 @@ bool Player::getAbleFreezeHeal()
 bool Player::getFreeze()
 {
 	if (m_Info.PlayerState == STATE_FREEZE)
+		return true;
+	return false;
+}
+
+bool Player::getIce()
+{
+	if (m_Info.PlayerState == STATE_ICE)
 		return true;
 	return false;
 }

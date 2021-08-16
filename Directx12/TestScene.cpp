@@ -341,8 +341,6 @@ void TestScene::Initialize()
 
 	SkillController* pSkillCtrl = SkillController::GetInstance();
 	pSkillCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this, (int)pPlayer->GetNetworkInfo().CharacterType);
-	pSkillCtrl->SetSkillCoolTime(0, 5.f);
-	pSkillCtrl->SetSkillCoolTime(1, 4.f);
 
 
 	ShopController* pShopCtrl = ShopController::GetInstance();

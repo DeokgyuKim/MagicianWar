@@ -470,7 +470,7 @@ void Room::Physics_Collision()
 		if (m_Bullets[i].getUser() != NO_PLAYER)
 		{
 
-			if (CPhysXMgr::GetInstance()->CollisionForStaticObjects(m_Bullets[i].GetRigidDynamic()))
+			if (CPhysXMgr::GetInstance()->CollisionForStaticObjects(m_Bullets[i].GetRigidDynamic()) || m_Bullets[i].GetPosition().y <= 0.25f)
 			{
 				m_Bullets[i].SetUser(NO_PLAYER);
 
@@ -526,9 +526,10 @@ void Room::Physics_Collision()
 									{
 										PushAddKillPoint(Attack_Player);
 									}
-									else if (playerEvent == ICE_FIELD_HIT_EVENT)
+									else if (playerEvent == ICE_FIELD_HIT_EVENT && !m_players[j].getIce())
 									{
 										CreateSkillCressvas(j);
+										cout << "크레바스 생성" << endl;
 									}
 								}
 							}

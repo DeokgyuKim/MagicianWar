@@ -30,6 +30,7 @@ public:
 	void SetRendering(bool On);
 	bool AddCoin(int coin);
 	bool GetShopTime() { return m_bShopTime; }
+	int GetCost(int idx) { return m_iCost[idx]; }
 private:
 	void Release();
 protected:
@@ -39,8 +40,10 @@ protected:
 	ClickerButton*		m_pButton[2];
 	Cursor*				m_pCursor;
 
-	int					m_iGold = 0;
+	int					m_iGold = 500;
+	int					m_iCost[2];
 	TextController*		m_pGoldTxtCtrl;
+	TextController*		m_pCostTxtCtrl[2];
 
 	SkillController*	m_pSkillCtrl;
 	Scene*				m_pScene;

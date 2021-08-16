@@ -723,8 +723,10 @@
     <ClInclude Include="Boom_Inner.h">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\08.Boom\01.BoomInner</Filter>
     </ClInclude>
-    <ClInclude Include="SoundMgr.h" />
     <ClInclude Include="IceCrevasses.h" />
+    <ClInclude Include="SoundMgr.h">
+      <Filter>01.Engine\99.Manager\08.SoundMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directx12.cpp">
@@ -1042,8 +1044,10 @@
     <ClCompile Include="Boom_Inner.cpp">
       <Filter>00.Game\02.Object\06.Skill\99.SkillEff\08.Boom\01.BoomInner</Filter>
     </ClCompile>
-    <ClCompile Include="SoundMgr.cpp" />
     <ClCompile Include="IceCrevasses.cpp" />
+    <ClCompile Include="SoundMgr.cpp">
+      <Filter>01.Engine\99.Manager\08.SoundMgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Directx12.ico">

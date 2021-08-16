@@ -18,5 +18,6 @@ public:
     virtual void Render(const float& fTimeDelta, int _instanceCount = 1) override;
 private:
     float m_fMake = 0.f;
+    float m_fSoundTime = 2.5f;
 };
 

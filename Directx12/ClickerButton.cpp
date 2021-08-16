@@ -1,5 +1,6 @@
 #include "ClickerButton.h"
 #include "KeyMgr.h"
+#include "SoundMgr.h"
 
 ClickerButton::ClickerButton(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT4 xmfInfo, string strBaseTextureName, string strMouseOnTextureName, string strActiveTextureName)
 	: Button(device, cmdLst, pRenderer, xmfInfo, strBaseTextureName, strMouseOnTextureName, strActiveTextureName)
@@ -46,6 +47,7 @@ int ClickerButton::Update(const float& fTimeDelta)
 				m_fMouseTime = 0.1f;
 				if (ButtonOnfp != nullptr)
 					ButtonOnfp();
+				SoundMgr::GetInstance()->PlaySound("MouseClick");
 			}
 		}
 		else

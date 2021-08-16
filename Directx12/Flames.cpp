@@ -4,6 +4,7 @@
 #include "Transform.h"
 
 #include "Flames_FireEff.h"
+#include "SoundMgr.h"
 
 Flames::Flames(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, XMFLOAT3 xmfPosition, XMFLOAT3 xmfRotation)
 	: Skill(device, cmdLst, pRenderer)
@@ -12,6 +13,8 @@ Flames::Flames(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetPosition(xmfPosition);
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetRotate(xmfRotation);
 	m_eSkillType = SKILL_TYPE::SKILL_FIRE1;
+	
+	SoundMgr::GetInstance()->PlaySound("FireWall");
 }
 
 Flames::~Flames()
@@ -35,6 +38,15 @@ void Flames::BuildSkillEffects()
 int Flames::Update(const float& fTimeDelta)
 {
 	Skill::Update(fTimeDelta);
+
+	m_fSoundTime -= fTimeDelta;
+	if (m_fSoundTime <= 0.f)
+	{
+		m_fSoundTime = 2.5f;
+		SoundMgr::GetInstance()->PlaySound("FireWall");
+	}
+
+
 	m_fMake = min(m_fMake + fTimeDelta * 4.f, 2.f);
 	
 
