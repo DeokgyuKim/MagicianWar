@@ -101,7 +101,10 @@ void SoundMgr::LoadSoundFile(string FileName, string FilePath)
 	if (eRes == FMOD_OK)
 	{
 		m_mapSound.emplace(FileName, pSound);
+		cout << "Load Sound SUCCESS FileName : " << FileName << endl;
 	}
+	else
+		cout << "Load Sound FAILED FileName : " << FileName << endl;
 	m_pSystem->update();
 }
 
@@ -120,6 +123,7 @@ void SoundMgr::LoadSoundFiles()
 	LoadSoundFile("Attack3", "../Resources/Sound/Attack3.wav");
 	LoadSoundFile("Attack4", "../Resources/Sound/Attack4.wav");
 	LoadSoundFile("Attack5", "../Resources/Sound/Attack5.wav");
+	LoadSoundFile("MyHitMonster", "../Resources/Sound/MyHitMonster.wav");
 
 	//Walk
 	LoadSoundFile("Walk1", "../Resources/Sound/Walk1.wav");

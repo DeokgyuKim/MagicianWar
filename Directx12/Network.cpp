@@ -331,6 +331,7 @@ void Network::CallEvent(int EventType, int args, ...)
 	case EVENT_CREATE_BULLET_REQUEST:
 	{
 		SendBulletCreate_Request();
+		SoundMgr::GetInstance()->PlaySound("Attack4");
 		break;
 	}
 	default:
@@ -616,10 +617,11 @@ void Network::packetProcessing(char* _packetBuffer)
 	}
 	case stoc_bullet_delete:
 	{
-		cout << " ÃÑ¾Ë ¼Ò¸ê\n";
+		//cout << " ÃÑ¾Ë ¼Ò¸ê\n";
 		STOC_Bullet_Delete* data = reinterpret_cast<STOC_Bullet_Delete*>(_packetBuffer);
 		int index = data->index;
 		m_vBullets[index].Used = false;
+		SoundMgr::GetInstance()->PlaySound("MyHitMonster");
 		break;
 	}
 
@@ -1007,7 +1009,7 @@ void Network::SendSkillPacket_Request(unsigned char Skill_type, XMFLOAT3 pos, XM
 
 void Network::SendBulletCreate_Request()
 {
-	cout << "ÃÑ¾Ë ½÷Áà\n";
+	//cout << "ÃÑ¾Ë ½÷Áà\n";
 	CTOS_CREATE_BULLET packet;
 	packet.size = sizeof(packet);
 	packet.type = ctos_CreateBullet_Request;
