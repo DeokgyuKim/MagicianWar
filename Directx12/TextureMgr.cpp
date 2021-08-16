@@ -169,6 +169,30 @@ void TextureMgr::BuildTextures(ID3D12Device* device, ID3D12GraphicsCommandList* 
 	m_mapTextures["Kill"] = pTexture;
 	pLoading->AddCount();
 
+	pTexture = new DDSTexture(device, cmdLst, heap, "SkillFire1", L"../Resources/UI/InGame/SkillFireWall.dds");
+	m_mapTextures["SkillFire1"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "SkillFire2", L"../Resources/UI/InGame/SkillMeteor.dds");
+	m_mapTextures["SkillFire2"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "SkillCold1", L"../Resources/UI/InGame/SkillIceField.dds");
+	m_mapTextures["SkillCold1"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "SkillCold2", L"../Resources/UI/InGame/SkillIceFreeze.dds");
+	m_mapTextures["SkillCold2"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "SkillDarkness1", L"../Resources/UI/InGame/SkillBlackField.dds");
+	m_mapTextures["SkillDarkness1"] = pTexture;
+	pLoading->AddCount();
+
+	pTexture = new DDSTexture(device, cmdLst, heap, "SkillDarkness2", L"../Resources/UI/InGame/SkillBlackBall.dds");
+	m_mapTextures["SkillDarkness2"] = pTexture;
+	pLoading->AddCount();
+
 	pTexture = new DDSTexture(device, cmdLst, heap, "BoomParticle", L"../Resources/BoomParticle.dds", false, 12);
 	m_mapTextures["BoomParticle"] = pTexture;
 	pLoading->AddCount();

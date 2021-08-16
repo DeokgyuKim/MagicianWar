@@ -24,7 +24,7 @@ public:
 private:
 	static ShopController* m_pInstance;
 public:
-	void Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Scene* pScene);
+	void Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, Scene* pScene, int CharType);
 	void Update();
 	void SetSkillCtrl(SkillController* pCtrl) { m_pSkillCtrl = pCtrl; }
 	void SetRendering(bool On);
@@ -33,6 +33,7 @@ private:
 	void Release();
 protected:
 	UI*					m_pSkillBase[2];
+	UI*					m_pSkillIcon[2];
 	UI*					m_pSkillOn[2][4];
 	ClickerButton*		m_pButton[2];
 	Cursor*				m_pCursor;

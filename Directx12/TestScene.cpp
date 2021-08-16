@@ -344,7 +344,7 @@ void TestScene::Initialize()
 
 
 	ShopController* pShopCtrl = ShopController::GetInstance();
-	pShopCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this);
+	pShopCtrl->Initialize(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(), this, (int)pPlayer->GetNetworkInfo().CharacterType);
 	pShopCtrl->SetSkillCtrl(pSkillCtrl);
 	pShopCtrl->SetRendering(true);
 
