@@ -58,10 +58,22 @@ void SoundMgr::StopSound(SOUND_ID eID)
 	m_pChannel[eID]->stop();
 }
 
+bool SoundMgr::IsPlaying(SOUND_ID eID)
+{
+	bool play = false;
+	m_pChannel[eID]->isPlaying(&play);
+	return play;
+}
+
 void SoundMgr::StopAll()
 {
 	for (int i = 0; i < MAXCHANNEL; ++i)
 		m_pChannel[i]->stop();
+}
+
+void SoundMgr::SoundControlbyChannel(SOUND_ID eID, float fVolume)
+{
+	m_pChannel[eID]->setVolume(fVolume);
 }
 
 void SoundMgr::LoadSoundFile(string FileName, string FilePath)

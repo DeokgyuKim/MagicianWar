@@ -162,6 +162,9 @@ XMFLOAT3 NetSkill::GetPosition()
 	case SKILL_FREEZE:
 		return GetPositionMyPosType(m_pOwner, m_pCamera);
 		break;
+	case SKILL_HATRED:
+		return GetPositionBulletType(m_pOwner, m_pCamera);
+		break;
 	default:
 		break;
 	}
@@ -197,6 +200,9 @@ XMFLOAT3 NetSkill::GetRotate()
 		rot = GetRotateBulletType(m_pOwner, m_pCamera);
 		rot.x = 0.f;
 		return rot;
+		break;
+	case SKILL_HATRED:
+		return GetRotateBulletType(m_pOwner, m_pCamera);
 	default:
 		break;
 	}

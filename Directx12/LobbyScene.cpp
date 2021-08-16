@@ -26,6 +26,7 @@
 #include "TextureMgr.h"
 
 #include "Loading.h"
+#include "SoundMgr.h"
 
 void makeroom();
 void joinroom();

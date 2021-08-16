@@ -32,7 +32,9 @@ public:
 	void PlaySound(string pSoundKey, SOUND_ID eID);
 	void PlayBGM(string pSoundKey);
 	void StopSound(SOUND_ID eID);
+	bool IsPlaying(SOUND_ID eID);
 	void StopAll();
+	void SoundControlbyChannel(SOUND_ID eID, float fVolume);
 public:
 	void LoadSoundFile(string FileName, string FilePath);
 public:

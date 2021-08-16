@@ -12,6 +12,7 @@
 #include "RadioButton.h"
 #include "Cursor.h"
 #include "CharInfoController.h"
+#include "SoundMgr.h"
 
 void readyroom();
 void unreadyroom();

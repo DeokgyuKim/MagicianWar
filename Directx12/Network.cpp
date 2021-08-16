@@ -21,6 +21,7 @@
 #include "InstanceInfo.h"
 #include "InstanceMgr.h"
 #include "Weapon.h"
+#include "SoundMgr.h"
 
 Network* Network::m_pInstance = NULL;
 
@@ -151,6 +152,11 @@ void Network::Room_Init()
 	m_RoundEnd.WinnerTeam = TEAM_NONE;
 	m_isRoundStart = false;
 	SendRoomInfo_Request();
+	if (!SoundMgr::GetInstance()->IsPlaying(SOUND_ID::BGM))
+	{
+		SoundMgr::GetInstance()->PlayBGM("nextlevel");
+		SoundMgr::GetInstance()->SoundControlbyChannel(SOUND_ID::BGM, 0.1f);
+	}
 }
 
 void Network::Ingame_Init()

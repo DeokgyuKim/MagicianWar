@@ -24,7 +24,7 @@ HatredChain_Outter::~HatredChain_Outter()
 
 void HatredChain_Outter::BuildComponent()
 {
-	Component* pComponent = new Transform(XMFLOAT3(3.f, 3.f, 3.f), XMFLOAT3(0.f, 90.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
+	Component* pComponent = new Transform(XMFLOAT3(1.5f, 1.5f, 1.5f), XMFLOAT3(0.f, 90.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f));
 	m_mapComponent["Transform"] = pComponent;
 
 	dynamic_cast<Transform*>(m_mapComponent["Transform"])->SetParentMatrix(dynamic_cast<Transform*>(m_pParent->GetTransController())->GetWorldMatrixPointer());
