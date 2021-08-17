@@ -72,6 +72,9 @@ void Room::ReInit()
 	m_Info.curRound = 0;
 	m_WinnerTeam = TEAM_NONE;
 
+	m_BlueTeam_Alive_Count = 0;
+	m_RedTeam_Alive_Count = 0;
+
 	if (m_curPlayer_Count <= MAX_PLAYER) { // 게임 끝났으니 꽉찬거 아니면 더 받자
 		m_istEnterable = true;
 	}
@@ -131,11 +134,15 @@ void Room::RoundSetting()
 {
 	recvEvnet_Clear();
 	m_WinnerTeam = TEAM_NONE;
+	m_BlueTeam_Alive_Count = 0;
+	m_RedTeam_Alive_Count = 0;
 	// 상점 끝나고 라운드 시작할때 해줄것
 	for (int i = 0; i < MAX_PLAYER; ++i) { // 초기 위치 재설정
 		if (m_players[i].getUsed()) {
 			int spawnPos = m_players[i].getSlotNum();
 			//cout << "spawnPos - " << spawnPos << "\n";
+			if (0 <= spawnPos && spawnPos <= 3) ++m_BlueTeam_Alive_Count;
+			if (4 <= spawnPos && spawnPos <= 7) ++m_RedTeam_Alive_Count;
 			if (spawnPos == 0) m_players[i].setPosition(XMFLOAT3(20.f, 0.f, 10.f));
 			else if (spawnPos == 1) m_players[i].setPosition(XMFLOAT3(15.f, 0.f, 10.f));
 			else if (spawnPos == 2) m_players[i].setPosition(XMFLOAT3(10.f, 0.f, 10.f));
@@ -454,7 +461,7 @@ void Room::SkillUpdate(float fTime)
 void Room::Physics_Simulate(float fTime)
 {
 	if (CPhysXMgr::GetInstance()->PhysXStartTime > 10.f)
-	{
+	{ 
 		CPhysXMgr::GetInstance()->gScene->simulate(fTime);
 		CPhysXMgr::GetInstance()->gScene->fetchResults(true);
 	}
@@ -692,7 +699,7 @@ void Room::Physics_Collision()
 									{
 										if (m_players[j].getAbleDottAtt())
 										{
-											int Attack_Player = m_FireMeteor_Skills[i].getUser();
+											int Attack_Player = m_Darkness_Enchantress_Skills[i].getUser();
 											int playerEvent = m_players[j].setDamage(10, BULLET_HIT_EVENT);
 											CheckPlayerEvent(playerEvent, j);
 											if (playerEvent == PLAYER_DEAD_EVENT)
@@ -924,13 +931,14 @@ void Room::InGame_Init()
 			m_players[i].setHp(100);
 			m_players[i].setCharacterType(m_roomPlayerSlots[i].characterType);
 			m_players[i].setSlotNum(m_roomPlayerSlots[i].slot_num);
-			if (i <= 3) { // Blue Team
+			if (i <= 3) 
+			{ // Blue Team
 				if (i == 0)m_players[i].setPosition(XMFLOAT3(20.f, 0.f, 10.f));
 				else if (i == 1)m_players[i].setPosition(XMFLOAT3(15.f, 0.f, 10.f));
 				else if (i == 2)m_players[i].setPosition(XMFLOAT3(10.f, 0.f, 10.f));
 				else if (i == 3)m_players[i].setPosition(XMFLOAT3(5.f, 0.f, 10.f));
 
-				++m_BlueTeam_Alive_Count;
+				
 				m_players[i].setTeam(TEAM_BLUE);
 			}
 			else if (i <= 7) { // Red Team
@@ -939,7 +947,7 @@ void Room::InGame_Init()
 				else if (i == 6)m_players[i].setPosition(XMFLOAT3(50.f, 0.f, 90.f));
 				else if (i == 7)m_players[i].setPosition(XMFLOAT3(55.f, 0.f, 90.f));
 
-				++m_RedTeam_Alive_Count;
+				
 				m_players[i].setTeam(TEAM_RED);
 			}
 
@@ -1446,9 +1454,10 @@ void Room::Send_sendEvent_Packet()
 		Send_Packet_RoomInfo SP_RoomInfo = sendEventQueue_Copied.front();
 		sendEventQueue_Copied.pop();
 
-
-		if (!Server::GetInstance()->SendPacket(SP_RoomInfo.playerID, SP_RoomInfo.buffer)) {
-			//cout << "Error - Send_RoomInfo_Packet()\n";
+		if (SP_RoomInfo.playerID != NO_PLAYER) {
+			if (!Server::GetInstance()->SendPacket(SP_RoomInfo.playerID, SP_RoomInfo.buffer)) {
+				//cout << "Error - Send_RoomInfo_Packet()\n";
+			}
 		}
 
 	}
@@ -1590,8 +1599,8 @@ void Room::Send_UpdatePlayerInfoPacket(Player& _player)
 	for (int i = 0; i < MAX_PLAYER; ++i)
 	{
 		if (m_players[i].getUsed()) {
-			//sendEvent_push(m_players[i].getID(), &packet);
-			Server::GetInstance()->SendIngamePlayerInfo(m_players[i].getID(), packet);
+			sendEvent_push(m_players[i].getID(), &packet);
+			//Server::GetInstance()->SendIngamePlayerInfo(m_players[i].getID(), packet);
 		}
 	}
 

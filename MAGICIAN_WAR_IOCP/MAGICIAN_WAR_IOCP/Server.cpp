@@ -147,7 +147,7 @@ bool Server::SendPacket(int id, void* buffer)
 	{
 		int err_no = WSAGetLastError();
 		if (err_no != WSA_IO_PENDING) {
-			error_display("SendPacket() - ", err_no);
+			//error_display("SendPacket() - ", err_no);
 			return false;
 		}
 	}

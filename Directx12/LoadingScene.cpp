@@ -27,6 +27,7 @@
 LoadingScene::LoadingScene()
 {
 	Initialize();
+	ShowCursor(FALSE);
 	SoundMgr::GetInstance()->Initalize();
 	SoundMgr::GetInstance()->PlayBGM("nextlevel");
 	SoundMgr::GetInstance()->SoundControlbyChannel(SOUND_ID::BGM, 0.1f);

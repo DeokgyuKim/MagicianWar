@@ -52,9 +52,12 @@ int SoundMgr::PlaySound(string pSoundKey)
 
 	if (m_pChannel[m_iEffCurChannel]->isPlaying(&isPlay))
 	{
-		m_pSystem->playSound(iter->second, NULL, FALSE, &m_pChannel[m_iEffCurChannel++]);
+		m_pSystem->playSound(iter->second, NULL, FALSE, &m_pChannel[m_iEffCurChannel]);
 	}
 	m_pSystem->update();
+	m_iEffCurChannel = m_iEffCurChannel + 1;
+	if (m_iEffCurChannel >= SOUND_ID::MAXCHANNEL)
+		m_iEffCurChannel = SOUND_ID::EFFSTART;
 	return m_iEffCurChannel - 1;
 }
 

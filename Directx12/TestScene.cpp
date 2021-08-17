@@ -201,7 +201,7 @@ void TestScene::Initialize()
 		else
 		{
 			pEnemy[enemy] = new Portrait(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
-				XMFLOAT4(1835.f, 372.f + 85.f * our, 80.f, 80.f), dynamic_cast<Player*>(pObj));
+				XMFLOAT4(1835.f, 372.f + 85.f * enemy, 80.f, 80.f), dynamic_cast<Player*>(pObj));
 			++enemy;
 		}
 
@@ -275,6 +275,7 @@ void TestScene::Initialize()
 	//	XMFLOAT3(20.f, 1.f, 10.f), XMFLOAT3(0.f, 180.f, 0.f), 0.f);
 	//m_pObjects[OBJ_BULLET].push_back(pObj);
 	//
+
 	//pObj = new IceBolt(Core::GetInstance()->GetDevice(), Core::GetInstance()->GetCmdLst(), Renderer::GetInstance(),
 	//	XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(20.f, 2.f, 15.f));
 	//m_pObjects[OBJ_SKILL].push_back(pObj);
