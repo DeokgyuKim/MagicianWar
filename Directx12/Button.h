@@ -2,15 +2,14 @@
 #include "UI.h"
 
 
-class Button :
-    public UI
+class Button : public UI
 {
 public:
     Button(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLst, Renderer* pRenderer, 
         XMFLOAT4 xmfInfo, string strBaseTextureName, string strMouseOnTextureName, string strActiveTextureName);
     virtual ~Button();
 public:
-    // ObjectÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+    // ObjectÃ€Â»(Â¸Â¦) Ã…Ã«Ã‡Ã˜ Â»Ã³Â¼Ã“ÂµÃŠ
     virtual int Update(const float& fTimeDelta) override;
     virtual void LateUpdate(const float& fTimeDelta) override;
     virtual void Render(const float& fTimeDelta, int _instanceCount = 1) override;
