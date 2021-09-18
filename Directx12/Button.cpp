@@ -34,6 +34,7 @@ int Button::Update(const float& fTimeDelta)
 		{
 			m_eButtonState = BUTTON_STATE::MOUSEON;
 		}
+		break;
 	case MOUSEON:
 		if (PtInRect(&m_Rect, pt))
 		{
